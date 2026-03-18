@@ -14,9 +14,30 @@ class cwDecoder(baseui.cwDecoderUI):
         self.master = master
         self.mainWindow = mainWindow
         #
-        #   Create a toplevel window to contain the settings master
+        #   Flags
         #
-        # self.master = tk.Toplevel(self.master)
+
+        #   This is a tristate flag that determines the state of the UX
+        #   Can only do Frequency/Spectrum or CW decode (or nothing)
+        self.spectrumMorseState = None  # None = not initialized,
+                                        # "FreqScan" = Frequency/Spectrum Mode
+                                        # "CWDecode" = CW Decode Mode
+
+        #   True indicates that there are Freq/Spectrum FFT to process
+        self.fftDataAvailable = False
+
+        #   True indicates that there are CW decoded characters available to process
+        self.cwDataAvailable = False
+
+        #   True indicates that prior saved parameters have been loaded from EEPROM
+        self.eepromDataLoaded = False
+
+        #   Data Source
+        self.fromDSP = 0x6a
+        self.fromOther = 0
+        self.dataSource = self.fromOther
+
+
 
         super().__init__(self.master, **kw)
         #
@@ -50,6 +71,13 @@ class cwDecoder(baseui.cwDecoderUI):
         self.frequencySigValue_VAR.set("20")            # 2*10
 
     #
+    #   This is the main processing routine. Anytime there is new data from the DSP function
+    #   This routine is called to process the data.
+    #
+    def processDataFromDSP(self):
+        pass
+
+    #
     #   The following two "bind_all' functions ensures that any mouse clicks, regardless of which
     #   widget is clicked, results in a call to the enable either Spectrum(Frequency) or CW windows
     #   This eliminates the needs for a radio button to select which mode the data is interpreted as
@@ -80,35 +108,81 @@ class cwDecoder(baseui.cwDecoderUI):
 
 
     def enable_Frequency_Spectrum(self, event=None):
-        # print("frequency spectrum clicked")
+        #
+        #   Executed when Button-1 clicked on Frequency/Spectrum Frame (or children)
+        #
         self.unbind_all("<Button-1>")
-        self.cwDecodedText.configure(foreground="lightgray")
 
-        self.frequencyPlotcwToneValueLabel.configure(state="normal")
-        self.frequencyHighLabel.configure(state="normal")
-        self.frequencySigLabel.configure(state="normal")
-        self.frequencyLowLabel.configure(state="normal")
+        self.spectrumMorseState = "FreqScan"      # Set state flag Frequency/Spectrum mode
 
-        self.frequencyHighValueLabel.configure(state="normal")
-        self.frequencySigValueLabel.configure(state="normal")
-        self.frequencyLowValueLabel.configure(state="normal")
+        self.setcwDecodeState("disabled")
+        self.setFrequencySpectrumState("normal")
 
     def enable_CW_Decode(self, event=None):
-        # print("cw decode clicked")
+        #
+        #   Executed when Button-1 clicked on CW_Decode Frame (or children)
+        #
         self.unbind_all("<Button-1>")
-        self.cwDecodedText.configure(foreground="black")
-        self.frequencyPlotcwToneValueLabel.configure(state="disabled")
 
-        self.frequencyHighLabel.configure(state="disabled")
-        self.frequencySigLabel.configure(state="disabled")
-        self.frequencyLowLabel.configure(state="disabled")
+        self.spectrumMorseState = CWDecode      # Set state flag to True = CW Decode Mode mode
 
-        self.frequencyHighValueLabel.configure(state="disabled")
-        self.frequencySigValueLabel.configure(state="disabled")
-        self.frequencyLowValueLabel.configure(state="disabled")
+        self.setcwDecodeState("normal")
+        self.setFrequencySpectrumState("disabled")
+
+    def setcwDecodeState(self, newState):
+        if newState == "normal":
+            self.cwDecodedText.configure(foreground="black")
+        else:
+            self.cwDecodedText.configure(foreground="lightgray")
 
 
+    def setFrequencySpectrumState(self, newState):
+        self.frequencyPlotcwToneValueLabel.configure(state=newState)
 
+        self.frequencyHighLabel.configure(state=newState)
+        self.frequencySigLabel.configure(state=newState)
+        self.frequencyLowLabel.configure(state=newState)
+
+        self.frequencyHighValueLabel.configure(state=newState)
+        self.frequencySigValueLabel.configure(state=newState)
+        self.frequencyLowValueLabel.configure(state=newState)
+
+    #
+    #   EEPROM Variable load functions
+    #
+    def request_DSP_EEPROM_Data(self):
+        pass
+
+    def process_DSP_EEPROM_Data(self, buffer):
+        self.fftDataAvailable = True
+        self.dataSource = self.fromDSP
+        self.spectrum_buffer_data = buffer
+
+    #
+    #   Data processors
+    #
+    def process_Spectrum_Data(self, buffer):
+        self.fftDataAvailable = True
+        self.dataSource = self.fromDSP
+        self.spectrum_buffer_data = buffer
+
+    def process_CWDecoded_Data(self, buffer):
+        if self.cwDataAvailable == True:
+            self.cwDecodedBuffer.append(buffer)
+        else:
+            self.cwDataAvailable = True
+            self.dataSource = self.fromDSP
+            self.cwDecodedBuffer = buffer
+
+    #
+    #   Get/Setters
+    #
+
+    def get_spectrumMorseState(self):
+        return self.spectrumMorseState
+
+    def set_spectrumMorseState(self, newState):
+        self.spectrumMorseState = newState
 
 
     def frequencyDecodeScale_CB(self, scale_value):

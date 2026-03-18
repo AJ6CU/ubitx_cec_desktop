@@ -37,6 +37,7 @@ class mainScreen(baseui.mainScreenUI):
         self.cwSettingsWindow = None    # Object pointer for the CW Settinge Window
         self.settingsWindow = None      # Object pointer for the General Settings Window
         self.channelsWindow = None      # object pointer for the Memory-> VFO Window
+        self.theDSPWindow = None        # object pointer to the DSP Window
         # self.vfoToMemWindow = None      # object pointer for the VFO->Memory Window
 
         self.classic_uBITX_ControlWindow = None
@@ -203,6 +204,10 @@ class mainScreen(baseui.mainScreenUI):
             case "cp": self.cp_UX_S_Meter_Value(buffer)  # Related to S meter. search CMD_SMETER
             case "ct": self.ct_UX_RX_TX_Mode(buffer)
             case "al": self.al_UX_S_Meter_Value(buffer)
+            case "vv": self.vv_UX_Command_Data(buffer)
+            case "vg": self.vg_UX_DSP_Flag(buffer)
+            case "sb": self.sb_UX_CW_Decoded_Characters(buffer)
+            case "sp": self.sp_UX_DSP_Spectrum_Values(buffer)
             case _:
                 print("Command not recognized=", buffer,"*")
                 print("command:", command,"*",sep="*")
@@ -549,6 +554,33 @@ class mainScreen(baseui.mainScreenUI):
             self.s_meter_Progressbar_VAR.set(int(value))
         else:
             print("another weird malformed command, buffer =", buffer)
+
+    def vv_UX_Command_Data(self, buffer):
+        print("DSP data returned", buffer)
+        #
+        # saving this data because dont know what to do with it until next command
+        # could be retrieving EEPROM DSP settings to screen dimming or ?
+        #
+        self.vv_Command_Buffer = self.extractValue(buffer, 10, len(buffer) - 3)
+
+
+    def vg_UX_DSP_Flag(self, buffer):
+        value = self.extractValue(buffer, 10, len(buffer) - 3)
+        if int(value, 16) == 106:  # 0x6a
+            self.theDSPWindow.process_DSP_EEPROM_Data(self.vv_Command_Buffer)
+        else:
+            print("Unidentified DSP Data", value, buffer)
+
+    def sb_UX_CW_Decoded_Characters(self, buffer):
+        print("Decoded CW Characters", buffer)
+        value = self.extractValue(buffer, 10, len(buffer) - 3)
+        self.theDSPWindow.process_CWDecoded_Data(value)
+
+
+    def sp_UX_DSP_Spectrum_Values(self, buffer):
+        print("Spectrum values from DSP", buffer)
+        value = self.extractValue(buffer, 10, len(buffer) - 3)
+        self.theDSPWindow.process_Spectrum_Data(value)
 
     def ct_UX_RX_TX_Mode(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
