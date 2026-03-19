@@ -38,8 +38,7 @@ class cwDecoder(baseui.cwDecoderUI):
         self.grab_set()
         self.transient(self.master)
 
-        # self.pack(expand=tk.YES, fill=tk.BOTH)
-        # gv.trimAndLocateWindow(self.master, 0, 0)
+        gv.trimAndLocateWindow(self.master, 0, 0)
 
         self.cwDecodeLabelframe.bind("<Enter>", self.bind_all("<Button-1>", self.cwDecode_bind_all))
         self.frequencySpectrumFrame.bind("<Enter>", self.bind_all("<Button-1>", self.frequency_bind_all))
@@ -244,7 +243,6 @@ class cwDecoder(baseui.cwDecoderUI):
 
 
     def close_CB(self):
-        print("close_cwDecode_Window_CB")
         self.unbind_all("<Button-1>")   # Eliminate global catch of Button-1
         self.destroy()
 
