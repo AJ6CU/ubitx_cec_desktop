@@ -107,7 +107,7 @@ class cwDecoder(baseui.cwDecoderUI):
         #
         self.unbind_all("<Button-1>")
 
-        self.spectrumMorseState = CWDecode      # Set state flag to True = CW Decode Mode mode
+        self.spectrumMorseState = "CWDecode"      # Set state flag to True = CW Decode Mode mode
 
         self.setcwDecodeState("normal")
         self.setFrequencySpectrumState("disabled")

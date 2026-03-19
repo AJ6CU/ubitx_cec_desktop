@@ -4,18 +4,19 @@
     <settings>
       <setting id="name">cwDecoder</setting>
       <setting id="description">Manages decoding of CW.</setting>
-      <setting id="module_name">cwDecoder</setting>
       <setting id="template">widget</setting>
       <setting id="main_widget">cwDecoder_Window</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">cwDecoder</setting>
       <setting id="main_classname">cwDecoder</setting>
-      <setting id="main_menu" />
       <setting id="output_dir">..</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
       <setting id="output_dir2">..</setting>
-      <setting id="import_tkvariables">False</setting>
-      <setting id="use_ttk_styledefinition_file">True</setting>
+      <setting id="generate_code_onsave">False</setting>
       <setting id="use_i18n">False</setting>
       <setting id="all_ids_attributes">False</setting>
-      <setting id="generate_code_onsave">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">True</setting>
       <setting id="use_window_centering_code">False</setting>
       <setting id="ttk_style_definition_file">../mystyles.py</setting>
     </settings>

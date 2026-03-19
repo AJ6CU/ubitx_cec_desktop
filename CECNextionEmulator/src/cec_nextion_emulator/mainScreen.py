@@ -818,7 +818,7 @@ class mainScreen(baseui.mainScreenUI):
         self.IFS_Jogwheel.setStateDisabled()
         self.tuning_Jogwheel.setStateDisabled()
         self.theVFO_Object.setVFOUXState("disabled")
-        self.theDSPWindow.configure(state="disabled")
+        self.cwDecode_Button.configure(state="disabled")
 
 
     #
@@ -840,7 +840,7 @@ class mainScreen(baseui.mainScreenUI):
             self.IFS_Jogwheel.setStateNormal()
         self.tuning_Jogwheel.setStateNormal()
         self.theVFO_Object.setVFOUXState("normal")
-        self.theDSPWindow.configure(state="normal")
+        self.cwDecode_Button.configure(state="normal")
 
 
     def cj_UX_Speaker_Toggle(self, buffer):
