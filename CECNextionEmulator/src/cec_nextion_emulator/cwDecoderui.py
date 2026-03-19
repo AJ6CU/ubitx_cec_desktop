@@ -1,19 +1,26 @@
 #!/usr/bin/python3
+"""
+cwDecoder
+
+Manages decoding of CW.
+
+UI source file: cwDecoder.ui
+"""
 import tkinter as tk
 import tkinter.ttk as ttk
 
 
-def i18n_translator_noop(value):
+def safe_i18n_translator(value):
     """i18n - Setup translator in derived class file"""
     return value
 
 
-def first_object_callback_noop(widget):
+def safe_fo_callback(widget):
     """on first objec callback - Setup callback in derived class file."""
     pass
 
 
-def image_loader_default(master, image_name: str):
+def safe_image_loader(master, image_name: str):
     """Image loader - Setup image_loader in derived class file."""
     img = None
     try:
@@ -38,12 +45,12 @@ class cwDecoderUI(tk.Toplevel):
         **kw
     ):
         if translator is None:
-            translator = i18n_translator_noop
+            translator = safe_i18n_translator
         _ = translator  # i18n string marker.
         if image_loader is None:
-            image_loader = image_loader_default
+            image_loader = safe_image_loader
         if on_first_object_cb is None:
-            on_first_object_cb = first_object_callback_noop
+            on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
 
@@ -77,7 +84,7 @@ class cwDecoderUI(tk.Toplevel):
         self.frequencyPlotCanvas = tk.Canvas(
             self.frequencyPlotFrame, name="frequencyplotcanvas")
         self.frequencyPlotCanvas.configure(
-            background="#0432ff", height=140, width=430)
+            background="#0432ff", height=160, width=430)
         self.frequencyPlotCanvas.pack(expand=True, fill="both", side="left")
         self.frequencyPlotFrame.pack(padx=5, pady=5, side="left")
         self.frequencyPlotParameterFrame = ttk.Frame(
@@ -272,5 +279,4 @@ class cwDecoderUI(tk.Toplevel):
 if __name__ == "__main__":
     root = tk.Tk()
     widget = cwDecoderUI(root)
-    widget.pack(expand=True, fill="both")
     root.mainloop()

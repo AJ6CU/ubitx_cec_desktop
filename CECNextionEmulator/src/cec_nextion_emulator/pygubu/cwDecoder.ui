@@ -85,7 +85,7 @@
                         <child>
                           <object class="tk.Canvas" id="frequencyPlotCanvas" named="True">
                             <property name="background">#0432ff</property>
-                            <property name="height">140</property>
+                            <property name="height">160</property>
                             <property name="width">430</property>
                             <layout manager="pack">
                               <property name="expand">true</property>

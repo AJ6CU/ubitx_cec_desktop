@@ -278,7 +278,7 @@ SPEAKER
                 <property name="width">200</property>
                 <layout manager="grid">
                   <property name="column">0</property>
-                  <property name="padx">65</property>
+                  <property name="padx">5</property>
                   <property name="row">0</property>
                 </layout>
                 <child>
@@ -299,6 +299,7 @@ SPEAKER
                         <property name="text" translatable="yes">
 SPLIT
 </property>
+                        <property name="width">11</property>
                         <layout manager="pack">
                           <property name="anchor">nw</property>
                           <property name="padx">20 20</property>
@@ -313,6 +314,7 @@ SPLIT
                         <property name="text" translatable="yes">
 RIT
 </property>
+                        <property name="width">11</property>
                         <layout manager="pack">
                           <property name="anchor">nw</property>
                           <property name="padx">0 20</property>
@@ -327,6 +329,22 @@ RIT
                         <property name="text" translatable="yes">
 CHANNELS
 </property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 20</property>
+                          <property name="side">left</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="cwDecode_Button" named="True">
+                        <property name="command" type="command" cbtype="simple">cwDecode_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+CW DECODE
+</property>
+                        <property name="width">11</property>
                         <layout manager="pack">
                           <property name="anchor">nw</property>
                           <property name="side">left</property>

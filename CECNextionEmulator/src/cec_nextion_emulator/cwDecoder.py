@@ -23,22 +23,6 @@ class cwDecoder(baseui.cwDecoderUI):
                                         # "FreqScan" = Frequency/Spectrum Mode
                                         # "CWDecode" = CW Decode Mode
 
-        #   True indicates that there are Freq/Spectrum FFT to process
-        self.fftDataAvailable = False
-
-        #   True indicates that there are CW decoded characters available to process
-        self.cwDataAvailable = False
-
-        #   True indicates that prior saved parameters have been loaded from EEPROM
-        self.eepromDataLoaded = False
-
-        #   Data Source
-        self.fromDSP = 0x6a
-        self.fromOther = 0
-        self.dataSource = self.fromOther
-
-
-
         super().__init__(self.master, **kw)
         #
         #   Make sure that a close by the Window manager goes to the same close callback
@@ -150,7 +134,15 @@ class cwDecoder(baseui.cwDecoderUI):
     #   EEPROM Variable load functions
     #
     def request_DSP_EEPROM_Data(self):
-        self.mainWindow.theRadio.RequestDSP_EEPROM_Data()
+        #
+        # Temp comment out
+        #
+        # self.mainWindow.theRadio.RequestDSP_EEPROM_Data()
+        #
+        # following just plugs to allow basic testing
+        #
+        self.mainWindow.UseDSP = True
+        self.spectrumMorseState = "FreqScan"
 
     def process_DSP_EEPROM_Data(self, buffer):
         byteList = int(buffer).tobytes(3,'little')
@@ -182,12 +174,10 @@ class cwDecoder(baseui.cwDecoderUI):
     #
     def process_Spectrum_Data(self, buffer):
 
-        # sys1 = nDecodeFreq.val / 50
-        # sys1 = sys1 + 1
-        # vSelectMin.val = sys1 - 1
-        # vSelectMax.val = sys1 + 1
-        # sys1 = sys1 * 4
-        # sys2 = 0
+        centerFreq = int(self.frequencyPlotcwToneValue_VAR.get()) / 50
+        vSelectMin = centerFreq
+        vSelectMax = centerFreq + 2
+        centerFreqTop = (centerFreq+1) * 4
 
         # the variables below size the bar graph
         # experiment with them to fit your needs
@@ -218,19 +208,12 @@ class cwDecoder(baseui.cwDecoderUI):
             x1 = x * x_stretch + x * x_width + x_width + x_gap
             y1 = c_height - y_gap
             # draw the bar
-            c.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
+            frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
 
-
-        # for (sys0 = 0; sys0 < 62; sys0++) {
-        #     substr pm.sp.txt, sTemp0.txt, sys0 * 2, 2 // From sys0 * 2, take 2 characters and store in sTemp0.txt
-        # covx sTemp0.txt, sys2, 2, 2 // Convert sTemp0.txt to number, 2 bytes, leading zeros 2
-        # sys2 /= 2
-        # if (sys2 < 0) {
-        # sys2 = 0
-        # }
-        # if (sys2 > 70) {
-        # sys2 = 70
-        # }
+            if x > vSelectMin:
+                if x < vSelectMax:
+                    frequencyPlotCanvas.create_line(x0, y0, x1, y1, fill='red')
+                    frequencyPlotCanvas.create_line(x0+4, y0, x1+4, y1, fill='red')
 
 
 

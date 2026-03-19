@@ -9,6 +9,7 @@ from settings import settings
 from cwSettings import cwSettings, cwSettings
 
 from channels import channels
+from cwDecoder import cwDecoder
 from Classic_uBITX_Control import Classic_uBITX_Control
 
 import mystyles  # Styles definition module
@@ -441,6 +442,9 @@ class mainScreen(baseui.mainScreenUI):
     def updateIFSValue_CB(self):
         self.theRadio.Set_IFS_Level(self.IFS_Jogwheel.get())
 
+    def cwDecode_Button_CB(self):
+        self.theDSPWindow = cwDecoder(self.master, self)
+
 
 
 
@@ -814,6 +818,7 @@ class mainScreen(baseui.mainScreenUI):
         self.IFS_Jogwheel.setStateDisabled()
         self.tuning_Jogwheel.setStateDisabled()
         self.theVFO_Object.setVFOUXState("disabled")
+        self.theDSPWindow.configure(state="disabled")
 
 
     #
@@ -835,6 +840,7 @@ class mainScreen(baseui.mainScreenUI):
             self.IFS_Jogwheel.setStateNormal()
         self.tuning_Jogwheel.setStateNormal()
         self.theVFO_Object.setVFOUXState("normal")
+        self.theDSPWindow.configure(state="normal")
 
 
     def cj_UX_Speaker_Toggle(self, buffer):

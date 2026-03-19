@@ -191,22 +191,38 @@ class mainScreenUI(ttk.Frame):
             height=200, style="Normal.TFrame", width=200)
         self.split_Button = ttk.Button(
             self.signal_Control_Frame, name="split_button")
-        self.split_Button.configure(style="Button2b.TButton", text='\nSPLIT\n')
+        self.split_Button.configure(
+            style="Button2b.TButton",
+            text='\nSPLIT\n',
+            width=11)
         self.split_Button.pack(anchor="nw", padx="20 20", side="left")
         self.split_Button.configure(command=self.split_CB)
         self.rit_Button = ttk.Button(
             self.signal_Control_Frame, name="rit_button")
-        self.rit_Button.configure(style="Button2b.TButton", text='\nRIT\n')
+        self.rit_Button.configure(
+            style="Button2b.TButton",
+            text='\nRIT\n',
+            width=11)
         self.rit_Button.pack(anchor="nw", padx="0 20", side="left")
         self.rit_Button.configure(command=self.rit_CB)
         self.channels_Button = ttk.Button(
             self.signal_Control_Frame, name="channels_button")
         self.channels_Button.configure(
-            style="Button2b.TButton", text='\nCHANNELS\n')
-        self.channels_Button.pack(anchor="nw", side="left")
+            style="Button2b.TButton",
+            text='\nCHANNELS\n',
+            width=11)
+        self.channels_Button.pack(anchor="nw", padx="0 20", side="left")
         self.channels_Button.configure(command=self.channels_CB)
+        self.cwDecode_Button = ttk.Button(
+            self.signal_Control_Frame, name="cwdecode_button")
+        self.cwDecode_Button.configure(
+            style="Button2b.TButton",
+            text='\nCW DECODE\n',
+            width=11)
+        self.cwDecode_Button.pack(anchor="nw", side="left")
+        self.cwDecode_Button.configure(command=self.cwDecode_Button_CB)
         self.signal_Control_Frame.grid(column=0, pady=10, row=0, sticky="n")
-        self.secondary_menu_Frame.grid(column=0, padx=65, row=0)
+        self.secondary_menu_Frame.grid(column=0, padx=5, row=0)
         self.sMeter_Frame = ttk.Frame(
             self.control_Meter_Tuning_Frame,
             name="smeter_frame")
@@ -493,6 +509,9 @@ class mainScreenUI(ttk.Frame):
         pass
 
     def channels_CB(self):
+        pass
+
+    def cwDecode_Button_CB(self):
         pass
 
     def updateATTValue_CB(self):
