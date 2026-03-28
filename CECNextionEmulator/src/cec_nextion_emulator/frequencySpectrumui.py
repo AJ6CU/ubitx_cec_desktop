@@ -80,10 +80,9 @@ class frequencySpectrumUI(tk.Toplevel):
         self.frequencyPlotCanvas = tk.Canvas(
             self.magnitudeLabelframe, name="frequencyplotcanvas")
         self.frequencyPlotCanvas.configure(
-            background="#0432ff", height=160, width=480)
-        self.frequencyPlotCanvas.pack(
-            expand=True, fill="both", padx="5 0", side="top")
-        self.magnitudeLabelframe.grid(column=0, row=0)
+            background="#0432ff", height=160, width=430)
+        self.frequencyPlotCanvas.pack(expand=True, fill="both", side="top")
+        self.magnitudeLabelframe.grid(column=0, padx="8 0", row=0, sticky="ew")
         self.freqTuneFrame = ttk.Frame(
             self.frequencySpectrumFrame,
             name="freqtuneframe")
@@ -99,11 +98,18 @@ class frequencySpectrumUI(tk.Toplevel):
             relief="raised",
             resolution=1,
             showvalue=False,
+            sliderlength=50,
             state="normal",
-            to=100,
+            to=500,
             variable=self.frequencyTuning_VAR,
             width=30)
-        self.frequencyTuning_Scale.pack(pady="15 0", side="top")
+        self.frequencyTuning_Scale.pack(
+            anchor="w",
+            expand=True,
+            fill="x",
+            padx="10 0",
+            pady="15 0",
+            side="top")
         self.frequencyTuning_Scale.configure(command=self.frequencyTuning_CB)
         self.frequencyRange_Frame = ttk.Frame(
             self.freqTuneFrame, name="frequencyrange_frame")
@@ -117,17 +123,29 @@ class frequencySpectrumUI(tk.Toplevel):
             text='0',
             textvariable=self.startFrequency_VAR)
         self.startFrequency_Label.pack(side="left")
+        self.currentFrequency_Label = ttk.Label(
+            self.frequencyRange_Frame, name="currentfrequency_label")
+        self.currentFrequency_VAR = tk.StringVar(value='0')
+        self.currentFrequency_Label.configure(
+            style="Heading2b.TLabel",
+            text='0',
+            textvariable=self.currentFrequency_VAR)
+        self.currentFrequency_Label.pack(padx="175 0", side="left")
         self.endFrequency_Label = ttk.Label(
             self.frequencyRange_Frame, name="endfrequency_label")
-        self.endFrequency_VAR = tk.StringVar(value='120000')
+        self.stopFrequency_VAR = tk.StringVar(value='120000')
         self.endFrequency_Label.configure(
             style="Heading2b.TLabel",
             text='120000',
-            textvariable=self.endFrequency_VAR)
+            textvariable=self.stopFrequency_VAR)
         self.endFrequency_Label.pack(side="right")
         self.frequencyRange_Frame.pack(
-            expand=True, fill="x", pady="0 10", side="top")
-        self.freqTuneFrame.grid(column=0, row=1, sticky="w")
+            anchor="w",
+            expand=True,
+            fill="x",
+            pady="0 10",
+            side="top")
+        self.freqTuneFrame.grid(column=0, row=1, sticky="ew")
         self.waterfallLabelframe = ttk.Labelframe(
             self.frequencySpectrumFrame, name="waterfalllabelframe")
         self.waterfallLabelframe.configure(
@@ -135,18 +153,18 @@ class frequencySpectrumUI(tk.Toplevel):
             style="Heading3.TLabelframe",
             text='Waterfall',
             width=200)
-        self.watefall_Canvas = tk.Canvas(
-            self.waterfallLabelframe, name="watefall_canvas")
-        self.watefall_Canvas.configure(
-            background="#0432ff", height=160, width=480)
-        self.watefall_Canvas.pack(
-            expand=True,
-            fill="both",
-            padx="10 0",
-            side="top")
-        self.waterfallLabelframe.grid(column=0, row=2)
+        self.waterfall_Canvas = tk.Canvas(
+            self.waterfallLabelframe, name="waterfall_canvas")
+        self.waterfall_Canvas.configure(
+            background="#0432ff", height=160, width=430)
+        self.waterfall_Canvas.pack(expand=True, fill="both", side="top")
+        self.waterfallLabelframe.grid(column=0, padx="8 0", row=2, sticky="ew")
         self.frequencySpectrumFrame.grid(
-            column=0, padx="10 0", row=0, sticky="w")
+            column=0, padx="10 0", row=0, sticky="ew")
+        self.frequencySpectrumFrame.grid_anchor("w")
+        self.frequencySpectrumFrame.rowconfigure(0, weight=1)
+        self.frequencySpectrumFrame.rowconfigure(2, weight=1)
+        self.frequencySpectrumFrame.columnconfigure(0, weight=1)
         self.controlFrame = ttk.Frame(
             self.frequencySpectrum_Labelframe,
             name="controlframe")
@@ -155,47 +173,6 @@ class frequencySpectrumUI(tk.Toplevel):
         self.optionFrame = ttk.Frame(self.controlFrame, name="optionframe")
         self.optionFrame.configure(
             height=200, style="Normal.TFrame", width=200)
-        self.repeatControlFrame = ttk.Frame(
-            self.optionFrame, name="repeatcontrolframe")
-        self.repeatControlFrame.configure(
-            height=200, style="Normal.TFrame", width=200)
-        self.repeat_Label = ttk.Label(
-            self.repeatControlFrame, name="repeat_label")
-        self.repeat_Label.configure(style="Heading2b.TLabel", text='Repeat')
-        self.repeat_Label.grid(column=0, row=0, sticky="w")
-        self.remaining_Label = ttk.Label(
-            self.repeatControlFrame, name="remaining_label")
-        self.remaining_Label.configure(
-            anchor="e",
-            style="Heading2b.TLabel",
-            text='Remaining',
-            width=10)
-        self.remaining_Label.grid(column=1, padx="5 0", row=0, sticky="e")
-        self.repeat_Combobox = Combobox(
-            self.repeatControlFrame, name="repeat_combobox")
-        self.repeat_VAR = tk.StringVar()
-        self.repeat_Combobox.configure(
-            keyvariable=self.repeat_VAR,
-            style="ComboBox1.TCombobox",
-            values='1x 5x 10x 15x 20x 50x Cont.',
-            width=7)
-        self.repeat_Combobox.grid(column=0, row=1, sticky="w")
-        self.remainingCount_Label = ttk.Label(
-            self.repeatControlFrame, name="remainingcount_label")
-        self.remainingCount_VAR = tk.StringVar(value='10')
-        self.remainingCount_Label.configure(
-            anchor="e",
-            style="Heading2b.TLabel",
-            text='10',
-            textvariable=self.remainingCount_VAR,
-            width=8)
-        self.remainingCount_Label.grid(column=1, padx="5 0", row=1, sticky="e")
-        self.repeatControlFrame.pack(
-            anchor="nw",
-            expand=True,
-            fill="x",
-            pady="20 0",
-            side="top")
         self.bandwidthControlFrame = ttk.Frame(
             self.optionFrame, name="bandwidthcontrolframe")
         self.bandwidthControlFrame.configure(
@@ -204,29 +181,33 @@ class frequencySpectrumUI(tk.Toplevel):
             self.bandwidthControlFrame,
             name="bandwidth_label")
         self.bandwidth_Label.configure(
-            style="Heading2b.TLabel",
-            text='Bandwidth (kHz)')
-        self.bandwidth_Label.grid(column=0, row=0, sticky="w")
+            style="Heading2b.TLabel", text='Bandwidth')
+        self.bandwidth_Label.grid(column=0, row=0)
         self.bandwidth_Combobox = Combobox(
             self.bandwidthControlFrame,
             name="bandwidth_combobox")
         self.bandwidth_VAR = tk.StringVar()
         self.bandwidth_Combobox.configure(
+            justify="right",
             keyvariable=self.bandwidth_VAR,
             style="ComboBox1.TCombobox",
-            values='1x 5x 10x 15x 20x 50x Cont.',
-            width=7)
+            values='10,000Hz 20,000Hz 50,000Hz 100,000Hz 120,000Hz',
+            width=9)
         self.bandwidth_Combobox.grid(column=0, row=1, sticky="w")
+        self.bandwidth_Combobox.bind(
+            "<<ComboboxSelected>>",
+            self.bandwidthValueChanged_CB,
+            add="")
         self.sampleSize_Label = ttk.Label(
             self.bandwidthControlFrame,
             name="samplesize_label")
         self.sampleSize_Label.configure(
             anchor="e",
-            justify="right",
+            justify="center",
             style="Heading2b.TLabel",
             text='Sample\nSize',
             width=10)
-        self.sampleSize_Label.grid(column=1, padx="5 0", row=0, sticky="e")
+        self.sampleSize_Label.grid(column=1, row=0, sticky="w")
         self.calculatedSampleSize_Label = ttk.Label(
             self.bandwidthControlFrame, name="calculatedsamplesize_label")
         self.calculatedSampleSize_VAR = tk.StringVar(value='2000')
@@ -236,9 +217,54 @@ class frequencySpectrumUI(tk.Toplevel):
             text='2000',
             textvariable=self.calculatedSampleSize_VAR,
             width=8)
-        self.calculatedSampleSize_Label.grid(
-            column=1, padx="5 0", row=1, sticky="e")
-        self.bandwidthControlFrame.pack(anchor="nw", pady="50 0", side="top")
+        self.calculatedSampleSize_Label.grid(column=1, row=1)
+        self.bandwidthControlFrame.pack(anchor="nw", pady="20 0", side="top")
+        self.repeatControlFrame = ttk.Frame(
+            self.optionFrame, name="repeatcontrolframe")
+        self.repeatControlFrame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.repeat_Label = ttk.Label(
+            self.repeatControlFrame, name="repeat_label")
+        self.repeat_Label.configure(style="Heading2b.TLabel", text='Repeat')
+        self.repeat_Label.grid(column=0, padx="55 0", row=0)
+        self.remaining_Label = ttk.Label(
+            self.repeatControlFrame, name="remaining_label")
+        self.remaining_Label.configure(
+            anchor="e",
+            style="Heading2b.TLabel",
+            text='Remaining',
+            width=10)
+        self.remaining_Label.grid(column=1, padx="5 0", row=0, sticky="w")
+        self.repeat_Combobox = Combobox(
+            self.repeatControlFrame, name="repeat_combobox")
+        self.repeat_VAR = tk.StringVar()
+        self.repeat_Combobox.configure(
+            justify="right",
+            keyvariable=self.repeat_VAR,
+            style="ComboBox1.TCombobox",
+            values='1x 5x 10x 15x 20x 50x Cont.',
+            width=5)
+        self.repeat_Combobox.grid(column=0, padx="55 0", row=1, sticky="e")
+        self.repeat_Combobox.bind(
+            "<<ComboboxSelected>>",
+            self.repeatValueChanged_CB,
+            add="")
+        self.remainingCount_Label = ttk.Label(
+            self.repeatControlFrame, name="remainingcount_label")
+        self.remainingCount_VAR = tk.StringVar(value='10')
+        self.remainingCount_Label.configure(
+            anchor="e",
+            style="Heading2b.TLabel",
+            text='10',
+            textvariable=self.remainingCount_VAR,
+            width=5)
+        self.remainingCount_Label.grid(column=1, row=1)
+        self.repeatControlFrame.pack(
+            anchor="nw",
+            expand=True,
+            fill="x",
+            pady="50 0",
+            side="top")
         self.optionFrame.pack(anchor="ne", expand=True, fill="x", side="top")
         self.controlButtonFrame = ttk.Frame(
             self.controlFrame, name="controlbuttonframe")
@@ -264,14 +290,14 @@ class frequencySpectrumUI(tk.Toplevel):
             anchor="ne",
             expand=True,
             fill="x",
-            pady="130 0",
+            pady="70 0",
             side="top")
         self.controlFrame.grid(
             column=1,
             padx="10 0",
             row=0,
             rowspan=3,
-            sticky="ne")
+            sticky="nse")
         self.closingFrame = ttk.Frame(
             self.frequencySpectrum_Labelframe,
             name="closingframe")
@@ -296,13 +322,21 @@ class frequencySpectrumUI(tk.Toplevel):
         self.closingFrame.grid_anchor("center")
         self.frequencySpectrum_Labelframe.pack(
             expand=True, fill="both", side="top")
+        self.frequencySpectrum_Labelframe.rowconfigure(0, uniform=1)
+        self.frequencySpectrum_Labelframe.columnconfigure(0, weight=1)
         self.configure(height=200, width=800)
-        self.geometry("750x550")
+        self.geometry("800x550")
         self.title("Frequency Spectrum")
         # Layout for 'frequencySpectrum_Window' skipped in custom widget
         # template.
 
     def frequencyTuning_CB(self, scale_value):
+        pass
+
+    def bandwidthValueChanged_CB(self, event=None):
+        pass
+
+    def repeatValueChanged_CB(self, event=None):
         pass
 
     def recenter_CB(self):
