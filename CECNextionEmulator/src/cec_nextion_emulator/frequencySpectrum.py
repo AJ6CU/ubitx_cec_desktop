@@ -19,15 +19,20 @@ import globalvars as gv
 #
 
 class frequencySpectrum(baseui.frequencySpectrumUI):
-    def __init__(self,  master=None, mainWindow=None, **kw):
+    def __init__(self,  master=None, mainWindow=None, centerFrequency=None, **kw):
         self.master = master
         self.mainWindow = mainWindow
+        self.centerFrequency = centerFrequency
 
-        self.centerFrequency = 14150000
-        self.currentFrequency = self.centerFrequency
-        self.startFrequency = None
-        self.stopFrequency = None
-        self.bandwidth = None
+        self.startFrequency = None                      # starting frequency for scanning
+        self.stopFrequency = None                       # stopping frequency for scanning
+        self.bandwidth = None                           # the width of the band being scanned
+        self.stepSize = None                            # size of steps (frequency samples)
+        self.lastCenterFrequency = None                 # tracks the last center frequency in case it has been changed
+                                                        # between scans
+        self.MaxADCCount = None                         # Maximum number of times that the ADC can be read.
+                                                        # Machine dependent. About
+        self.spectrumScanning = None                    # If true, spectrum scanning is running
 
         super().__init__(self.master, **kw)
 
@@ -51,38 +56,66 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         gv.formatCombobox(self.repeat_Combobox, "Arial", "24", "bold")
         gv.formatCombobox(self.bandwidth_Combobox, "Arial", "24", "bold")
 
-        self.repeat_VAR.set('10x')
-        self.bandwidth_VAR.set('120,000Hz')
 
-        self.bandwidth = 120000
-        self.startFrequency = int(self.centerFrequency - self.bandwidth/2)
+        # Update bandwidth to use selected delimiter
+
+        if gv.NUMBER_DELIMITER != '':                   # temporary to handle standalone testing
+            localizedBandwidth=[]
+            for item in self.bandwidth_Combobox['values']:
+                localizedBandwidth.append(item.replace(',', gv.NUMBER_DELIMITER))
+            self.bandwidth_Combobox['values']=localizedBandwidth
+
+        #
+        #   DEFAULTS
+        #
+
+        self.lastCenterFrequency = self.centerFrequency     # save current frequency
+
+        self.MaxADCCount = 120
+        self.repeat_VAR.set('10x')
+        self.bandwidthSelected_VAR.set('120,000Hz')
+
+        self.spectrumScanning = False           # default to scanning off
+
+        self.updateScanParameters(self.bandwidthSelected_VAR.get())     # Can now format Frequency graphs
+
+        self.frequencyTuning_VAR.set(250)                               # Set scrollbar in middle
+        self.currentFrequency_VAR.set(str(self.lastCenterFrequency))    # Set frequency
+
+    def updateScanParameters(self, newBandwidth):
+        self.bandwidth = int(newBandwidth.replace(",","").replace(".","").replace("Hz",""))
+
+        self.startFrequency=int(self.centerFrequency - self.bandwidth/2)
         self.startFrequency_VAR.set(str(self.startFrequency))
 
         self.stopFrequency = int(self.centerFrequency + self.bandwidth/2)
         self.stopFrequency_VAR.set(str(self.stopFrequency))
 
-        self.frequencyTuning_VAR.set(250)
-        self.currentFrequency_VAR.set(str(self.currentFrequency))
-
-    def testValues(self):
-        self.centerFrequency =14150000
+        self.calculatedSampleSize_VAR.set(int((self.bandwidth / self.MaxADCCount) * 2))
 
     def frequencyTuning_CB(self, scale_value):
-        print("frequencyTuning_CB, new value:", self.frequencyTuning_VAR.get())
         self.currentFrequency = int((self.bandwidth * (int(self.frequencyTuning_VAR.get())/500))+self.startFrequency)
         self.currentFrequency_VAR.set(str(self.currentFrequency))
 
 
     def repeatValueChanged_CB(self, event=None):
         print("repeatValueChanged_CB, new value:", self.repeat_VAR.get())
+        self.remainingCount_VAR.set(self.repeat_VAR.get().replace("X",""))
 
     def bandwidthValueChanged_CB(self, event=None):
-        print("bandwidthValueChanged_CB, new value:", self.bandwidth_VAR.get())
+        print("bandwidthValueChanged_CB, new value:", self.bandwidthSelected_VAR.get())
+        self.updateScanParameters(self.bandwidthSelected_VAR.get())
 
     def recenter_CB(self):
         print("recenter_CB")
 
     def startStopSpectrum_CB(self):
+        if self.startStopSpectrum_VAR.get() == "Start":
+            self.startStopSpectrum_VAR.set("Stop")
+            self.spectrumScanning = False
+        else:
+            self.startStopSpectrum_VAR.set("Start")
+            self.spectrumScanning = True
         print("startStopSpectrum_CB")
 
     def applyClose_CB(self):
@@ -102,7 +135,7 @@ mainWindow=None
 
 
 def launch_widget():
-    widget= frequencySpectrum(myroot,mainWindow)
+    widget= frequencySpectrum(myroot,mainWindow, 14150000)
 
 if __name__ == "__main__":
     myroot = tk.Tk()

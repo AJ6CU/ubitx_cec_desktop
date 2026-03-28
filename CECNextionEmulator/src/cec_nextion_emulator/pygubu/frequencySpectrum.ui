@@ -235,7 +235,7 @@
                     <child>
                       <object class="ttk.Label" id="bandwidth_Label" named="True">
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Bandwidth</property>
+                        <property name="text" translatable="yes">Bandwidth (Hz)</property>
                         <layout manager="grid">
                           <property name="column">0</property>
                           <property name="row">0</property>
@@ -245,8 +245,8 @@
                     <child>
                       <object class="pygubu.widgets.Combobox" id="bandwidth_Combobox" named="True">
                         <property name="justify">right</property>
-                        <property name="keyvariable">string:bandwidth_VAR</property>
                         <property name="style">ComboBox1.TCombobox</property>
+                        <property name="textvariable">string:bandwidthSelected_VAR</property>
                         <property name="values">10,000Hz 20,000Hz 50,000Hz 100,000Hz 120,000Hz</property>
                         <property name="width">9</property>
                         <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="bandwidthValueChanged_CB" add="" />
@@ -263,7 +263,7 @@
                         <property name="justify">center</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">Sample
-Size</property>
+Size(Hz)</property>
                         <property name="width">10</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -276,7 +276,7 @@ Size</property>
                       <object class="ttk.Label" id="calculatedSampleSize_Label" named="True">
                         <property name="anchor">e</property>
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">2000</property>
+                        <property name="text" translatable="yes">1000</property>
                         <property name="textvariable">string:calculatedSampleSize_VAR</property>
                         <property name="width">8</property>
                         <layout manager="grid">

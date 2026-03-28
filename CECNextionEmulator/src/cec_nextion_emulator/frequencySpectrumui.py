@@ -181,16 +181,17 @@ class frequencySpectrumUI(tk.Toplevel):
             self.bandwidthControlFrame,
             name="bandwidth_label")
         self.bandwidth_Label.configure(
-            style="Heading2b.TLabel", text='Bandwidth')
+            style="Heading2b.TLabel",
+            text='Bandwidth (Hz)')
         self.bandwidth_Label.grid(column=0, row=0)
         self.bandwidth_Combobox = Combobox(
             self.bandwidthControlFrame,
             name="bandwidth_combobox")
-        self.bandwidth_VAR = tk.StringVar()
+        self.bandwidthSelected_VAR = tk.StringVar()
         self.bandwidth_Combobox.configure(
             justify="right",
-            keyvariable=self.bandwidth_VAR,
             style="ComboBox1.TCombobox",
+            textvariable=self.bandwidthSelected_VAR,
             values='10,000Hz 20,000Hz 50,000Hz 100,000Hz 120,000Hz',
             width=9)
         self.bandwidth_Combobox.grid(column=0, row=1, sticky="w")
@@ -205,16 +206,16 @@ class frequencySpectrumUI(tk.Toplevel):
             anchor="e",
             justify="center",
             style="Heading2b.TLabel",
-            text='Sample\nSize',
+            text='Sample\nSize(Hz)',
             width=10)
         self.sampleSize_Label.grid(column=1, row=0, sticky="w")
         self.calculatedSampleSize_Label = ttk.Label(
             self.bandwidthControlFrame, name="calculatedsamplesize_label")
-        self.calculatedSampleSize_VAR = tk.StringVar(value='2000')
+        self.calculatedSampleSize_VAR = tk.StringVar(value='1000')
         self.calculatedSampleSize_Label.configure(
             anchor="e",
             style="Heading2b.TLabel",
-            text='2000',
+            text='1000',
             textvariable=self.calculatedSampleSize_VAR,
             width=8)
         self.calculatedSampleSize_Label.grid(column=1, row=1)
