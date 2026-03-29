@@ -78,6 +78,7 @@
                     <property name="background">#0432ff</property>
                     <property name="height">160</property>
                     <property name="width">430</property>
+                    <bind sequence="&lt;1&gt;" handler="frequencyPlotCanvas_CB" add="" />
                     <layout manager="pack">
                       <property name="expand">true</property>
                       <property name="fill">both</property>

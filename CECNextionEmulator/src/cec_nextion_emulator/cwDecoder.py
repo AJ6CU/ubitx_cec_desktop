@@ -189,6 +189,7 @@ class cwDecoder(baseui.cwDecoderUI):
         x_width = 4
         # gap between left canvas edge and y axis
         x_gap = 5
+        c_height =150
 
 
         byteBuffer = bytearray.fromhex(buffer)          #This gives us an array of hex bytes
@@ -207,12 +208,12 @@ class cwDecoder(baseui.cwDecoderUI):
             x1 = x * x_stretch + x * x_width + x_width + x_gap
             y1 = c_height - y_gap
             # draw the bar
-            frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
+            self.frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
 
             if x > vSelectMin:
                 if x < vSelectMax:
-                    frequencyPlotCanvas.create_line(x0, y0, x1, y1, fill='red')
-                    frequencyPlotCanvas.create_line(x0+4, y0, x1+4, y1, fill='red')
+                    self.frequencyPlotCanvas.create_line(x0, y0, x1, y1, fill='red')
+                    self.frequencyPlotCanvas.create_line(x0+4, y0, x1+4, y1, fill='red')
 
 
 
