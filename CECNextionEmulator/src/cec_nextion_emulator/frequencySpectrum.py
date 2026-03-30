@@ -145,13 +145,30 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
             y1 = c_height - y_gap
             # # draw the bar
             if x in self.frequencyLines:
-                self.frequencyPlotCanvas.coords(self.frequencyLines[x], x0, y0, x1, y1)
+                self.frequencyPlotCanvas.coords(self.frequencyLines[x][0], x0, y0, x1, y1)
+                rectObj = self.frequencyLines[x][0]
             else:
-                self.frequencyLines[x]=self.frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
+                rectObj=self.frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
+            self.frequencyLines[x] = [rectObj, x, x0, x1]
 
-    def frequencyTuning_CB(self, scale_value):
+        self.tuningLine=self.frequencyPlotCanvas.create_line(canvasWidth/2, c_height, canvasWidth/2, 0,
+                                                                   fill="yellow", width=4,dash=(5, 3))
+
+    def updateTuningLine(self,tuningLine,newPos):
+        pos = int(self.frequencyPlotCanvas.winfo_width() * (newPos/500))
+        self.frequencyPlotCanvas.coords(tuningLine, pos, self.frequencyPlotCanvas.winfo_width(), pos, 0)
+
+    def updateTuningScroll(self, newPos):
+        xpos = int((newPos/self.frequencyPlotCanvas.winfo_width()) * 500)
+        self.frequencyTuning_VAR.set(str(xpos))
+
+    def updateCurrentFrequency(self):
         self.currentFrequency = int((self.bandwidth * (int(self.frequencyTuning_VAR.get())/500))+self.startFrequency)
         self.currentFrequency_VAR.set(str(self.currentFrequency))
+
+    def frequencyTuning_CB(self,event=None):
+        self.updateCurrentFrequency()
+        self.updateTuningLine(self.tuningLine,int(self.frequencyTuning_VAR.get()))
 
 
     def repeatValueChanged_CB(self, event=None):
@@ -180,6 +197,17 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
     def frequencyPlotCanvas_CB(self, event=None):
         print("frequencyPlotCanvas_CB, x=", event.x, ", y=", event.y)
+        pos=500
+        for i in range(120):
+            # print(i, self.frequencyLines[i][2],self.frequencyLines[i][3])
+            if (event.x >= self.frequencyLines[i][2]<= event.x) and (self.frequencyLines[i][3]>= event.x):
+                print("found", i, "x=", event.x, self.frequencyLines[i][2], self.frequencyLines[i][3])
+                pos = int(500 * i/120)
+                self.frequencyTuning_VAR.set(str(pos))
+                break
+        self.updateTuningLine(self.tuningLine, pos)
+        self.updateTuningScroll( pos)
+        self.updateCurrentFrequency()
 
 
     def plotTestData(self):
