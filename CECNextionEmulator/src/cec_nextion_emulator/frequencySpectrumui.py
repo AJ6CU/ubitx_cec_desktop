@@ -83,7 +83,9 @@ class frequencySpectrumUI(tk.Toplevel):
             background="#0432ff", height=160, width=430)
         self.frequencyPlotCanvas.pack(expand=True, fill="both", side="top")
         self.frequencyPlotCanvas.bind(
-            "<1>", self.frequencyPlotCanvas_CB, add="")
+            "<1>", self.frequencyPlotCanvas_CB, add="+")
+        self.frequencyPlotCanvas.bind(
+            "<Configure>", self.resizeCanvas_CB, add="+")
         self.magnitudeLabelframe.grid(column=0, padx="8 0", row=0, sticky="ew")
         self.freqTuneFrame = ttk.Frame(
             self.frequencySpectrumFrame,
@@ -334,6 +336,9 @@ class frequencySpectrumUI(tk.Toplevel):
         # template.
 
     def frequencyPlotCanvas_CB(self, event=None):
+        pass
+
+    def resizeCanvas_CB(self, event=None):
         pass
 
     def frequencyTuning_CB(self, scale_value):

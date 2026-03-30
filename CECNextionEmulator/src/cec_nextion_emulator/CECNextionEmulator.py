@@ -82,6 +82,6 @@ if not radioPort.getRadioPort():
 
     root.geometry(gv.trimAndLocateWindow(radioPort, 5, 30))
 
-    root.after(500, radioPort.retry())           # If we failed to get a comport the easy way, try again
+    root.after(100, radioPort.retry())           # If we failed to get a comport the easy way, try again
 
 root.mainloop()

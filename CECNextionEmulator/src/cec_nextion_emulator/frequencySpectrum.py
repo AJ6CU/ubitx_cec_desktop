@@ -35,7 +35,19 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.MaxADCCount = None                         # Maximum number of times that the ADC can be read.
                                                         # Machine dependent. About
         self.spectrumScanning = None                    # If true, spectrum scanning is running
+        #
+        #   Plot related values
+        #
         self.frequencyLines = {}
+        self.frequencyPlotParameters = {
+            "y_stretch":2,            # how much to stretch the Y magnitude
+            "y_gap":0,                  # gap between lower canvas edge and x axis
+            "x_gap":4,                  # gap between left canvas edge and y axis
+        }
+        self.tuningLine = None
+
+        self.windowResized = False
+        self.windowResizedObj = None
 
         super().__init__(self.master, **kw)
 
@@ -106,64 +118,65 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
             buffer.append(random.randint(0, 255))
         return bytearray(buffer).hex()
 
-    def plot(self, buffer):
-        print("plotting called")
-        print("canvas size after init=", self.frequencyPlotCanvas.winfo_height(),
-              self.frequencyPlotCanvas.winfo_width())
-        canvasWidth = self.frequencyPlotCanvas.winfo_width()
-        x_width = canvasWidth // 120                     #width of each bar
-        print("x_width =", x_width)
+    def calculatePlotParameters(self, canvasObj):
+        canvasWidth = canvasObj.winfo_width()
+        canvasHeight = canvasObj.winfo_height()
+        x_width = canvasWidth // 120
         remainingWidth = canvasWidth - (x_width * 120) - 8
-        print("remainingWidth =", remainingWidth)
-
         x_stretch = remainingWidth / 120
 
+        return canvasWidth, canvasHeight, remainingWidth, x_width, x_stretch
 
+    def calculatePlotBar (self, x, x_width, x_stretch, x_gap,   ymag, y_stretch, y_gap, canvasHeight):
 
+        x0 = x * x_stretch + x * x_width + x_gap
+        y0 = canvasHeight - (ymag * y_stretch + y_gap)
+        x1 = x * x_stretch + x * x_width + x_width + x_gap
+        y1 = canvasHeight - y_gap
 
-        # the variables below size the bar graph
-        # experiment with them to fit your needs
-        # highest y = max_data_value * y_stretch
-        y_stretch = 2.1
-        # gap between lower canvas edge and x axis
-        y_gap = 0
-        # stretch enough to get all data items in
+        return x0, y0, x1, y1
 
-        # x_width = 4
-        # gap between left canvas edge and y axis
-        x_gap = 4
-        c_height = 160
+    def plot(self, buffer):
 
+        canvasWidth, canvasHeight, remainingWidth, x_width, x_stretch =self.calculatePlotParameters(self.frequencyPlotCanvas)
 
         for x in range(120):
             ymag = int(buffer[x*2:x*2+2],16)%70
 
-            # calculate reactangle coordinates (integers) for each bar
-            x0 = x * x_stretch + x * x_width + x_gap
-            y0 = c_height - (ymag * y_stretch + y_gap)
-            x1 = x * x_stretch + x * x_width + x_width + x_gap
-            y1 = c_height - y_gap
-            # # draw the bar
+            x0, y0, x1, y1 = self.calculatePlotBar(x, x_width, x_stretch, self.frequencyPlotParameters["x_gap"],
+                                                   ymag, self.frequencyPlotParameters["y_stretch"],
+                                                   self.frequencyPlotParameters["y_gap"], canvasHeight)
+
+            # draw the bar
             if x in self.frequencyLines:
                 self.frequencyPlotCanvas.coords(self.frequencyLines[x][0], x0, y0, x1, y1)
                 rectObj = self.frequencyLines[x][0]
             else:
                 rectObj=self.frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
-            self.frequencyLines[x] = [rectObj, x, x0, x1]
+            self.frequencyLines[x] = [rectObj, x, x0, x1, y0, y1, ymag]
 
-        self.tuningLine=self.frequencyPlotCanvas.create_line(canvasWidth/2, c_height, canvasWidth/2, 0,
-                                                                   fill="yellow", width=4,dash=(5, 3))
+        if self.tuningLine == None:
+            self.tuningLine=self.frequencyPlotCanvas.create_line(canvasWidth/2, canvasHeight, canvasWidth/2, 0,
+                                                                 fill="yellow", width=4,dash=(5, 3))
+        else:
+            self.frequencyPlotCanvas.coords(self.tuningLine, canvasWidth/2, canvasHeight, canvasWidth/2, 0)
 
     def updateTuningLine(self,tuningLine,newPos):
-        pos = int(self.frequencyPlotCanvas.winfo_width() * (newPos/500))
-        self.frequencyPlotCanvas.coords(tuningLine, pos, self.frequencyPlotCanvas.winfo_width(), pos, 0)
-
-    def updateTuningScroll(self, newPos):
-        xpos = int((newPos/self.frequencyPlotCanvas.winfo_width()) * 500)
-        self.frequencyTuning_VAR.set(str(xpos))
+        scrollBarSpan = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"])
+        pos = int((self.frequencyPlotCanvas.winfo_width()-4) * (newPos/scrollBarSpan))
+        if pos >= scrollBarSpan:
+            pos = scrollBarSpan -4
+        elif pos <= 0:
+            pos=4
+        print("pos:",pos)
+        self.frequencyPlotCanvas.coords(tuningLine, pos, self.frequencyPlotCanvas.winfo_height(), pos, 0)
 
     def updateCurrentFrequency(self):
-        self.currentFrequency = int((self.bandwidth * (int(self.frequencyTuning_VAR.get())/500))+self.startFrequency)
+        print("updateCurrentFrequency", self.frequencyTuning_VAR.get())
+        scrollBarSpan = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"])
+        print("scrollBarSpan", scrollBarSpan)
+        print("frequencyTuning_VAR", self.frequencyTuning_VAR.get())
+        self.currentFrequency = int((self.bandwidth * (int(self.frequencyTuning_VAR.get())/scrollBarSpan))+self.startFrequency)
         self.currentFrequency_VAR.set(str(self.currentFrequency))
 
     def frequencyTuning_CB(self,event=None):
@@ -197,17 +210,70 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
     def frequencyPlotCanvas_CB(self, event=None):
         print("frequencyPlotCanvas_CB, x=", event.x, ", y=", event.y)
-        pos=500
-        for i in range(120):
-            # print(i, self.frequencyLines[i][2],self.frequencyLines[i][3])
-            if (event.x >= self.frequencyLines[i][2]<= event.x) and (self.frequencyLines[i][3]>= event.x):
-                print("found", i, "x=", event.x, self.frequencyLines[i][2], self.frequencyLines[i][3])
-                pos = int(500 * i/120)
-                self.frequencyTuning_VAR.set(str(pos))
-                break
+
+        scrollBarSpan = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"])
+
+        if event.x < self.frequencyLines[0][2]:  #  Check for click to far left outside graph
+            pos = int(self.frequencyTuning_Scale["from"])
+        else:
+            pos = int(self.frequencyTuning_Scale["to"])  #  if we cant find it, must be far right click outside graph
+            for i in range(120):
+                # print(i, self.frequencyLines[i][2],self.frequencyLines[i][3])
+                if (event.x >= self.frequencyLines[i][2]<= event.x) and (self.frequencyLines[i][3]>= event.x):
+                    # print("found", i, "x=", event.x, self.frequencyLines[i][2], self.frequencyLines[i][3])
+                    pos = int(scrollBarSpan * i/120) + int(self.frequencyTuning_Scale["from"])
+                    break
         self.updateTuningLine(self.tuningLine, pos)
-        self.updateTuningScroll( pos)
+        self.frequencyTuning_VAR.set(str(pos))
         self.updateCurrentFrequency()
+
+    def resizeCanvas_CB(self, event=None):
+        if self.windowResized:
+            print("duplicate event")
+            self.master.after_cancel(self.windowResizedObj)
+        else:
+            self.windowResized = True
+        self.windowResizedObj = self.master.after(100, self.refreshCanvas)
+
+
+
+    def refreshCanvas(self):
+        if 0 not in self.frequencyLines:
+            return
+
+        canvasWidth, canvasHeight, remainingWidth, x_width, x_stretch = self.calculatePlotParameters(
+            self.frequencyPlotCanvas)
+
+        print(self.frequencyLines[0])
+
+        for x in range(120):
+            print("xdict=",x,self.frequencyLines[x])
+            print("x=",x,self.frequencyLines[x],"x_width=",x_width,",x_stretch=",x_stretch,
+                  "self.frequencyLines[x][6]=",self.frequencyLines[x][6],
+                  "self.frequencyPlotParameters['y_stretch']=",self.frequencyPlotParameters['y_stretch'],
+                  "self.frequencyPlotParameters['y_gap']=",self.frequencyPlotParameters['y_gap'],
+                  "canvasHeight=",canvasHeight)
+            ymag = self.frequencyLines[x][6]
+            x0, y0, x1, y1 = self.calculatePlotBar(x, x_width, x_stretch, self.frequencyPlotParameters["x_gap"],
+                                                   ymag,
+                                                   self.frequencyPlotParameters["y_stretch"],
+                                                   self.frequencyPlotParameters["y_gap"], canvasHeight)
+            print("x=", x, x0, y0, x1, y1)
+            print("ymag=",self.frequencyLines[x][4] )
+
+            # draw the bar
+            if x in self.frequencyLines:
+                self.frequencyPlotCanvas.coords(self.frequencyLines[x][0], x0, y0, x1, y1)
+                rectObj = self.frequencyLines[x][0]
+            else:
+                rectObj = self.frequencyPlotCanvas.create_rectangle(x0, y0, x1, y1, fill="lightgray", outline="lightgray")
+            self.frequencyLines[x] = [rectObj, x, x0, x1, y0, y1, ymag]
+
+        if self.tuningLine == None:
+            self.tuningLine = self.frequencyPlotCanvas.create_line(canvasWidth / 2, canvasHeight, canvasWidth / 2, 0,
+                                                                   fill="yellow", width=4, dash=(5, 3))
+        else:
+            self.updateTuningLine(self.tuningLine, int(self.frequencyTuning_VAR.get()))
 
 
     def plotTestData(self):
