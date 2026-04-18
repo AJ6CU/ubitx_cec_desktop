@@ -38,7 +38,11 @@ class mainScreen(baseui.mainScreenUI):
         self.cwSettingsWindow = None    # Object pointer for the CW Settinge Window
         self.settingsWindow = None      # Object pointer for the General Settings Window
         self.channelsWindow = None      # object pointer for the Memory-> VFO Window
-        self.theDSPWindow = None        # object pointer to the DSP Window
+        self.consumerDSPdata = self     # object pointer to the object receiving DSP data
+                                        # This could be:
+                                        # "self" in the case where the DSP graph is displayed in the main window
+                                        # or could point to Spectrum, CW Decode or Band scan if those windows
+                                        # are active
 
         self.UseDSP = False             # Flag, True indicating we are using a DSP
         # self.vfoToMemWindow = None      # object pointer for the VFO->Memory Window
@@ -443,7 +447,7 @@ class mainScreen(baseui.mainScreenUI):
         self.theRadio.Set_IFS_Level(self.IFS_Jogwheel.get())
 
     def cwDecode_Button_CB(self):
-        self.theDSPWindow = cwDecoder(self.master, self)
+        self.consumerDSPdata = cwDecoder(self.master, self)
 
 
 
@@ -573,25 +577,22 @@ class mainScreen(baseui.mainScreenUI):
     def vg_UX_DSP_Flag(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
         if int(value, 16) == 106:  # 0x6a
-            self.theDSPWindow.process_DSP_EEPROM_Data(self.vv_Command_Buffer)
+            self.consumerDSPdata.process_DSP_EEPROM_Data(self.vv_Command_Buffer)
         else:
             print("Unidentified DSP Data", value, buffer)
 
     def sb_UX_CW_Decoded_Characters(self, buffer):
         print("Decoded CW Characters", buffer)
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theDSPWindow.process_CWDecoded_Data(value)
+        self.consumerDSPdata.process_CWDecoded_Data(value)
 
 
     def sp_UX_DSP_Spectrum_Values(self, buffer):
-        print("Spectrum values from DSP", buffer)
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        if self.theDSPWindow == None:
-            print("no DSP window yet, data ignored")
-        elif self.theDSPWindow.get_spectrumMorseState() != None:
-            self.theDSPWindow.process_Spectrum_Data(value)
-        else:
-            print("dsp window exists but has been closed")
+        self.consumerDSPdata.process_Spectrum_Data(value)
+
+    def process_Spectrum_Data(selfself, buffer):
+        print("Processing Spectrum Data for main window", buffer)
 
     def ct_UX_RX_TX_Mode(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)

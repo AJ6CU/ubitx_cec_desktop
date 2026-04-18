@@ -248,6 +248,7 @@ class cwDecoder(baseui.cwDecoderUI):
 
     def close_CB(self):
         self.spectrumMorseState = None
+        self.mainWindow.consumerDSPdata = self.mainWindow
         self.unbind_all("<Button-1>")   # Eliminate global catch of Button-1
         self.destroy()
 
