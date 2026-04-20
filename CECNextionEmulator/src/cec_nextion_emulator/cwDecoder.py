@@ -42,7 +42,7 @@ class cwDecoder(baseui.cwDecoderUI):
         gv.trimAndLocateWindow(self.master, 0, 0)
 
         self.cwDecodeLabelframe.bind("<Enter>", self.bind_all("<Button-1>", self.cwDecode_bind_all))
-        self.frequencySpectrumFrame.bind("<Enter>", self.bind_all("<Button-1>", self.frequency_bind_all))
+        self.frequencyPlotFrame.bind("<Enter>", self.bind_all("<Button-1>", self.frequency_bind_all))
 
         self.closingFrame.bind("<Enter>", self.close_frame_unbind_all)
         #
@@ -101,7 +101,8 @@ class cwDecoder(baseui.cwDecoderUI):
         self.spectrumMorseState = "FreqScan"      # Set state flag Frequency/Spectrum mode
 
         self.setcwDecodeState("disabled")
-        self.setFrequencySpectrumState("normal")
+        self.frequencyPlotFrame.state(['!disabled'])
+        self.startStopToggleButton_VAR.set("Run Spectrum")
 
     def enable_CW_Decode(self, event=None):
         #
@@ -112,7 +113,9 @@ class cwDecoder(baseui.cwDecoderUI):
         self.spectrumMorseState = "CWDecode"      # Set state flag to True = CW Decode Mode mode
 
         self.setcwDecodeState("normal")
-        self.setFrequencySpectrumState("disabled")
+        self.frequencyPlotFrame.state(['disabled'])
+
+        self.startStopToggleButton_VAR.set("Run CW Decode")
 
     def setcwDecodeState(self, newState):
         if newState == "normal":
@@ -121,16 +124,16 @@ class cwDecoder(baseui.cwDecoderUI):
             self.cwDecodedText.configure(foreground="lightgray")
 
 
-    def setFrequencySpectrumState(self, newState):
-        self.frequencyPlotcwToneValueLabel.configure(state=newState)
-
-        self.frequencyHighLabel.configure(state=newState)
-        self.frequencySigLabel.configure(state=newState)
-        self.frequencyLowLabel.configure(state=newState)
-
-        self.frequencyHighValueLabel.configure(state=newState)
-        self.frequencySigValueLabel.configure(state=newState)
-        self.frequencyLowValueLabel.configure(state=newState)
+    # def setFrequencySpectrumState(self, newState):
+    #     self.frequencyPlotcwToneValueLabel.configure(state=newState)
+    #
+    #     self.frequencyHighLabel.configure(state=newState)
+    #     self.frequencySigLabel.configure(state=newState)
+    #     self.frequencyLowLabel.configure(state=newState)
+    #
+    #     self.frequencyHighValueLabel.configure(state=newState)
+    #     self.frequencySigValueLabel.configure(state=newState)
+    #     self.frequencyLowValueLabel.configure(state=newState)
 
     #
     #   EEPROM Variable load functions
@@ -243,8 +246,17 @@ class cwDecoder(baseui.cwDecoderUI):
         self.frequencyPlotcwToneValue_VAR.set(str(((int(self.frequencyPlotcwToneScale_VAR.get())*50)+300)))
 
     def startStopToggleButton_CB(self):
-        self.logCW_Character("S")
-
+        match self.startStopToggleButton_VAR.get():
+            case "Run Spectrum":
+                self.startStopToggleButton_VAR.set("Stop Spectrum")
+            case "Stop Spectrum":
+                self.startStopToggleButton_VAR.set("Run Spectrum")
+            case "Run CW Decode":
+                self.startStopToggleButton_VAR.set("Stop CW Decode")
+            case "Stop CW Decode":
+                self.startStopToggleButton_VAR.set("Run CW Decode")
+            case _:
+                print("unknown toggle button state=", self.startStopToggleButton_VAR.get())
 
     def close_CB(self):
         self.spectrumMorseState = None

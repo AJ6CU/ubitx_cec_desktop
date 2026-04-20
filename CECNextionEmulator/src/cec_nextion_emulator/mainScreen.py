@@ -591,8 +591,11 @@ class mainScreen(baseui.mainScreenUI):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
         self.consumerDSPdata.process_Spectrum_Data(value)
 
-    def process_Spectrum_Data(selfself, buffer):
+    def process_Spectrum_Data(self, buffer):
         print("Processing Spectrum Data for main window", buffer)
+
+    def process_CWDecoded_Data(self, buffer):
+        print("Processing CW Data for main window")
 
     def ct_UX_RX_TX_Mode(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
