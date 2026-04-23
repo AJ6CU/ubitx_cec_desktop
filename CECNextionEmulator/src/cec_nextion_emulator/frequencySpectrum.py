@@ -279,7 +279,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
     def frequencyPlotCanvas_CB(self, event=None):
 
-        scrollBarSpan = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"])
+        scrollBarSpan = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"])+1
 
         if event.x < self.frequencyLineX0[0]:  #  Check for click to far left outside graph
             pos = int(self.frequencyTuning_Scale["from"])

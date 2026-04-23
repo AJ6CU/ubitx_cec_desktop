@@ -599,6 +599,8 @@ class mainScreen(baseui.mainScreenUI):
             # print("fixing malformed p., value =", value)
         else:
             value = self.extractValue(buffer, 10, len(buffer) - 3)
+        # print("buffer=", buffer)
+        # print("value=", value)
         self.consumerDSPdata.process_Spectrum_Data(value)
 
     def process_Spectrum_Data(self, buffer):

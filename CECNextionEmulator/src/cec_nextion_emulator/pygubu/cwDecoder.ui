@@ -79,20 +79,44 @@
                         <property name="style">Normal.TFrame</property>
                         <property name="width">430</property>
                         <layout manager="pack">
+                          <property name="expand">true</property>
+                          <property name="fill">x</property>
                           <property name="padx">5</property>
                           <property name="pady">5</property>
                           <property name="side">left</property>
                         </layout>
                         <child>
                           <object class="tk.Canvas" id="frequencyPlotCanvas" named="True">
-                            <property name="background">#0432ff</property>
+                            <property name="background">blue</property>
                             <property name="height">160</property>
                             <property name="width">430</property>
                             <bind sequence="&lt;Button-1&gt;" handler="enable_Frequency_Spectrum_CB" add="True" />
+                            <bind sequence="&lt;Configure&gt;" handler="resizeCanvas_CB" add="True" />
                             <layout manager="pack">
                               <property name="expand">true</property>
                               <property name="fill">both</property>
-                              <property name="side">left</property>
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Scale" id="frequencyPlotcwToneScale" named="True">
+                            <property name="command" type="command" cbtype="scale">frequencyPlotcwToneScale_CB</property>
+                            <property name="from_">0</property>
+                            <property name="length">435</property>
+                            <property name="orient">horizontal</property>
+                            <property name="relief">raised</property>
+                            <property name="resolution">1</property>
+                            <property name="showvalue">false</property>
+                            <property name="sliderlength">50</property>
+                            <property name="state">normal</property>
+                            <property name="to">45</property>
+                            <property name="variable">string:frequencyPlotcwToneScale_VAR</property>
+                            <property name="width">30</property>
+                            <layout manager="pack">
+                              <property name="expand">true</property>
+                              <property name="fill">x</property>
+                              <property name="side">top</property>
                             </layout>
                           </object>
                         </child>
@@ -110,160 +134,160 @@
                           <property name="side">top</property>
                         </layout>
                         <child>
-                          <object class="tk.Scale" id="frequencyDecodeScale" named="True">
-                            <property name="command" type="command" cbtype="scale">frequencyDecodeScale_CB</property>
-                            <property name="from_">10</property>
-                            <property name="length">140</property>
-                            <property name="orient">vertical</property>
-                            <property name="relief">raised</property>
-                            <property name="resolution">1</property>
-                            <property name="showvalue">false</property>
-                            <property name="sliderlength">50</property>
-                            <property name="state">normal</property>
-                            <property name="to">0</property>
-                            <property name="variable">string:frequencyDecodeScale_VAR</property>
-                            <property name="width">30</property>
+                          <object class="ttk.Label" id="signalLevelLabel" named="True">
+                            <property name="style">Heading2b.TLabel</property>
+                            <property name="text" translatable="yes">Signal Level</property>
                             <layout manager="pack">
-                              <property name="side">left</property>
+                              <property name="pady">0 10</property>
+                              <property name="side">top</property>
                             </layout>
                           </object>
                         </child>
                         <child>
-                          <object class="ttk.Frame" id="frequencyPlotSettingsFrame" named="True">
+                          <object class="ttk.Frame" id="frame3">
                             <property name="height">200</property>
                             <property name="style">Normal.TFrame</property>
                             <property name="width">200</property>
                             <layout manager="pack">
-                              <property name="pady">28 0</property>
                               <property name="side">top</property>
                             </layout>
                             <child>
-                              <object class="ttk.Label" id="frequencyHighLabel" named="True">
-                                <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">High</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="row">0</property>
-                                  <property name="sticky">w</property>
+                              <object class="tk.Scale" id="frequencyDecodeScale" named="True">
+                                <property name="command" type="command" cbtype="scale">frequencyDecodeScale_CB</property>
+                                <property name="from_">10</property>
+                                <property name="length">120</property>
+                                <property name="orient">vertical</property>
+                                <property name="relief">raised</property>
+                                <property name="resolution">1</property>
+                                <property name="showvalue">false</property>
+                                <property name="sliderlength">50</property>
+                                <property name="state">normal</property>
+                                <property name="to">0</property>
+                                <property name="variable">string:frequencyDecodeScale_VAR</property>
+                                <property name="width">30</property>
+                                <layout manager="pack">
+                                  <property name="anchor">n</property>
+                                  <property name="side">left</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="ttk.Label" id="frequencyHighValueLabel" named="True">
-                                <property name="anchor">e</property>
-                                <property name="justify">right</property>
-                                <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="textvariable">string:frequencyHighValue_VAR</property>
-                                <property name="width">4</property>
-                                <layout manager="grid">
-                                  <property name="column">1</property>
-                                  <property name="row">0</property>
-                                  <property name="sticky">e</property>
+                              <object class="ttk.Frame" id="frequencyPlotSettingsFrame" named="True">
+                                <property name="height">200</property>
+                                <property name="style">Normal.TFrame</property>
+                                <property name="width">200</property>
+                                <layout manager="pack">
+                                  <property name="anchor">n</property>
+                                  <property name="padx">10 0</property>
+                                  <property name="side">top</property>
                                 </layout>
+                                <child>
+                                  <object class="ttk.Label" id="frequencyHighLabel" named="True">
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">High</property>
+                                    <layout manager="grid">
+                                      <property name="column">0</property>
+                                      <property name="row">0</property>
+                                      <property name="sticky">w</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Label" id="frequencyHighValueLabel" named="True">
+                                    <property name="anchor">e</property>
+                                    <property name="justify">right</property>
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">0</property>
+                                    <property name="textvariable">string:frequencyHighValue_VAR</property>
+                                    <property name="width">4</property>
+                                    <layout manager="grid">
+                                      <property name="column">1</property>
+                                      <property name="row">0</property>
+                                      <property name="sticky">e</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Label" id="frequencySigLabel" named="True">
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">CW
+THR</property>
+                                    <layout manager="grid">
+                                      <property name="column">0</property>
+                                      <property name="pady">20 0</property>
+                                      <property name="row">1</property>
+                                      <property name="sticky">w</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Label" id="frequencySigValueLabel" named="True">
+                                    <property name="anchor">e</property>
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">20</property>
+                                    <property name="textvariable">string:frequencySigValue_VAR</property>
+                                    <property name="width">4</property>
+                                    <layout manager="grid">
+                                      <property name="column">1</property>
+                                      <property name="pady">20 0</property>
+                                      <property name="row">1</property>
+                                      <property name="sticky">e</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Label" id="frequencyLowLabel" named="True">
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">Low</property>
+                                    <layout manager="grid">
+                                      <property name="column">0</property>
+                                      <property name="pady">20 0</property>
+                                      <property name="row">2</property>
+                                      <property name="sticky">w</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Label" id="frequencyLowValueLabel" named="True">
+                                    <property name="anchor">e</property>
+                                    <property name="style">Heading2b.TLabel</property>
+                                    <property name="text" translatable="yes">0</property>
+                                    <property name="textvariable">string:frequencyLowValue_VAR</property>
+                                    <property name="width">4</property>
+                                    <layout manager="grid">
+                                      <property name="column">1</property>
+                                      <property name="pady">20 0</property>
+                                      <property name="row">2</property>
+                                      <property name="sticky">e</property>
+                                    </layout>
+                                  </object>
+                                </child>
                               </object>
                             </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Frame" id="frame1">
+                            <property name="height">200</property>
+                            <property name="style">Normal.TFrame</property>
+                            <property name="width">200</property>
+                            <layout manager="pack">
+                              <property name="pady">15 0</property>
+                              <property name="side">left</property>
+                            </layout>
                             <child>
-                              <object class="ttk.Label" id="frequencySigLabel" named="True">
+                              <object class="ttk.Label" id="frequencyPlotcwToneValueLabel" named="True">
                                 <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">Signal</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="pady">20 0</property>
-                                  <property name="row">1</property>
-                                  <property name="sticky">w</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Label" id="frequencySigValueLabel" named="True">
-                                <property name="anchor">e</property>
-                                <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">20</property>
-                                <property name="textvariable">string:frequencySigValue_VAR</property>
-                                <property name="width">4</property>
-                                <layout manager="grid">
-                                  <property name="column">1</property>
-                                  <property name="pady">20 0</property>
-                                  <property name="row">1</property>
-                                  <property name="sticky">e</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Label" id="frequencyLowLabel" named="True">
-                                <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">Low</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="pady">20 0</property>
-                                  <property name="row">2</property>
-                                  <property name="sticky">w</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Label" id="frequencyLowValueLabel" named="True">
-                                <property name="anchor">e</property>
-                                <property name="style">Heading2b.TLabel</property>
-                                <property name="text" translatable="yes">0</property>
-                                <property name="textvariable">string:frequencyLowValue_VAR</property>
-                                <property name="width">4</property>
-                                <layout manager="grid">
-                                  <property name="column">1</property>
-                                  <property name="pady">20 0</property>
-                                  <property name="row">2</property>
-                                  <property name="sticky">e</property>
+                                <property name="text" translatable="yes">800</property>
+                                <property name="textvariable">string:frequencyPlotcwToneValue_VAR</property>
+                                <layout manager="pack">
+                                  <property name="padx">10</property>
+                                  <property name="side">bottom</property>
                                 </layout>
                               </object>
                             </child>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Frame" id="frequencyPlotcwToneFrame" named="True">
-                    <property name="height">40</property>
-                    <property name="style">Normal.TFrame</property>
-                    <property name="width">200</property>
-                    <layout manager="pack">
-                      <property name="expand">true</property>
-                      <property name="fill">both</property>
-                      <property name="padx">10</property>
-                      <property name="pady">0 10</property>
-                      <property name="side">top</property>
-                    </layout>
-                    <child>
-                      <object class="tk.Scale" id="frequencyPlotcwToneScale" named="True">
-                        <property name="command" type="command" cbtype="scale">frequencyPlotcwToneScale_CB</property>
-                        <property name="from_">0</property>
-                        <property name="length">435</property>
-                        <property name="orient">horizontal</property>
-                        <property name="relief">raised</property>
-                        <property name="resolution">1</property>
-                        <property name="showvalue">false</property>
-                        <property name="sliderlength">50</property>
-                        <property name="state">normal</property>
-                        <property name="to">45</property>
-                        <property name="variable">string:frequencyPlotcwToneScale_VAR</property>
-                        <property name="width">30</property>
-                        <layout manager="pack">
-                          <property name="padx">5 0</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Label" id="frequencyPlotcwToneValueLabel" named="True">
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">800</property>
-                        <property name="textvariable">string:frequencyPlotcwToneValue_VAR</property>
-                        <layout manager="pack">
-                          <property name="padx">10</property>
-                          <property name="side">left</property>
-                        </layout>
                       </object>
                     </child>
                   </object>
@@ -296,7 +320,7 @@
                 </layout>
                 <child>
                   <object class="tk.Text" id="cwDecodedText" named="True">
-                    <property name="background">#0432ff</property>
+                    <property name="background">blue</property>
                     <property name="font">{Arial} 18 {}</property>
                     <property name="foreground">lightgray</property>
                     <property name="height">3</property>
@@ -309,6 +333,8 @@
                     <property name="wrap">char</property>
                     <bind sequence="&lt;Button-1&gt;" handler="enable_CW_Decode_CB" add="True" />
                     <layout manager="pack">
+                      <property name="expand">true</property>
+                      <property name="fill">x</property>
                       <property name="padx">5</property>
                       <property name="pady">5</property>
                       <property name="side">top</property>
@@ -329,19 +355,6 @@
             <containerlayout manager="grid">
               <property name="anchor">center</property>
             </containerlayout>
-            <child>
-              <object class="ttk.Button" id="startStopToggleButton" named="True">
-                <property name="command" type="command" cbtype="simple">startStopToggleButton_CB</property>
-                <property name="style">Button2b.TButton</property>
-                <property name="text" translatable="yes">Start</property>
-                <property name="textvariable">string:startStopToggleButton_VAR</property>
-                <property name="width">10</property>
-                <layout manager="grid">
-                  <property name="column">0</property>
-                  <property name="row">0</property>
-                </layout>
-              </object>
-            </child>
             <child>
               <object class="ttk.Button" id="close_Button" named="True">
                 <property name="command" type="command" cbtype="simple">close_CB</property>
