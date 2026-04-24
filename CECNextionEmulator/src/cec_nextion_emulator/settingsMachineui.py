@@ -1,20 +1,27 @@
 #!/usr/bin/python3
+"""
+settingsMachine
+
+Used to save of machines
+
+UI source file: settingsMachine.ui
+"""
 import tkinter as tk
 import tkinter.ttk as ttk
 from pygubu.widgets.combobox import Combobox
 
 
-def i18n_translator_noop(value):
+def safe_i18n_translator(value):
     """i18n - Setup translator in derived class file"""
     return value
 
 
-def first_object_callback_noop(widget):
+def safe_fo_callback(widget):
     """on first objec callback - Setup callback in derived class file."""
     pass
 
 
-def image_loader_default(master, image_name: str):
+def safe_image_loader(master, image_name: str):
     """Image loader - Setup image_loader in derived class file."""
     img = None
     try:
@@ -39,12 +46,12 @@ class settingsMachineUI(ttk.Labelframe):
         **kw
     ):
         if translator is None:
-            translator = i18n_translator_noop
+            translator = safe_i18n_translator
         _ = translator  # i18n string marker.
         if image_loader is None:
-            image_loader = image_loader_default
+            image_loader = safe_image_loader
         if on_first_object_cb is None:
-            on_first_object_cb = first_object_callback_noop
+            on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
 
@@ -53,13 +60,43 @@ class settingsMachineUI(ttk.Labelframe):
         # First object created
         on_first_object_cb(frame1)
 
+        self.DSP_Enable_Label = ttk.Label(frame1, name="dsp_enable_label")
+        self.DSP_Enable_Label.configure(
+            state="disabled",
+            style="Heading1b.TLabel",
+            text='Use DSP Processor')
+        self.DSP_Enable_Label.grid(
+            column=0, padx=10, pady=10, row=0, sticky="e")
+        self.DSP_Enable_Combobox = Combobox(frame1, name="dsp_enable_combobox")
+        self.DSP_Enable_VAR = tk.StringVar()
+        self.DSP_Enable_Combobox.configure(
+            exportselection=False,
+            keyvariable=self.DSP_Enable_VAR,
+            state="disabled",
+            style="ComboBox1.TCombobox",
+            values='True False',
+            width=5)
+        self.DSP_Enable_Combobox.grid(column=1, padx=20, pady=10, row=0)
+        self.DSPMessage_Label = ttk.Label(frame1, name="dspmessage_label")
+        self.DSPMessage_VAR = tk.StringVar(
+            value='No DSP Found on startup. Option automatically disabled')
+        self.DSPMessage_Label.configure(
+            style="Heading2bi.TLabel",
+            text='No DSP Found on startup. Option automatically disabled',
+            textvariable=self.DSPMessage_VAR)
+        self.DSPMessage_Label.grid(
+            column=0,
+            columnspan=2,
+            pady="0 20",
+            row=1,
+            sticky="ew")
         self.MCU_Command_Headroom_Label = ttk.Label(
             frame1, name="mcu_command_headroom_label")
         self.MCU_Command_Headroom_Label.configure(
             style="Heading1b.TLabel",
             text='Minimum time between\ncommands sent to\nRadio (ms):')
         self.MCU_Command_Headroom_Label.grid(
-            column=0, padx=10, pady=10, row=0, sticky="e")
+            column=0, padx=10, pady=10, row=2, sticky="e")
         self.MCU_Command_Headroom_Combobox = Combobox(
             frame1, name="mcu_command_headroom_combobox")
         self.MCU_Command_Headroom_VAR = tk.StringVar()
@@ -67,16 +104,16 @@ class settingsMachineUI(ttk.Labelframe):
             keyvariable=self.MCU_Command_Headroom_VAR,
             style="ComboBox1.TCombobox",
             values='90 100',
-            width=4)
+            width=5)
         self.MCU_Command_Headroom_Combobox.grid(
-            column=1, padx=20, pady=10, row=0)
+            column=1, padx=20, pady=10, row=2)
         self.MCU_Update_Period_Label = ttk.Label(
             frame1, name="mcu_update_period_label")
         self.MCU_Update_Period_Label.configure(
             style="Heading1b.TLabel",
             text='Frequency to check for\nUX changes (ms):')
         self.MCU_Update_Period_Label.grid(
-            column=0, padx=10, pady=50, row=1, sticky="e")
+            column=0, padx=10, pady=50, row=3, sticky="e")
         self.MCU_Update_Period_Combobox = Combobox(
             frame1, name="mcu_update_period_combobox")
         self.MCU_Update_Period_VAR = tk.StringVar()
@@ -84,9 +121,15 @@ class settingsMachineUI(ttk.Labelframe):
             keyvariable=self.MCU_Update_Period_VAR,
             style="ComboBox1.TCombobox",
             values='500 600',
-            width=4)
-        self.MCU_Update_Period_Combobox.grid(column=1, padx=20, pady=50, row=1)
-        frame1.pack(padx=10, pady=10, side="top")
+            width=5)
+        self.MCU_Update_Period_Combobox.grid(column=1, padx=20, pady=50, row=3)
+        frame1.pack(
+            anchor="center",
+            expand=True,
+            fill="both",
+            padx=20,
+            pady=10,
+            side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
         self.closingFrame.configure(
             height=50, style="Normal.TFrame", width=200)
@@ -105,10 +148,11 @@ class settingsMachineUI(ttk.Labelframe):
             pady=20,
             side="top")
         self.configure(
-            height=400,
+            cursor="arrow",
+            height=500,
             style="Heading2.TLabelframe",
             text='Machine Settings ( Caution Advised)',
-            width=600)
+            width=450)
         # Layout for 'labelframe1' skipped in custom widget template.
 
     def apply_CB(self):

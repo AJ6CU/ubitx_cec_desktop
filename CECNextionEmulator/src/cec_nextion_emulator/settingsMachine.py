@@ -24,15 +24,26 @@ class settingsMachine(baseui.settingsMachineUI):
         self.MCU_Command_Headroom_Combobox.configure(values=gv.MCU_Headroom_Values)
         self.MCU_Update_Period_Combobox.configure(values=gv.Frequency_To_Run_UX_loop)
 
+        self.saveDSP_Enable = gv.config.get_DSP_Switch()
         self.saveMCU_Command_Headroom = int(gv.config.get_MCU_Command_Headroom()*1000)
         self.saveMCU_Update_Period = gv.config.get_MCU_Update_Period()
 
+        self.DSP_Enable_VAR.set(gv.config.get_DSP_Switch())
         self.MCU_Command_Headroom_VAR.set(str(self.saveMCU_Command_Headroom))
         self.MCU_Update_Period_VAR.set(str(self.saveMCU_Update_Period))
 
+        gv.formatCombobox(self.DSP_Enable_Combobox, "arial", "24", "bold")
         gv.formatCombobox(self.MCU_Command_Headroom_Combobox, "Arial", "24", "bold")
         gv.formatCombobox(self.MCU_Update_Period_Combobox, "Arial", "24", "bold")
 
+        if self.mainWindow.DSPFound:
+            self.DSP_Enable_Label.configure(state="normal")
+            self.DSP_Enable_Combobox.configure(state="normal")
+            self.DSPMessage_VAR.set("")
+        else:
+            self.DSP_Enable_Label.configure(state="disabled")
+            self.DSP_Enable_Combobox.configure(state="disabled")
+            self.DSP_Message_VAR.set("No DSP Found on startup. Option automatically disabled")
 
         #
         #   Can now kickoff the UX
@@ -42,7 +53,7 @@ class settingsMachine(baseui.settingsMachineUI):
 
     def initUX(self):
         self.popup.title("Machine Settings - Advanced Usage Only")
-        self.popup.geometry("500x425")
+        self.popup.geometry("500x450")
         self.popup.wait_visibility()  # required on Linux
         self.popup.grab_set()
         self.popup.transient(self.mainWindow)
@@ -52,6 +63,10 @@ class settingsMachine(baseui.settingsMachineUI):
 
     def apply_CB(self):
         print("Applying settings")
+
+        if self.DSP_Enable_VAR.get() != self.saveDSP_Enable:
+            gv.config.set_DSP_Switch(self.DSP_Enable_VAR.get())
+            self.mainWindow.theRadio.Set_DSP_State(True if self.DSP_Enable_VAR.get()=="True" else False)
 
         if int(self.MCU_Command_Headroom_VAR.get()) != self.saveMCU_Command_Headroom:
             gv.config.set_MCU_Command_Headroom(int(self.MCU_Command_Headroom_VAR.get())/1000)

@@ -2,8 +2,6 @@
 import tkinter.ttk as ttk
 import tkinter as tk
 
-# from Cython.Compiler.Naming import self_cname
-
 import mainScreenui as baseui
 from settings import settings
 from cwSettings import cwSettings, cwSettings
@@ -44,7 +42,16 @@ class mainScreen(baseui.mainScreenUI):
                                         # or could point to Spectrum, CW Decode or Band scan if those windows
                                         # are active
 
-        self.UseDSP = False             # Flag, True indicating we are using a DSP
+        self.frequencyDecodeScale = None
+        self.frequencySigValue = None
+        self.frequencyPlotcwToneScale = 10          # default implies 10*50 + 300
+        self.frequencyPlotcwToneValue = 800
+
+        self.frequencySpectrumMode = "FreqScan"
+
+        self.DSPFound = False           # No DSP until proven by returning info at startup
+        self.UseDSP = gv.config.get_DSP_Switch()            # Get whether we should use a DSP or not
+
         # self.vfoToMemWindow = None      # object pointer for the VFO->Memory Window
 
         self.classic_uBITX_ControlWindow = None
@@ -88,6 +95,7 @@ class mainScreen(baseui.mainScreenUI):
         self.tuning_Jogwheel.grid_remove()
         gv.config.register_observer("VFO Touch Optimized", self.switchVFO_Tuning_Optimization)
         self.baselineJogValue = 0
+
 
 
 #   Constants
@@ -157,6 +165,11 @@ class mainScreen(baseui.mainScreenUI):
         self.master.geometry(gv.trimAndLocateWindow(self, 5, 30))
         self.master.protocol("WM_DELETE_WINDOW", lambda: self.close_MainWindow())
 
+        # if self.UseDSP == "True":
+        #     print("requesting DSP EEPROM Data")
+        #     self.consumerDSPdata.request_DSP_EEPROM_Data()
+        self.consumerDSPdata.request_DSP_EEPROM_Data()          # Request data. If we get some, then DSP will be marked as exists
+
     def close_MainWindow (self):
         self.portHandle.close()         # Close connection to Radio
         self.master.destroy()           # Close Window
@@ -167,6 +180,12 @@ class mainScreen(baseui.mainScreenUI):
     ######################################################################################
 
     def delegate_command_processing(self,command, buffer):
+        if len(command) != 2:
+            print("invalid command", command)
+            return
+        elif len(buffer) == 0:
+            print("empty buffer", buffer)
+            return
         match command:
             case "v1": self.v1_UX_Set_Tuning_Preset_1(buffer)
             case "v2": self.v2_UX_Set_Tuning_Preset_2(buffer)
@@ -448,7 +467,14 @@ class mainScreen(baseui.mainScreenUI):
         self.theRadio.Set_IFS_Level(self.IFS_Jogwheel.get())
 
     def cwDecode_Button_CB(self):
-        self.consumerDSPdata = cwDecoder(self.master, self)
+        #
+        #   Intercept any attempt to start CW Decoding ig DSP is not enabled
+        #
+        if self.UseDSP != "True":
+            messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
+                                 parent=self)
+        else:
+            self.consumerDSPdata = cwDecoder(self.master, self)
 
 
 
@@ -613,6 +639,46 @@ class mainScreen(baseui.mainScreenUI):
 
     def process_DSP_Data(self, buffer ):
         print("Processing DSP Data for main window", buffer)
+        byteList = int(buffer).to_bytes(4, 'little')
+        # print("process_DSP_Data", byteList)
+
+        if int(buffer) < 0xffffff:  # only a 3 hex byte number
+            self.DSPFound = True
+
+
+            print("main window eeprom values returned")
+            print(hex(int(buffer)))
+            print("main window decodescale*10=", byteList[0])
+            print("main window useDSPFlag=", byteList[1])
+
+            self.frequencyDecodeScale = int(byteList[0] / 10)
+
+            if byteList[1] == 1 and self.UseDSP == "False":          # configuration file/option says no, DSP says yes...
+                messagebox.showwarning(message="Configuration Mismatch!", detail="Configuration file disables DSP while DSP believes it is active.\n\n" +
+                    "Updating configuration file to Enable DSP. You can change this in Machine Settings.", parent=self)
+                self.UseDSP = "True"
+                gv.config.set_DSP_Switch("True")
+            elif byteList[1] == 0 and self.UseDSP == "True":         # configuration file says yes, DSP says no
+                messagebox.showwarning(message="Configuration Mismatch!", detail="Configuration file enables DSP while DSP is inactive.\n\n" +
+                    "Updating configuration file to Disable DSP. You can change this in Machine Settings.", parent=self)
+                self.UseDSP = "False"
+                gv.config.set_DSP_Switch("False")
+            else:
+                pass # configuration file and DSP agree, do nothing
+
+            if byteList[2] == 95:
+                self.frequencySpectrumMode = "FreqScan"
+            elif byteList[2] >= 100 and byteList[2] < 146:          # in CW mode
+                self.frequencyPlotcwToneScale = int(byteList[2] - 100)
+                self.frequencyPlotcwToneValue = ((byteList[2]-100)*50)+300
+                self.frequencySpectrumMode = "CWDecode"
+
+            print("eeprom fetch:", hex(int(buffer)))
+
+    def request_DSP_EEPROM_Data(self):
+        #
+        # Request DSP data stored in EEPROM
+        self.theRadio.Req_DSP_EEPROM_Settings()
 
     def ct_UX_RX_TX_Mode(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)

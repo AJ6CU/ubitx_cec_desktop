@@ -4,18 +4,19 @@
     <settings>
       <setting id="name">settingsMachine</setting>
       <setting id="description">Used to save of machines</setting>
-      <setting id="module_name">settingsMachine</setting>
       <setting id="template">widget</setting>
       <setting id="main_widget">labelframe1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">settingsMachine</setting>
       <setting id="main_classname">settingsMachine</setting>
-      <setting id="main_menu" />
       <setting id="output_dir">..</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
       <setting id="output_dir2">..</setting>
-      <setting id="import_tkvariables">False</setting>
-      <setting id="use_ttk_styledefinition_file">True</setting>
+      <setting id="generate_code_onsave">False</setting>
       <setting id="use_i18n">False</setting>
       <setting id="all_ids_attributes">False</setting>
-      <setting id="generate_code_onsave">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">True</setting>
       <setting id="use_window_centering_code">False</setting>
       <setting id="ttk_style_definition_file">../mystyles.py</setting>
     </settings>
@@ -28,12 +29,13 @@
     <property name="width">200</property>
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
-        <property name="height">400</property>
+        <property name="cursor">arrow</property>
+        <property name="height">500</property>
         <property name="style">Heading2.TLabelframe</property>
         <property name="text" translatable="yes">Machine Settings ( Caution Advised)</property>
-        <property name="width">600</property>
+        <property name="width">450</property>
         <layout manager="pack">
-          <property name="expand">true</property>
+          <property name="expand">false</property>
           <property name="fill">both</property>
           <property name="side">top</property>
         </layout>
@@ -43,16 +45,18 @@
             <property name="style">Normal.TFrame</property>
             <property name="width">200</property>
             <layout manager="pack">
-              <property name="padx">10</property>
+              <property name="anchor">center</property>
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">20</property>
               <property name="pady">10</property>
               <property name="side">top</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="MCU_Command_Headroom_Label" named="True">
+              <object class="ttk.Label" id="DSP_Enable_Label" named="True">
+                <property name="state">disabled</property>
                 <property name="style">Heading1b.TLabel</property>
-                <property name="text" translatable="yes">Minimum time between
-commands sent to
-Radio (ms):</property>
+                <property name="text" translatable="yes">Use DSP Processor</property>
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">10</property>
@@ -63,16 +67,61 @@ Radio (ms):</property>
               </object>
             </child>
             <child>
-              <object class="pygubu.widgets.Combobox" id="MCU_Command_Headroom_Combobox" named="True">
-                <property name="keyvariable">string:MCU_Command_Headroom_VAR</property>
+              <object class="pygubu.widgets.Combobox" id="DSP_Enable_Combobox" named="True">
+                <property name="exportselection">false</property>
+                <property name="keyvariable">string:DSP_Enable_VAR</property>
+                <property name="state">disabled</property>
                 <property name="style">ComboBox1.TCombobox</property>
-                <property name="values">90 100</property>
-                <property name="width">4</property>
+                <property name="values">True False</property>
+                <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">20</property>
                   <property name="pady">10</property>
                   <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="DSPMessage_Label" named="True">
+                <property name="style">Heading2bi.TLabel</property>
+                <property name="text" translatable="yes">No DSP Found on startup. Option automatically disabled</property>
+                <property name="textvariable">string:DSPMessage_VAR</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="columnspan">2</property>
+                  <property name="pady">0 20</property>
+                  <property name="row">1</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="MCU_Command_Headroom_Label" named="True">
+                <property name="style">Heading1b.TLabel</property>
+                <property name="text" translatable="yes">Minimum time between
+commands sent to
+Radio (ms):</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">10</property>
+                  <property name="pady">10</property>
+                  <property name="row">2</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="pygubu.widgets.Combobox" id="MCU_Command_Headroom_Combobox" named="True">
+                <property name="keyvariable">string:MCU_Command_Headroom_VAR</property>
+                <property name="style">ComboBox1.TCombobox</property>
+                <property name="values">90 100</property>
+                <property name="width">5</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">20</property>
+                  <property name="pady">10</property>
+                  <property name="row">2</property>
                 </layout>
               </object>
             </child>
@@ -85,7 +134,7 @@ UX changes (ms):</property>
                   <property name="column">0</property>
                   <property name="padx">10</property>
                   <property name="pady">50</property>
-                  <property name="row">1</property>
+                  <property name="row">3</property>
                   <property name="sticky">e</property>
                 </layout>
               </object>
@@ -95,12 +144,12 @@ UX changes (ms):</property>
                 <property name="keyvariable">string:MCU_Update_Period_VAR</property>
                 <property name="style">ComboBox1.TCombobox</property>
                 <property name="values">500 600</property>
-                <property name="width">4</property>
+                <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">20</property>
                   <property name="pady">50</property>
-                  <property name="row">1</property>
+                  <property name="row">3</property>
                 </layout>
               </object>
             </child>

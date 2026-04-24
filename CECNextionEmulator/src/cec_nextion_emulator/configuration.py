@@ -80,8 +80,8 @@ class configuration:
                             "CW Delay Before TX":"500",
                             "CW Delay Returning to RX":"5000",
                             "Callsign":"",
-                            "Virtual Keyboard Switch":"True"
-
+                            "Virtual Keyboard Switch":"True",
+                            "DSP":"False"
                             }
         self.saveConfig()
 
@@ -208,6 +208,13 @@ class configuration:
 
     def set_Virtual_Keyboard_Switch(self, value):
         self.config_data["Virtual Keyboard Switch"] = value
+        self.saveConfig()
+
+    def get_DSP_Switch(self):
+        return self.config_data["DSP"]
+
+    def set_DSP_Switch(self, value):
+        self.config_data["DSP"] = value
         self.saveConfig()
 
 

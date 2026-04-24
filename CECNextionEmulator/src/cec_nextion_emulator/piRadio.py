@@ -806,6 +806,32 @@ class piRadio:
         command = [self.toRadioCommandDict["TS_CMD_LOOPBACK0"], MyAddr, value, DSPCode, checksum]
         print("sending loopback command for signal", "myaddr:", hex(MyAddr), "value passed:", hex(int(scale_value)), "adjusted value", hex(value), "dspcode:", hex(DSPCode),
               "checksum:", hex(checksum))
+        self.sendCommandToMCU(bytes(command))
+
+    def Set_DSP_State(self, flag):
+
+        if flag:            # Turn DSP On
+            value = 51    # This turns the DSP on and sets it into Spectrum Mode
+            self.mainWindow.frequencySpectrumMode == "FreqScan"
+            self.mainWindow.UseDSP = "True"
+            print("turning on DSP")
+
+        else:
+            value = 50    # This turns off the DSP
+            print("Turning off DSP")
+            self.mainWindow.UseDSP = "False"
+
+
+        # MyAddr = random.randint(5, 255)     # Not clear why a specific address is needed. Perhaps for future?
+        MyAddr = 88
+        DSPCode = 0x6A          # magic# indicating that this loop back result of DSP
+
+        checksum= ((MyAddr + DSPCode + value)%256)
+
+        command = [self.toRadioCommandDict["TS_CMD_LOOPBACK0"],MyAddr, value, DSPCode, checksum]
+        print("sending loopback command", "myaddr:", hex(MyAddr), "value passed:", hex(value), "dspcode:",hex(DSPCode), "checksum:", hex(checksum))
+
+        self.sendCommandToMCU(bytes(command))
 
 #
 #   Send command to MCU

@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import cwDecoderui as baseui
 import globalvars as gv
+from tkinter import messagebox
 
 
 #
@@ -54,13 +55,22 @@ class cwDecoder(baseui.cwDecoderUI):
         #
         #   set defaults for scale
         #
-        self.frequencyPlotcwToneScale_VAR.set("10")
-        self.frequencyPlotcwToneValue_VAR.set("800")    # 10*50 + 300
+        # self.frequencyPlotcwToneScale_VAR.set("10")
+        # self.frequencyPlotcwToneValue_VAR.set("800")    # 10*50 + 300
 
-        self.frequencyDecodeScale_VAR.set("2")
-        self.frequencySigValue_VAR.set("20")            # 2*10
 
-        self.enable_Frequency_Spectrum_CB()                # Start with the frequency scan
+
+
+        self.frequencyDecodeScale_VAR.set(self.mainWindow.frequencyDecodeScale)
+        self.frequencySigValue_VAR.set(str(self.mainWindow.frequencyDecodeScale*10))            # 2*10
+
+        self.frequencyPlotcwToneScale_VAR.set(self.mainWindow.frequencyPlotcwToneScale)
+        self.frequencyPlotcwToneValue_VAR.set(str(self.mainWindow.frequencyPlotcwToneValue))
+
+        if  self.mainWindow.frequencySpectrumMode == "FreqScan":
+            self.enable_Frequency_Spectrum_CB()  # Start with the frequency scan
+        else:
+            self.enable_CW_Decode_CB()
 
         #
         #   Request existing saved data in EEPROM
@@ -165,9 +175,9 @@ class cwDecoder(baseui.cwDecoderUI):
             self.frequencySigValue_VAR.set(byteList[0])
 
             if byteList[1] == 1:
-                self.mainWindow.UseDSP =  True
+                self.mainWindow.UseDSP =  "True"
             else:
-                self.mainWindow.UseDSP = False
+                self.mainWindow.UseDSP = "False"
             # case 95:    # This is the code for being in spectrum mode
             #     self.spectrumMorseState = "FreqScan"      # Set state flag Frequency/Spectrum mode
             #
@@ -304,7 +314,7 @@ class cwDecoder(baseui.cwDecoderUI):
         self.destroy()
 
     def logCW_Character (self,newchar):
-        if len(self.cwDecodedText.get('1.0', 'end')) > 275:   # Not maximum, but close to it
+        if len(self.cwDecodedText.get('1.0', 'end')) > 190:   # Not maximum, but close to it
             self.cwDecodedText.delete('1.0')
         self.cwDecodedText.insert('2.end',newchar)
 
@@ -326,6 +336,7 @@ class cwDecoder(baseui.cwDecoderUI):
         self.windowResizedObj = self.master.after(100, self.refreshCanvas)
 
     def refreshCanvas(self):
+
         #
         #   Update canvas size
         #
@@ -347,5 +358,5 @@ class cwDecoder(baseui.cwDecoderUI):
 
             self.drawBars(x, ymag, x_width, x_stretch, y_stretch)
 
-        self.updateTargetFreqBars()
+            self.updateTargetFreqBars()
 

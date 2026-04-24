@@ -50,6 +50,7 @@ def setup_ttk_styles(master=None):
     style.configure('Heading1.TLabel',font=fontList['Heading1'], background='gray', foreground='white')
     style.configure('Heading1Fixed.TLabel',font=fontList['Heading1'], background='gray', foreground='white')
     style.configure('Heading1b.TLabel', font=fontList['Heading1b'], background='gray', foreground='white')
+    style.map('Heading1b.TLabel', background=[('disabled', 'gray')], foreground=[('disabled', 'white')])
     style.configure('Heading1bi.TLabel', font=fontList['Heading1bi'], background='gray', foreground='white')
 
     style.configure('Heading2.TLabel',font=fontList['Heading2'])
@@ -57,6 +58,7 @@ def setup_ttk_styles(master=None):
     #                 fieldbackground=[("normal", "gray"), ("disabled", "gray")])
 
     style.configure('Heading2b.TLabel',font=fontList['Heading2b'], foreground='white', background="gray")
+
     style.configure('Heading2bi.TLabel', font=fontList['Heading2bi'], background='gray', foreground='white')
     style.configure('Heading3b.TLabel',font=fontList['Heading3'], background='gray', foreground='white')
     style.configure('Heading3bi.TLabel', font=fontList['Heading3i'], background='gray', foreground='white')
