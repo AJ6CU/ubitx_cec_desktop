@@ -149,6 +149,8 @@
                             <property name="style">Normal.TFrame</property>
                             <property name="width">200</property>
                             <layout manager="pack">
+                              <property name="expand">true</property>
+                              <property name="fill">x</property>
                               <property name="side">top</property>
                             </layout>
                             <child>
@@ -178,13 +180,15 @@
                                 <property name="width">200</property>
                                 <layout manager="pack">
                                   <property name="anchor">n</property>
+                                  <property name="expand">true</property>
+                                  <property name="fill">x</property>
                                   <property name="padx">10 0</property>
                                   <property name="side">top</property>
                                 </layout>
                                 <child>
                                   <object class="ttk.Label" id="frequencyHighLabel" named="True">
                                     <property name="style">Heading2b.TLabel</property>
-                                    <property name="text" translatable="yes">High</property>
+                                    <property name="text" translatable="yes">Max</property>
                                     <layout manager="grid">
                                       <property name="column">0</property>
                                       <property name="row">0</property>
@@ -238,7 +242,7 @@ THR</property>
                                 <child>
                                   <object class="ttk.Label" id="frequencyLowLabel" named="True">
                                     <property name="style">Heading2b.TLabel</property>
-                                    <property name="text" translatable="yes">Low</property>
+                                    <property name="text" translatable="yes">Min</property>
                                     <layout manager="grid">
                                       <property name="column">0</property>
                                       <property name="pady">20 0</property>
@@ -272,7 +276,8 @@ THR</property>
                             <property name="style">Normal.TFrame</property>
                             <property name="width">200</property>
                             <layout manager="pack">
-                              <property name="pady">15 0</property>
+                              <property name="expand">true</property>
+                              <property name="fill">x</property>
                               <property name="side">left</property>
                             </layout>
                             <child>
@@ -281,8 +286,21 @@ THR</property>
                                 <property name="text" translatable="yes">800</property>
                                 <property name="textvariable">string:frequencyPlotcwToneValue_VAR</property>
                                 <layout manager="pack">
-                                  <property name="padx">10</property>
-                                  <property name="side">bottom</property>
+                                  <property name="padx">5</property>
+                                  <property name="side">left</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Button" id="resetMinMax_Button" named="True">
+                                <property name="command" type="command" cbtype="simple">resetMinMax_CB</property>
+                                <property name="style">Button2b.TButton</property>
+                                <property name="text" translatable="yes">Reset
+Min/Max</property>
+                                <property name="width">12</property>
+                                <layout manager="pack">
+                                  <property name="anchor">e</property>
+                                  <property name="side">right</property>
                                 </layout>
                               </object>
                             </child>

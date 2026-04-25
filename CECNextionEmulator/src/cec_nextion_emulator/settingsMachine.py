@@ -66,7 +66,7 @@ class settingsMachine(baseui.settingsMachineUI):
 
         if self.DSP_Enable_VAR.get() != self.saveDSP_Enable:
             gv.config.set_DSP_Switch(self.DSP_Enable_VAR.get())
-            self.mainWindow.theRadio.Set_DSP_State(True if self.DSP_Enable_VAR.get()=="True" else False)
+            self.mainWindow.theRadio.Set_DSP_State(self.DSP_Enable_VAR.get())
 
         if int(self.MCU_Command_Headroom_VAR.get()) != self.saveMCU_Command_Headroom:
             gv.config.set_MCU_Command_Headroom(int(self.MCU_Command_Headroom_VAR.get())/1000)

@@ -50,7 +50,6 @@ class mainScreen(baseui.mainScreenUI):
         self.frequencySpectrumMode = "FreqScan"
 
         self.DSPFound = False           # No DSP until proven by returning info at startup
-        self.UseDSP = gv.config.get_DSP_Switch()            # Get whether we should use a DSP or not
 
         # self.vfoToMemWindow = None      # object pointer for the VFO->Memory Window
 
@@ -164,10 +163,6 @@ class mainScreen(baseui.mainScreenUI):
         self.place(x=0, y=0)  # place the mainWindow on the screen
         self.master.geometry(gv.trimAndLocateWindow(self, 5, 30))
         self.master.protocol("WM_DELETE_WINDOW", lambda: self.close_MainWindow())
-
-        # if self.UseDSP == "True":
-        #     print("requesting DSP EEPROM Data")
-        #     self.consumerDSPdata.request_DSP_EEPROM_Data()
         self.consumerDSPdata.request_DSP_EEPROM_Data()          # Request data. If we get some, then DSP will be marked as exists
 
     def close_MainWindow (self):
@@ -470,7 +465,7 @@ class mainScreen(baseui.mainScreenUI):
         #
         #   Intercept any attempt to start CW Decoding ig DSP is not enabled
         #
-        if self.UseDSP != "True":
+        if gv.config.get_DSP_Switch() != "True":
             messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
                                  parent=self)
         else:
@@ -653,15 +648,13 @@ class mainScreen(baseui.mainScreenUI):
 
             self.frequencyDecodeScale = int(byteList[0] / 10)
 
-            if byteList[1] == 1 and self.UseDSP == "False":          # configuration file/option says no, DSP says yes...
+            if byteList[1] == 1 and gv.config.get_DSP_Switch() == "False":          # configuration file/option says no, DSP says yes...
                 messagebox.showwarning(message="Configuration Mismatch!", detail="Configuration file disables DSP while DSP believes it is active.\n\n" +
                     "Updating configuration file to Enable DSP. You can change this in Machine Settings.", parent=self)
-                self.UseDSP = "True"
                 gv.config.set_DSP_Switch("True")
-            elif byteList[1] == 0 and self.UseDSP == "True":         # configuration file says yes, DSP says no
+            elif byteList[1] == 0 and gv.config.get_DSP_Switch() == "True":         # configuration file says yes, DSP says no
                 messagebox.showwarning(message="Configuration Mismatch!", detail="Configuration file enables DSP while DSP is inactive.\n\n" +
                     "Updating configuration file to Disable DSP. You can change this in Machine Settings.", parent=self)
-                self.UseDSP = "False"
                 gv.config.set_DSP_Switch("False")
             else:
                 pass # configuration file and DSP agree, do nothing

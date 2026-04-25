@@ -113,8 +113,7 @@ class cwDecoder(baseui.cwDecoderUI):
         self.setcwDecodeState("disabled")
         self.setFrequencySpectrumState("normal")
         self.mainWindow.theRadio.Set_Spectrum_Mode(95)  # Magic number indicating it is a spectrum scan
-        self.frequencyHighValue_VAR.set('0')  # Reset min/max on entry
-        self.frequencyLowValue_VAR.set(self.frequencySigValue_VAR.get())
+        self.resetMinMax_CB()   # reset min/max signals to zero
 
     def enable_CW_Decode_CB(self, event=None):
         #
@@ -146,10 +145,12 @@ class cwDecoder(baseui.cwDecoderUI):
     def setFrequencySpectrumState(self, newState):
         if newState == "normal":
             self.frequencyPlotFrame.state(['!disabled'])
+            self.resetMinMax_Button.state(['!disabled'])
             self.frequencyPlotCanvas.configure(bg="blue")
 
         else:
             self.frequencyPlotFrame.state(['disabled'])
+            self.resetMinMax_Button.state(['disabled'])
             self.frequencyPlotCanvas.configure(bg="gray")
 
     #
@@ -306,6 +307,11 @@ class cwDecoder(baseui.cwDecoderUI):
     def frequencyPlotcwToneScale_CB(self, scale_value):
         self.frequencyPlotcwToneValue_VAR.set(str(((int(scale_value)*50)+300)))
         self.updateTargetFreqBars()
+
+    def resetMinMax_CB(self):
+        self.frequencyHighValue_VAR.set('0')  # Reset min/max on entry
+        self.frequencyLowValue_VAR.set('0')
+
 
 
     def close_CB(self):

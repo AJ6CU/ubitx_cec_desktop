@@ -147,8 +147,7 @@ class cwDecoderUI(tk.Toplevel):
         self.frequencyHighLabel = ttk.Label(
             self.frequencyPlotSettingsFrame,
             name="frequencyhighlabel")
-        self.frequencyHighLabel.configure(
-            style="Heading2b.TLabel", text='High')
+        self.frequencyHighLabel.configure(style="Heading2b.TLabel", text='Max')
         self.frequencyHighLabel.grid(column=0, row=0, sticky="w")
         self.frequencyHighValueLabel = ttk.Label(
             self.frequencyPlotSettingsFrame,
@@ -183,7 +182,7 @@ class cwDecoderUI(tk.Toplevel):
         self.frequencyLowLabel = ttk.Label(
             self.frequencyPlotSettingsFrame,
             name="frequencylowlabel")
-        self.frequencyLowLabel.configure(style="Heading2b.TLabel", text='Low')
+        self.frequencyLowLabel.configure(style="Heading2b.TLabel", text='Min')
         self.frequencyLowLabel.grid(column=0, pady="20 0", row=2, sticky="w")
         self.frequencyLowValueLabel = ttk.Label(
             self.frequencyPlotSettingsFrame,
@@ -198,8 +197,8 @@ class cwDecoderUI(tk.Toplevel):
         self.frequencyLowValueLabel.grid(
             column=1, pady="20 0", row=2, sticky="e")
         self.frequencyPlotSettingsFrame.pack(
-            anchor="n", padx="10 0", side="top")
-        frame3.pack(side="top")
+            anchor="n", expand=True, fill="x", padx="10 0", side="top")
+        frame3.pack(expand=True, fill="x", side="top")
         frame1 = ttk.Frame(self.frequencyPlotParameterFrame)
         frame1.configure(height=200, style="Normal.TFrame", width=200)
         self.frequencyPlotcwToneValueLabel = ttk.Label(
@@ -209,8 +208,13 @@ class cwDecoderUI(tk.Toplevel):
             style="Heading2b.TLabel",
             text='800',
             textvariable=self.frequencyPlotcwToneValue_VAR)
-        self.frequencyPlotcwToneValueLabel.pack(padx=10, side="bottom")
-        frame1.pack(pady="15 0", side="left")
+        self.frequencyPlotcwToneValueLabel.pack(padx=5, side="left")
+        self.resetMinMax_Button = ttk.Button(frame1, name="resetminmax_button")
+        self.resetMinMax_Button.configure(
+            style="Button2b.TButton", text='Reset\nMin/Max', width=12)
+        self.resetMinMax_Button.pack(anchor="e", side="right")
+        self.resetMinMax_Button.configure(command=self.resetMinMax_CB)
+        frame1.pack(expand=True, fill="x", side="left")
         self.frequencyPlotParameterFrame.pack(
             expand=True, fill="both", padx="5 0", side="top")
         frame2.pack(expand=True, fill="x", padx=10, side="top")
@@ -281,6 +285,9 @@ class cwDecoderUI(tk.Toplevel):
         pass
 
     def frequencyDecodeScale_CB(self, scale_value):
+        pass
+
+    def resetMinMax_CB(self):
         pass
 
     def enable_CW_Decode_CB(self, event=None):
