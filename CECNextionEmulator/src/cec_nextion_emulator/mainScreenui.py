@@ -200,22 +200,6 @@ class mainScreenUI(ttk.Frame):
             self.secondary_menu_Frame, name="signal_control_frame")
         self.signal_Control_Frame.configure(
             height=200, style="Normal.TFrame", width=200)
-        self.split_Button = ttk.Button(
-            self.signal_Control_Frame, name="split_button")
-        self.split_Button.configure(
-            style="Button2b.TButton",
-            text='\nSPLIT\n',
-            width=11)
-        self.split_Button.pack(anchor="nw", padx="20 20", side="left")
-        self.split_Button.configure(command=self.split_CB)
-        self.rit_Button = ttk.Button(
-            self.signal_Control_Frame, name="rit_button")
-        self.rit_Button.configure(
-            style="Button2b.TButton",
-            text='\nRIT\n',
-            width=11)
-        self.rit_Button.pack(anchor="nw", padx="0 20", side="left")
-        self.rit_Button.configure(command=self.rit_CB)
         self.channels_Button = ttk.Button(
             self.signal_Control_Frame, name="channels_button")
         self.channels_Button.configure(
@@ -230,8 +214,28 @@ class mainScreenUI(ttk.Frame):
             style="Button2b.TButton",
             text='\nCW DECODE\n',
             width=11)
-        self.cwDecode_Button.pack(anchor="nw", side="left")
-        self.cwDecode_Button.configure(command=self.cwDecode_Button_CB)
+        self.cwDecode_Button.pack(anchor="nw", padx="0 20", side="left")
+        def cwDecode_Button_cmd_(): self.cwDecode_Button_CB("cwDecode_Button")
+
+        self.cwDecode_Button.configure(command=cwDecode_Button_cmd_)
+        self.spectrumScan_Button = ttk.Button(
+            self.signal_Control_Frame, name="spectrumscan_button")
+        self.spectrumScan_Button.configure(
+            style="Button2b.TButton", text='\nSPECTRUM\n', width=11)
+        self.spectrumScan_Button.pack(anchor="nw", side="left")
+        def spectrumScan_Button_cmd_(): self.spectrumScan_Button_CB("spectrumScan_Button")
+
+        self.spectrumScan_Button.configure(command=spectrumScan_Button_cmd_)
+        self.bandScan_Button = ttk.Button(
+            self.signal_Control_Frame, name="bandscan_button")
+        self.bandScan_Button.configure(
+            style="Button2b.TButton",
+            text='\nBAND SCAN\n',
+            width=11)
+        self.bandScan_Button.pack(anchor="nw", padx="0 20", side="left")
+        def bandScan_Button_cmd_(): self.bandScan_Button_CB("bandScan_Button")
+
+        self.bandScan_Button.configure(command=bandScan_Button_cmd_)
         self.signal_Control_Frame.grid(column=0, pady=10, row=0, sticky="n")
         self.secondary_menu_Frame.grid(column=0, padx=5, row=0)
         self.sMeter_Frame = ttk.Frame(
@@ -522,6 +526,23 @@ class mainScreenUI(ttk.Frame):
             side="top")
         self.cw_Info_Frame.bind("<1>", self.cwSettings_CB, add="")
         self.cwInfoFrame.pack(side="top")
+        frame1 = ttk.Frame(self.ATT_IFS_Adjust_Frame)
+        frame1.configure(height=200, style="Normal.TFrame", width=200)
+        self.split_Button = ttk.Button(frame1, name="split_button")
+        self.split_Button.configure(
+            style="Button2b.TButton",
+            text='\nSPLIT\n',
+            width=11)
+        self.split_Button.pack(anchor="nw", padx="20 20", side="left")
+        self.split_Button.configure(command=self.split_CB)
+        self.rit_Button = ttk.Button(frame1, name="rit_button")
+        self.rit_Button.configure(
+            style="Button2b.TButton",
+            text='\nRIT\n',
+            width=11)
+        self.rit_Button.pack(anchor="nw", padx="0 20", side="left")
+        self.rit_Button.configure(command=self.rit_CB)
+        frame1.pack(side="top")
         self.ATT_IFS_Adjust_Frame.pack(
             anchor="w",
             expand=True,
@@ -568,16 +589,16 @@ class mainScreenUI(ttk.Frame):
     def tuning_Jogwheel_CB(self):
         pass
 
-    def split_CB(self):
-        pass
-
-    def rit_CB(self):
-        pass
-
     def channels_CB(self):
         pass
 
-    def cwDecode_Button_CB(self):
+    def cwDecode_Button_CB(self, widget_id):
+        pass
+
+    def spectrumScan_Button_CB(self, widget_id):
+        pass
+
+    def bandScan_Button_CB(self, widget_id):
         pass
 
     def updateATTValue_CB(self):
@@ -599,6 +620,12 @@ class mainScreenUI(ttk.Frame):
         pass
 
     def cwSettings_CB(self, event=None):
+        pass
+
+    def split_CB(self):
+        pass
+
+    def rit_CB(self):
         pass
 
 

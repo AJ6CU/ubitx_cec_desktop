@@ -8,6 +8,7 @@ from cwSettings import cwSettings, cwSettings
 
 from channels import channels
 from cwDecoder import cwDecoder
+from frequencySpectrum import frequencySpectrum
 from barPlotter import barPlotter
 from cwLogger import cwLogger
 from Classic_uBITX_Control import Classic_uBITX_Control
@@ -18,6 +19,8 @@ import globalvars as gv
 from tkinter import messagebox
 import sys
 import EEPROM as EEPROM
+from src.cec_nextion_emulator.theVFO import theVFO
+
 
 class mainScreen(baseui.mainScreenUI):
 
@@ -38,6 +41,7 @@ class mainScreen(baseui.mainScreenUI):
         self.cwSettingsWindow = None    # Object pointer for the CW Settinge Window
         self.settingsWindow = None      # Object pointer for the General Settings Window
         self.channelsWindow = None      # object pointer for the Memory-> VFO Window
+        self.spectrumWindow = None #object point for the SpectrumScan Window
         self.consumerDSPdata = self     # object pointer to the object receiving DSP data
                                         # This could be:
                                         # "self" in the case where the DSP graph is displayed in the main window
@@ -479,6 +483,16 @@ class mainScreen(baseui.mainScreenUI):
         else:
             self.consumerDSPdata = cwDecoder(self.master, self)
 
+    def spectrumScan_Button_CB(self, event=None):
+        #
+        #   Intercept any attempt to start CW Decoding ig DSP is not enabled
+        #
+        if gv.config.get_DSP_Switch() != "True":
+            messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
+                                 parent=self)
+        else:
+            self.spectrumWindow = frequencySpectrum(self.master, self, self.theVFO_Object.getIntPrimaryVFO())
+
 
 
 
@@ -898,6 +912,9 @@ class mainScreen(baseui.mainScreenUI):
                 case "Factory_CW_Sidetone":
                     self.theRadio.Factory_CW_Sidetone_Setter(str(int(value, 16)))
 
+                case "Spectrum_Scan":
+                    print("Spectrum_Scan", hex(value))
+
                 case _:
                     messagebox.showerror("Application Error", "Unknown Memory Request")
                     sys.exit("A fatal internal error occurred")
@@ -966,6 +983,9 @@ class mainScreen(baseui.mainScreenUI):
         self.tuning_Jogwheel.setStateDisabled()
         self.theVFO_Object.setVFOUXState("disabled")
         self.cwDecode_Button.configure(state="disabled")
+        self.spectrumScan_Button.configure(state="disabled")
+        self.bandScan_Button.configure(state="disabled")
+
 
 
     #
@@ -988,6 +1008,8 @@ class mainScreen(baseui.mainScreenUI):
         self.tuning_Jogwheel.setStateNormal()
         self.theVFO_Object.setVFOUXState("normal")
         self.cwDecode_Button.configure(state="normal")
+        self.spectrumScan_Button.configure(state="normal")
+        self.bandScan_Button.configure(state="normal")
 
 
     def cj_UX_Speaker_Toggle(self, buffer):

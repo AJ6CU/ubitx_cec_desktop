@@ -299,36 +299,6 @@ SPEAKER
                       <property name="sticky">n</property>
                     </layout>
                     <child>
-                      <object class="ttk.Button" id="split_Button" named="True">
-                        <property name="command" type="command" cbtype="simple">split_CB</property>
-                        <property name="style">Button2b.TButton</property>
-                        <property name="text" translatable="yes">
-SPLIT
-</property>
-                        <property name="width">11</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">20 20</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Button" id="rit_Button" named="True">
-                        <property name="command" type="command" cbtype="simple">rit_CB</property>
-                        <property name="style">Button2b.TButton</property>
-                        <property name="text" translatable="yes">
-RIT
-</property>
-                        <property name="width">11</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 20</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
                       <object class="ttk.Button" id="channels_Button" named="True">
                         <property name="command" type="command" cbtype="simple">channels_CB</property>
                         <property name="style">Button2b.TButton</property>
@@ -345,7 +315,7 @@ CHANNELS
                     </child>
                     <child>
                       <object class="ttk.Button" id="cwDecode_Button" named="True">
-                        <property name="command" type="command" cbtype="simple">cwDecode_Button_CB</property>
+                        <property name="command" type="command" cbtype="with_wid">cwDecode_Button_CB</property>
                         <property name="style">Button2b.TButton</property>
                         <property name="text" translatable="yes">
 CW DECODE
@@ -353,6 +323,36 @@ CW DECODE
                         <property name="width">11</property>
                         <layout manager="pack">
                           <property name="anchor">nw</property>
+                          <property name="padx">0 20</property>
+                          <property name="side">left</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="spectrumScan_Button" named="True">
+                        <property name="command" type="command" cbtype="with_wid">spectrumScan_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+SPECTRUM
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="side">left</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="bandScan_Button" named="True">
+                        <property name="command" type="command" cbtype="with_wid">bandScan_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+BAND SCAN
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 20</property>
                           <property name="side">left</property>
                         </layout>
                       </object>
@@ -791,6 +791,46 @@ CW DECODE
                     </layout>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frame1">
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="split_Button" named="True">
+                <property name="command" type="command" cbtype="simple">split_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">
+SPLIT
+</property>
+                <property name="width">11</property>
+                <layout manager="pack">
+                  <property name="anchor">nw</property>
+                  <property name="padx">20 20</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="rit_Button" named="True">
+                <property name="command" type="command" cbtype="simple">rit_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">
+RIT
+</property>
+                <property name="width">11</property>
+                <layout manager="pack">
+                  <property name="anchor">nw</property>
+                  <property name="padx">0 20</property>
+                  <property name="side">left</property>
+                </layout>
               </object>
             </child>
           </object>
