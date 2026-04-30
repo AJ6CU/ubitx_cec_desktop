@@ -222,7 +222,7 @@ class mainScreenUI(ttk.Frame):
             self.signal_Control_Frame, name="spectrumscan_button")
         self.spectrumScan_Button.configure(
             style="Button2b.TButton", text='\nSPECTRUM\n', width=11)
-        self.spectrumScan_Button.pack(anchor="nw", side="left")
+        self.spectrumScan_Button.pack(anchor="nw", padx="0 20", side="left")
         def spectrumScan_Button_cmd_(): self.spectrumScan_Button_CB("spectrumScan_Button")
 
         self.spectrumScan_Button.configure(command=spectrumScan_Button_cmd_)

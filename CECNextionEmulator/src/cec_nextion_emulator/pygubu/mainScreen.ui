@@ -338,6 +338,7 @@ SPECTRUM
                         <property name="width">11</property>
                         <layout manager="pack">
                           <property name="anchor">nw</property>
+                          <property name="padx">0 20</property>
                           <property name="side">left</property>
                         </layout>
                       </object>

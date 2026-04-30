@@ -68,6 +68,7 @@ class configuration:
 
                             "MCU Command Headroom": .09,        # in seconds
                             "MCU Update Period": 500,            # in ms
+                            "MCU Read Wait Period": .02,
                             "NUMBER DELIMITER": ".",
                             "TXOffset": "EEPROM",
                             "VFO Touch Optimized": "True",
@@ -125,6 +126,12 @@ class configuration:
         self._notify_observers("MCU Update Period", value)
         self.saveConfig()
 
+    def get_MCU_Read_Wait_Period(self):
+        return self.config_data["MCU Read Wait Period"]
+
+    def set_MCU_Read_Wait_Period(self, value):
+        self.config_data["MCU Read Wait Period"] = value
+        self.saveConfig()
 
     def get_NUMBER_DELIMITER(self):
         return self.config_data["NUMBER DELIMITER"]

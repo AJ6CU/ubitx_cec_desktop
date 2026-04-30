@@ -113,7 +113,7 @@ class settingsMachineUI(ttk.Labelframe):
             style="Heading1b.TLabel",
             text='Frequency to check for\nUX changes (ms):')
         self.MCU_Update_Period_Label.grid(
-            column=0, padx=10, pady=50, row=3, sticky="e")
+            column=0, padx=10, pady=10, row=3, sticky="e")
         self.MCU_Update_Period_Combobox = Combobox(
             frame1, name="mcu_update_period_combobox")
         self.MCU_Update_Period_VAR = tk.StringVar()
@@ -122,7 +122,24 @@ class settingsMachineUI(ttk.Labelframe):
             style="ComboBox1.TCombobox",
             values='500 600',
             width=5)
-        self.MCU_Update_Period_Combobox.grid(column=1, padx=20, pady=50, row=3)
+        self.MCU_Update_Period_Combobox.grid(column=1, padx=20, pady=10, row=3)
+        self.MCU_Read_Wait_Period_Label = ttk.Label(
+            frame1, name="mcu_read_wait_period_label")
+        self.MCU_Read_Wait_Period_Label.configure(
+            style="Heading1b.TLabel",
+            text='Wait time for completion \nof data transfer from\nMCU/DPS (ms):')
+        self.MCU_Read_Wait_Period_Label.grid(
+            column=0, padx=10, pady="20 50", row=4, sticky="e")
+        self.MCU_Read_Wait_Period_Combobox = Combobox(
+            frame1, name="mcu_read_wait_period_combobox")
+        self.MCU_Read_Wait_Period_VAR = tk.StringVar()
+        self.MCU_Read_Wait_Period_Combobox.configure(
+            keyvariable=self.MCU_Read_Wait_Period_VAR,
+            style="ComboBox1.TCombobox",
+            values='5 10 15 20 25 30 40 50',
+            width=5)
+        self.MCU_Read_Wait_Period_Combobox.grid(
+            column=1, padx=20, pady="20 50", row=4)
         frame1.pack(
             anchor="center",
             expand=True,

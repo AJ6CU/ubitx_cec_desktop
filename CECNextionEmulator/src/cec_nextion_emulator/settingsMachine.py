@@ -27,14 +27,17 @@ class settingsMachine(baseui.settingsMachineUI):
         self.saveDSP_Enable = gv.config.get_DSP_Switch()
         self.saveMCU_Command_Headroom = int(gv.config.get_MCU_Command_Headroom()*1000)
         self.saveMCU_Update_Period = gv.config.get_MCU_Update_Period()
+        self.saveMCU_Read_Wait_Period = gv.config.get_MCU_Read_Wait_Period()
 
-        self.DSP_Enable_VAR.set(gv.config.get_DSP_Switch())
+        self.DSP_Enable_VAR.set(self.saveDSP_Enable)
         self.MCU_Command_Headroom_VAR.set(str(self.saveMCU_Command_Headroom))
         self.MCU_Update_Period_VAR.set(str(self.saveMCU_Update_Period))
+        self.MCU_Read_Wait_Period_VAR.set(str(int(self.saveMCU_Read_Wait_Period*1000)))
 
         gv.formatCombobox(self.DSP_Enable_Combobox, "arial", "24", "bold")
         gv.formatCombobox(self.MCU_Command_Headroom_Combobox, "Arial", "24", "bold")
         gv.formatCombobox(self.MCU_Update_Period_Combobox, "Arial", "24", "bold")
+        gv.formatCombobox(self.MCU_Read_Wait_Period_Combobox, "Arial", "24", "bold")
 
         if self.mainWindow.DSPFound:
             self.DSP_Enable_Label.configure(state="normal")
@@ -53,7 +56,8 @@ class settingsMachine(baseui.settingsMachineUI):
 
     def initUX(self):
         self.popup.title("Machine Settings - Advanced Usage Only")
-        self.popup.geometry("500x450")
+        # self.popup.geometry("500x450")
+        self.popup.geometry("500x550")
         self.popup.wait_visibility()  # required on Linux
         self.popup.grab_set()
         self.popup.transient(self.mainWindow)
@@ -63,9 +67,10 @@ class settingsMachine(baseui.settingsMachineUI):
 
     def apply_CB(self):
         print("Applying settings")
-
+        print("current dsp switch is", self.DSP_Enable_VAR.get())
         if self.DSP_Enable_VAR.get() != self.saveDSP_Enable:
             gv.config.set_DSP_Switch(self.DSP_Enable_VAR.get())
+            print('changing DSP_Switch, new setting is', gv.config.get_DSP_Switch(), self.DSP_Enable_VAR.get())
             self.mainWindow.theRadio.Set_DSP_State(self.DSP_Enable_VAR.get())
 
             if self.DSP_Enable_VAR.get() == "True":
@@ -79,6 +84,9 @@ class settingsMachine(baseui.settingsMachineUI):
 
         if int(self.MCU_Update_Period_VAR.get()) != self.saveMCU_Update_Period:
             gv.config.set_MCU_Update_Period(int(self.MCU_Update_Period_VAR.get()))
+
+        if int(self.MCU_Read_Wait_Period_VAR.get()) != self.saveMCU_Read_Wait_Period:
+            gv.config.set_MCU_Read_Wait_Period(int(self.MCU_Read_Wait_Period_VAR.get())/1000)
 
         self.master.destroy()
 

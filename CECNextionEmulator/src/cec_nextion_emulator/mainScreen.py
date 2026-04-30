@@ -35,6 +35,7 @@ class mainScreen(baseui.mainScreenUI):
         self.master = master
 
         self.pack_forget()
+        self.startingspectrum = False
 
         self.theRadio = None            # Object pointer for the Radio
         self.theVFO_Object.attachMainWindow(self)
@@ -187,6 +188,7 @@ class mainScreen(baseui.mainScreenUI):
     ######################################################################################
 
     def delegate_command_processing(self,command, buffer):
+        # print(command, buffer)
         if len(command) != 2:
             print("invalid command", command)
             return
@@ -473,7 +475,7 @@ class mainScreen(baseui.mainScreenUI):
     def updateIFSValue_CB(self):
         self.theRadio.Set_IFS_Level(self.IFS_Jogwheel.get())
 
-    def cwDecode_Button_CB(self):
+    def cwDecode_Button_CB(self, event=None):
         #
         #   Intercept any attempt to start CW Decoding ig DSP is not enabled
         #
@@ -487,11 +489,11 @@ class mainScreen(baseui.mainScreenUI):
         #
         #   Intercept any attempt to start CW Decoding ig DSP is not enabled
         #
-        if gv.config.get_DSP_Switch() != "True":
-            messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
-                                 parent=self)
-        else:
-            self.spectrumWindow = frequencySpectrum(self.master, self, self.theVFO_Object.getIntPrimaryVFO())
+        # if gv.config.get_DSP_Switch() != "True":
+        #     messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
+        #                          parent=self)
+        # else:
+        self.spectrumWindow = frequencySpectrum(self.master, self, self.theVFO_Object.getIntPrimaryVFO())
 
 
 
@@ -686,7 +688,7 @@ class mainScreen(baseui.mainScreenUI):
         #   the "consumer" in the mainscreen has been started. This just throws this data
         #   away until it is ready
         #
-
+        # print("mainscreen Processing Spectrum Data", buffer)
         if self.mainScreenPlotter != None:
             self.mainScreenPlotter.process_Data(buffer)
 
@@ -839,11 +841,13 @@ class mainScreen(baseui.mainScreenUI):
     def sh_UX_Get_Memory(self, buffer):
         try:
             value = self.extractValue(buffer, 10, len(buffer) - 3)
-            if self.theRadio.lenMemoryQueue == 0:    # make sure something in queue, otherwise fatal error
+            # print("sh_UX_Get_Memory", self.theRadio.lenMemoryQueue())
+            if self.theRadio.lenMemoryQueue() == 0:    # make sure something in queue, otherwise fatal error
                 messagebox.showerror("Application Error", "Memory Queue is empty, yet memory value delivered by MCU")
                 sys.exit("A fatal internal error occurred")
 
             memoryCategory = self.theRadio.popMemoryQueue()
+
             match memoryCategory:
 
                 case "Freq":                # Got a channel frequency request
@@ -913,7 +917,7 @@ class mainScreen(baseui.mainScreenUI):
                     self.theRadio.Factory_CW_Sidetone_Setter(str(int(value, 16)))
 
                 case "Spectrum_Scan":
-                    print("Spectrum_Scan", hex(value))
+                    print("Spectrum_Scan:", self.theRadio.lenMemoryQueue()+1,"\n",buffer, "\n", value)
 
                 case _:
                     messagebox.showerror("Application Error", "Unknown Memory Request")

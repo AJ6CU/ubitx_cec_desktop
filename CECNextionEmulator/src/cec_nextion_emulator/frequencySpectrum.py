@@ -119,6 +119,9 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.frequencyPlotCanvas_height = self.frequencyPlotCanvas.winfo_height()
         self.frequencyPlotCanvas_width = self.frequencyPlotCanvas.winfo_width()
 
+        # self.mainWindow.theRadio.Set_Spectrum_Mode(94)
+        self.repeatValueChanged_CB()
+
     def updateScanParameters(self, newBandwidth):
         #
         #   When the bandwidth is changed, this routine is called to re-establish the scanning
@@ -201,7 +204,8 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         if self.repeat_VAR.get() == "Cont.":  # continous running until stopped
             if self.spectrumScanning == True:
                 # self.runSpectrumScan(1)
-                self.master.after(100, self.runSpectrumScan, 1)
+                # self.master.after(100, self.runSpectrumScan, 1)
+                pass
             else:
                 self.scanningComplete()
         else:
@@ -234,38 +238,38 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
     def repeatValueChanged_CB(self, event=None):
         print("repeatValueChanged_CB, new value:", self.repeat_VAR.get())
-        self.remainingCount_VAR.set(self.repeat_VAR.get().replace("X",""))
+        self.remainingCount_VAR.set(self.repeat_VAR.get().replace("x",""))
         #
         #   100 is step count when multiplied by 20 gets the jump on the scan
         #
-        #self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get().replace("X","")),0,
-                                                                # self.MaxADCCount,100)
+        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get().replace("x","")),0,
+                                                                self.MaxADCCount,100)
 
     def bandwidthValueChanged_CB(self, event=None):
         print("bandwidthValueChanged_CB, new value:", self.bandwidthSelected_VAR.get())
         self.updateScanParameters(self.bandwidthSelected_VAR.get())
-        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get().replace("X", "")), 0,
+        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get().replace("x", "")), 0,
                                                                 self.MaxADCCount, 100)
 
     def recenter_CB(self):
         print("recenter_CB")
 
-    def runSpectrumScan(self,count):
-        # self.mainWindow.theRadio.startFrequencySpectrumScan(count, 0, self.MaxADCCount, 100)
-        print("runSpectrumScan called, count:", count)
-        self.plotTestData()
+    def runSpectrumScan(self):
+        print("runSpectrumScan called, startFreq", self.startFrequency, "count=", self.repeat_VAR.get().replace("x", ""))
+        self.mainWindow.theRadio.startFrequencySpectrumScan(self.startFrequency,int(self.repeat_VAR.get().replace("x","")))
+
 
     def startStopSpectrum_CB(self):
         if self.startStopSpectrum_VAR.get() == "Start":
             self.spectrumScanning = True
             if self.repeat_VAR.get() == "Cont.":        # continous running until stopped
                 self.startStopSpectrum_VAR.set("Stop")
-                self.runSpectrumScan(1)
+                self.runSpectrumScan()
             else:
                 self.startStopSpectrum_VAR.set("Running")
                 self.startStop_Button.configure(state=tk.DISABLED)
                 self.remainingCount_VAR.set(int(self.repeat_VAR.get().replace("x", "")))
-                self.runSpectrumScan(int(self.repeat_VAR.get().replace("x", "")))
+                self.runSpectrumScan()
 
         else:
             self.startStopSpectrum_VAR.set("Start")

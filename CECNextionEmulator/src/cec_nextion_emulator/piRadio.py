@@ -168,7 +168,12 @@ class piRadio:
                             buffer = buffer[:0]
                             commandCount += 1
 
-            # time.sleep(0.1)  # Small delay to prevent busy-waiting
+                    #
+                    #   Sometimes the Emulator can outrun the MCU's ability to deliver data. If we were reading valid data
+                    #   and we get a zero waiting situation, wait for a little to see if more data appears
+                    #
+                    if self.radioPort.in_waiting == 0:
+                        sleep(float(gv.config.get_MCU_Read_Wait_Period()))
 
     def updateData(self, repeatFlag=True):
         ffCount = 0
@@ -178,6 +183,8 @@ class piRadio:
             #   Get command
             #
             in_byte = self.radioPort.read(1)
+            # if self.mainWindow.startingspectrum == True:
+            #     print(in_byte)
 
             if in_byte:
                 #
@@ -185,6 +192,8 @@ class piRadio:
                 #   CEC sends a zero to start, just ignore it
                 #
                 if ((len(buffer) == 0) and (in_byte.decode(errors='ignore') != 'p')):
+                    # if self.mainWindow.startingspectrum == True:
+                    print("skipping prior byte:", in_byte)
                     pass
                 else:
 
@@ -193,20 +202,31 @@ class piRadio:
                     if in_byte.hex() == 'ff':
                         ffCount += 1
                         if ffCount == 3:
+                            if buffer[3]=='s' and buffer[4] == 'h':
+                                print("found a sh", buffer)
                             #
                             #   decode the characters into ascii
                             #
-                            decoded_buffer_char = [item.decode(errors='ignore') for item in buffer]
+                            # decoded_buffer_char = [item.decode(errors='ignore') for item in buffer]
+                            # print("decoded:", decoded_buffer_char)
                             #
                             #   since we saw 3 0xff's in a row, we can call the getter to
                             #   set the value in the UX
                             #
-                            self.processRadioCommand(decoded_buffer_char)
+                            self.processRadioCommand([item.decode(errors='ignore') for item in buffer])
                             #
                             #   reset counters (and add one to total processed)
                             #
                             ffCount = 0
-                            buffer = buffer[:0]
+                            # buffer = buffer[:0]
+                            buffer.clear()
+                    #
+                    #   Sometimes the Emulator can outrun the MCU's ability to deliver data. If we were reading valid data
+                    #   and we get a zero waiting situation, wait for a little to see if more data appears
+                    #
+                    if self.radioPort.in_waiting == 0:
+                        sleep(float(gv.config.get_MCU_Read_Wait_Period()))
+
         if repeatFlag:
             self.mainWindow.after(self.MCU_Update_Period,self.updateData)
 
@@ -772,16 +792,38 @@ class piRadio:
 #
     def updateFrequencySpectrumOptions(self, repeatCount, ADCoffset, ADCCount, scanStep):
 #
-#       create bytes
+#       Sends options to ADC.
+#       repeatCount: is number of times a frequency spread is to be reported
+#       ADCoffset: Not used but could be used to adjust for ADC values
+#       ADCCount:  Number of samples to be taken. Max currently is 120
+#       scanStep:   The amount of each scan step
 #
-        b_repeatCount = repeatCount.to_bytes(1, 'litle')
-        b_ADCoffset = ADCoffset.to_bytes(1, 'little')
-        b_ADCCount = ADCCount.to_bytes(1, 'little')
-        b_scanStep = scanStep.to_bytes(1, 'little')
 
 
-        command = [self.toRadioCommandDict["TS_CMD_SPECTRUMOPT"], b_repeatCount, b_ADCoffset, b_ADCCount, b_scanStep]
+        command = [self.toRadioCommandDict["TS_CMD_SPECTRUMOPT"], repeatCount, ADCoffset, ADCCount, scanStep]
         self.sendCommandToMCU(bytes(command))
+        print("Updated Spectrum Options", command)
+
+    def startFrequencySpectrumScan(self, freq,count):
+
+        print("Starting Frequency Spectrum Scan", freq, count)
+        self.mainWindow.startingspectrum = True
+
+        # for _ in range(count):
+        #     self.memoryQueue.append("Spectrum_Scan")
+
+        print('queue lenght=',self.lenMemoryQueue())
+
+        fourBytes = self.Freq_Encode(str(freq))
+
+        command = [self.toRadioCommandDict["TS_CMD_SPECTRUM"],fourBytes[0],fourBytes[1],fourBytes[2],fourBytes[3]]
+        self.sendCommandToMCU(bytes(command))
+        print("started spectrum", command)
+
+        for _ in range(count):
+            self.memoryQueue.append("Spectrum_Scan")
+
+        print('queue lenght=', self.lenMemoryQueue())
 
     def Set_Spectrum_Mode(self, value):
 
@@ -811,13 +853,13 @@ class piRadio:
     def Set_DSP_State(self, flag):
 
         if flag == "True":            # Turn DSP On
-            value = 95    # This turns the DSP on and sets it into Spectrum Mode
+            value = 51    # This turns the DSP on and sets it into Spectrum Mode
             self.mainWindow.frequencySpectrumMode == "FreqScan"
             gv.config.set_DSP_Switch(flag)
             print("turning on DSP")
 
         else:
-            value = 94    # This turns off the DSP
+            value = 50    # This turns off the DSP
             print("Turning off DSP")
             # gv.config.set_DSP_Switch(flag)
             self.mainWindow.mainScreenPlotter.clearCanvas()
