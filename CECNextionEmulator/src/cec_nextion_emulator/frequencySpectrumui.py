@@ -115,11 +115,11 @@ class frequencySpectrumUI(tk.Toplevel):
             side="top")
         self.frequencyTuning_Scale.configure(command=self.frequencyTuning_CB)
         self.frequencyTuning_Scale.bind(
-            "<ButtonPress-1>", self.frequencyTuningPress_CB, add="")
+            "<ButtonPress-1>", self.frequencyTuningPress_CB, add="+")
         self.frequencyTuning_Scale.bind(
             "<ButtonRelease-1>",
             self.frequencyTuningRelease_CB,
-            add="")
+            add="+")
         self.frequencyRange_Frame = ttk.Frame(
             self.freqTuneFrame, name="frequencyrange_frame")
         self.frequencyRange_Frame.configure(

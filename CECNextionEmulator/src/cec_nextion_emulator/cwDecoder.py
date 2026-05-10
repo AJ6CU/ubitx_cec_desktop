@@ -239,7 +239,7 @@ class cwDecoder(baseui.cwDecoderUI):
             self.master.after_cancel(self.windowResizedObj)
         else:
             self.windowResized = True
-        self.windowResizedObj = self.master.after(100, self.refreshCanvas)
+        self.windowResizedObj = self.master.after(gv.config.get_MCU_Update_Period(), self.refreshCanvas)
 
     def refreshCanvas(self):
 
