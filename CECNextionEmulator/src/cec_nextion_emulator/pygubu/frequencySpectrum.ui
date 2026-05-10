@@ -24,7 +24,7 @@
     <resources />
   </project>
   <object class="tk.Toplevel" id="frequencySpectrum_Window" named="True">
-    <property name="geometry">800x650</property>
+    <property name="geometry">800x600</property>
     <property name="height">200</property>
     <property name="title" translatable="yes">Frequency Spectrum</property>
     <property name="width">800</property>
@@ -77,41 +77,6 @@
                   <property type="col" id="0" name="weight">1</property>
                 </containerlayout>
                 <child>
-                  <object class="ttk.Frame" id="frame1">
-                    <property name="height">200</property>
-                    <property name="style">Normal.TFrame</property>
-                    <property name="width">200</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="row">0</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                    <child>
-                      <object class="pygubu.widgets.Combobox" id="maxSignal_Combobox" named="True">
-                        <property name="justify">right</property>
-                        <property name="keyvariable">string:maxSignal_VAR</property>
-                        <property name="style">ComboBox1.TCombobox</property>
-                        <property name="values">255 250 245 240 235 230</property>
-                        <property name="width">4</property>
-                        <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="maxSignal_CB" add="" />
-                        <layout manager="pack">
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Label" id="label1">
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Max Signal</property>
-                        <layout manager="pack">
-                          <property name="padx">10 0</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
                   <object class="tk.Canvas" id="frequencyPlotCanvas" named="True">
                     <property name="background">#0432ff</property>
                     <property name="height">160</property>
@@ -123,42 +88,6 @@
                       <property name="row">1</property>
                       <property name="sticky">ew</property>
                     </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Frame" id="frame2">
-                    <property name="height">200</property>
-                    <property name="style">Normal.TFrame</property>
-                    <property name="width">200</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                    <child>
-                      <object class="pygubu.widgets.Combobox" id="minSignal_Combobox" named="True">
-                        <property name="justify">right</property>
-                        <property name="style">ComboBox1.TCombobox</property>
-                        <property name="textvariable">string:minSignal_VAR</property>
-                        <property name="values">40 35 30 25 20 15 10 5 0</property>
-                        <property name="width">4</property>
-                        <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="minSignal_CB" add="" />
-                        <layout manager="pack">
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Label" id="label3">
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Min Signal</property>
-                        <property name="textvariable">string:minSigna</property>
-                        <layout manager="pack">
-                          <property name="padx">10 0</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
@@ -212,6 +141,7 @@
                     </layout>
                     <child>
                       <object class="ttk.Label" id="startFrequency_Label" named="True">
+                        <property name="foreground">black</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">0</property>
                         <property name="textvariable">string:startFrequency_VAR</property>
@@ -221,18 +151,8 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Label" id="currentFrequency_Label" named="True">
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="textvariable">string:currentFrequency_VAR</property>
-                        <layout manager="pack">
-                          <property name="padx">175 0</property>
-                          <property name="side">left</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
                       <object class="ttk.Label" id="endFrequency_Label" named="True">
+                        <property name="foreground">black</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">120000</property>
                         <property name="textvariable">string:stopFrequency_VAR</property>
@@ -283,7 +203,7 @@
               <property name="padx">10 0</property>
               <property name="row">0</property>
               <property name="rowspan">3</property>
-              <property name="sticky">nse</property>
+              <property name="sticky">ne</property>
             </layout>
             <child>
               <object class="ttk.Frame" id="optionFrame" named="True">
@@ -306,6 +226,9 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">nw</property>
+                      <property name="expand">true</property>
+                      <property name="fill">x</property>
+                      <property name="padx">10 0</property>
                       <property name="pady">20 0</property>
                       <property name="side">top</property>
                     </layout>
@@ -374,7 +297,7 @@ Size(Hz)</property>
                       <property name="anchor">nw</property>
                       <property name="expand">true</property>
                       <property name="fill">x</property>
-                      <property name="pady">50 0</property>
+                      <property name="pady">40 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
@@ -436,6 +359,40 @@ Size(Hz)</property>
               </object>
             </child>
             <child>
+              <object class="ttk.Frame" id="currentFreqFrame" named="True">
+                <property name="height">200</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                  <property name="anchor">w</property>
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="pady">30 0</property>
+                  <property name="side">top</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="freqLabel" named="True">
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">Freq:</property>
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="currentFrequency_Label" named="True">
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">0</property>
+                    <property name="textvariable">string:currentFrequency_VAR</property>
+                    <layout manager="pack">
+                      <property name="padx">10</property>
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="ttk.Frame" id="controlButtonFrame" named="True">
                 <property name="height">200</property>
                 <property name="style">Normal.TFrame</property>
@@ -444,7 +401,7 @@ Size(Hz)</property>
                   <property name="anchor">ne</property>
                   <property name="expand">true</property>
                   <property name="fill">x</property>
-                  <property name="pady">70 0</property>
+                  <property name="pady">75 0</property>
                   <property name="side">top</property>
                 </layout>
                 <containerlayout manager="pack">

@@ -142,7 +142,8 @@ class barPlotter:
         #     barPos = x
 
 
-        if self.barX0[barPos] == None: return
+        if self.barX0[barPos] == None:
+            return
 
         x0 = self.barX0[barPos]
         x1 = self.barX1[barPos]

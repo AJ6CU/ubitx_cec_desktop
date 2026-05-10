@@ -77,23 +77,6 @@ class frequencySpectrumUI(tk.Toplevel):
             style="Heading3.TLabelframe",
             text='Average',
             width=200)
-        frame1 = ttk.Frame(self.average_Labelframe)
-        frame1.configure(height=200, style="Normal.TFrame", width=200)
-        self.maxSignal_Combobox = Combobox(frame1, name="maxsignal_combobox")
-        self.maxSignal_VAR = tk.StringVar()
-        self.maxSignal_Combobox.configure(
-            justify="right",
-            keyvariable=self.maxSignal_VAR,
-            style="ComboBox1.TCombobox",
-            values='255 250 245 240 235 230',
-            width=4)
-        self.maxSignal_Combobox.pack(side="left")
-        self.maxSignal_Combobox.bind(
-            "<<ComboboxSelected>>", self.maxSignal_CB, add="")
-        label1 = ttk.Label(frame1)
-        label1.configure(style="Heading2b.TLabel", text='Max Signal')
-        label1.pack(padx="10 0", side="left")
-        frame1.grid(column=0, row=0, sticky="w")
         self.frequencyPlotCanvas = tk.Canvas(
             self.average_Labelframe, name="frequencyplotcanvas")
         self.frequencyPlotCanvas.configure(
@@ -102,27 +85,6 @@ class frequencySpectrumUI(tk.Toplevel):
             column=0, columnspan=3, row=1, sticky="ew")
         self.frequencyPlotCanvas.bind(
             "<Configure>", self.resizeCanvas_CB, add="+")
-        frame2 = ttk.Frame(self.average_Labelframe)
-        frame2.configure(height=200, style="Normal.TFrame", width=200)
-        self.minSignal_Combobox = Combobox(frame2, name="minsignal_combobox")
-        self.minSignal_VAR = tk.StringVar()
-        self.minSignal_Combobox.configure(
-            justify="right",
-            style="ComboBox1.TCombobox",
-            textvariable=self.minSignal_VAR,
-            values='40 35 30 25 20 15 10 5 0',
-            width=4)
-        self.minSignal_Combobox.pack(side="left")
-        self.minSignal_Combobox.bind(
-            "<<ComboboxSelected>>", self.minSignal_CB, add="")
-        label3 = ttk.Label(frame2)
-        self.minSigna = tk.StringVar(value='Min Signal')
-        label3.configure(
-            style="Heading2b.TLabel",
-            text='Min Signal',
-            textvariable=self.minSigna)
-        label3.pack(padx="10 0", side="left")
-        frame2.grid(column=0, row=2, sticky="w")
         self.average_Labelframe.grid(column=0, padx="8 0", row=0, sticky="ew")
         self.average_Labelframe.columnconfigure(0, weight=1)
         self.freqTuneFrame = ttk.Frame(
@@ -166,22 +128,16 @@ class frequencySpectrumUI(tk.Toplevel):
             self.frequencyRange_Frame, name="startfrequency_label")
         self.startFrequency_VAR = tk.StringVar(value='0')
         self.startFrequency_Label.configure(
+            foreground="black",
             style="Heading2b.TLabel",
             text='0',
             textvariable=self.startFrequency_VAR)
         self.startFrequency_Label.pack(side="left")
-        self.currentFrequency_Label = ttk.Label(
-            self.frequencyRange_Frame, name="currentfrequency_label")
-        self.currentFrequency_VAR = tk.StringVar(value='0')
-        self.currentFrequency_Label.configure(
-            style="Heading2b.TLabel",
-            text='0',
-            textvariable=self.currentFrequency_VAR)
-        self.currentFrequency_Label.pack(padx="175 0", side="left")
         self.endFrequency_Label = ttk.Label(
             self.frequencyRange_Frame, name="endfrequency_label")
         self.stopFrequency_VAR = tk.StringVar(value='120000')
         self.endFrequency_Label.configure(
+            foreground="black",
             style="Heading2b.TLabel",
             text='120000',
             textvariable=self.stopFrequency_VAR)
@@ -266,7 +222,13 @@ class frequencySpectrumUI(tk.Toplevel):
             textvariable=self.calculatedSampleSize_VAR,
             width=8)
         self.calculatedSampleSize_Label.grid(column=1, row=1)
-        self.bandwidthControlFrame.pack(anchor="nw", pady="20 0", side="top")
+        self.bandwidthControlFrame.pack(
+            anchor="nw",
+            expand=True,
+            fill="x",
+            padx="10 0",
+            pady="20 0",
+            side="top")
         self.repeatControlFrame = ttk.Frame(
             self.optionFrame, name="repeatcontrolframe")
         self.repeatControlFrame.configure(
@@ -311,9 +273,30 @@ class frequencySpectrumUI(tk.Toplevel):
             anchor="nw",
             expand=True,
             fill="x",
-            pady="50 0",
+            pady="40 0",
             side="top")
         self.optionFrame.pack(anchor="ne", expand=True, fill="x", side="top")
+        self.currentFreqFrame = ttk.Frame(
+            self.controlFrame, name="currentfreqframe")
+        self.currentFreqFrame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.freqLabel = ttk.Label(self.currentFreqFrame, name="freqlabel")
+        self.freqLabel.configure(style="Heading1b.TLabel", text='Freq:')
+        self.freqLabel.pack(side="left")
+        self.currentFrequency_Label = ttk.Label(
+            self.currentFreqFrame, name="currentfrequency_label")
+        self.currentFrequency_VAR = tk.StringVar(value='0')
+        self.currentFrequency_Label.configure(
+            style="Heading1b.TLabel",
+            text='0',
+            textvariable=self.currentFrequency_VAR)
+        self.currentFrequency_Label.pack(padx=10, side="left")
+        self.currentFreqFrame.pack(
+            anchor="w",
+            expand=True,
+            fill="x",
+            pady="30 0",
+            side="top")
         self.controlButtonFrame = ttk.Frame(
             self.controlFrame, name="controlbuttonframe")
         self.controlButtonFrame.configure(
@@ -340,14 +323,14 @@ class frequencySpectrumUI(tk.Toplevel):
             anchor="ne",
             expand=True,
             fill="x",
-            pady="70 0",
+            pady="75 0",
             side="top")
         self.controlFrame.grid(
             column=1,
             padx="10 0",
             row=0,
             rowspan=3,
-            sticky="nse")
+            sticky="ne")
         self.closingFrame = ttk.Frame(
             self.frequencySpectrum_Labelframe,
             name="closingframe")
@@ -375,18 +358,12 @@ class frequencySpectrumUI(tk.Toplevel):
         self.frequencySpectrum_Labelframe.rowconfigure(0, uniform=1)
         self.frequencySpectrum_Labelframe.columnconfigure(0, weight=1)
         self.configure(height=200, width=800)
-        self.geometry("800x650")
+        self.geometry("800x600")
         self.title("Frequency Spectrum")
         # Layout for 'frequencySpectrum_Window' skipped in custom widget
         # template.
 
-    def maxSignal_CB(self, event=None):
-        pass
-
     def resizeCanvas_CB(self, event=None):
-        pass
-
-    def minSignal_CB(self, event=None):
         pass
 
     def frequencyTuning_CB(self, scale_value):
