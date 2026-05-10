@@ -943,8 +943,6 @@ class mainScreen(baseui.mainScreenUI):
                     self.theRadio.Factory_CW_Sidetone_Setter(str(int(value, 16)))
 
                 case "Spectrum_Scan":
-                    print("Spectrum_Scan:", self.theRadio.lenMemoryQueue()+1,"\n",buffer, "\n", value)
-                    print(bytearray.fromhex(buffer))
                     self.spectrumWindow.process_Spectrum_Data(value)
 
                 case _:

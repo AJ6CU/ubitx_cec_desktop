@@ -112,16 +112,16 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
 
         self.repeat_VAR.set('10')
-        self.bandwidthSelected_VAR.set('120,000')
+        self.bandwidthSelected_VAR.set('240,000')
         self.minSignal_VAR.set('0')
         self.maxSignal_VAR.set('255')
 
-        print("before call to updatescanparameters",self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
+        # print("before call to updatescanparameters",self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
 
 
         self.updateScanParameters()     # Can now format Frequency graphs
 
-        self.frequencyTuning_VAR.set(250.5)                               # Set scrollbar in middle
+        self.frequencyTuning_VAR.set(60)                               # Set scrollbar in middle
         self.currentFrequency_VAR.set(str(self.lastCenterFrequency))    # Set frequency
 
         self.plotterAvg = barPlotter(self, self.frequencyPlotCanvas, self.MaxADCCount, self.FREQ_Y_MAX)
@@ -129,6 +129,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.plotterPeak = barPlotter(self, self.waterfall_Canvas, self.MaxADCCount, self.FREQ_Y_MAX, barColor="red")
 
         self.repeatValueChanged_CB()
+        self.checkForFrequencyChange()
 
         self.initUXComplete = True
 
@@ -141,19 +142,19 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #   When the bandwidth is changed, this routine is called to re-establish the scanning
         #   TODO check if scan running, stop it, reset stuff, and then rerun
         #
-        print(self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
+        # print(self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
         self.bandwidth = int(self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
-        self.calculatedSampleSize_VAR.set(int((self.bandwidth / self.MaxADCCount) * 2))
+        self.calculatedSampleSize_VAR.set(int(self.bandwidth / self.MaxADCCount) )
 
         self.startFrequency=self.roundToNearest((self.centerFrequency - self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
         self.startFrequency_VAR.set(str(self.startFrequency))
 
-        self.stopFrequency = self.roundToNearest((self.centerFrequency + self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
+        self.stopFrequency = self.roundToNearest((self.centerFrequency - int(self.calculatedSampleSize_VAR.get()) + self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
         self.stopFrequency_VAR.set(str(self.stopFrequency))
 
-        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get()), 0, self.MaxADCCount, 100)
+        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get()), 0, self.MaxADCCount, round(int(self.calculatedSampleSize_VAR.get())/20))
 
-
+        # print("finished updating scan parameters", round(int(self.calculatedSampleSize_VAR.get())/20))
 
 
     def updatePeak(self,buffer):
@@ -180,8 +181,11 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         # This plots the frequency ADC values. Uses generic routines to figure out sizes of canvas and bar sizes
         #
+
         self.updateAverage(buffer)          # Process buffer to update the Average of each bar
+
         self.updatePeak(buffer)             # Process buffer to look for a higher peak
+
 
         self.remainingCount_VAR.set(str(int(self.remainingCount_VAR.get()) - 1))        # reduce the count remaining
 
@@ -196,8 +200,8 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
             #         print("Average exceeds peak, position=", i, "average=", self.averageBuffer[i], "peak=", self.peakBuffer[i])
             #     else:
             #         print("Peak exceeds average, position=", i, "average=", self.averageBuffer[i], " peak=", self.peakBuffer[i])
-            for x in range(self.MaxADCCount):
-                print("x=", x, self.peakBuffer[x])
+            # for x in range(self.MaxADCCount):
+            #     print("x=", x, self.peakBuffer[x])
             self.updateTuningLine()
             self.scanningComplete()
 
@@ -206,9 +210,10 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #   get the length of the scale and add 1 ("fence post rule")
         #   return weighted position on scale
         #
-        scaleLength = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"]) + 1
-
-        return(round((float(self.frequencyTuning_VAR.get()) / scaleLength) * (self.MaxADCCount-1)))
+        # scaleLength = int(self.frequencyTuning_Scale["to"] - self.frequencyTuning_Scale["from"]) + 1
+        #
+        # return(round((float(self.frequencyTuning_VAR.get()) / scaleLength) * (self.MaxADCCount-1)))
+        return(int(self.frequencyTuning_VAR.get()))
 
 
 
@@ -228,12 +233,13 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         #   updates the current frequency of the tuning bar as displayed in the middle below the scroll bar
         #
-        print("in update currentFrequency=", self.centerFrequency)
         barPos = self.calculateBarPosition()
+        # print("barPos=", barPos)
         # print("updateCurrentFrequency, position=", barPos)
         # self.currentFrequency = int((self.bandwidth * (int(self.frequencyTuning_VAR.get())/scrollBarSpan))+self.startFrequency)
-        roundedToSampleSize = self.roundToNearest((self.bandwidth/(self.MaxADCCount-1)) * barPos, int(self.calculatedSampleSize_VAR.get()))
-        self.centerFrequency =  self.startFrequency + roundedToSampleSize
+        # roundedToSampleSize = self.roundToNearest((self.bandwidth/(self.MaxADCCount-1)) * barPos, int(self.calculatedSampleSize_VAR.get()))
+        # roundedToSampleSize = self.roundToNearest(self.currentFrequency_VAR.get(),int(self.calculatedSampleSize_VAR.get()))*barPos
+        self.centerFrequency =  self.startFrequency + (int(self.calculatedSampleSize_VAR.get())*barPos)
 
         # print("currentFrequency=", self.centerFrequency)
         self.currentFrequency_VAR.set(str(self.centerFrequency))
@@ -244,6 +250,9 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         self.updateCurrentFrequency()
         self.updateTuningLine()
+
+    def frequencyTuningRelease_CB(self, event=None):
+        self.mainWindow.theRadio.Set_New_Frequency(self.centerFrequency)
 
 
     def repeatValueChanged_CB(self, event=None):
@@ -265,16 +274,16 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #   When the recenter button is pressed, the frequency is changed to the button position and the start/end frequencies
         #   are modified to recognize a new center frequency
         #
-        print("recenter_CB")
+
 
         self.lastCenterFrequency = self.centerFrequency
         self.centerFrequency = int(self.currentFrequency_VAR.get())
-        print("new Frequency=", self.centerFrequency)
         self.mainWindow.theRadio.Set_New_Frequency(self.centerFrequency)
-        self.frequencyTuning_VAR.set(250.5)
+        self.frequencyTuning_VAR.set(60)
         self.updateScanParameters()
 
         self.updateTuningLine()
+        self.startSpectrum_CB()
 
 
     def runSpectrumScan(self):
@@ -282,7 +291,6 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #   kicks off a scan by telling the radio to talk to the DSP and ask for data according
         #   to the previously set parameters
         #
-        print("runSpectrumScan called, startFreq", self.startFrequency, "count=", self.repeat_VAR.get())
 
         self.reinitializeValues()       # set peak and average values back to zero
         self.mainWindow.theRadio.startFrequencySpectrumScan(self.startFrequency, int(self.repeat_VAR.get()))
@@ -315,7 +323,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
 
 
-    def startStopSpectrum_CB(self):
+    def startSpectrum_CB(self):
         #
         #   run when start button is pressed
         #
@@ -362,6 +370,21 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
             self.plotterPeak.refreshCanvas()
             self.updateTuningLine()
 
+    def checkForFrequencyChange(self):
+        if self.mainWindow.theVFO_Object.getIntPrimaryVFO() != int(self.currentFrequency_VAR.get()):
+            self.lastCenterFrequency = self.centerFrequency
+            self.centerFrequency = self.mainWindow.theVFO_Object.getIntPrimaryVFO()
+            self.currentFrequency_VAR.set(str(self.centerFrequency))
+            #
+            # Calculate new tuning bar position
+            #
+            barPos = int((self.centerFrequency - self.startFrequency)/int(self.calculatedSampleSize_VAR.get()))
+            self.frequencyTuning_VAR.set(barPos)
+            self.updateTuningLine()
+
+        self.master.after(250,self.checkForFrequencyChange)
+
+
 
     def maxSignal_CB(self, event=None):
         print("maxSignal_CB", self.maxSignal_VAR.get())
@@ -372,7 +395,6 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.refreshCanvas()
 
     def applyClose_CB(self):
-        print("applyClose_CB")
         #
         #   Needs to invoke a mainWindow routine instead of directly calling these attributes
         #
@@ -380,11 +402,11 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.mainWindow.consumerDSPdata = self.mainWindow
         self.mainWindow.highlightCWorSpectrumBoxes(True)
         self.mainWindow.theRadio.Set_Spectrum_Mode(95)
+        self.mainWindow.theRadio.Set_New_Frequency(self.centerFrequency)
         self.destroy()
 
 
     def cancel_CB(self):
-        print("cancel_CB")
         #
         # self.originalFrequency = centerFrequency
         # need to reset frequency to original if user cancels
@@ -394,6 +416,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.mainWindow.consumerDSPdata = self.mainWindow
         self.mainWindow.highlightCWorSpectrumBoxes(True)
         self.mainWindow.theRadio.Set_Spectrum_Mode(95)
+        self.mainWindow.theRadio.Set_New_Frequency(self.originalFrequency)
         self.destroy()
 
 

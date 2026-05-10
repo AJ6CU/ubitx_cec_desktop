@@ -141,7 +141,7 @@ class frequencySpectrumUI(tk.Toplevel):
             resolution=1,
             showvalue=False,
             sliderlength=50,
-            to=500,
+            to=119,
             variable=self.frequencyTuning_VAR,
             width=30)
         self.frequencyTuning_Scale.pack(
@@ -152,6 +152,10 @@ class frequencySpectrumUI(tk.Toplevel):
             pady="15 0",
             side="top")
         self.frequencyTuning_Scale.configure(command=self.frequencyTuning_CB)
+        self.frequencyTuning_Scale.bind(
+            "<ButtonRelease-1>",
+            self.frequencyTuningRelease_CB,
+            add="")
         self.frequencyRange_Frame = ttk.Frame(
             self.freqTuneFrame, name="frequencyrange_frame")
         self.frequencyRange_Frame.configure(
@@ -233,7 +237,7 @@ class frequencySpectrumUI(tk.Toplevel):
             justify="right",
             style="ComboBox1.TCombobox",
             textvariable=self.bandwidthSelected_VAR,
-            values='10,000 20,000 50,000 100,000 120,000',
+            values='10,000 20,000 50,000 100,000 120,000 240,000',
             width=7)
         self.bandwidth_Combobox.grid(column=0, padx="20 0", row=1, sticky="w")
         self.bandwidth_Combobox.bind(
@@ -315,7 +319,9 @@ class frequencySpectrumUI(tk.Toplevel):
         self.recenter_Button = ttk.Button(
             self.controlButtonFrame, name="recenter_button")
         self.recenter_Button.configure(
-            style="Button2b.TButton", text='Recenter', width=10)
+            style="Button2b.TButton",
+            text='Center\nRerun',
+            width=10)
         self.recenter_Button.pack(side="top")
         self.recenter_Button.configure(command=self.recenter_CB)
         self.startStop_Button = ttk.Button(
@@ -327,7 +333,7 @@ class frequencySpectrumUI(tk.Toplevel):
             textvariable=self.startStopSpectrum_VAR,
             width=10)
         self.startStop_Button.pack(pady="50 0", side="top")
-        self.startStop_Button.configure(command=self.startStopSpectrum_CB)
+        self.startStop_Button.configure(command=self.startSpectrum_CB)
         self.controlButtonFrame.pack(
             anchor="ne",
             expand=True,
@@ -384,6 +390,9 @@ class frequencySpectrumUI(tk.Toplevel):
     def frequencyTuning_CB(self, scale_value):
         pass
 
+    def frequencyTuningRelease_CB(self, event=None):
+        pass
+
     def bandwidthValueChanged_CB(self, event=None):
         pass
 
@@ -393,7 +402,7 @@ class frequencySpectrumUI(tk.Toplevel):
     def recenter_CB(self):
         pass
 
-    def startStopSpectrum_CB(self):
+    def startSpectrum_CB(self):
         pass
 
     def applyClose_CB(self):
