@@ -9,7 +9,8 @@ from cwSettings import cwSettings, cwSettings
 from channels import channels
 from cwDecoder import cwDecoder
 from frequencySpectrum import frequencySpectrum
-# from barPlotter import barPlotter
+from bandScanner import bandScanner
+
 from barPlotter import barPlotterBdata
 from cwLogger import cwLogger
 from Classic_uBITX_Control import Classic_uBITX_Control
@@ -44,6 +45,7 @@ class mainScreen(baseui.mainScreenUI):
         self.settingsWindow = None      # Object pointer for the General Settings Window
         self.channelsWindow = None      # object pointer for the Memory-> VFO Window
         self.spectrumWindow = None #object point for the SpectrumScan Window
+        self.bandScannerWindow = None   # object pointer to the band scanner window
         self.consumerDSPdata = self     # object pointer to the object receiving DSP data
                                         # This could be:
                                         # "self" in the case where the DSP graph is displayed in the main window
@@ -518,13 +520,15 @@ class mainScreen(baseui.mainScreenUI):
 
     def spectrumScan_Button_CB(self, event=None):
         #
-        #   Intercept any attempt to start CW Decoding ig DSP is not enabled
+        #   Start CW Scanner Window
         #
-        # if gv.config.get_DSP_Switch() != "True":
-        #     messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
-        #                          parent=self)
-        # else:
         self.spectrumWindow = frequencySpectrum(self.master, self, self.theVFO_Object.getIntPrimaryVFO())
+
+    def bandScan_Button_CB(self, event=None):
+        #
+        #   Start CW Scanner Window
+        #
+        self.bandScannerWindow = bandScanner(self.master, self)
 
 
 

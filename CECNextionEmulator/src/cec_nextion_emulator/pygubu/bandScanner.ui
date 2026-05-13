@@ -232,7 +232,7 @@
                       <object class="ttk.Button" id="band1GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
                         <property name="style">Button2b.TButton</property>
-                        <property name="text" translatable="yes">Go</property>
+                        <property name="text" translatable="yes">QSY</property>
                         <layout manager="pack">
                           <property name="padx">10 0</property>
                           <property name="side">top</property>
@@ -264,7 +264,7 @@
                       <object class="ttk.Button" id="band2GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
                         <property name="style">Button2b.TButton</property>
-                        <property name="text" translatable="yes">Go</property>
+                        <property name="text" translatable="yes">QSY</property>
                         <layout manager="pack">
                           <property name="padx">10 0</property>
                           <property name="side">top</property>
@@ -296,7 +296,7 @@
                       <object class="ttk.Button" id="band3GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
                         <property name="style">Button2b.TButton</property>
-                        <property name="text" translatable="yes">Go</property>
+                        <property name="text" translatable="yes">QSY</property>
                         <layout manager="pack">
                           <property name="padx">10 0</property>
                           <property name="side">top</property>
@@ -505,18 +505,29 @@
               <property name="pady">20 0</property>
               <property name="row">1</property>
             </layout>
-            <containerlayout manager="grid">
+            <containerlayout manager="pack">
               <property name="anchor">center</property>
             </containerlayout>
+            <child>
+              <object class="ttk.Button" id="scan_Button" named="True">
+                <property name="command" type="command" cbtype="simple">scan_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">Scan</property>
+                <property name="width">10</property>
+                <layout manager="pack">
+                  <property name="padx">0 20</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
             <child>
               <object class="ttk.Button" id="close_Button" named="True">
                 <property name="command" type="command" cbtype="simple">close_CB</property>
                 <property name="style">Button2b.TButton</property>
                 <property name="text" translatable="yes">Close</property>
                 <property name="width">10</property>
-                <layout manager="grid">
-                  <property name="column">3</property>
-                  <property name="row">0</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
                 </layout>
               </object>
             </child>

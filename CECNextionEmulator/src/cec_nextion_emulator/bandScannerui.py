@@ -171,7 +171,7 @@ class bandScannerUI(tk.Toplevel):
         self.band1Select_Label.pack(side="left")
         self.band1GO_Button = ttk.Button(
             self.band1Select_Frame, name="band1go_button")
-        self.band1GO_Button.configure(style="Button2b.TButton", text='Go')
+        self.band1GO_Button.configure(style="Button2b.TButton", text='QSY')
         self.band1GO_Button.pack(padx="10 0", side="top")
         def band1GO_Button_cmd_(): self.bandGo_CB("band1GO_Button")
 
@@ -188,7 +188,7 @@ class bandScannerUI(tk.Toplevel):
         self.band2Select_Label.pack(side="left")
         self.band2GO_Button = ttk.Button(
             self.band2Select_Frame, name="band2go_button")
-        self.band2GO_Button.configure(style="Button2b.TButton", text='Go')
+        self.band2GO_Button.configure(style="Button2b.TButton", text='QSY')
         self.band2GO_Button.pack(padx="10 0", side="top")
         def band2GO_Button_cmd_(): self.bandGo_CB("band2GO_Button")
 
@@ -205,7 +205,7 @@ class bandScannerUI(tk.Toplevel):
         self.band3Select_Label.pack(side="left")
         self.band3GO_Button = ttk.Button(
             self.band3Select_Frame, name="band3go_button")
-        self.band3GO_Button.configure(style="Button2b.TButton", text='Go')
+        self.band3GO_Button.configure(style="Button2b.TButton", text='QSY')
         self.band3GO_Button.pack(padx="10 0", side="top")
         def band3GO_Button_cmd_(): self.bandGo_CB("band3GO_Button")
 
@@ -388,13 +388,17 @@ class bandScannerUI(tk.Toplevel):
             self.bandScanner_Labelframe,
             name="closingframe")
         self.closingFrame.configure(style="Normal.TFrame")
+        self.scan_Button = ttk.Button(self.closingFrame, name="scan_button")
+        self.scan_Button.configure(
+            style="Button2b.TButton", text='Scan', width=10)
+        self.scan_Button.pack(padx="0 20", side="left")
+        self.scan_Button.configure(command=self.scan_CB)
         self.close_Button = ttk.Button(self.closingFrame, name="close_button")
         self.close_Button.configure(
             style="Button2b.TButton", text='Close', width=10)
-        self.close_Button.grid(column=3, row=0)
+        self.close_Button.pack(side="left")
         self.close_Button.configure(command=self.close_CB)
         self.closingFrame.grid(column=0, columnspan=2, pady="20 0", row=1)
-        self.closingFrame.grid_anchor("center")
         self.bandScanner_Labelframe.pack(expand=True, fill="both", side="top")
         self.bandScanner_Labelframe.rowconfigure(0, uniform=1)
         self.bandScanner_Labelframe.columnconfigure(0, weight=1)
@@ -419,6 +423,9 @@ class bandScannerUI(tk.Toplevel):
         pass
 
     def band_Checked_CB(self, widget_id):
+        pass
+
+    def scan_CB(self):
         pass
 
     def close_CB(self):
