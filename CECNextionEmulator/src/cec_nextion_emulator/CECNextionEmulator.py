@@ -59,7 +59,7 @@ def startMainWindow(radioPortName, radioPortHandle):
 #
 root = tk.Tk()
 
-root.geometry("400x300+5+30")           # necessary because latest Tixie put new windows in center
+root.geometry("900x875+5+30")           # necessary because latest Tixie put new windows in center
 root.title("CECNextionEmulator - A Nextion Emulator for CEC Firmware running on the uBITX")
 root.protocol("WM_DELETE_WINDOW", lambda: root.destroy())
 

@@ -27,7 +27,7 @@
   </project>
   <object class="ttk.Frame" id="main_window" named="True">
     <property name="borderwidth">5</property>
-    <property name="height">800</property>
+    <property name="height">900</property>
     <property name="style">Normal.TFrame</property>
     <property name="width">875</property>
     <layout manager="pack">
@@ -239,7 +239,7 @@ SPEAKER
             <property name="width">200</property>
             <layout manager="grid">
               <property name="columnspan">3</property>
-              <property name="padx">525 0</property>
+              <property name="padx">650 0</property>
               <property name="row">1</property>
               <property name="rowspan">3</property>
               <property name="sticky">w</property>
@@ -423,9 +423,9 @@ BAND SCAN
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">10 0</property>
-                  <property name="pady">20 0</property>
+                  <property name="pady">10 0</property>
                   <property name="row">2</property>
-                  <property name="sticky">w</property>
+                  <property name="sticky">nw</property>
                 </layout>
                 <child>
                   <object class="tk.Text" id="decodedCWText" named="True">
@@ -433,7 +433,7 @@ BAND SCAN
                     <property name="borderwidth">2</property>
                     <property name="font">{Courier New} 18 {}</property>
                     <property name="foreground">white</property>
-                    <property name="height">4</property>
+                    <property name="height">3</property>
                     <property name="highlightbackground">white</property>
                     <property name="highlightcolor">white</property>
                     <property name="highlightthickness">1</property>
@@ -445,6 +445,7 @@ BAND SCAN
                     <property name="width">25</property>
                     <property name="wrap">char</property>
                     <layout manager="pack">
+                      <property name="expand">false</property>
                       <property name="side">left</property>
                     </layout>
                   </object>
@@ -461,7 +462,6 @@ BAND SCAN
                     <layout manager="pack">
                       <property name="anchor">sw</property>
                       <property name="expand">false</property>
-                      <property name="fill">y</property>
                       <property name="padx">10 0</property>
                       <property name="side">left</property>
                     </layout>
@@ -481,7 +481,7 @@ BAND SCAN
           <property name="anchor">w</property>
           <property name="expand">true</property>
           <property name="fill">both</property>
-          <property name="pady">10 0</property>
+          <property name="pady">10 50</property>
           <property name="side">top</property>
         </layout>
         <child>

@@ -226,7 +226,6 @@ class frequencySpectrumUI(tk.Toplevel):
             anchor="nw",
             expand=True,
             fill="x",
-            padx="10 0",
             pady="20 0",
             side="top")
         self.repeatControlFrame = ttk.Frame(
@@ -275,7 +274,12 @@ class frequencySpectrumUI(tk.Toplevel):
             fill="x",
             pady="40 0",
             side="top")
-        self.optionFrame.pack(anchor="ne", expand=True, fill="x", side="top")
+        self.optionFrame.pack(
+            anchor="ne",
+            expand=True,
+            fill="x",
+            padx="0 20",
+            side="top")
         self.currentFreqFrame = ttk.Frame(
             self.controlFrame, name="currentfreqframe")
         self.currentFreqFrame.configure(
@@ -358,7 +362,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.frequencySpectrum_Labelframe.rowconfigure(0, uniform=1)
         self.frequencySpectrum_Labelframe.columnconfigure(0, weight=1)
         self.configure(height=200, width=800)
-        self.geometry("800x600")
+        self.geometry("800x575")
         self.title("Frequency Spectrum")
         # Layout for 'frequencySpectrum_Window' skipped in custom widget
         # template.

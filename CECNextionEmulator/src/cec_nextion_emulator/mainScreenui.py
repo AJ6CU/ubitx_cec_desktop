@@ -186,7 +186,7 @@ class mainScreenUI(ttk.Frame):
         self.tuning_Jogwheel.configure(state="normal", touchOptimized=True)
         self.tuning_Jogwheel.pack(anchor="w", side="top")
         self.tuning_Jogwheel.configure(command=self.tuning_Jogwheel_CB)
-        frame3.grid(columnspan=3, padx="525 0", row=1, rowspan=3, sticky="w")
+        frame3.grid(columnspan=3, padx="650 0", row=1, rowspan=3, sticky="w")
         self.control_Meter_Tuning_Frame = ttk.Frame(
             frame2, name="control_meter_tuning_frame")
         self.control_Meter_Tuning_Frame.configure(
@@ -276,7 +276,7 @@ class mainScreenUI(ttk.Frame):
             borderwidth=2,
             font="{Courier New} 18 {}",
             foreground="white",
-            height=4,
+            height=3,
             highlightbackground="white",
             highlightcolor="white",
             highlightthickness=1,
@@ -287,7 +287,7 @@ class mainScreenUI(ttk.Frame):
             state="normal",
             width=25,
             wrap="char")
-        self.decodedCWText.pack(side="left")
+        self.decodedCWText.pack(expand=False, side="left")
         self.spectrumCanvas = tk.Canvas(
             self.cwDecodeFrame, name="spectrumcanvas")
         self.spectrumCanvas.configure(
@@ -301,15 +301,14 @@ class mainScreenUI(ttk.Frame):
         self.spectrumCanvas.pack(
             anchor="sw",
             expand=False,
-            fill="y",
             padx="10 0",
             side="left")
         self.cwDecodeFrame.grid(
             column=0,
             padx="10 0",
-            pady="20 0",
+            pady="10 0",
             row=2,
-            sticky="w")
+            sticky="nw")
         self.control_Meter_Tuning_Frame.grid(
             column=0, padx="5 0", row=1, sticky="nw")
         frame2.pack(
@@ -547,11 +546,11 @@ class mainScreenUI(ttk.Frame):
             anchor="w",
             expand=True,
             fill="both",
-            pady="10 0",
+            pady="10 50",
             side="top")
         self.configure(
             borderwidth=5,
-            height=800,
+            height=900,
             style="Normal.TFrame",
             width=875)
         # Layout for 'main_window' skipped in custom widget template.

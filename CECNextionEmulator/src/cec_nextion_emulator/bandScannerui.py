@@ -120,11 +120,11 @@ class bandScannerUI(tk.Toplevel):
             self.freqTuneFrame, name="frequencytuning_scale")
         self.frequencyTuning_VAR = tk.StringVar()
         self.frequencyTuning_Scale.configure(
+            digits=0,
             from_=0,
             length=500,
             orient="horizontal",
             relief="raised",
-            resolution=1,
             showvalue=False,
             sliderlength=50,
             to=119,
@@ -137,9 +137,6 @@ class bandScannerUI(tk.Toplevel):
             padx="10 0",
             pady="15 0",
             side="top")
-        self.frequencyTuning_Scale.configure(command=self.frequencyTuning_CB)
-        self.frequencyTuning_Scale.bind(
-            "<ButtonPress-1>", self.frequencyTuningPress_CB, add="+")
         self.frequencyTuning_Scale.bind(
             "<ButtonRelease-1>",
             self.frequencyTuningRelease_CB,
@@ -170,7 +167,8 @@ class bandScannerUI(tk.Toplevel):
         self.band1Select_Label.configure(
             style="Heading2b.TLabel",
             text='14.000.000',
-            textvariable=self.band0Frequency_VAR)
+            textvariable=self.band0Frequency_VAR,
+            width=10)
         self.band1Select_Label.pack(side="left")
         self.band1GO_Button = ttk.Button(
             self.band1Select_Frame, name="band1go_button")
@@ -190,7 +188,8 @@ class bandScannerUI(tk.Toplevel):
         self.band2Select_Label.configure(
             style="Heading2b.TLabel",
             text='14.000.000',
-            textvariable=self.band1Frequency_VAR)
+            textvariable=self.band1Frequency_VAR,
+            width=10)
         self.band2Select_Label.pack(side="left")
         self.band2GO_Button = ttk.Button(
             self.band2Select_Frame, name="band2go_button")
@@ -210,7 +209,8 @@ class bandScannerUI(tk.Toplevel):
         self.band3Select_Label.configure(
             style="Heading2b.TLabel",
             text='14.000.000',
-            textvariable=self.band2Frequency_VAR)
+            textvariable=self.band2Frequency_VAR,
+            width=10)
         self.band3Select_Label.pack(side="left")
         self.band3GO_Button = ttk.Button(
             self.band3Select_Frame, name="band3go_button")
@@ -221,7 +221,11 @@ class bandScannerUI(tk.Toplevel):
         self.band3GO_Button.configure(command=band3GO_Button_cmd_)
         self.band3Select_Frame.pack(anchor="w", pady="100 0", side="top")
         self.bandStatus_Frame.pack(
-            anchor="ne", expand=True, fill="x", side="top")
+            anchor="ne",
+            expand=True,
+            fill="x",
+            padx="0 20",
+            side="top")
         self.bandSelectFrame = ttk.Frame(
             self.controlFrame, name="bandselectframe")
         self.bandSelectFrame.configure(
@@ -404,17 +408,11 @@ class bandScannerUI(tk.Toplevel):
         self.bandScanner_Labelframe.rowconfigure(0, uniform=1)
         self.bandScanner_Labelframe.columnconfigure(0, weight=1)
         self.configure(height=200, width=800)
-        self.geometry("800x625")
+        self.geometry("800x675")
         self.title("Frequency Spectrum")
         # Layout for 'bandScanner_Toplevel' skipped in custom widget template.
 
     def resizeCanvas_CB(self, event=None):
-        pass
-
-    def frequencyTuning_CB(self, scale_value):
-        pass
-
-    def frequencyTuningPress_CB(self, event=None):
         pass
 
     def frequencyTuningRelease_CB(self, event=None):

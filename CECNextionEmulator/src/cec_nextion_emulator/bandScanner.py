@@ -135,7 +135,7 @@ class bandScanner(baseui.bandScannerUI):
 
     def initUX(self):
         # self.title("Frequency Spectrum")
-        self.geometry("800x625")
+        self.geometry("825x675")
 
         self.wait_visibility()  # required on Linux
         self.grab_set()
@@ -176,19 +176,14 @@ class bandScanner(baseui.bandScannerUI):
     def resizeCanvas_CB(self, event=None):
         pass
 
-    def frequencyTuning_CB(self, scale_value):
+
+    def frequencyTuningRelease_CB(self, event=None):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].available():
                 return
             else:
-                f=self.targetGraph[i].setFrequency(int(scale_value))
+                f=self.targetGraph[i].setFrequency(int(self.frequencyTuning_VAR.get()))
                 getattr(self, "band"+str(i)+"Frequency_VAR").set(str(f))
-
-
-    def frequencyTuningPress_CB(self, event=None):
-        pass
-
-    def frequencyTuningRelease_CB(self, event=None):
         pass
 
     def bandGo_CB(self, widget_id):

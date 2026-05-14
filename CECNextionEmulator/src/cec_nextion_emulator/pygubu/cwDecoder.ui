@@ -368,6 +368,7 @@ Min/Max</property>
             <layout manager="pack">
               <property name="expand">true</property>
               <property name="fill">x</property>
+              <property name="ipady">20</property>
             </layout>
             <containerlayout manager="grid">
               <property name="anchor">center</property>

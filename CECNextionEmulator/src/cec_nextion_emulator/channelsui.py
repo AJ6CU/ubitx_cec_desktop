@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+"""
+CW Settings Window
+
+Used to save cw settings
+
+UI source file: channels.ui
+"""
 import tkinter as tk
 import tkinter.ttk as ttk
 from frequencyChannel import frequencyChannel
@@ -6,17 +13,17 @@ from pygubu.widgets.combobox import Combobox
 from pygubu.widgets.scrolledframe import ScrolledFrame
 
 
-def i18n_translator_noop(value):
+def safe_i18n_translator(value):
     """i18n - Setup translator in derived class file"""
     return value
 
 
-def first_object_callback_noop(widget):
+def safe_fo_callback(widget):
     """on first objec callback - Setup callback in derived class file."""
     pass
 
 
-def image_loader_default(master, image_name: str):
+def safe_image_loader(master, image_name: str):
     """Image loader - Setup image_loader in derived class file."""
     img = None
     try:
@@ -41,12 +48,12 @@ class channelsUI(ttk.Labelframe):
         **kw
     ):
         if translator is None:
-            translator = i18n_translator_noop
+            translator = safe_i18n_translator
         _ = translator  # i18n string marker.
         if image_loader is None:
-            image_loader = image_loader_default
+            image_loader = safe_image_loader
         if on_first_object_cb is None:
-            on_first_object_cb = first_object_callback_noop
+            on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
 
@@ -281,11 +288,7 @@ class channelsUI(ttk.Labelframe):
             self.update_Time_On_Station_CB,
             add="+")
         self.channelEdit_Frame.grid(
-            column=1,
-            padx="20 10",
-            pady="100 0",
-            row=2,
-            sticky="new")
+            column=1, padx=20, pady="100 0", row=2, sticky="new")
         self.channelEdit_Frame.rowconfigure(3, weight=1)
         self.closingFrame = ttk.Frame(frame1, name="closingframe")
         self.closingFrame.configure(style="Normal.TFrame")
@@ -312,7 +315,7 @@ class channelsUI(ttk.Labelframe):
         self.close_Button.configure(style="Button2b.TButton", text='Close')
         self.close_Button.grid(column=3, padx="10 0", row=0)
         self.close_Button.configure(command=self.close_Channel_CB)
-        self.closingFrame.grid(column=0, padx=15, pady=15, row=4, sticky="sew")
+        self.closingFrame.grid(column=0, padx=15, pady=20, row=4, sticky="sew")
         self.closingFrame.grid_anchor("center")
         frame1.pack(expand=True, fill="both", side="top")
         frame1.rowconfigure(2, minsize=400, weight=2)

@@ -59,7 +59,7 @@ class settingsGeneral(baseui.settingsGeneralUI):
 
     def initUX(self):
         self.popup.title("General Settings")
-        self.popup.geometry("450x450")
+        self.popup.geometry("550x550")
         self.popup.wait_visibility()  # required on Linux
         self.popup.grab_set()
         self.popup.transient(self.mainWindow)

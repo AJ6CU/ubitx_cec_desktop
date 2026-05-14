@@ -265,7 +265,7 @@ class cwDecoderUI(tk.Toplevel):
             style="Button2b.TButton", text='Close', width=10)
         self.close_Button.grid(column=3, padx="10 0", row=0)
         self.close_Button.configure(command=self.close_CB)
-        self.closingFrame.pack(expand=True, fill="x")
+        self.closingFrame.pack(expand=True, fill="x", ipady=20)
         self.closingFrame.grid_anchor("center")
         self.cwDecoder_Labelframe.pack(expand=True, fill="both", side="top")
         self.configure(height=200, width=800)

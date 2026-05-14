@@ -24,7 +24,7 @@
     <resources />
   </project>
   <object class="tk.Toplevel" id="frequencySpectrum_Window" named="True">
-    <property name="geometry">800x600</property>
+    <property name="geometry">800x575</property>
     <property name="height">200</property>
     <property name="title" translatable="yes">Frequency Spectrum</property>
     <property name="width">800</property>
@@ -214,6 +214,7 @@
                   <property name="anchor">ne</property>
                   <property name="expand">true</property>
                   <property name="fill">x</property>
+                  <property name="padx">0 20</property>
                   <property name="side">top</property>
                 </layout>
                 <containerlayout manager="pack">
@@ -228,7 +229,6 @@
                       <property name="anchor">nw</property>
                       <property name="expand">true</property>
                       <property name="fill">x</property>
-                      <property name="padx">10 0</property>
                       <property name="pady">20 0</property>
                       <property name="side">top</property>
                     </layout>

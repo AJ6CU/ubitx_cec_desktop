@@ -24,7 +24,7 @@
     <resources />
   </project>
   <object class="tk.Toplevel" id="bandScanner_Toplevel" named="True">
-    <property name="geometry">800x625</property>
+    <property name="geometry">800x675</property>
     <property name="height">200</property>
     <property name="title" translatable="yes">Frequency Spectrum</property>
     <property name="width">800</property>
@@ -156,18 +156,16 @@
                 </layout>
                 <child>
                   <object class="tk.Scale" id="frequencyTuning_Scale" named="True">
-                    <property name="command" type="command" cbtype="scale">frequencyTuning_CB</property>
+                    <property name="digits">0</property>
                     <property name="from_">0</property>
                     <property name="length">500</property>
                     <property name="orient">horizontal</property>
                     <property name="relief">raised</property>
-                    <property name="resolution">1</property>
                     <property name="showvalue">false</property>
                     <property name="sliderlength">50</property>
                     <property name="to">119</property>
                     <property name="variable">string:frequencyTuning_VAR</property>
                     <property name="width">30</property>
-                    <bind sequence="&lt;ButtonPress-1&gt;" handler="frequencyTuningPress_CB" add="True" />
                     <bind sequence="&lt;ButtonRelease-1&gt;" handler="frequencyTuningRelease_CB" add="True" />
                     <layout manager="pack">
                       <property name="anchor">w</property>
@@ -204,6 +202,7 @@
                   <property name="anchor">ne</property>
                   <property name="expand">true</property>
                   <property name="fill">x</property>
+                  <property name="padx">0 20</property>
                   <property name="side">top</property>
                 </layout>
                 <containerlayout manager="pack">
@@ -224,6 +223,7 @@
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">14.000.000</property>
                         <property name="textvariable">string:band0Frequency_VAR</property>
+                        <property name="width">10</property>
                         <layout manager="pack">
                           <property name="side">left</property>
                         </layout>
@@ -257,6 +257,7 @@
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">14.000.000</property>
                         <property name="textvariable">string:band1Frequency_VAR</property>
+                        <property name="width">10</property>
                         <layout manager="pack">
                           <property name="side">left</property>
                         </layout>
@@ -290,6 +291,7 @@
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">14.000.000</property>
                         <property name="textvariable">string:band2Frequency_VAR</property>
+                        <property name="width">10</property>
                         <layout manager="pack">
                           <property name="side">left</property>
                         </layout>

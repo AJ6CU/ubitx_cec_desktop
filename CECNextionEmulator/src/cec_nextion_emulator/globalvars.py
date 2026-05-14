@@ -115,15 +115,16 @@ def unformatFrequency(vfo, includeOffset=False, freqOffset=0):
         return (str(int(vfo.replace(",","").replace(".","")) - freqOffset))
 
 def formatCombobox( combobox, family="Arial", size="36", weight="bold"):
-    combobox.configure(font=font.Font(family=family, size=size, weight=weight))
+    # combobox.configure(font=font.Font(family=family, size=size, weight=weight))
+    combobox.configure(font=("Arial",36))
     #
     #   The following is pure magic....  Found after hours of search. Basically the first command
     #   discovers the handle to the ListBox that is hidden below the combobox
     #   with this handle you can then set the drop down to the fonts used by the combobox.
     #   grab (create a new one or get existing) popdown
-    popdown = combobox.tk.eval('ttk::combobox::PopdownWindow %s' % combobox)
-    #   configure popdown font
-    combobox.tk.call('%s.f.l' % popdown, 'configure', '-font', combobox['font'])
+    # popdown = combobox.tk.eval('ttk::combobox::PopdownWindow %s' % combobox)
+    # #   configure popdown font
+    # combobox.tk.call('%s.f.l' % popdown, 'configure', '-font', combobox['font'])
 
 def validateNumber(value, lowbound, highbound, name, parent):
     if str(value) == "":
