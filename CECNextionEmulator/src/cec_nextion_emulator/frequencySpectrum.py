@@ -98,11 +98,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
             self.bandwidthValues[key] = value.replace(',', gv.NUMBER_DELIMITER)
             self.bandwidth_Menu.entryconfigure(value, label=self.bandwidthValues[key])
 
-        if gv.NUMBER_DELIMITER == ',':
-            self.bandwidthSelected_VAR.set('240,000')       # sets the default bandwidth to 240,000 hz
-        else:
-            self.bandwidthSelected_VAR.set('240.000')
-
+        self.bandwidthSelected_VAR.set(self.bandwidthValues['240k'])
 
         self.frequencyTuning_VAR.set(60)                                                # Set scrollbar to middle
         self.currentFrequency_VAR.set(gv.formatVFO(str((self.lastCenterFrequency)) ) )  # Set frequency
