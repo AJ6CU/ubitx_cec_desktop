@@ -24,7 +24,6 @@
     <resources />
   </project>
   <object class="tk.Toplevel" id="bandScanner_Toplevel" named="True">
-    <property name="geometry">800x675</property>
     <property name="height">200</property>
     <property name="title" translatable="yes">Frequency Spectrum</property>
     <property name="width">800</property>
@@ -98,8 +97,29 @@
                     <property name="variable">string:band0Start_VAR</property>
                     <layout manager="grid">
                       <property name="column">0</property>
+                      <property name="columnspan">3</property>
                       <property name="row">1</property>
                       <property name="sticky">ew</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band0StartFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band0EndFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
                     </layout>
                   </object>
                 </child>
@@ -141,8 +161,29 @@
                     <property name="variable">string:band1Start_VAR</property>
                     <layout manager="grid">
                       <property name="column">0</property>
+                      <property name="columnspan">3</property>
                       <property name="row">1</property>
                       <property name="sticky">ew</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band1StartFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band1EndFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
                     </layout>
                   </object>
                 </child>
@@ -183,7 +224,28 @@
                     <property name="to">119</property>
                     <property name="variable">string:band2Start_VAR</property>
                     <layout manager="grid">
+                      <property name="columnspan">3</property>
                       <property name="sticky">ew</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band2StartFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="band2EndFrequency_Label" named="True">
+                    <property name="style">Heading4b.TLabel</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
                     </layout>
                   </object>
                 </child>
@@ -260,13 +322,11 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
-                      <property name="pady">70 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
                       <object class="ttk.Label" id="band0Frequency_Label" named="True">
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">14.032.000</property>
                         <property name="textvariable">string:band0Frequency_VAR</property>
                         <property name="width">10</property>
                         <layout manager="grid">
@@ -286,64 +346,6 @@
                         </layout>
                       </object>
                     </child>
-                    <child>
-                      <object class="ttk.Frame" id="band1Boundaries_Frame" named="True">
-                        <property name="height">200</property>
-                        <property name="style">Normal.TFrame</property>
-                        <property name="width">200</property>
-                        <layout manager="grid">
-                          <property name="column">0</property>
-                          <property name="columnspan">2</property>
-                          <property name="pady">10 0</property>
-                          <property name="row">3</property>
-                          <property name="sticky">w</property>
-                        </layout>
-                        <child>
-                          <object class="ttk.Label" id="band0Start_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">Start:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">0</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band0StartFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.000.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">0</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band0End_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">End:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">1</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band0EndFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.240.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">1</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
@@ -353,7 +355,7 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
-                      <property name="pady">70 0</property>
+                      <property name="pady">130 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
@@ -378,64 +380,6 @@
                         </layout>
                       </object>
                     </child>
-                    <child>
-                      <object class="ttk.Frame" id="band2Boundaries_Frame" named="True">
-                        <property name="height">200</property>
-                        <property name="style">Normal.TFrame</property>
-                        <property name="width">200</property>
-                        <layout manager="grid">
-                          <property name="column">0</property>
-                          <property name="columnspan">2</property>
-                          <property name="pady">10 0</property>
-                          <property name="row">3</property>
-                          <property name="sticky">w</property>
-                        </layout>
-                        <child>
-                          <object class="ttk.Label" id="band1Start_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">Start:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">0</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band1StartFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.000.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">0</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band1End_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">End:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">1</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band1EndFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.240.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">1</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
@@ -445,7 +389,7 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
-                      <property name="pady">100 0</property>
+                      <property name="pady">155 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
@@ -468,64 +412,6 @@
                           <property name="column">1</property>
                           <property name="row">0</property>
                         </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Frame" id="frame4" named="True">
-                        <property name="height">200</property>
-                        <property name="style">Normal.TFrame</property>
-                        <property name="width">200</property>
-                        <layout manager="grid">
-                          <property name="column">0</property>
-                          <property name="columnspan">2</property>
-                          <property name="pady">10 0</property>
-                          <property name="row">3</property>
-                          <property name="sticky">w</property>
-                        </layout>
-                        <child>
-                          <object class="ttk.Label" id="band2Start_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">Start:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">0</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band2StartFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.000.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">0</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band2End_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">End:</property>
-                            <layout manager="grid">
-                              <property name="column">0</property>
-                              <property name="row">1</property>
-                              <property name="sticky">e</property>
-                            </layout>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="ttk.Label" id="band2EndFrequency_Label" named="True">
-                            <property name="style">Heading4b.TLabel</property>
-                            <property name="text" translatable="yes">14.240.000</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="row">1</property>
-                              <property name="sticky">w</property>
-                            </layout>
-                          </object>
-                        </child>
                       </object>
                     </child>
                   </object>
@@ -727,7 +613,7 @@
             <layout manager="grid">
               <property name="column">0</property>
               <property name="columnspan">2</property>
-              <property name="pady">20 0</property>
+              <property name="pady">20 30</property>
               <property name="row">1</property>
             </layout>
             <containerlayout manager="pack">

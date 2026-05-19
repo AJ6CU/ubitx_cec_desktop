@@ -225,10 +225,15 @@ class bandScanner(baseui.bandScannerUI):
     def bandGo_CB(self, widget_id):
         print("bandGo_CB: widget_id=", widget_id)
 
-    def allocateGraphObj(self, bandID, bandStart, bandSampleSize, maxY=70, scrollbarSize=120):
+        #####
+        #### in the middle of printing out band end and start based on 240k fixed bandwidth
+        #### need to deal with scrollbar
+        ###
+
+    def allocateGraphObj(self, bandID, bandStart, bandEnd, maxY=70, scrollbarSize=120):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].available():
-                self.targetGraph[i].activate(bandID, bandStart, bandSampleSize, self.FREQ_Y_MAX, scrollbarSize)
+                self.targetGraph[i].activate(bandID, bandStart, bandEnd, self.FREQ_Y_MAX, scrollbarSize)
                 f=gv.formatVFO(str(self.targetGraph[i].setFrequency(int(self.frequencyTuning_VAR.get()))))
                 getattr(self, "band"+str(i)+"Frequency_VAR").set(f)
                 return True
@@ -261,7 +266,7 @@ class bandScanner(baseui.bandScannerUI):
             #
             #   Trying to allocate this band. Allocate it. If True, success
             #
-            if self.allocateGraphObj(widget_id,gv.bandStart[widget_id], gv.bandSampleSize[widget_id],
+            if self.allocateGraphObj(widget_id,gv.bandStart[widget_id], gv.bandEnd[widget_id],
                                      self.FREQ_Y_MAX, self.MaxADCCount):
                 #
                 #   True indicates successful allocation. Can just return

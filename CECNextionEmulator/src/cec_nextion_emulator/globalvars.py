@@ -75,9 +75,9 @@ bandStart = {"Band160m":1800000,"Band80m":3500000,"Band40m":7000000,"Band30m":10
 bandEnd =   {"Band160m":2000000,"Band80m":4000000,"Band40m":7300000,"Band30m":10150000,
              "Band20m":14350000, "Band17m":18168000, "Band15m":21450000, "Band12m":24990000,
              "Band10m":29700000}
-bandSampleSize =   {"Band160m":1660,"Band80m":4160,"Band40m":2500,"Band30m":410,
-             "Band20m":2910, "Band17m":830, "Band15m":3750, "Band12m":830,
-             "Band10m":14160}
+# bandSampleSize =   {"Band160m":1660,"Band80m":4160,"Band40m":2500,"Band30m":410,
+#              "Band20m":2910, "Band17m":830, "Band15m":3750, "Band12m":830,
+#              "Band10m":14160}
 
 
 
