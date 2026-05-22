@@ -23,11 +23,10 @@ import globalvars as gv
 
 class graphObject(barPlotter):
 
-    def __init__(self, targetLabelFrame, canvasObj=None, totalX=120, maxY=70,
+    def __init__(self, band, totalX=120, maxY=70,
                  barColor="yellow", X_GAP=4, Y_GAP=0, currentMax=0, currentMin=0, **kw):
 
-        self.targetLabelFrame = targetLabelFrame
-        self.canvasObj = canvasObj
+        self.band = band
         self.totalX = totalX
         self.maxY = maxY
 
@@ -48,8 +47,10 @@ class graphObject(barPlotter):
         self.activateFlag = False
         self.scrollbarSize = None
 
-        super().__init__(self.targetLabelFrame, self.canvasObj, self.totalX, self.maxY, self.X_GAP, self.Y_GAP,
+        super().__init__(self.band, self.band.bandPlot_Canvas, self.totalX, self.maxY, self.X_GAP, self.Y_GAP,
                          self.currentMax, self.currentMin, self.barColor, **kw)
+
+        self.band.attachScrollbar_CB(self.setScanStart)
 
     def deactivate(self):
         self.bandID = None
@@ -57,22 +58,43 @@ class graphObject(barPlotter):
         self.bandEnd = None
 
         self.activateFlag = False
-        self.targetLabelFrame.configure(text="Select Band...")
+        self.band.scanningRange_VAR.set("")
+        self.band.bandRange_VAR.set("")
+        self.band.configure(text="Select Band...")
+
+    def updateScanRange(self, pos):
+        self.bandScanStart = self.bandStart + (round(float(pos)) * self.bandSampleSize)
+        self.bandScanEnd = self.bandScanStart + (self.bandSampleSize * self.scrollbarSize)
+        #
+        #   Make sure that the displayed scanned range is always within the band
+        #
+        if self.bandScanEnd > self.bandEnd:
+            self.bandScanEnd = self.bandEnd
+            self.bandScanStart = self.bandScanEnd - (self.bandSampleSize * self.scrollbarSize)
+            if self.bandScanStart < self.bandStart:
+                self.bandScanStart = self.bandStart
+
+        self.band.scanningRange_VAR.set("Scanning Range: " + gv.formatVFO(str(self.bandScanStart)) + " - " + gv.formatVFO(str(self.bandScanEnd)))
+
+        self.band.bandRange_VAR.set("Band Range: " + gv.formatVFO(str(self.bandStart)) + " - " + gv.formatVFO(str(self.bandEnd)))
 
 
-    def activate(self, bandID, bandStart, bandSampleSize, maxY=70, scrollbarSize=120):
+
+    def activate(self, bandID, bandStart, bandEnd, bandSampleSize, maxY=70, scrollbarSize=120):
         self.bandID = bandID
         self.bandStart = bandStart
+        self.bandEnd = bandEnd
         self.bandSampleSize = bandSampleSize
         self.maxY = maxY
         self.scrollbarSize = scrollbarSize
 
-        self.bandEnd = self.bandStart + (self.bandSampleSize * scrollbarSize)
+        self.updateScanRange(0)
+
 
         print("band:", self.bandStart, gv.bandEnd[bandID], "actual end", self.bandStart + (self.bandSampleSize * 120))
 
         self.activateFlag = True
-        self.targetLabelFrame.configure(text=self.bandID.replace("Band", "Band: "))
+        self.band.configure(text=self.bandID.replace("Band", "Band: "))
 
     def get_bandID(self):
         return self.bandID
@@ -82,6 +104,10 @@ class graphObject(barPlotter):
 
     def setFrequency(self, scrollbarPosition):
         return self.bandStart + (self.bandSampleSize * scrollbarPosition)
+
+    def setScanStart(self, pos):
+        print("setScaleStart")
+        self.updateScanRange(pos)
 
     def available(self):
         return not self.activateFlag
@@ -139,6 +165,7 @@ class bandScanner(baseui.bandScannerUI):
 
         self.MaxADCCount = 120  # Maximum number of times that the ADC can be read.
                                 # CEC hardwires 120 here
+        self.Bandwidth = 2000
         self.repeatCount = 3    # Scan each band 3x
 
         self.FREQ_Y_MAX = 70  # maximum value of Y values
@@ -201,9 +228,9 @@ class bandScanner(baseui.bandScannerUI):
         #
         #   Instantiate the 3 objects to do the plotting
         #
-        self.targetGraph[0] = graphObject(self.band0_Labelframe, self.band0Plot_Canvas)
-        self.targetGraph[1] = graphObject(self.band1_Labelframe, self.band1Plot_Canvas)
-        self.targetGraph[2] = graphObject(self.band2_Labelframe, self.band2Plot_Canvas)
+        self.targetGraph[0] = graphObject(self.band0)
+        self.targetGraph[1] = graphObject(self.band1)
+        self.targetGraph[2] = graphObject(self.band2)
 
 
         self.initUXComplete = True
@@ -225,6 +252,11 @@ class bandScanner(baseui.bandScannerUI):
     def bandGo_CB(self, widget_id):
         print("bandGo_CB: widget_id=", widget_id)
 
+    def bandStart_CB(self, band, scale):
+        print("bandOBJ", band, scale)
+        self.targetGraph[int(band.replace("band",''))].setScanStart(scale)
+
+
         #####
         #### in the middle of printing out band end and start based on 240k fixed bandwidth
         #### need to deal with scrollbar
@@ -233,7 +265,7 @@ class bandScanner(baseui.bandScannerUI):
     def allocateGraphObj(self, bandID, bandStart, bandEnd, maxY=70, scrollbarSize=120):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].available():
-                self.targetGraph[i].activate(bandID, bandStart, bandEnd, self.FREQ_Y_MAX, scrollbarSize)
+                self.targetGraph[i].activate(bandID, bandStart, bandEnd, self.Bandwidth, self.FREQ_Y_MAX, scrollbarSize)
                 f=gv.formatVFO(str(self.targetGraph[i].setFrequency(int(self.frequencyTuning_VAR.get()))))
                 getattr(self, "band"+str(i)+"Frequency_VAR").set(f)
                 return True

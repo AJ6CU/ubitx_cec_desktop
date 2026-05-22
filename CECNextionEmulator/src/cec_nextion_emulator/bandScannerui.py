@@ -8,6 +8,7 @@ UI source file: bandScanner.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
+from bandGraph import bandGraph
 
 
 def safe_i18n_translator(value):
@@ -69,101 +70,12 @@ class bandScannerUI(tk.Toplevel):
             name="frequencyspectrumframe")
         self.frequencySpectrumFrame.configure(
             height=180, style="Normal.TFrame", width=450)
-        self.band0_Labelframe = ttk.Labelframe(
-            self.frequencySpectrumFrame, name="band0_labelframe")
-        self.band0_Labelframe.configure(
-            height=200,
-            style="Heading3.TLabelframe",
-            text='Select Band...',
-            width=200)
-        self.band0Plot_Canvas = tk.Canvas(
-            self.band0_Labelframe, name="band0plot_canvas")
-        self.band0Plot_Canvas.configure(
-            background="#0432ff", height=100, width=430)
-        self.band0Plot_Canvas.grid(column=0, columnspan=3, row=0, sticky="ew")
-        self.band0Plot_Canvas.bind(
-            "<Configure>", self.resizeCanvas_CB, add="+")
-        self.band0Start_Scale = ttk.Scale(
-            self.band0_Labelframe, name="band0start_scale")
-        self.band0Start_VAR = tk.StringVar()
-        self.band0Start_Scale.configure(
-            from_=0,
-            orient="horizontal",
-            to=119,
-            variable=self.band0Start_VAR)
-        self.band0Start_Scale.grid(column=0, columnspan=3, row=1, sticky="ew")
-        self.band0StartFrequency_Label = ttk.Label(
-            self.band0_Labelframe, name="band0startfrequency_label")
-        self.band0StartFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band0StartFrequency_Label.grid(column=0, row=2, sticky="w")
-        self.band0EndFrequency_Label = ttk.Label(
-            self.band0_Labelframe, name="band0endfrequency_label")
-        self.band0EndFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band0EndFrequency_Label.grid(column=1, row=2, sticky="w")
-        self.band0_Labelframe.grid(column=0, padx="8 0", row=0, sticky="ew")
-        self.band0_Labelframe.columnconfigure(0, weight=1)
-        self.band1_Labelframe = ttk.Labelframe(
-            self.frequencySpectrumFrame, name="band1_labelframe")
-        self.band1_Labelframe.configure(
-            height=200,
-            style="Heading3.TLabelframe",
-            text='Select Band...',
-            width=200)
-        self.band1Plot_Canvas = tk.Canvas(
-            self.band1_Labelframe, name="band1plot_canvas")
-        self.band1Plot_Canvas.configure(
-            background="#0432ff", height=100, width=430)
-        self.band1Plot_Canvas.grid(column=0, columnspan=3, row=0, sticky="ew")
-        self.band1Start_Scale = ttk.Scale(
-            self.band1_Labelframe, name="band1start_scale")
-        self.band1Start_VAR = tk.StringVar()
-        self.band1Start_Scale.configure(
-            from_=0,
-            orient="horizontal",
-            to=119,
-            variable=self.band1Start_VAR)
-        self.band1Start_Scale.grid(column=0, columnspan=3, row=1, sticky="ew")
-        self.band1StartFrequency_Label = ttk.Label(
-            self.band1_Labelframe, name="band1startfrequency_label")
-        self.band1StartFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band1StartFrequency_Label.grid(column=0, row=2, sticky="w")
-        self.band1EndFrequency_Label = ttk.Label(
-            self.band1_Labelframe, name="band1endfrequency_label")
-        self.band1EndFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band1EndFrequency_Label.grid(column=1, row=2, sticky="w")
-        self.band1_Labelframe.grid(column=0, padx="8 0", row=1, sticky="ew")
-        self.band1_Labelframe.columnconfigure(0, weight=1)
-        self.band2_Labelframe = ttk.Labelframe(
-            self.frequencySpectrumFrame, name="band2_labelframe")
-        self.band2_Labelframe.configure(
-            height=200,
-            style="Heading3.TLabelframe",
-            text='Select Band...',
-            width=200)
-        self.band2Plot_Canvas = tk.Canvas(
-            self.band2_Labelframe, name="band2plot_canvas")
-        self.band2Plot_Canvas.configure(
-            background="#0432ff", height=100, width=430)
-        self.band2Plot_Canvas.grid(column=0, columnspan=3, row=0, sticky="ew")
-        self.band2Start_Scale = ttk.Scale(
-            self.band2_Labelframe, name="band2start_scale")
-        self.band2Start_VAR = tk.StringVar()
-        self.band2Start_Scale.configure(
-            from_=0,
-            orient="horizontal",
-            to=119,
-            variable=self.band2Start_VAR)
-        self.band2Start_Scale.grid(columnspan=3, sticky="ew")
-        self.band2StartFrequency_Label = ttk.Label(
-            self.band2_Labelframe, name="band2startfrequency_label")
-        self.band2StartFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band2StartFrequency_Label.grid(column=0, row=2, sticky="w")
-        self.band2EndFrequency_Label = ttk.Label(
-            self.band2_Labelframe, name="band2endfrequency_label")
-        self.band2EndFrequency_Label.configure(style="Heading4b.TLabel")
-        self.band2EndFrequency_Label.grid(column=1, row=2, sticky="w")
-        self.band2_Labelframe.grid(column=0, padx="8 0", row=2, sticky="ew")
-        self.band2_Labelframe.columnconfigure(0, weight=1)
+        self.band0 = bandGraph(self.frequencySpectrumFrame, name="band0")
+        self.band0.grid(column=0, padx="8 0", row=0, sticky="ew")
+        self.band1 = bandGraph(self.frequencySpectrumFrame, name="band1")
+        self.band1.grid(column=0, padx="8 0", row=1, sticky="ew")
+        self.band2 = bandGraph(self.frequencySpectrumFrame, name="band2")
+        self.band2.grid(column=0, padx="8 0", row=2, sticky="ew")
         self.freqTuneFrame = ttk.Frame(
             self.frequencySpectrumFrame,
             name="freqtuneframe")
@@ -229,7 +141,7 @@ class bandScannerUI(tk.Toplevel):
         def band0GO_Button_cmd_(): self.bandGo_CB("band0GO_Button")
 
         self.band0GO_Button.configure(command=band0GO_Button_cmd_)
-        self.band0Select_Frame.pack(anchor="w", side="top")
+        self.band0Select_Frame.pack(anchor="w", pady="15 0", side="top")
         self.band1Select_Frame = ttk.Frame(
             self.bandStatus_Frame, name="band1select_frame")
         self.band1Select_Frame.configure(
@@ -249,7 +161,7 @@ class bandScannerUI(tk.Toplevel):
         def band1GO_Button_cmd_(): self.bandGo_CB("band1GO_Button")
 
         self.band1GO_Button.configure(command=band1GO_Button_cmd_)
-        self.band1Select_Frame.pack(anchor="w", pady="130 0", side="top")
+        self.band1Select_Frame.pack(anchor="w", pady="135 0", side="top")
         self.band2Select_Frame = ttk.Frame(
             self.bandStatus_Frame, name="band2select_frame")
         self.band2Select_Frame.configure(
@@ -269,7 +181,7 @@ class bandScannerUI(tk.Toplevel):
         def band2GO_Button_cmd_(): self.bandGo_CB("band2GO_Button")
 
         self.band2GO_Button.configure(command=band2GO_Button_cmd_)
-        self.band2Select_Frame.pack(anchor="w", pady="155 0", side="top")
+        self.band2Select_Frame.pack(anchor="w", pady="120 0", side="top")
         self.bandStatus_Frame.pack(
             anchor="ne",
             expand=True,
@@ -464,9 +376,6 @@ class bandScannerUI(tk.Toplevel):
         self.configure(height=200, width=800)
         self.title("Frequency Spectrum")
         # Layout for 'bandScanner_Toplevel' skipped in custom widget template.
-
-    def resizeCanvas_CB(self, event=None):
-        pass
 
     def frequencyTuningRelease_CB(self, event=None):
         pass

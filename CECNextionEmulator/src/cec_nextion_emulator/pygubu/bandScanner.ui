@@ -20,7 +20,9 @@
       <setting id="use_window_centering_code">False</setting>
       <setting id="ttk_style_definition_file">../mystyles.py</setting>
     </settings>
-    <customwidgets />
+    <customwidgets>
+      <customwidget path="../bandGraphbo.py" />
+    </customwidgets>
     <resources />
   </project>
   <object class="tk.Toplevel" id="bandScanner_Toplevel" named="True">
@@ -61,194 +63,33 @@
               <property type="row" id="2" name="weight">1</property>
             </containerlayout>
             <child>
-              <object class="ttk.Labelframe" id="band0_Labelframe" named="True">
-                <property name="height">200</property>
-                <property name="style">Heading3.TLabelframe</property>
-                <property name="text" translatable="yes">Select Band...</property>
-                <property name="width">200</property>
+              <object class="custom_widgets.bandGraph" id="band0" named="True">
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">8 0</property>
                   <property name="row">0</property>
                   <property name="sticky">ew</property>
                 </layout>
-                <containerlayout manager="grid">
-                  <property type="col" id="0" name="weight">1</property>
-                </containerlayout>
-                <child>
-                  <object class="tk.Canvas" id="band0Plot_Canvas" named="True">
-                    <property name="background">#0432ff</property>
-                    <property name="height">100</property>
-                    <property name="width">430</property>
-                    <bind sequence="&lt;Configure&gt;" handler="resizeCanvas_CB" add="True" />
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="columnspan">3</property>
-                      <property name="row">0</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Scale" id="band0Start_Scale" named="True">
-                    <property name="from_">0</property>
-                    <property name="orient">horizontal</property>
-                    <property name="to">119</property>
-                    <property name="variable">string:band0Start_VAR</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="columnspan">3</property>
-                      <property name="row">1</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band0StartFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band0EndFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">1</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
-              <object class="ttk.Labelframe" id="band1_Labelframe" named="True">
-                <property name="height">200</property>
-                <property name="style">Heading3.TLabelframe</property>
-                <property name="text" translatable="yes">Select Band...</property>
-                <property name="width">200</property>
+              <object class="custom_widgets.bandGraph" id="band1" named="True">
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">8 0</property>
                   <property name="row">1</property>
                   <property name="sticky">ew</property>
                 </layout>
-                <containerlayout manager="grid">
-                  <property type="col" id="0" name="weight">1</property>
-                </containerlayout>
-                <child>
-                  <object class="tk.Canvas" id="band1Plot_Canvas" named="True">
-                    <property name="background">#0432ff</property>
-                    <property name="height">100</property>
-                    <property name="width">430</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="columnspan">3</property>
-                      <property name="row">0</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Scale" id="band1Start_Scale" named="True">
-                    <property name="from_">0</property>
-                    <property name="orient">horizontal</property>
-                    <property name="to">119</property>
-                    <property name="variable">string:band1Start_VAR</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="columnspan">3</property>
-                      <property name="row">1</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band1StartFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band1EndFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">1</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
-              <object class="ttk.Labelframe" id="band2_Labelframe" named="True">
-                <property name="height">200</property>
-                <property name="style">Heading3.TLabelframe</property>
-                <property name="text" translatable="yes">Select Band...</property>
-                <property name="width">200</property>
+              <object class="custom_widgets.bandGraph" id="band2" named="True">
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">8 0</property>
                   <property name="row">2</property>
                   <property name="sticky">ew</property>
                 </layout>
-                <containerlayout manager="grid">
-                  <property type="col" id="0" name="weight">1</property>
-                </containerlayout>
-                <child>
-                  <object class="tk.Canvas" id="band2Plot_Canvas" named="True">
-                    <property name="background">#0432ff</property>
-                    <property name="height">100</property>
-                    <property name="width">430</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="columnspan">3</property>
-                      <property name="row">0</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Scale" id="band2Start_Scale" named="True">
-                    <property name="from_">0</property>
-                    <property name="orient">horizontal</property>
-                    <property name="to">119</property>
-                    <property name="variable">string:band2Start_VAR</property>
-                    <layout manager="grid">
-                      <property name="columnspan">3</property>
-                      <property name="sticky">ew</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band2StartFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Label" id="band2EndFrequency_Label" named="True">
-                    <property name="style">Heading4b.TLabel</property>
-                    <layout manager="grid">
-                      <property name="column">1</property>
-                      <property name="row">2</property>
-                      <property name="sticky">w</property>
-                    </layout>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
@@ -322,6 +163,7 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
+                      <property name="pady">15 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
@@ -355,7 +197,7 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
-                      <property name="pady">130 0</property>
+                      <property name="pady">135 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>
@@ -389,7 +231,7 @@
                     <property name="width">200</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
-                      <property name="pady">155 0</property>
+                      <property name="pady">120 0</property>
                       <property name="side">top</property>
                     </layout>
                     <child>

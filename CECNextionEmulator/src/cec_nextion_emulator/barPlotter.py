@@ -16,7 +16,7 @@ import globalvars as gv
 class barPlotter:
     def __init__(self, parent, canvasObj, totalX, maxY, X_GAP=4, Y_GAP=0, currentMax=0, currentMin=0, barColor="yellow"):
         self.parent = parent
-        self.canvasObj = canvasObj
+        self.bandPlot_Canvas = canvasObj
         self.totalX = totalX
         self.maxY = maxY
         self.X_GAP = X_GAP  # gap between left canvas edge and y axis
@@ -31,8 +31,8 @@ class barPlotter:
 
         self.barColor = barColor
         
-        self.canvas_height = self.canvasObj.winfo_height()
-        self.canvas_width = self.canvasObj.winfo_width()
+        self.canvas_height = self.bandPlot_Canvas.winfo_height()
+        self.canvas_width = self.bandPlot_Canvas.winfo_width()
         print("self.canvas_height=", self.canvas_height, "self.canvas_width=", self.canvas_width)
 
         #
@@ -115,10 +115,10 @@ class barPlotter:
 
         # draw the bar
         if self.barObj[x] == None:  # if the bar doesn't yet exist, create it
-            self.barObj[x] = self.canvasObj.create_rectangle(x0, y0, x1, y1, fill=self.barColor, outline=self.barColor, tags="bars")
+            self.barObj[x] = self.bandPlot_Canvas.create_rectangle(x0, y0, x1, y1, fill=self.barColor, outline=self.barColor, tags="bars")
         else:                       # bar already exists, jut adjust coordinates
-            self.canvasObj.coords(self.barObj[x], x0, y0, x1, y1)
-            self.canvasObj.itemconfig(self.barObj[x], fill=self.barColor, outline=self.barColor, tags="bars")
+            self.bandPlot_Canvas.coords(self.barObj[x], x0, y0, x1, y1)
+            self.bandPlot_Canvas.itemconfig(self.barObj[x], fill=self.barColor, outline=self.barColor, tags="bars")
 
 
         #
@@ -149,30 +149,30 @@ class barPlotter:
         x1 = self.barX1[barPos]
 
         if self.tuningLine1 == None:
-            self.tuningLine1 = self.canvasObj.create_line(x0, self.canvas_height, x0, 0, fill="red", width=2, tags="tuningLine")
-            self.tuningLine2 = self.canvasObj.create_line(x1,self.canvas_height,x1,0,fill="red", width=2, tags="tuningLine")
+            self.tuningLine1 = self.bandPlot_Canvas.create_line(x0, self.canvas_height, x0, 0, fill="red", width=2, tags="tuningLine")
+            self.tuningLine2 = self.bandPlot_Canvas.create_line(x1, self.canvas_height, x1, 0, fill="red", width=2, tags="tuningLine")
         else:
 
-            self.canvasObj.coords(self.tuningLine1, x0, self.canvas_height, x0, 0)
-            self.canvasObj.itemconfig(self.tuningLine1, fill="red")
-            self.canvasObj.coords(self.tuningLine2, x1, self.canvas_height, x1, 0)
-            self.canvasObj.itemconfig(self.tuningLine2, fill="red")
+            self.bandPlot_Canvas.coords(self.tuningLine1, x0, self.canvas_height, x0, 0)
+            self.bandPlot_Canvas.itemconfig(self.tuningLine1, fill="red")
+            self.bandPlot_Canvas.coords(self.tuningLine2, x1, self.canvas_height, x1, 0)
+            self.bandPlot_Canvas.itemconfig(self.tuningLine2, fill="red")
 
     def clearCanvas(self):
         print("clearCanvas")
-        self.canvasObj.delete("bars")
+        self.bandPlot_Canvas.delete("bars")
         for x in range(self.totalX):
             self.barObj[x] = None
 
         if self.tuningLine1 != None:
-            self.canvasObj.delete("tuningLing")
+            self.bandPlot_Canvas.delete("tuningLing")
             self.tuningLine1 = None
             self.tuningLine2 = None
 
 
     def refreshCanvas(self):
-        self.canvas_height = self.canvasObj.winfo_height()
-        self.canvas_width = self.canvasObj.winfo_width()
+        self.canvas_height = self.bandPlot_Canvas.winfo_height()
+        self.canvas_width = self.bandPlot_Canvas.winfo_width()
 
         if self.barObj[0] == None:      # nothing has been plotted, can just return
             return
