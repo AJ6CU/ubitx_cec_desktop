@@ -77,6 +77,21 @@ class graphObject(barPlotter):
         self.band.scanningRange_VAR.set("Scanning Range: " + gv.formatVFO(str(self.bandScanStart)) + " - " + gv.formatVFO(str(self.bandScanEnd)))
 
         self.band.bandRange_VAR.set("Band Range: " + gv.formatVFO(str(self.bandStart)) + " - " + gv.formatVFO(str(self.bandEnd)))
+#
+    #
+    #   Need to make scale disabled state more obvious...
+    #
+    def updateScaleRange(self, band, bandStart, bandEnd, bandwidth):
+        if (bandEnd - bandStart) < bandwidth:
+            band.bandStart_Scale.configure(state="disabled")
+        else:
+            band.bandStart_Scale.configure(state="normal")
+        bandSpread = bandEnd - bandStart
+        scaleLength = (bandSpread - bandwidth)/ self.bandSampleSize
+        # scaleEnd = scaleLength - 1
+        band.bandStart_Scale.configure(to=int(scaleLength))
+        print("updateScaleRange", int(scaleLength))
+
 
 
 
@@ -87,6 +102,9 @@ class graphObject(barPlotter):
         self.bandSampleSize = bandSampleSize
         self.maxY = maxY
         self.scrollbarSize = scrollbarSize
+
+        self.updateScaleRange(self.band, self.bandStart, self.bandEnd, self.bandSampleSize*self.scrollbarSize)
+        self.band.scanningRange_VAR.set("")
 
         self.updateScanRange(0)
 
