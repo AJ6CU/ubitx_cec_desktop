@@ -16,15 +16,27 @@ import bandGraphui as baseui
 #
 
 class bandGraph(baseui.bandGraphUI):
-    def __init__(self, master=None, bandScannerWindow=None,  **kw):
-        super().__init__(master, **kw)
-        self.bandScannerWindow = bandScannerWindow
+    def __init__(self, master=None,  **kw):
 
-    def attachScrollbar_CB (self, scrollbar_callback):
+        super().__init__(master, **kw)
+        # self.bandScannerWindow = bandScannerWindow
+    #
+    #   This function allows the attachment of a callback within the GraphPak object
+    #   for scrollbar movement after the bandGraph has been created. This callback
+    #   handles movement of the scrollbar and calculation of the beginning and ending of the scan region
+    #
+    #   Each bandGraph object is attached to a single GraphObject.
+
+    def attachScrollbar_CB (self, scrollbar_callback): #, currentFrequency_callback):
         self.scrollbar_CB = scrollbar_callback
+        # self.currentFrequency_CB = currentFrequency_callback
 
     def bandStart_CB(self, scale_value):
         self.scrollbar_CB(scale_value )
+        # self.currentFrequency_CB()
+
+
+
 
 
 if __name__ == "__main__":

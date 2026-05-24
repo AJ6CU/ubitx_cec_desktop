@@ -8,9 +8,11 @@ UI source file: bandScanner.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
+from multiprocessing.process import parent_process
 
 from barPlotter import barPlotter
 from tkinter import messagebox
+from graphObject import graphObject
 
 import bandScannerui as baseui
 
@@ -20,147 +22,6 @@ import globalvars as gv
 #
 # Manual user code
 #
-
-class graphObject(barPlotter):
-
-    def __init__(self, band, totalX=120, maxY=70,
-                 barColor="yellow", X_GAP=4, Y_GAP=0, currentMax=0, currentMin=0, **kw):
-
-        self.band = band
-        self.totalX = totalX
-        self.maxY = maxY
-
-        self.yDivider = 0
-
-        self.barColor = barColor
-        self.X_GAP = X_GAP
-        self.Y_GAP = Y_GAP
-        self.currentMax = currentMax
-        self.currentMin = currentMin
-
-        self.averageBuffer = bytearray(self.totalX)
-        self.processDataCount = 0
-
-        self.bandID = None
-        self.bandStart = None
-        self.bandEnd = None
-        self.activateFlag = False
-        self.scrollbarSize = None
-
-        super().__init__(self.band, self.band.bandPlot_Canvas, self.totalX, self.maxY, self.X_GAP, self.Y_GAP,
-                         self.currentMax, self.currentMin, self.barColor, **kw)
-
-        self.band.attachScrollbar_CB(self.setScanStart)
-
-    def deactivate(self):
-        self.bandID = None
-        self.bandStart = None
-        self.bandEnd = None
-
-        self.activateFlag = False
-        self.band.scanningRange_VAR.set("")
-        self.band.bandRange_VAR.set("")
-        self.band.configure(text="Select Band...")
-
-    def updateScanRange(self, pos):
-        self.bandScanStart = self.bandStart + (round(float(pos)) * self.bandSampleSize)
-        self.bandScanEnd = self.bandScanStart + (self.bandSampleSize * self.scrollbarSize)
-        #
-        #   Make sure that the displayed scanned range is always within the band
-        #
-        if self.bandScanEnd > self.bandEnd:
-            self.bandScanEnd = self.bandEnd
-            self.bandScanStart = self.bandScanEnd - (self.bandSampleSize * self.scrollbarSize)
-            if self.bandScanStart < self.bandStart:
-                self.bandScanStart = self.bandStart
-
-        self.band.scanningRange_VAR.set("Scanning Range: " + gv.formatVFO(str(self.bandScanStart)) + " - " + gv.formatVFO(str(self.bandScanEnd)))
-
-        self.band.bandRange_VAR.set("Band Range: " + gv.formatVFO(str(self.bandStart)) + " - " + gv.formatVFO(str(self.bandEnd)))
-#
-    #
-    #   Need to make scale disabled state more obvious...
-    #
-    def updateScaleRange(self, band, bandStart, bandEnd, bandwidth):
-        if (bandEnd - bandStart) < bandwidth:
-            band.bandStart_Scale.configure(state="disabled")
-        else:
-            band.bandStart_Scale.configure(state="normal")
-        bandSpread = bandEnd - bandStart
-        scaleLength = (bandSpread - bandwidth)/ self.bandSampleSize
-        # scaleEnd = scaleLength - 1
-        band.bandStart_Scale.configure(to=int(scaleLength))
-        print("updateScaleRange", int(scaleLength))
-
-
-
-
-    def activate(self, bandID, bandStart, bandEnd, bandSampleSize, maxY=70, scrollbarSize=120):
-        self.bandID = bandID
-        self.bandStart = bandStart
-        self.bandEnd = bandEnd
-        self.bandSampleSize = bandSampleSize
-        self.maxY = maxY
-        self.scrollbarSize = scrollbarSize
-
-        self.updateScaleRange(self.band, self.bandStart, self.bandEnd, self.bandSampleSize*self.scrollbarSize)
-        self.band.scanningRange_VAR.set("")
-
-        self.updateScanRange(0)
-
-
-        print("band:", self.bandStart, gv.bandEnd[bandID], "actual end", self.bandStart + (self.bandSampleSize * 120))
-
-        self.activateFlag = True
-        self.band.configure(text=self.bandID.replace("Band", "Band: "))
-
-    def get_bandID(self):
-        return self.bandID
-
-    def getFrequency(self, scrollbarPosition):
-        pass
-
-    def setFrequency(self, scrollbarPosition):
-        return self.bandStart + (self.bandSampleSize * scrollbarPosition)
-
-    def setScanStart(self, pos):
-        print("setScaleStart")
-        self.updateScanRange(pos)
-
-    def available(self):
-        return not self.activateFlag
-
-    def activated(self):
-        return self.activateFlag
-
-    def processData(self, buffer):
-
-        byteBuffer = bytearray.fromhex(buffer)
-        self.processDataCount += 1
-
-        for x, y in enumerate(byteBuffer):
-
-            tmp = int(round(self.averageBuffer[x] + ((y - self.averageBuffer[x]) / self.processDataCount)))
-
-            if tmp > 255:
-                print("tmp too big, tmp")
-            self.averageBuffer[x] = tmp
-
-
-
-
-    def drawHighLightBars(self):
-        self.drawHighLightBars(int(self.frequencyTuning_VAR.get()))
-
-    def displayData(self, buffer):
-
-        (super).process_Data(self, self.buffer)             # yDivider is defaulted to 0
-
-        self.plotter.drawHighLightBars()
-        self.processDataCount = 0
-        self.averageBuffer = bytearray(self.totalX)
-
-
 
 
 class bandScanner(baseui.bandScannerUI):
@@ -246,9 +107,9 @@ class bandScanner(baseui.bandScannerUI):
         #
         #   Instantiate the 3 objects to do the plotting
         #
-        self.targetGraph[0] = graphObject(self.band0)
-        self.targetGraph[1] = graphObject(self.band1)
-        self.targetGraph[2] = graphObject(self.band2)
+        self.targetGraph[0] = graphObject(self.band0, self.updateBandFrequency_CB)
+        self.targetGraph[1] = graphObject(self.band1, self.updateBandFrequency_CB)
+        self.targetGraph[2] = graphObject(self.band2, self.updateBandFrequency_CB)
 
 
         self.initUXComplete = True
@@ -256,36 +117,40 @@ class bandScanner(baseui.bandScannerUI):
 
     def resizeCanvas_CB(self, event=None):
         pass
+    #
+    #   Calculates frequency for a particular band. The parameter "i" is the band index
+    #   in self.targetGraph
+    #
+    def setFrequency(self, i):
+        f = gv.formatVFO(str(self.targetGraph[i].getFrequency(int(self.frequencyTuning_VAR.get()))))
+        getattr(self, "band" + str(i) + "Frequency_VAR").set(str(f))
+
+
+    def updateBandFrequency_CB(self, theBand):
+        for i in range(len(self.targetGraph)):
+            if self.targetGraph[i] == theBand:
+                self.setFrequency(i)
 
 
     def frequencyTuningRelease_CB(self, event=None):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].available():
-                return
+                print("available, index=",i)
             else:
-                f=gv.formatVFO(str(self.targetGraph[i].setFrequency(int(self.frequencyTuning_VAR.get()))))
-                getattr(self, "band"+str(i)+"Frequency_VAR").set(str(f))
-        pass
+                self.setFrequency(i)
+
 
     def bandGo_CB(self, widget_id):
         print("bandGo_CB: widget_id=", widget_id)
 
-    def bandStart_CB(self, band, scale):
-        print("bandOBJ", band, scale)
-        self.targetGraph[int(band.replace("band",''))].setScanStart(scale)
-
-
-        #####
-        #### in the middle of printing out band end and start based on 240k fixed bandwidth
-        #### need to deal with scrollbar
-        ###
-
+    #
+    #   Does the work of allocating a Free graphObject
+    #
     def allocateGraphObj(self, bandID, bandStart, bandEnd, maxY=70, scrollbarSize=120):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].available():
                 self.targetGraph[i].activate(bandID, bandStart, bandEnd, self.Bandwidth, self.FREQ_Y_MAX, scrollbarSize)
-                f=gv.formatVFO(str(self.targetGraph[i].setFrequency(int(self.frequencyTuning_VAR.get()))))
-                getattr(self, "band"+str(i)+"Frequency_VAR").set(f)
+                self.setFrequency(i)
                 return True
 
         #
@@ -297,6 +162,11 @@ class bandScanner(baseui.bandScannerUI):
             detail="You must first free up a band and then try again.")
         return False
 
+    #
+    #   This is used to release a graphObject when the checkbox for a band
+    #   is unchecked. If it finds a match, it releases it. No match? just returns
+    #   instead of generating an error
+    #
     def releaseGraphObj(self, bandID):
         for i in range(len(self.targetGraph)):
             if self.targetGraph[i].get_bandID() == bandID:
@@ -308,9 +178,14 @@ class bandScanner(baseui.bandScannerUI):
         #
         return False
 
+    #
+    #   This callback happens when a user clicks one of the bands listed in the bandScanner
+    #   window. Since each of the bands, for example 160M, is named "Band160m", can use that to
+    #   have a single routine that handles all the checkboxes
+    #
 
     def band_Checked_CB(self, widget_id):
-        print("band checked callback, widget_id=", widget_id)
+        # print("band checked callback, widget_id=", widget_id)
 
         if getattr(self,widget_id+"_Checked_VAR").get() == '1':
             #

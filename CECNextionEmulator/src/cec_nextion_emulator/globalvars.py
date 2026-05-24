@@ -185,3 +185,7 @@ def calculatePlotBar(canvasHeight, x, ymag, x_width, x_stretch, x_gap, y_stretch
 
     return x0, y0, x1, y1
 
+
+def roundToNearest(n, base):
+    return base * round(n / base)
+

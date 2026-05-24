@@ -129,8 +129,8 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         #   convenience routine to make sure start and end are multiples of 120
         #
-        def roundToNearest(n, base):
-            return base * round(n / base)
+        # def roundToNearest(n, base):
+        #     return base * round(n / base)
         #
         #   When the bandwidth is changed, this routine is called to re-establish the scanning
         #
@@ -138,10 +138,10 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.bandwidth = int(self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
         self.calculatedSampleSize_VAR.set(int(self.bandwidth / self.MaxADCCount) )
 
-        self.startFrequency=roundToNearest((self.centerFrequency - self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
+        self.startFrequency=gv.roundToNearest((self.centerFrequency - self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
         self.startFrequency_VAR.set(gv.formatVFO(str(self.startFrequency)))
 
-        self.stopFrequency = roundToNearest((self.centerFrequency - int(self.calculatedSampleSize_VAR.get()) + self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
+        self.stopFrequency = gv.roundToNearest((self.centerFrequency - int(self.calculatedSampleSize_VAR.get()) + self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
         self.stopFrequency_VAR.set(gv.formatVFO(str(self.stopFrequency)))
 
         self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get()), 0, self.MaxADCCount, round(int(self.calculatedSampleSize_VAR.get())/20))
