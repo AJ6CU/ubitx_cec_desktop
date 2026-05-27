@@ -306,33 +306,38 @@ class settingsBackup(baseui.settingsBackupUI):
     def set_ConfigFile_CW_Delay_Returning_To_RX(self, value):
         gv.config.set_CW_Delay_Returning_to_RX(value)
 
+    def selectSetting_CB(self, widget_id):
+        if getattr(self, widget_id + "_VAR").get() == 'Yes':
+            getattr(self, widget_id + "_VAR").set('No')
+        else:
+            getattr(self, widget_id + "_VAR").set('Yes')
 
 
     def select_All_Checkbutton_CB(self):
-        if self.select_All_Checked_VAR.get() == "1":
-            self.Master_Cal_Checked_VAR.set("1")
-            self.SSB_BFO_Checked_VAR.set("1")
-            self.CW_BFO_Checked_VAR.set("1")
-            self.CW_Keytype_Checked_VAR.set("1")
-            self.CW_Speed_Checked_VAR.set("1")
-            self.CW_Sidetone_Checked_VAR.set("1")
-            self.CW_Delay_Before_TX_Checked_VAR.set("1")
-            self.CW_Delay_Returning_To_RX_Checked_VAR.set("1")
+        if self.select_All_VAR.get() == "Select All":
+            self.Master_Cal_VAR.set("Yes")
+            self.SSB_BFO_VAR.set("Yes")
+            self.CW_BFO_VAR.set("Yes")
+            self.CW_Keytype_VAR.set("Yes")
+            self.CW_Speed_VAR.set("Yes")
+            self.CW_Sidetone_VAR.set("Yes")
+            self.CW_Delay_Before_TX_VAR.set("Yes")
+            self.CW_Delay_Before_RX_VAR.set("Yes")
 
-            self.select_All_Checked_Text_VAR.set("Uncheck to Deselect All")
+            self.select_All_VAR.set("Deselect All")
 
 
         else:
-            self.Master_Cal_Checked_VAR.set("0")
-            self.SSB_BFO_Checked_VAR.set("0")
-            self.CW_BFO_Checked_VAR.set("0")
-            self.CW_Keytype_Checked_VAR.set("0")
-            self.CW_Speed_Checked_VAR.set("0")
-            self.CW_Sidetone_Checked_VAR.set("0")
-            self.CW_Delay_Before_TX_Checked_VAR.set("0")
-            self.CW_Delay_Returning_To_RX_Checked_VAR.set("0")
+            self.Master_Cal_VAR.set("No")
+            self.SSB_BFO_VAR.set("No")
+            self.CW_BFO_VAR.set("No")
+            self.CW_Keytype_VAR.set("No")
+            self.CW_Speed_VAR.set("No")
+            self.CW_Sidetone_VAR.set("No")
+            self.CW_Delay_Before_TX_VAR.set("No")
+            self.CW_Delay_Before_RX_VAR.set("No")
 
-            self.select_All_Checked_Text_VAR.set("Select All")
+            self.select_All_VAR.set("Select All")
 
 
     def selectFrom_Factory_CB(self):
@@ -377,14 +382,14 @@ class settingsBackup(baseui.settingsBackupUI):
         #
         #   Process each line that is checked assigning read/writing file using the infamous "getattr" magic
         #
-        if self.Master_Cal_Checked_VAR.get() == "1":
+        if self.Master_Cal_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_Master_Cal", None)
             writeFunction = getattr(self, "set_"+destination+"_Master_Cal", None)
 
             if readFunction != None and writeFunction != None:
                 selectedValues["Master_Cal"] = [writeFunction, readFunction]
 
-        if self.SSB_BFO_Checked_VAR.get() == "1":
+        if self.SSB_BFO_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_SSB_BFO", None)
             writeFunction = getattr(self, "set_"+destination+"_SSB_BFO", None)
 
@@ -392,7 +397,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 selectedValues["SSB_BFO"] = [writeFunction, readFunction]
 
 
-        if self.CW_BFO_Checked_VAR.get() == "1":
+        if self.CW_BFO_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_CW_BFO", None)
             writeFunction = getattr(self, "set_"+destination+"_CW_BFO", None)
 
@@ -403,7 +408,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 messagebox.showinfo(message=source + " is not a valid source for CW BFO\nRequested update ignored", parent=self)
 
 
-        if self.CW_Keytype_Checked_VAR.get() == "1":
+        if self.CW_Keytype_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_CW_Keytype", None)
             writeFunction = getattr(self, "set_"+destination+"_CW_Keytype", None)
 
@@ -414,7 +419,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 messagebox.showinfo(message=source + " is not a valid source for CW Keytype\nRequested update ignored", parent=self)
 
 
-        if self.CW_Speed_Checked_VAR.get() == "1":
+        if self.CW_Speed_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_CW_Speed", None)
             writeFunction = getattr(self, "set_"+destination+"_CW_Speed", None)
 
@@ -422,7 +427,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 selectedValues["CW_Speed"] = [writeFunction, readFunction]
 
 
-        if self.CW_Sidetone_Checked_VAR.get() == "1":
+        if self.CW_Sidetone_VAR.get() == "Yes":
             readFunction = getattr(self, "get_"+source+"_CW_Tone", None)
             writeFunction = getattr(self, "set_"+destination+"_CW_Tone", None)
 
@@ -432,7 +437,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 selectedValues["CW_Tone"] = [writeFunction, readFunction]
 
 
-        if self.CW_Delay_Before_TX_Checked_VAR.get() == "1":
+        if self.CW_Delay_Before_TX_VAR.get() == "Yes":
             readFunction = getattr(self, "get_" + source + "_CW_Delay_Before_TX", None)
             writeFunction = getattr(self, "set_" + destination + "_CW_Delay_Before_TX", None)
 
@@ -444,7 +449,7 @@ class settingsBackup(baseui.settingsBackupUI):
                 messagebox.showinfo(message=source + " is not a valid source for Delay->TX\nRequested update ignored", parent=self)
 
 
-        if self.CW_Delay_Returning_To_RX_Checked_VAR.get() == "1":
+        if self.CW_Delay_Before_RX_VAR.get() == "Yes":
             readFunction = getattr(self, "get_" + source + "_CW_Delay_Returning_To_RX", None)
             writeFunction = getattr(self, "set_" + destination + "_CW_Delay_Returning_To_RX", None)
 
