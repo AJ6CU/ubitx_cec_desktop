@@ -37,10 +37,13 @@ class frequencyChannel(baseui.frequencyChannelUI):
     #   Set up labels for channels
     #
     def channel_Number_Default(self):
-        if self.myChannelNum < 9:
-            self.channel_Number_VAR.set("Channel " + " "+str(int(self.myChannelNum+1)))
-        else:
-            self.channel_Number_VAR.set("Channel " +str(int(self.myChannelNum+1)))
+        self.channel_Number_VAR.set(str(int(self.myChannelNum + 1)))
+        # if self.myChannelNum < 9:
+        #     self.channel_Number_VAR.set("Channel " + " "+str(int(self.myChannelNum+1)))
+        #     # self.channel_Number_VAR.set("Channel " + " "+str(int(self.myChannelNum+1)))
+        # else:
+        #     self.channel_Number_VAR.set("Channel " +str(int(self.myChannelNum+1)))
+        #     # self.channel_Number_VAR.set("Channel " +str(int(self.myChannelNum+1)))
 
     #
     #   Label get/set
@@ -138,7 +141,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
     def Set_Mode(self, mode):
         self.channel_Mode_VAR.set(mode)
     def Mode_Default(self):
-        self.Set_Mode("CWU")
+        self.Set_Mode("DFT")
 
     #
     #   Get set show label  flag
@@ -152,7 +155,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
             self.Set_ShowLabel("Yes")
         else:
             self.Set_ShowLabel("No")
-            self.show_Label_Combobox.configure(state="disabled")
+            self.show_Label_Menubutton.configure(state="disabled")
 
 
     #
@@ -179,21 +182,21 @@ class frequencyChannel(baseui.frequencyChannelUI):
     def channel_Name_Changed_CB(self, event=None):
         self.channel_Dirty()
 
-    def Channel_Freq_Changed_CB(self, event=None):
+
+    def Channel_ShowLabel_Changed_CB(self, itemid):
+        print("show label changed")
+        self.channel_ShowLabel_VAR.set(itemid)
         self.channel_Dirty()
 
-    def Channel_Mode_Changed_CB(self, event=None):
+    def Channel_ScanSet_Changed_CB(self, itemid):
+        print("scan set changed")
+        self.channel_ScanSet_VAR.set(itemid.replace("_Command",""))
         self.channel_Dirty()
 
-    def Channel_ShowLabel_Changed_CB(self, event=None):
+    def Channel_Mode_Changed_CB(self, itemid):
+        print("mode changed", itemid)
+        self.channel_Mode_VAR.set(itemid)
         self.channel_Dirty()
-
-    def Channel_ScanSet_Changed_CB(self, event=None):
-        self.channel_Dirty()
-
-
-
-
 
 
 

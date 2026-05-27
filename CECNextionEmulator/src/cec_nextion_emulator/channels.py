@@ -104,7 +104,7 @@ class channels(baseui.channelsUI):
 
 
         self.popup.title("Frequency Channels")
-        self.popup.geometry("800x700")
+        # self.popup.geometry("800x700")
         self.popup.wait_visibility()  # required on Linux
         # self.popup.grab_set()         # dont want as we can allow other things to click while using channels
         self.popup.transient(self.mainWindow)

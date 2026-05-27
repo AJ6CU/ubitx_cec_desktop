@@ -31,6 +31,7 @@ def setup_ttk_styles(master=None):
             'Heading1': ('Times New Roman', 24, 'bold'),
             'Heading1Std': ('Arial', 24),
             'Heading1Fixed': ("TkFixedFont", 24, 'bold'),
+            'Heading1A': ('Arial', 24, 'bold'),
             'Heading1b': ('Arial', 20, 'bold'),
             'Heading1bi': ('Arial', 20, 'bold', 'italic'),
             'Heading2': ('Arial',18, 'bold' ),
@@ -74,6 +75,7 @@ def setup_ttk_styles(master=None):
     style.configure('Symbol1.TLabel',font=fontList['Symbol1'])
     style.configure('Button1.TButton',font=fontList['Heading1'])
     style.configure('Button1Raised.TButton', font=fontList['Heading1'], relief='raised')
+    style.configure('Button1bARaised.TButton', font=fontList['Heading1b'], relief='raised')
     style.configure('Button1Sunken.TButton', font=fontList['Heading1'], relief='sunken')
     style.configure('Button2.TButton',font=fontList['Heading2'])
     style.configure('Button2b.TButton',font=fontList['Heading2b'], justify='center')
@@ -97,6 +99,7 @@ def setup_ttk_styles(master=None):
     style.configure('RadioButtonNormal.TRadiobutton',font=fontList['Normal'])
     style.configure('RadioButtonEmphasis.TRadiobutton',font=fontList['Emphasis'])
     style.configure('Heading0.TMenubutton', font=fontList['Heading0'], anchor='center')
+    style.configure('Heading1b.TMenubutton', font=fontList['Heading1b'], anchor='center')
     style.configure('Heading2b.TMenubutton',font=fontList['Heading2b'])
     style.configure('Submenu.TMenuitem.Command',font=fontList['Heading2b'])
     style.configure('Checkbox1b.TCheckbutton', font=fontList['Heading1b'], background='gray', foreground='white')
@@ -120,7 +123,7 @@ def setup_ttk_styles(master=None):
     style.configure('ComboBox4White.TCombobox',font=fontList['Heading4'],foreground='white')
     style.configure('Normal.TEntry',font=fontList['Normal'])
 
-    style.configure('Entry1b.TEntry', font=fontList['Heading1'])
+    style.configure('Entry1b.TEntry', font=fontList['Heading1b'])
     style.configure('Entry2b.TEntry', font=fontList['Heading2'])
     style.configure('NoBorder.TEntry',font=fontList['Normal'], highlightthickness=0, borderwidth=0, bd=0)
 
