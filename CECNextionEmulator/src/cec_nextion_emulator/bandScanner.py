@@ -97,7 +97,7 @@ class bandScanner(baseui.bandScannerUI):
 
 
 
-        self.frequencyTuning_VAR.set(60)                                                # Set scrollbar to middle
+        self.frequencyTuning_VAR.set(0)                                                # Set scrollbar to middle
 
 
         self.startingFrequency = self.mainWindow.theVFO_Object.getIntPrimaryVFO()
@@ -298,6 +298,7 @@ class bandScanner(baseui.bandScannerUI):
                 #
                 # print("band processing complete")
                 # print(self.averageBuffer)
+                self.setFrequency(self.scanlist[self.scanlistIndex])
 
                 self.targetGraph[self.scanlist[self.scanlistIndex]].displayData(self.averageBuffer)
                 # self.targetGraph[self.scanlistIndex].process_Data(self.averageBuffer)
