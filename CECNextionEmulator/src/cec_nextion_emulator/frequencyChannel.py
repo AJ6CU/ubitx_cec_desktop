@@ -184,25 +184,16 @@ class frequencyChannel(baseui.frequencyChannelUI):
 
 
     def Channel_ShowLabel_Changed_CB(self, itemid):
-        print("show label changed")
         self.channel_ShowLabel_VAR.set(itemid)
         self.channel_Dirty()
 
     def Channel_ScanSet_Changed_CB(self, itemid):
-        print("scan set changed")
         self.channel_ScanSet_VAR.set(itemid.replace("_Command",""))
         self.channel_Dirty()
 
     def Channel_Mode_Changed_CB(self, itemid):
-        print("mode changed", itemid)
         self.channel_Mode_VAR.set(itemid)
         self.channel_Dirty()
-
-
-
-
-
-
 
 
 

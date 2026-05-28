@@ -584,11 +584,52 @@ BAND SCAN
           </object>
         </child>
         <child>
+          <object class="ttk.Frame" id="split_rit_Frame" named="True">
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="split_Button" named="True">
+                <property name="command" type="command" cbtype="simple">split_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">
+SPLIT
+</property>
+                <property name="width">11</property>
+                <layout manager="pack">
+                  <property name="anchor">nw</property>
+                  <property name="padx">20 20</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="rit_Button" named="True">
+                <property name="command" type="command" cbtype="simple">rit_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">
+RIT
+</property>
+                <property name="width">11</property>
+                <layout manager="pack">
+                  <property name="anchor">nw</property>
+                  <property name="padx">0 20</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
           <object class="ttk.Frame" id="cwInfoFrame" named="True">
             <property name="height">200</property>
             <property name="style">Normal.TFrame</property>
             <property name="width">200</property>
             <layout manager="pack">
+              <property name="pady">15 0</property>
               <property name="side">top</property>
             </layout>
             <child>
@@ -792,46 +833,6 @@ BAND SCAN
                     </layout>
                   </object>
                 </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Frame" id="frame1">
-            <property name="height">200</property>
-            <property name="style">Normal.TFrame</property>
-            <property name="width">200</property>
-            <layout manager="pack">
-              <property name="side">top</property>
-            </layout>
-            <child>
-              <object class="ttk.Button" id="split_Button" named="True">
-                <property name="command" type="command" cbtype="simple">split_CB</property>
-                <property name="style">Button2b.TButton</property>
-                <property name="text" translatable="yes">
-SPLIT
-</property>
-                <property name="width">11</property>
-                <layout manager="pack">
-                  <property name="anchor">nw</property>
-                  <property name="padx">20 20</property>
-                  <property name="side">left</property>
-                </layout>
-              </object>
-            </child>
-            <child>
-              <object class="ttk.Button" id="rit_Button" named="True">
-                <property name="command" type="command" cbtype="simple">rit_CB</property>
-                <property name="style">Button2b.TButton</property>
-                <property name="text" translatable="yes">
-RIT
-</property>
-                <property name="width">11</property>
-                <layout manager="pack">
-                  <property name="anchor">nw</property>
-                  <property name="padx">0 20</property>
-                  <property name="side">left</property>
-                </layout>
               </object>
             </child>
           </object>

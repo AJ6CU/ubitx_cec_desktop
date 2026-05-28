@@ -303,7 +303,7 @@ class channelsUI(ttk.Labelframe):
         self.scan_Select_Channel_Menu.configure(tearoff=False)
 
         def None_Command_cmd(
-            itemid="None_Command"): self.selectScanSet_CB(itemid)
+            itemid="None_Command"): self.runScan_Selection_CB(itemid)
         self.scan_Select_Channel_Menu.add(
             "command",
             command=None_Command_cmd,
@@ -311,7 +311,7 @@ class channelsUI(ttk.Labelframe):
             label='None')
 
         def Scan1_Command_cmd(
-            itemid="Scan1_Command"): self.selectScanSet_CB(itemid)
+            itemid="Scan1_Command"): self.runScan_Selection_CB(itemid)
         self.scan_Select_Channel_Menu.add(
             "command",
             command=Scan1_Command_cmd,
@@ -319,7 +319,7 @@ class channelsUI(ttk.Labelframe):
             label='Scan1')
 
         def Scan2_Command_cmd(
-            itemid="Scan2_Command"): self.selectScanSet_CB(itemid)
+            itemid="Scan2_Command"): self.runScan_Selection_CB(itemid)
         self.scan_Select_Channel_Menu.add(
             "command",
             command=Scan2_Command_cmd,
@@ -327,19 +327,19 @@ class channelsUI(ttk.Labelframe):
             label='Scan2')
 
         def Scan3_Command_cmd(
-            itemid="Scan3_Command"): self.selectScanSet_CB(itemid)
+            itemid="Scan3_Command"): self.runScan_Selection_CB(itemid)
         self.scan_Select_Channel_Menu.add(
             "command",
             command=Scan3_Command_cmd,
             font="{Arial} 20 {bold}",
             label='Scan3')
         def Scan4_Command_cmd(
-            itemid="Scan4_Command"): self.selectScanSet_CB(itemid)
+            itemid="Scan4_Command"): self.runScan_Selection_CB(itemid)
         self.scan_Select_Channel_Menu.add(
             "command",
             command=Scan4_Command_cmd,
             font="{Arial} 20 {bold}",
-            label='Scn4')
+            label='Scan4')
         self.scan_Select_Channel_Menubutton.configure(
             menu=self.scan_Select_Channel_Menu)
         self.scan_Select_Channel_Menubutton.grid(column=1, row=1)
@@ -363,6 +363,8 @@ class channelsUI(ttk.Labelframe):
             width=2)
         self.Time_On_Freq_Spinbox.grid(
             column=1, padx="15 5", pady="40 20", row=2, sticky="w")
+        self.Time_On_Freq_Spinbox.configure(
+            command=self.update_Time_On_Station_CB)
         self.scanSettings_Frame.pack(padx=5, pady="5 10", side="right")
         frame1.pack(expand=True, fill="both", side="top")
         self.configure(
@@ -392,7 +394,10 @@ class channelsUI(ttk.Labelframe):
     def close_Channel_CB(self):
         pass
 
-    def selectScanSet_CB(self, itemid):
+    def runScan_Selection_CB(self, itemid):
+        pass
+
+    def update_Time_On_Station_CB(self):
         pass
 
 

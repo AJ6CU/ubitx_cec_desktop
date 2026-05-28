@@ -398,6 +398,27 @@ class mainScreenUI(ttk.Frame):
             fill="x",
             padx=10,
             side="left")
+        self.split_rit_Frame = ttk.Frame(
+            self.ATT_IFS_Adjust_Frame,
+            name="split_rit_frame")
+        self.split_rit_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.split_Button = ttk.Button(
+            self.split_rit_Frame, name="split_button")
+        self.split_Button.configure(
+            style="Button2b.TButton",
+            text='\nSPLIT\n',
+            width=11)
+        self.split_Button.pack(anchor="nw", padx="20 20", side="left")
+        self.split_Button.configure(command=self.split_CB)
+        self.rit_Button = ttk.Button(self.split_rit_Frame, name="rit_button")
+        self.rit_Button.configure(
+            style="Button2b.TButton",
+            text='\nRIT\n',
+            width=11)
+        self.rit_Button.pack(anchor="nw", padx="0 20", side="left")
+        self.rit_Button.configure(command=self.rit_CB)
+        self.split_rit_Frame.pack(side="top")
         self.cwInfoFrame = ttk.Frame(
             self.ATT_IFS_Adjust_Frame,
             name="cwinfoframe")
@@ -524,24 +545,7 @@ class mainScreenUI(ttk.Frame):
             pady="0 10",
             side="top")
         self.cw_Info_Frame.bind("<1>", self.cwSettings_CB, add="")
-        self.cwInfoFrame.pack(side="top")
-        frame1 = ttk.Frame(self.ATT_IFS_Adjust_Frame)
-        frame1.configure(height=200, style="Normal.TFrame", width=200)
-        self.split_Button = ttk.Button(frame1, name="split_button")
-        self.split_Button.configure(
-            style="Button2b.TButton",
-            text='\nSPLIT\n',
-            width=11)
-        self.split_Button.pack(anchor="nw", padx="20 20", side="left")
-        self.split_Button.configure(command=self.split_CB)
-        self.rit_Button = ttk.Button(frame1, name="rit_button")
-        self.rit_Button.configure(
-            style="Button2b.TButton",
-            text='\nRIT\n',
-            width=11)
-        self.rit_Button.pack(anchor="nw", padx="0 20", side="left")
-        self.rit_Button.configure(command=self.rit_CB)
-        frame1.pack(side="top")
+        self.cwInfoFrame.pack(pady="15 0", side="top")
         self.ATT_IFS_Adjust_Frame.pack(
             anchor="w",
             expand=True,
@@ -618,13 +622,13 @@ class mainScreenUI(ttk.Frame):
     def IFS_Jogwheel_ButtonReleased_CB(self, event=None):
         pass
 
-    def cwSettings_CB(self, event=None):
-        pass
-
     def split_CB(self):
         pass
 
     def rit_CB(self):
+        pass
+
+    def cwSettings_CB(self, event=None):
         pass
 
 

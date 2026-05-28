@@ -588,37 +588,37 @@ Set</property>
                         <property name="tearoff">false</property>
                         <child>
                           <object class="tk.Menuitem.Command" id="None_Command" named="True">
-                            <property name="command" type="command" cbtype="with_wid">selectScanSet_CB</property>
+                            <property name="command" type="command" cbtype="with_wid">runScan_Selection_CB</property>
                             <property name="font">{Arial} 20 {bold}</property>
                             <property name="label" translatable="yes">None</property>
                           </object>
                         </child>
                         <child>
                           <object class="tk.Menuitem.Command" id="Scan1_Command" named="True">
-                            <property name="command" type="command" cbtype="with_wid">selectScanSet_CB</property>
+                            <property name="command" type="command" cbtype="with_wid">runScan_Selection_CB</property>
                             <property name="font">{Arial} 20 {}</property>
                             <property name="label" translatable="yes">Scan1</property>
                           </object>
                         </child>
                         <child>
                           <object class="tk.Menuitem.Command" id="Scan2_Command" named="True">
-                            <property name="command" type="command" cbtype="with_wid">selectScanSet_CB</property>
+                            <property name="command" type="command" cbtype="with_wid">runScan_Selection_CB</property>
                             <property name="font">{Arial} 20 {bold}</property>
                             <property name="label" translatable="yes">Scan2</property>
                           </object>
                         </child>
                         <child>
                           <object class="tk.Menuitem.Command" id="Scan3_Command" named="True">
-                            <property name="command" type="command" cbtype="with_wid">selectScanSet_CB</property>
+                            <property name="command" type="command" cbtype="with_wid">runScan_Selection_CB</property>
                             <property name="font">{Arial} 20 {bold}</property>
                             <property name="label" translatable="yes">Scan3</property>
                           </object>
                         </child>
                         <child>
                           <object class="tk.Menuitem.Command" id="Scan4_Command" named="True">
-                            <property name="command" type="command" cbtype="with_wid">selectScanSet_CB</property>
+                            <property name="command" type="command" cbtype="with_wid">runScan_Selection_CB</property>
                             <property name="font">{Arial} 20 {bold}</property>
-                            <property name="label" translatable="yes">Scn4</property>
+                            <property name="label" translatable="yes">Scan4</property>
                           </object>
                         </child>
                       </object>
@@ -640,6 +640,7 @@ Set</property>
                 </child>
                 <child>
                   <object class="ttk.Spinbox" id="Time_On_Freq_Spinbox" named="True">
+                    <property name="command" type="command" cbtype="simple">update_Time_On_Station_CB</property>
                     <property name="font">{Arial} 36 {}</property>
                     <property name="from_">1</property>
                     <property name="justify">right</property>
