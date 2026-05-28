@@ -8,6 +8,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import StringVar
 from tkinter import messagebox
+import globalvars as gv
 
 
 class VirtualKeyboard(tk.Toplevel):
@@ -60,6 +61,7 @@ class VirtualKeyboard(tk.Toplevel):
         self.wait_visibility()      # required on Linux
         self.grab_set()                 # This line makes the window modal
         self.transient(self.master)     # Puts the keyboard on top of the underlying window that called up the keyboard
+        self.geometry(gv.VALPHAKEYBOARD_OFFSET)
 
 
 

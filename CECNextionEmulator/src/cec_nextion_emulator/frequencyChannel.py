@@ -88,7 +88,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
         if gv.config.get_Virtual_Keyboard_Switch() == "True":
             self.vKeyboard = VirtualKeyboard(self, self.channel_Label_VAR, self.channel_Name_Changed_CB, 5)
 
-    def channel_Lavel_Validation_CB(self, p_entry_value, v_condition):
+    def channel_Label_Validation_CB(self, p_entry_value, v_condition):
         if (v_condition == "focusout") and (gv.config.get_Virtual_Keyboard_Switch() == "False"):
             if len(p_entry_value) > 5:
                 messagebox.showinfo("Error Too Long", "Maximum of 5 characters in a channel label.\n"
@@ -115,6 +115,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
         self.channel_Freq_save = gv.unformatFrequency(self.channel_Freq_VAR.get())        # save unformated version
         if gv.config.get_Virtual_Keyboard_Switch() == "True":
             self.vNumericPad = VirtualNumericKeyboard(self, self.channel_Freq_VAR, self.Channel_Freq_Changed_CB,8)
+
 
     def channel_Freq_Validation_CB(self, p_entry_value, v_condition):
 
@@ -193,6 +194,9 @@ class frequencyChannel(baseui.frequencyChannelUI):
 
     def Channel_Mode_Changed_CB(self, itemid):
         self.channel_Mode_VAR.set(itemid)
+        self.channel_Dirty()
+
+    def Channel_Freq_Changed_CB(self):
         self.channel_Dirty()
 
 

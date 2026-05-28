@@ -32,10 +32,11 @@ class VirtualNumericKeyboard(tk.Toplevel):
         self.wait_visibility()  # required on Linux
         self.grab_set()  # This line makes the cw settings window modal
         self.transient(self.master)  # Makes the cw settings appear above the mainwindow
-        toplevel_offsetx, toplevel_offsety = self.master.winfo_x() , self.master.winfo_y()
-        padx = 350  # the padding you need.
-        pady = 0
-        self.geometry(f"+{toplevel_offsetx + padx}+{toplevel_offsety + pady}")
+        # toplevel_offsetx, toplevel_offsety = self.master.winfo_x() , self.master.winfo_y()
+        # padx = 350  # the padding you need.
+        # pady = 0
+        # # self.geometry(f"+{toplevel_offsetx + padx}+{toplevel_offsety + pady}")
+        self.geometry(gv.VNUMERICKEYBOARD_OFFSET)
 
         self.mainframe = ttk.Frame(self)
         self.leftArrow = "\u2190"

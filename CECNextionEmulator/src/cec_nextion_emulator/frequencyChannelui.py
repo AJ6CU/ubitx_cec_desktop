@@ -87,7 +87,7 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Name_Entry.grid(
             column=2, ipady=2, padx="5 0", row=0, sticky="w")
         _validatecmd = (self.channel_Name_Entry.register(
-            self.channel_Lavel_Validation_CB), "%P", "%V")
+            self.channel_Label_Validation_CB), "%P", "%V")
         self.channel_Name_Entry.configure(validatecommand=_validatecmd)
         self.channel_Name_Entry.bind(
             "<Button>", self.channel_Label_Entered_CB, add="+")
@@ -242,7 +242,7 @@ class frequencyChannelUI(ttk.Frame):
     def channel_Select_CB(self):
         pass
 
-    def channel_Lavel_Validation_CB(self, p_entry_value, v_condition):
+    def channel_Label_Validation_CB(self, p_entry_value, v_condition):
         pass
 
     def channel_Label_Entered_CB(self, event=None):
