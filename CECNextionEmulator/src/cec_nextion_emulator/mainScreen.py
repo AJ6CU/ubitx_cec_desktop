@@ -273,6 +273,7 @@ class mainScreen(baseui.mainScreenUI):
             case "cr": self.cr_UX_RIT_Toggle(buffer)
             case "vf": self.vf_UX_ATT_Level(buffer)
             case "vi": self.vi_UX_IFS_Level(buffer)
+            case "vm": self.vm_UX_PW_SWR_Level(buffer)
             case "ci": self.ci_UX_IFS_State_Set(buffer)
             case "cx": self.cx_UX_TX_Stop_Toggle(buffer)
             case "cp": self.cp_UX_S_Meter_Value(buffer)  # Related to S meter. search CMD_SMETER
@@ -653,6 +654,12 @@ class mainScreen(baseui.mainScreenUI):
             self.s_meter_Progressbar_VAR.set(int(value))
         else:
             print("another weird malformed command, buffer =", buffer)
+    #
+    #   This command provides Nextion with the Power and SWR levels
+    #
+    def vm_UX_PW_SWR_Level(self, buffer):
+        value = self.extractValue(buffer, 6, len(buffer) - 3)
+        print("pwr/swr:", value)
 
     def vv_UX_Command_Data(self, buffer):
 
