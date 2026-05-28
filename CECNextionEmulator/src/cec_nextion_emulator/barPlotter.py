@@ -158,14 +158,14 @@ class barPlotter:
         x1 = self.barX1[barPos]
 
         if self.tuningLine1 == None:
-            self.tuningLine1 = self.bandPlot_Canvas.create_line(x0, self.canvas_height, x0, 0, fill="red", width=2, tags="tuningLine")
-            self.tuningLine2 = self.bandPlot_Canvas.create_line(x1, self.canvas_height, x1, 0, fill="red", width=2, tags="tuningLine")
+            self.tuningLine1 = self.bandPlot_Canvas.create_line(x0, self.canvas_height, x0, 0, fill="white", width=2, tags="tuningLine")
+            self.tuningLine2 = self.bandPlot_Canvas.create_line(x1, self.canvas_height, x1, 0, fill="white", width=2, tags="tuningLine")
         else:
 
             self.bandPlot_Canvas.coords(self.tuningLine1, x0, self.canvas_height, x0, 0)
-            self.bandPlot_Canvas.itemconfig(self.tuningLine1, fill="red")
+            self.bandPlot_Canvas.itemconfig(self.tuningLine1, fill="white")
             self.bandPlot_Canvas.coords(self.tuningLine2, x1, self.canvas_height, x1, 0)
-            self.bandPlot_Canvas.itemconfig(self.tuningLine2, fill="red")
+            self.bandPlot_Canvas.itemconfig(self.tuningLine2, fill="white")
 
     def clearCanvas(self, what="All"):
         # print("clearCanvas")

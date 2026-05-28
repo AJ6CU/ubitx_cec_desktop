@@ -165,7 +165,7 @@ def setup_ttk_styles(master=None):
 
     style.map('Custom.Horizontal.TScale',
                     foreground=[('disabled', 'gray'),('!disabled', 'blue')],
-                    troughcolor=[('disabled', 'gray'), ('!disabled', 'blue')],
+                    troughcolor=[('disabled', 'gray'), ('!disabled', 'black')],
                     background=[('disabled', 'gray'), ('!disabled', 'gray')])
 
 

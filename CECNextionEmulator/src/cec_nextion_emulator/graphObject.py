@@ -87,6 +87,7 @@ class graphObject(barPlotter):
 
         self.activateFlag = True
         self.band.configure(text=self.bandID.replace("Band", "Band: "))
+        self.band.bandStart_Scale.configure(state="normal")
 
     #
     #   Deactivates a band in the bandScanner when the user deselects it. This resets values to their defaults
@@ -100,6 +101,8 @@ class graphObject(barPlotter):
         self.band.scanningRange_VAR.set("")
         self.band.bandRange_VAR.set("")
         self.band.configure(text="Select Band...")
+        self.band.bandStart_Scale.configure(state="disabled")
+        # self.updateScanRange(0)
 
     #
     #   This routine is used to update the scanning range for the bandScanner. Since the maximum is 240,000hz

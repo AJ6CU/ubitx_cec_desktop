@@ -104,7 +104,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #   Create two plotter objects. Top one is for average signal strength. Bottom is for Peak signal strength
         #
         self.plotterAvg = barPlotter(self, self.frequencyPlotCanvas, self.MaxADCCount, self.FREQ_Y_MAX)
-        self.plotterPeak = barPlotter(self, self.waterfall_Canvas, self.MaxADCCount, self.FREQ_Y_MAX, barColor="green")
+        self.plotterPeak = barPlotter(self, self.waterfall_Canvas, self.MaxADCCount, self.FREQ_Y_MAX, barColor="red")
 
         self.remainingCount_VAR.set(self.repeat_VAR.get())              # Set remaining count to current count
         self.updateScanParameters()                                     # Can now format Frequency graphs
