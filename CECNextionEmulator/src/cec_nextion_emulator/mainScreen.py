@@ -21,7 +21,7 @@ import globalvars as gv
 from tkinter import messagebox
 import sys
 import EEPROM as EEPROM
-from src.cec_nextion_emulator.theVFO import theVFO
+# from src.cec_nextion_emulator.theVFO import theVFO
 
 
 class mainScreen(baseui.mainScreenUI):

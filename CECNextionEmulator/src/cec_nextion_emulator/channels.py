@@ -101,19 +101,20 @@ class channels(baseui.channelsUI):
         self.mainWindow.theRadio.Req_Channel_Labels()
         self.mainWindow.theRadio.Req_Channel_Show_Labels()
 
-
-
+#
+        #
+        #   This places the popup a little down and over from o,o. This special treatment is needed becase of the height of
+        #   the channel window
+        #
+        self.popup.geometry("+200+100")
         self.popup.title("Frequency Channels")
-        # self.popup.geometry("800x700")
+
         self.popup.wait_visibility()  # required on Linux
-        # self.popup.grab_set()         # dont want as we can allow other things to click while using channels
+
         self.popup.transient(self.mainWindow)
 
-        # gv.formatCombobox(self.scan_Select_Combobox, "Arial", "14", "bold")
-        # gv.formatCombobox(self.Time_On_Freq_Combobox, "Arial", "14", "bold")
-
         self.pack(expand=tk.YES, fill=tk.BOTH)
-        gv.trimAndLocateWindow(self.popup, 0, 0)
+
 
     #
     #   Handles reformating the frequencies in the case someone changes the number delimiter
