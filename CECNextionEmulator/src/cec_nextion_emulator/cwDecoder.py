@@ -177,7 +177,7 @@ class cwDecoder(baseui.cwDecoderUI):
     #
 
     def updateTargetFreqBars(self):
-        print("Updating Target Frequency Bars")
+        # print("Updating Target Frequency Bars")
         #   get the length of the scale and add 1 ("fence post rule")
         scaleLength = int(self.frequencyPlotcwToneScale["to"] - self.frequencyPlotcwToneScale["from"]) + 1
         #

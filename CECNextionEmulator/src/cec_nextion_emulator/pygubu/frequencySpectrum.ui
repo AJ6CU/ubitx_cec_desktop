@@ -49,7 +49,6 @@
             <layout manager="grid">
               <property name="column">0</property>
               <property name="padx">10 0</property>
-              <property name="pady">40 0</property>
               <property name="row">0</property>
               <property name="sticky">ew</property>
             </layout>
@@ -91,15 +90,44 @@
               </object>
             </child>
             <child>
+              <object class="ttk.Labelframe" id="peak_Labelframe" named="True">
+                <property name="height">200</property>
+                <property name="style">Heading3.TLabelframe</property>
+                <property name="text" translatable="yes">Peak</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">8 0</property>
+                  <property name="row">1</property>
+                  <property name="sticky">ew</property>
+                </layout>
+                <child>
+                  <object class="tk.Canvas" id="waterfall_Canvas" named="True">
+                    <property name="background">#0432ff</property>
+                    <property name="height">160</property>
+                    <property name="width">430</property>
+                    <layout manager="pack">
+                      <property name="expand">true</property>
+                      <property name="fill">both</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="ttk.Frame" id="freqTuneFrame" named="True">
                 <property name="height">140</property>
                 <property name="style">Normal.TFrame</property>
                 <property name="width">200</property>
                 <layout manager="grid">
                   <property name="column">0</property>
-                  <property name="row">1</property>
+                  <property name="row">2</property>
                   <property name="sticky">ew</property>
                 </layout>
+                <containerlayout manager="grid">
+                  <property type="col" id="0" name="weight">1</property>
+                </containerlayout>
                 <child>
                   <object class="tk.Scale" id="frequencyTuning_Scale" named="True">
                     <property name="command" type="command" cbtype="scale">frequencyTuning_CB</property>
@@ -115,13 +143,11 @@
                     <property name="width">30</property>
                     <bind sequence="&lt;ButtonPress-1&gt;" handler="frequencyTuningPress_CB" add="True" />
                     <bind sequence="&lt;ButtonRelease-1&gt;" handler="frequencyTuningRelease_CB" add="True" />
-                    <layout manager="pack">
-                      <property name="anchor">w</property>
-                      <property name="expand">true</property>
-                      <property name="fill">x</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
                       <property name="padx">10 0</property>
-                      <property name="pady">15 0</property>
-                      <property name="side">top</property>
+                      <property name="row">0</property>
+                      <property name="sticky">ew</property>
                     </layout>
                   </object>
                 </child>
@@ -130,12 +156,10 @@
                     <property name="height">40</property>
                     <property name="style">Normal.TFrame</property>
                     <property name="width">200</property>
-                    <layout manager="pack">
-                      <property name="anchor">w</property>
-                      <property name="expand">true</property>
-                      <property name="fill">x</property>
-                      <property name="pady">0 10</property>
-                      <property name="side">top</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                      <property name="sticky">ew</property>
                     </layout>
                     <child>
                       <object class="ttk.Label" id="startFrequency_Label" named="True">
@@ -163,32 +187,6 @@
                 </child>
               </object>
             </child>
-            <child>
-              <object class="ttk.Labelframe" id="peak_Labelframe" named="True">
-                <property name="height">200</property>
-                <property name="style">Heading3.TLabelframe</property>
-                <property name="text" translatable="yes">Peak</property>
-                <property name="width">200</property>
-                <layout manager="grid">
-                  <property name="column">0</property>
-                  <property name="padx">8 0</property>
-                  <property name="row">2</property>
-                  <property name="sticky">ew</property>
-                </layout>
-                <child>
-                  <object class="tk.Canvas" id="waterfall_Canvas" named="True">
-                    <property name="background">#0432ff</property>
-                    <property name="height">160</property>
-                    <property name="width">430</property>
-                    <layout manager="pack">
-                      <property name="expand">true</property>
-                      <property name="fill">both</property>
-                      <property name="side">top</property>
-                    </layout>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
         </child>
         <child>
@@ -199,6 +197,7 @@
             <layout manager="grid">
               <property name="column">1</property>
               <property name="padx">10 0</property>
+              <property name="pady">100 0</property>
               <property name="row">0</property>
               <property name="rowspan">3</property>
               <property name="sticky">ne</property>
@@ -213,6 +212,7 @@
                   <property name="expand">true</property>
                   <property name="fill">x</property>
                   <property name="padx">0 20</property>
+                  <property name="pady">30 0</property>
                   <property name="side">top</property>
                 </layout>
                 <containerlayout manager="pack">
@@ -240,12 +240,22 @@
                       </object>
                     </child>
                     <child>
+                      <object class="ttk.Label" id="repeat_Label" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">Repeat</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
                       <object class="ttk.Menubutton" id="bandwidth_Menubutton" named="True">
                         <property name="style">Heading0.TMenubutton</property>
                         <property name="textvariable">string:bandwidthSelected_VAR</property>
                         <property name="width">8</property>
                         <layout manager="grid">
-                          <property name="padx">20 0</property>
+                          <property name="padx">0 20</property>
                           <property name="row">1</property>
                           <property name="sticky">w</property>
                         </layout>
@@ -297,82 +307,13 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Label" id="sampleSize_Label" named="True">
-                        <property name="anchor">e</property>
-                        <property name="justify">center</property>
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Sample
-Size(Hz)</property>
-                        <property name="width">10</property>
-                        <layout manager="grid">
-                          <property name="column">1</property>
-                          <property name="padx">20 10</property>
-                          <property name="row">0</property>
-                          <property name="sticky">e</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Label" id="calculatedSampleSize_Label" named="True">
-                        <property name="anchor">e</property>
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">1000</property>
-                        <property name="textvariable">string:calculatedSampleSize_VAR</property>
-                        <property name="width">8</property>
-                        <layout manager="grid">
-                          <property name="column">1</property>
-                          <property name="row">1</property>
-                        </layout>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Frame" id="repeatControlFrame" named="True">
-                    <property name="height">200</property>
-                    <property name="style">Normal.TFrame</property>
-                    <property name="width">200</property>
-                    <layout manager="pack">
-                      <property name="anchor">nw</property>
-                      <property name="expand">true</property>
-                      <property name="fill">x</property>
-                      <property name="pady">20 0</property>
-                      <property name="side">top</property>
-                    </layout>
-                    <child>
-                      <object class="ttk.Label" id="repeat_Label" named="True">
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Repeat</property>
-                        <layout manager="grid">
-                          <property name="column">0</property>
-                          <property name="padx">100 0</property>
-                          <property name="row">0</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Label" id="remaining_Label" named="True">
-                        <property name="anchor">e</property>
-                        <property name="style">Heading2b.TLabel</property>
-                        <property name="text" translatable="yes">Remaining</property>
-                        <property name="width">10</property>
-                        <layout manager="grid">
-                          <property name="column">1</property>
-                          <property name="padx">110 0</property>
-                          <property name="row">0</property>
-                          <property name="sticky">e</property>
-                        </layout>
-                      </object>
-                    </child>
-                    <child>
                       <object class="ttk.Menubutton" id="repeat_Menubutton" named="True">
                         <property name="style">Heading0.TMenubutton</property>
                         <property name="textvariable">string:repeat_VAR</property>
                         <property name="width">3</property>
                         <layout manager="grid">
-                          <property name="padx">85 0</property>
+                          <property name="column">1</property>
                           <property name="row">1</property>
-                          <property name="sticky">e</property>
                         </layout>
                         <child>
                           <object class="tk.Menu" id="repeat_Menu" named="True">
@@ -430,16 +371,51 @@ Size(Hz)</property>
                       </object>
                     </child>
                     <child>
+                      <object class="ttk.Label" id="sampleSize_Label" named="True">
+                        <property name="anchor">e</property>
+                        <property name="justify">center</property>
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">Sample Size(Hz)</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="pady">20 0</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="remaining_Label" named="True">
+                        <property name="anchor">e</property>
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">Remaining</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="pady">20 0</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="calculatedSampleSize_Label" named="True">
+                        <property name="anchor">e</property>
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">1000</property>
+                        <property name="textvariable">string:calculatedSampleSize_VAR</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
                       <object class="ttk.Label" id="remainingCount_Label" named="True">
                         <property name="anchor">e</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">10</property>
                         <property name="textvariable">string:remainingCount_VAR</property>
-                        <property name="width">5</property>
                         <layout manager="grid">
                           <property name="column">1</property>
-                          <property name="padx">90 10</property>
-                          <property name="row">1</property>
+                          <property name="row">3</property>
                         </layout>
                       </object>
                     </child>
@@ -453,11 +429,8 @@ Size(Hz)</property>
                 <property name="style">Normal.TFrame</property>
                 <property name="width">200</property>
                 <layout manager="pack">
-                  <property name="anchor">w</property>
-                  <property name="expand">true</property>
-                  <property name="fill">x</property>
-                  <property name="pady">30 0</property>
-                  <property name="side">top</property>
+                  <property name="pady">100 0</property>
+                  <property name="side">left</property>
                 </layout>
                 <child>
                   <object class="ttk.Label" id="freqLabel" named="True">
@@ -481,48 +454,6 @@ Size(Hz)</property>
                 </child>
               </object>
             </child>
-            <child>
-              <object class="ttk.Frame" id="controlButtonFrame" named="True">
-                <property name="height">200</property>
-                <property name="style">Normal.TFrame</property>
-                <property name="width">200</property>
-                <layout manager="pack">
-                  <property name="anchor">ne</property>
-                  <property name="expand">true</property>
-                  <property name="fill">x</property>
-                  <property name="pady">75 0</property>
-                  <property name="side">top</property>
-                </layout>
-                <containerlayout manager="pack">
-                  <property name="anchor">e</property>
-                </containerlayout>
-                <child>
-                  <object class="ttk.Button" id="recenter_Button" named="True">
-                    <property name="command" type="command" cbtype="simple">recenter_CB</property>
-                    <property name="style">Button2b.TButton</property>
-                    <property name="text" translatable="yes">Center
-Rerun</property>
-                    <property name="width">10</property>
-                    <layout manager="pack">
-                      <property name="side">top</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Button" id="startStop_Button" named="True">
-                    <property name="command" type="command" cbtype="simple">startSpectrum_CB</property>
-                    <property name="style">Button2b.TButton</property>
-                    <property name="text" translatable="yes">Start</property>
-                    <property name="textvariable">string:startStopSpectrum_VAR</property>
-                    <property name="width">10</property>
-                    <layout manager="pack">
-                      <property name="pady">50 0</property>
-                      <property name="side">top</property>
-                    </layout>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
         </child>
         <child>
@@ -533,10 +464,37 @@ Rerun</property>
               <property name="columnspan">2</property>
               <property name="pady">20 15</property>
               <property name="row">1</property>
+              <property name="sticky">ew</property>
             </layout>
             <containerlayout manager="grid">
               <property name="anchor">center</property>
             </containerlayout>
+            <child>
+              <object class="ttk.Button" id="startStop_Button" named="True">
+                <property name="command" type="command" cbtype="simple">startSpectrum_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">Scan</property>
+                <property name="textvariable">string:startStopSpectrum_VAR</property>
+                <property name="width">10</property>
+                <layout manager="grid">
+                  <property name="padx">0 15</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="recenter_Button" named="True">
+                <property name="command" type="command" cbtype="simple">recenter_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">Center</property>
+                <property name="width">10</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">0 15</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
             <child>
               <object class="ttk.Button" id="applyClose_Button" named="True">
                 <property name="command" type="command" cbtype="simple">applyClose_CB</property>
@@ -546,7 +504,7 @@ Rerun</property>
                 <property name="width">10</property>
                 <layout manager="grid">
                   <property name="column">2</property>
-                  <property name="padx">40 0</property>
+                  <property name="padx">0 15</property>
                   <property name="row">0</property>
                 </layout>
               </object>
@@ -559,7 +517,6 @@ Rerun</property>
                 <property name="width">10</property>
                 <layout manager="grid">
                   <property name="column">3</property>
-                  <property name="padx">40 0</property>
                   <property name="row">0</property>
                 </layout>
               </object>

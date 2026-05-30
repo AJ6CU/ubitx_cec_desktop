@@ -327,6 +327,8 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
 
         self.reinitializeValues()       # set peak and average values back to zero
+        self.plotterAvg.clearCanvas()   # clear the canvases
+        self.plotterPeak.clearCanvas()
         self.mainWindow.theRadio.startFrequencySpectrumScan(self.startFrequency, int(self.repeat_VAR.get()))
 
 
@@ -351,7 +353,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         if self.spectrumScanning:
             self.startStopSpectrum_VAR.set("Running")
         else:
-            self.startStopSpectrum_VAR.set("Start")
+            self.startStopSpectrum_VAR.set("Scan")
 
 
 
