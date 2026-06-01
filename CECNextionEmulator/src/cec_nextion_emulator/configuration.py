@@ -55,11 +55,11 @@ class configuration:
             serialPort = "com6"
 
         elif platform.system() == 'Darwin':
-            serialPort = "/dev/cu.usbserial-00000001"
-            # serialPort = "/dev/cu.usbserial-00000000"
+            serialPort = "/dev/cu.usbserial-00000000"
 
         else:
-            serialPort = "/dev/serial0"                     # for trixie+
+            serialPort = "/dev/tty/USB0"                     # for trixie+
+            # serialPort = "/dev/serial0"  # for trixie+
             # serialPort = "/dev/ttyS0"                     # for bookbinder and below
 
         self.config_data["Serial Port"] = serialPort
