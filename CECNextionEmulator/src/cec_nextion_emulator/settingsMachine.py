@@ -40,6 +40,13 @@ class settingsMachine(baseui.settingsMachineUI):
         self.PWR_Factor_VAR.set(self.savePWR_Factor)
         self.SWR_Factor_VAR.set(self.saveSWR_Factor)
 
+        if self.PWR_SWR_Enable_VAR.get() == 'False':
+            self.PWR_Factor_Label.configure(state="disabled")
+            self.SWR_Factor_Label.configure(state="disabled")
+            self.PWR_Factor_Entry.configure(state="disabled")
+            self.SWR_Factor_Entry.configure(state="disabled")
+
+
         self.DSP_Enable_VAR.set(self.saveDSP_Enable)
         self.MCU_Command_Headroom_VAR.set(str(self.saveMCU_Command_Headroom))
         self.MCU_Update_Period_VAR.set(str(self.saveMCU_Update_Period))
