@@ -131,7 +131,7 @@ class configuration:
         if "SWR Factor" in self.config_data:
             return self.config_data["SWR Factor"]
         else:
-            self.config_data["SWR Factor"] = 1.0
+            self.config_data["SWR Factor"] = "1.00"
             self.saveConfig()
             return self.config_data["SWR Factor"]
 
@@ -145,7 +145,7 @@ class configuration:
         if "PWR Factor" in self.config_data:
             return self.config_data["PWR Factor"]
         else:
-            self.config_data["PWR Factor"] = 1.0
+            self.config_data["PWR Factor"] = "1.00"
             self.saveConfig()
             return self.config_data["PWR Factor"]
 
@@ -153,9 +153,6 @@ class configuration:
         self.config_data["PWR Factor"] = value
         self.saveConfig()
 
-    def set_Template(self, value):
-        self.config_data["Template"] = value
-        self.saveConfig()
 
     def get_NUMBER_DELIMITER(self):
         return self.config_data["NUMBER DELIMITER"]

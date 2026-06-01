@@ -7,27 +7,31 @@ import globalvars as gv
 
 
 class VirtualNumericKeyboard(tk.Toplevel):
-    def __init__(self, master=None, fieldStrVar=None, dirtyCallback=None, maxDigits=None, **kw):
+    def __init__(self, master=None, fieldStrVar=None, dirtyCallback=None, maxDigits=None, formatVFOFlag=True, **kw):
         self.master = master
         self.fieldStrVar = fieldStrVar
         self.dirty_CB = dirtyCallback
         self.maxDigits = maxDigits
+        self.formatVFOFlag = formatVFOFlag
         self.originalValue = self.fieldStrVar.get()
-        self.fieldStrVar.set(gv.unformatFrequency(self.originalValue))
+        if self.formatVFOFlag:
+            self.fieldStrVar.set(gv.unformatFrequency(self.originalValue))
 
 
         super().__init__(master, **kw)
 
         self.protocol("WM_DELETE_WINDOW", self.cancel)
 
-        self.messageTooLong = "Too Many Digits, Max = " + str(self.maxDigits)
+        self.messageTooLong = "Too Many Characters, Max = " + str(self.maxDigits)
         self.messageEmpty = ""
 
         self.message = StringVar()
         self.message.set(self.messageEmpty)
 
         self.currentPos = len(self.fieldStrVar.get())
+
         self.cursor = "\u2581"
+        self.fieldStrVar.set(self.fieldStrVar.get() + self.cursor)
         
         self.wait_visibility()  # required on Linux
         self.grab_set()  # This line makes the cw settings window modal
@@ -40,11 +44,19 @@ class VirtualNumericKeyboard(tk.Toplevel):
 
         self.mainframe = ttk.Frame(self)
         self.leftArrow = "\u2190"
+        self.decimalPoint = gv.config.get_NUMBER_DELIMITER()
 
-        rows = [["7", "8", "9"],
-                ["4", "5", "6"],
-                ["1", "2", "3"],
-                ["0", self.leftArrow, "Del"]]
+        if formatVFOFlag:
+
+            rows = [["7", "8", "9"],
+                    ["4", "5", "6"],
+                    ["1", "2", "3"],
+                    ["0", self.leftArrow, "Del"]]
+        else:
+            rows = [["7", "8", "9"],
+                    ["4", "5", "6"],
+                    ["1", "2", "3"],
+                    ["0", self.decimalPoint, "Del"]]
 
         for r, row in enumerate(rows, 1):
             for c, t in enumerate(row):
@@ -72,7 +84,8 @@ class VirtualNumericKeyboard(tk.Toplevel):
 
     def enter(self,event=None):
         self.fieldStrVar.set(self.fieldStrVar.get().replace(self.cursor, ''))
-        self.fieldStrVar.set(gv.formatVFO(self.fieldStrVar.get()))
+        if self.formatVFOFlag:
+            self.fieldStrVar.set(gv.formatVFO(self.fieldStrVar.get()))
         if self.originalValue !=self.fieldStrVar.get():
             self.dirty_CB()
         self.destroy()
@@ -95,6 +108,10 @@ class VirtualNumericKeyboard(tk.Toplevel):
                 second_half = self.fieldStrVar.get()[self.currentPos:].replace(self.cursor,'')
                 self.fieldStrVar.set(first_half + self.cursor + second_half)
         else:
+            if t == self.decimalPoint:
+                if self.decimalPoint in self.fieldStrVar.get():   # ignore attempts to enter multiple periods
+                    return
+
             if self.currentPos < self.maxDigits:
                 first_half = self.fieldStrVar.get()[:self.currentPos].replace(self.cursor,'')
                 second_half = self.fieldStrVar.get()[self.currentPos:].replace(self.cursor,'')

@@ -62,8 +62,10 @@ def setup_ttk_styles(master=None):
 
     style.configure('Heading2bi.TLabel', font=fontList['Heading2bi'], background='gray', foreground='white')
     style.configure('Heading3b.TLabel',font=fontList['Heading3'], background='gray', foreground='white')
+    style.configure('Heading3bRed.TLabel', font=fontList['Heading3'], background='red', foreground='white')
     style.configure('Heading3bi.TLabel', font=fontList['Heading3i'], background='gray', foreground='white')
     style.configure('Heading4b.TLabel',font=fontList['Heading4'], background='gray', foreground='white')
+    style.configure('Heading4bRed.TLabel', font=fontList['Heading4'], background='red', foreground='white')
     style.configure('OffLED.TLabel', font=fontList['Heading5'], background='gray', foreground='gray')
     style.configure('OnLED.TLabel', font=fontList['Heading5'], background='green', foreground='green')
     style.configure('GreenLED.TLabel',font=fontList['Heading2'], background='green', foreground='white')
@@ -148,6 +150,7 @@ def setup_ttk_styles(master=None):
  #   style.configure('Dark.TFrame', background='black', bd=4, bordercolor='white')
     style.configure('Normal.TFrame', background='gray', bd=4,font=fontList['Heading2'])
     style.configure('NormalOutline.TFrame', background='gray', bd=4, bordercolor='white' ,relief='groove')
+    # style.configure('WarningOutline.TFrame', background='red', bd=4, bordercolor='white', relief='groove')
 
     style.configure('Fixed.TNotebook')
     style.configure('Fixed.TNotebook.Tab',padding=[5,2])

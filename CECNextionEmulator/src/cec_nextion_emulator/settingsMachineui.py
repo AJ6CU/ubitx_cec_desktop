@@ -156,7 +156,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.PWR_Factor_Label.configure(
             state="disabled",
             style="Heading1b.TLabel",
-            text='PWR Adjustment Factor\n(0.0-nn.n)')
+            text='PWR Adjustment Factor\n(0.0-nn.nn)')
         self.PWR_Factor_Label.grid(
             column=0,
             padx="20 5",
@@ -171,7 +171,7 @@ class settingsMachineUI(ttk.Labelframe):
             justify="right",
             textvariable=self.PWR_Factor_VAR,
             validate="focusout",
-            width=4)
+            width=5)
         _text_ = '0.0'
         self.PWR_Factor_Entry.delete("0", "end")
         self.PWR_Factor_Entry.insert("0", _text_)
@@ -187,7 +187,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.SWR_Factor_Label.configure(
             state="disabled",
             style="Heading1b.TLabel",
-            text='SWR Adjustment Factor\n(0.0-nn.n)')
+            text='SWR Adjustment Factor\n(0.0-nn.nn)')
         self.SWR_Factor_Label.grid(
             column=0, padx="20 5", pady=10, row=2, sticky="w")
         self.SWR_Factor_Entry = ttk.Entry(
@@ -198,14 +198,14 @@ class settingsMachineUI(ttk.Labelframe):
             justify="right",
             textvariable=self.SWR_Factor_VAR,
             validate="focusout",
-            width=4)
+            width=5)
         _text_ = '0.0'
         self.SWR_Factor_Entry.delete("0", "end")
         self.SWR_Factor_Entry.insert("0", _text_)
         self.SWR_Factor_Entry.grid(
             column=1, padx=10, pady=10, row=2, sticky="e")
         _validatecmd = (self.SWR_Factor_Entry.register(
-            self.PWR_Factor_Validation_CB), "%P", "%V")
+            self.SWR_Factor_Validation_CB), "%P", "%V")
         self.SWR_Factor_Entry.configure(validatecommand=_validatecmd)
         self.SWR_Factor_Entry.bind(
             "<Button>", self.SWR_Factor_Entered_CB, add="+")
@@ -330,6 +330,9 @@ class settingsMachineUI(ttk.Labelframe):
         pass
 
     def PWR_Factor_Entered_CB(self, event=None):
+        pass
+
+    def SWR_Factor_Validation_CB(self, p_entry_value, v_condition):
         pass
 
     def SWR_Factor_Entered_CB(self, event=None):

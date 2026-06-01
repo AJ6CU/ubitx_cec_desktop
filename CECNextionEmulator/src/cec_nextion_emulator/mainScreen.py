@@ -668,15 +668,19 @@ class mainScreen(baseui.mainScreenUI):
 
             if self.lastPWRSWR_Reading == None or self.lastPWRSWR_Reading == "SWR":
                 self.lastPWRSWR_Reading = "PWR"
-                factorPWR = round(adjustedValue/gv.config.get_PWR_Factor(),1)              # 3.91
-                self.PWR_Value_VAR.set(str(factorPWR))
+                factorPWR = round(adjustedValue/float(gv.config.get_PWR_Factor()),1)              # 3.91
+                self.PWR_Value_VAR.set(str(factorPWR).replace(".", gv.config.get_NUMBER_DELIMITER()))
             else:
                 self.lastPWRSWR_Reading = "SWR"
-                factorSWR=round(adjustedValue / gv.config.get_SWR_Factor(), 1)   # 1,85
-                if factorSWR < 1.0:
-                    print("SWR below 1.0, factorSWR=", factorSWR)
-                    factorSWR = 1.0
-                self.SWR_Value_VAR.set(str(factorSWR))
+                factorSWR=round(adjustedValue / float(gv.config.get_SWR_Factor()), 1)   # 2,95
+                if factorSWR < 1.0 or factorSWR > 2.9:
+                    self.SWR_Label.configure(style="Heading3bRed.TLabel")
+                    self.SWR_Value.configure(style="Heading4bRed.TLabel")
+                else:
+                    self.SWR_Label.configure(style="Heading3b.TLabel")
+                    self.SWR_Value.configure(style="Heading4b.TLabel")
+
+                self.SWR_Value_VAR.set(str(factorSWR).replace(".",gv.config.get_NUMBER_DELIMITER()))
 
 
     def vv_UX_Command_Data(self, buffer):

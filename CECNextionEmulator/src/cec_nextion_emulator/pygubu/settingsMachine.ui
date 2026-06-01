@@ -190,7 +190,7 @@
                     <property name="state">disabled</property>
                     <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">PWR Adjustment Factor
-(0.0-nn.n)</property>
+(0.0-nn.nn)</property>
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">20 5</property>
@@ -208,7 +208,7 @@
                     <property name="textvariable">string:PWR_Factor_VAR</property>
                     <property name="validate">focusout</property>
                     <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">PWR_Factor_Validation_CB</property>
-                    <property name="width">4</property>
+                    <property name="width">5</property>
                     <bind sequence="&lt;Button&gt;" handler="PWR_Factor_Entered_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -224,7 +224,7 @@
                     <property name="state">disabled</property>
                     <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">SWR Adjustment Factor
-(0.0-nn.n)</property>
+(0.0-nn.nn)</property>
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">20 5</property>
@@ -241,8 +241,8 @@
                     <property name="text" translatable="yes">0.0</property>
                     <property name="textvariable">string:SWR_Factor_VAR</property>
                     <property name="validate">focusout</property>
-                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">PWR_Factor_Validation_CB</property>
-                    <property name="width">4</property>
+                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">SWR_Factor_Validation_CB</property>
+                    <property name="width">5</property>
                     <bind sequence="&lt;Button&gt;" handler="SWR_Factor_Entered_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
