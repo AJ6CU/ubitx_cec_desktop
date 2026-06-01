@@ -27,15 +27,23 @@ class settingsMachine(baseui.settingsMachineUI):
 
 
         self.saveDSP_Enable = gv.config.get_DSP_Switch()
+
+        self.savePWR_SWR_Switch = gv.config.get_PWR_SWR_Switch()
+        self.savePWR_Factor = gv.config.get_PWR_Factor()
+        self.saveSWR_Factor = gv.config.get_SWR_Factor()
+
         self.saveMCU_Command_Headroom = int(gv.config.get_MCU_Command_Headroom()*1000)
         self.saveMCU_Update_Period = gv.config.get_MCU_Update_Period()
         self.saveMCU_Read_Wait_Period = gv.config.get_MCU_Read_Wait_Period()
+
+        self.PWR_SWR_Enable_VAR.set(self.savePWR_SWR_Switch)
+        self.PWR_Factor_VAR.set(self.savePWR_Factor)
+        self.SWR_Factor_VAR.set(self.saveSWR_Factor)
 
         self.DSP_Enable_VAR.set(self.saveDSP_Enable)
         self.MCU_Command_Headroom_VAR.set(str(self.saveMCU_Command_Headroom))
         self.MCU_Update_Period_VAR.set(str(self.saveMCU_Update_Period))
         self.MCU_Read_Wait_Period_VAR.set(str(int(self.saveMCU_Read_Wait_Period*1000)))
-
 
         if self.mainWindow.DSPFound:
             self.DSP_Enable_Label.configure(state="normal")
