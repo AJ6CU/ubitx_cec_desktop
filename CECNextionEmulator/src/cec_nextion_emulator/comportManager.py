@@ -5,6 +5,7 @@ import comportManagerui as baseui
 
 import serial.tools.list_ports              # Used to get a list of com ports
 
+
 from tkinter import messagebox
 
 from time import sleep
@@ -227,9 +228,9 @@ class comportManager(baseui.comportManagerUI):
         self.comPortList =[("Select Serial Port")]          #Seeds option list with Selection instructions
 
         for p in ports:                                 #this used to strip down to just the com port# or path
-            self.comPortList.append(p.device)
+            if p.vid != None:
+                self.comPortList.append(p.device)
         self.comPortsOptionMenu.set_menu(*self.comPortList)  # put found ports into the option menu
-
 
     def radioSerialPortSelected_CB(self, *args):                # callback specified by UX, connected to main
         self.selectionMade = True
