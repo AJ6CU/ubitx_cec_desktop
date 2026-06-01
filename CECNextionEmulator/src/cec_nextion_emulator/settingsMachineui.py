@@ -59,15 +59,21 @@ class settingsMachineUI(ttk.Labelframe):
         # First object created
         on_first_object_cb(frame1)
 
-        self.DSP_Enable_Label = ttk.Label(frame1, name="dsp_enable_label")
+        self.DSP_Frame = ttk.Frame(frame1, name="dsp_frame")
+        self.DSP_Frame.configure(
+            height=200,
+            style="NormalOutline.TFrame",
+            width=200)
+        self.DSP_Enable_Label = ttk.Label(
+            self.DSP_Frame, name="dsp_enable_label")
         self.DSP_Enable_Label.configure(
             state="disabled",
             style="Heading1b.TLabel",
-            text='Use DSP Processor')
+            text='Enable DSP Processor')
         self.DSP_Enable_Label.grid(
-            column=0, padx=10, pady=10, row=0, sticky="e")
+            column=0, padx=5, pady="5 0", row=0, sticky="w")
         self.DSP_Enable_Menubutton = ttk.Menubutton(
-            frame1, name="dsp_enable_menubutton")
+            self.DSP_Frame, name="dsp_enable_menubutton")
         self.DSP_Enable_VAR = tk.StringVar()
         self.DSP_Enable_Menubutton.configure(
             style="Heading0.TMenubutton",
@@ -91,8 +97,9 @@ class settingsMachineUI(ttk.Labelframe):
             state="normal")
         self.DSP_Enable_Menubutton.configure(menu=self.DSP_Enable_Menu)
         self.DSP_Enable_Menubutton.grid(
-            column=1, padx="15 5", pady=10, row=0, sticky="w")
-        self.DSPMessage_Label = ttk.Label(frame1, name="dspmessage_label")
+            column=1, padx="43 10", pady="5 0", row=0)
+        self.DSPMessage_Label = ttk.Label(
+            self.DSP_Frame, name="dspmessage_label")
         self.DSPMessage_VAR = tk.StringVar(
             value='No DSP Found on startup. Option automatically disabled')
         self.DSPMessage_Label.configure(
@@ -102,32 +109,124 @@ class settingsMachineUI(ttk.Labelframe):
         self.DSPMessage_Label.grid(
             column=0,
             columnspan=2,
-            pady="0 20",
-            row=1,
+            padx=5,
+            pady="0 10",
+            row=2,
             sticky="ew")
+        self.DSP_Frame.grid(column=0, columnspan=2, row=0, sticky="ew")
+        self.PWR_SWR_Frame = ttk.Frame(frame1, name="pwr_swr_frame")
+        self.PWR_SWR_Frame.configure(
+            height=200, style="NormalOutline.TFrame", width=200)
+        self.PWR_SWR_Enable_Label = ttk.Label(
+            self.PWR_SWR_Frame, name="pwr_swr_enable_label")
+        self.PWR_SWR_Enable_Label.configure(
+            state="disabled",
+            style="Heading1b.TLabel",
+            text='Enable PWR/SWR Meter')
+        self.PWR_SWR_Enable_Label.grid(
+            column=0, padx=5, pady="10 0", row=0, sticky="w")
+        self.PWR_SWR_Menubutton = ttk.Menubutton(
+            self.PWR_SWR_Frame, name="pwr_swr_menubutton")
+        self.PWR_SWR_Enable_VAR = tk.StringVar()
+        self.PWR_SWR_Menubutton.configure(
+            style="Heading0.TMenubutton",
+            textvariable=self.PWR_SWR_Enable_VAR,
+            width=5)
+        self.PWR_SWR_Menu = tk.Menu(
+            self.PWR_SWR_Menubutton,
+            name="pwr_swr_menu")
+        self.PWR_SWR_Menu.configure(tearoff=False)
+        self.PWR_SWR_Menu.add(
+            "command",
+            command=self.enablePWR_SWR_CB,
+            font="{Arial} 36 {}",
+            label='True',
+            state="normal")
+        self.PWR_SWR_Menu.add(
+            "command",
+            command=self.disablePWR_SWR_CB,
+            font="{Arial} 36 {}",
+            label='False',
+            state="normal")
+        self.PWR_SWR_Menubutton.configure(menu=self.PWR_SWR_Menu)
+        self.PWR_SWR_Menubutton.grid(
+            column=1, padx=10, pady="10 0", row=0, sticky="e")
+        self.PWR_Factor_Label = ttk.Label(
+            self.PWR_SWR_Frame, name="pwr_factor_label")
+        self.PWR_Factor_Label.configure(
+            state="disabled",
+            style="Heading1b.TLabel",
+            text='PWR Adjustment Factor\n(0.0-nn.n)')
+        self.PWR_Factor_Label.grid(
+            column=0,
+            padx="20 5",
+            pady="10 0",
+            row=1,
+            sticky="w")
+        self.PWR_Factor_Entry = ttk.Entry(
+            self.PWR_SWR_Frame, name="pwr_factor_entry")
+        self.PWR_Factor_VAR = tk.StringVar(value='0.0')
+        self.PWR_Factor_Entry.configure(
+            font="{Arial} 36 {}",
+            justify="right",
+            textvariable=self.PWR_Factor_VAR,
+            validate="focusout",
+            width=4)
+        _text_ = '0.0'
+        self.PWR_Factor_Entry.delete("0", "end")
+        self.PWR_Factor_Entry.insert("0", _text_)
+        self.PWR_Factor_Entry.grid(
+            column=1, padx=10, pady="10 0", row=1, sticky="e")
+        _validatecmd = (self.PWR_Factor_Entry.register(
+            self.PWR_Factor_Validation_CB), "%P", "%V")
+        self.PWR_Factor_Entry.configure(validatecommand=_validatecmd)
+        self.PWR_Factor_Entry.bind(
+            "<Button>", self.PWR_Factor_Entered_CB, add="+")
+        self.SWR_Factor_Label = ttk.Label(
+            self.PWR_SWR_Frame, name="swr_factor_label")
+        self.SWR_Factor_Label.configure(
+            state="disabled",
+            style="Heading1b.TLabel",
+            text='SWR Adjustment Factor\n(0.0-nn.n)')
+        self.SWR_Factor_Label.grid(
+            column=0, padx="20 5", pady=10, row=2, sticky="w")
+        self.SWR_Factor_Entry = ttk.Entry(
+            self.PWR_SWR_Frame, name="swr_factor_entry")
+        self.SWR_Factor_VAR = tk.StringVar(value='0.0')
+        self.SWR_Factor_Entry.configure(
+            font="{Arial} 36 {}",
+            justify="right",
+            textvariable=self.SWR_Factor_VAR,
+            validate="focusout",
+            width=4)
+        _text_ = '0.0'
+        self.SWR_Factor_Entry.delete("0", "end")
+        self.SWR_Factor_Entry.insert("0", _text_)
+        self.SWR_Factor_Entry.grid(
+            column=1, padx=10, pady=10, row=2, sticky="e")
+        _validatecmd = (self.SWR_Factor_Entry.register(
+            self.PWR_Factor_Validation_CB), "%P", "%V")
+        self.SWR_Factor_Entry.configure(validatecommand=_validatecmd)
+        self.SWR_Factor_Entry.bind(
+            "<Button>", self.SWR_Factor_Entered_CB, add="+")
+        self.PWR_SWR_Frame.grid(
+            column=0,
+            columnspan=2,
+            pady="10 0",
+            row=2,
+            sticky="ew")
+        self.Timing_Frame = ttk.Frame(frame1, name="timing_frame")
+        self.Timing_Frame.configure(
+            height=200, style="NormalOutline.TFrame", width=200)
         self.MCU_Command_Headroom_Label = ttk.Label(
-            frame1, name="mcu_command_headroom_label")
+            self.Timing_Frame, name="mcu_command_headroom_label")
         self.MCU_Command_Headroom_Label.configure(
             style="Heading1b.TLabel",
             text='Minimum time between\ncommands sent to\nRadio (ms):')
         self.MCU_Command_Headroom_Label.grid(
-            column=0, padx=10, pady=10, row=2, sticky="w")
-        self.MCU_Update_Period_Label = ttk.Label(
-            frame1, name="mcu_update_period_label")
-        self.MCU_Update_Period_Label.configure(
-            style="Heading1b.TLabel",
-            text='Frequency to check for\nUX changes (ms):')
-        self.MCU_Update_Period_Label.grid(
-            column=0, padx=10, pady=10, row=3, sticky="w")
-        self.MCU_Read_Wait_Period_Label = ttk.Label(
-            frame1, name="mcu_read_wait_period_label")
-        self.MCU_Read_Wait_Period_Label.configure(
-            style="Heading1b.TLabel",
-            text='Wait time for completion \nof data transfer from\nMCU/DPS (ms):')
-        self.MCU_Read_Wait_Period_Label.grid(
-            column=0, padx=10, pady="20 50", row=4, sticky="e")
+            column=0, padx=5, pady="10 0", row=0, sticky="w")
         self.MCU_Command_Headroom_Spinbox = ttk.Spinbox(
-            frame1, name="mcu_command_headroom_spinbox")
+            self.Timing_Frame, name="mcu_command_headroom_spinbox")
         self.MCU_Command_Headroom_VAR = tk.StringVar()
         self.MCU_Command_Headroom_Spinbox.configure(
             font="{Arial} 36 {}",
@@ -136,11 +235,18 @@ class settingsMachineUI(ttk.Labelframe):
             style="Custom.TSpinbox",
             textvariable=self.MCU_Command_Headroom_VAR,
             to=20,
-            width=3)
+            width=4)
         self.MCU_Command_Headroom_Spinbox.grid(
-            column=1, padx=20, pady=10, row=2, sticky="w")
+            column=1, padx="15 10", pady="10 0", row=0, sticky="e")
+        self.MCU_Update_Period_Label = ttk.Label(
+            self.Timing_Frame, name="mcu_update_period_label")
+        self.MCU_Update_Period_Label.configure(
+            style="Heading1b.TLabel",
+            text='Frequency to check for\nUX changes (ms):')
+        self.MCU_Update_Period_Label.grid(
+            column=0, padx=5, pady="15 0", row=2, sticky="w")
         self.MCU_Update_Period_Spinbox = ttk.Spinbox(
-            frame1, name="mcu_update_period_spinbox")
+            self.Timing_Frame, name="mcu_update_period_spinbox")
         self.MCU_Update_Period_VAR = tk.StringVar()
         self.MCU_Update_Period_Spinbox.configure(
             font="{Arial} 36 {}",
@@ -149,11 +255,18 @@ class settingsMachineUI(ttk.Labelframe):
             style="Custom.TSpinbox",
             textvariable=self.MCU_Update_Period_VAR,
             to=20,
-            width=3)
+            width=4)
         self.MCU_Update_Period_Spinbox.grid(
-            column=1, padx=20, pady=10, row=3, sticky="w")
+            column=1, padx="15 10", pady="15 0", row=2, sticky="e")
+        self.MCU_Read_Wait_Period_Label = ttk.Label(
+            self.Timing_Frame, name="mcu_read_wait_period_label")
+        self.MCU_Read_Wait_Period_Label.configure(
+            style="Heading1b.TLabel",
+            text='Wait time for completion \nof data transfer from\nMCU/DPS (ms):')
+        self.MCU_Read_Wait_Period_Label.grid(
+            column=0, padx=5, pady="15 10", row=3, sticky="w")
         self.MCU_Read_Wait_Period_Spinbox = ttk.Spinbox(
-            frame1, name="mcu_read_wait_period_spinbox")
+            self.Timing_Frame, name="mcu_read_wait_period_spinbox")
         self.MCU_Read_Wait_Period_VAR = tk.StringVar()
         self.MCU_Read_Wait_Period_Spinbox.configure(
             font="{Arial} 36 {}",
@@ -162,14 +275,20 @@ class settingsMachineUI(ttk.Labelframe):
             style="Custom.TSpinbox",
             textvariable=self.MCU_Read_Wait_Period_VAR,
             to=20,
-            width=3)
+            width=4)
         self.MCU_Read_Wait_Period_Spinbox.grid(
-            column=1, padx=20, pady=10, row=4, sticky="w")
+            column=1, padx="15 10", pady="15 10", row=3, sticky="e")
+        self.Timing_Frame.grid(
+            column=0,
+            columnspan=2,
+            pady=10,
+            row=4,
+            sticky="ew")
         frame1.pack(
             anchor="center",
             expand=True,
             fill="both",
-            padx=20,
+            padx=10,
             pady=10,
             side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
@@ -191,16 +310,29 @@ class settingsMachineUI(ttk.Labelframe):
             side="top")
         self.configure(
             cursor="arrow",
-            height=500,
             style="Heading2.TLabelframe",
-            text='Machine Settings ( Caution Advised)',
-            width=450)
+            text='Machine Settings ( Caution Advised)')
         # Layout for 'labelframe1' skipped in custom widget template.
 
     def selectDSP_On_CB(self):
         pass
 
     def selectDSP_Off_CB(self):
+        pass
+
+    def enablePWR_SWR_CB(self):
+        pass
+
+    def disablePWR_SWR_CB(self):
+        pass
+
+    def PWR_Factor_Validation_CB(self, p_entry_value, v_condition):
+        pass
+
+    def PWR_Factor_Entered_CB(self, event=None):
+        pass
+
+    def SWR_Factor_Entered_CB(self, event=None):
         pass
 
     def apply_CB(self):

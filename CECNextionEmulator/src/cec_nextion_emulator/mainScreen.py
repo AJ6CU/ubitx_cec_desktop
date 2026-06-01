@@ -662,15 +662,21 @@ class mainScreen(baseui.mainScreenUI):
     #   PWR is sent first, followed by the SWR second
     #
     def vm_UX_PW_SWR_Level(self, buffer):
-        value = self.extractValue(buffer, 10, len(buffer) - 3)
-        adjustedValue = str(round(int(value)/100,1))
+        if gv.config.get_PWR_SWR_Switch() == "True":
+            value = self.extractValue(buffer, 10, len(buffer) - 3)
+            adjustedValue = int(value)/100
 
-        if self.lastPWRSWR_Reading == None or self.lastPWRSWR_Reading == "SWR":
-            self.lastPWRSWR_Reading = "PWR"
-            self.PWR_Value_VAR.set(adjustedValue)
-        else:
-            self.lastPWRSWR_Reading = "SWR"
-            self.SWR_Value_VAR.set(adjustedValue)
+            if self.lastPWRSWR_Reading == None or self.lastPWRSWR_Reading == "SWR":
+                self.lastPWRSWR_Reading = "PWR"
+                factorPWR = round(adjustedValue/gv.config.get_PWR_Factor(),1)              # 3.91
+                self.PWR_Value_VAR.set(str(factorPWR))
+            else:
+                self.lastPWRSWR_Reading = "SWR"
+                factorSWR=round(adjustedValue / gv.config.get_SWR_Factor(), 1)   # 1,85
+                if factorSWR < 1.0:
+                    print("SWR below 1.0, factorSWR=", factorSWR)
+                    factorSWR = 1.0
+                self.SWR_Value_VAR.set(str(factorSWR))
 
 
     def vv_UX_Command_Data(self, buffer):
@@ -819,15 +825,17 @@ class mainScreen(baseui.mainScreenUI):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
         if value == "1":  #going into transmit mode
             self.theVFO_Object.setTXButtonState()
-            self.SWR_PWR_Frame.grid()
+            if gv.config.get_PWR_SWR_Switch() == "True":            # If PWR/SWR Switch is off display nothing
+                self.SWR_PWR_Frame.grid()
 
         else:
             self.theVFO_Object.setRXButtonState()
             #
             #   the self.master.state('normal') is a little magic that is needed on macos to make sure the
-            #   frame really disappears
+            #   frame really disappears. Only need to schedule this if PWR/SWR switch is on.
             #
-            self.master.after(2000, lambda: [self.SWR_PWR_Frame.grid_remove(), self.master.state('normal')])
+            if gv.config.get_PWR_SWR_Switch() == "True":
+                self.master.after(2000, lambda: [self.SWR_PWR_Frame.grid_remove(), self.master.state('normal')])
 
 
 

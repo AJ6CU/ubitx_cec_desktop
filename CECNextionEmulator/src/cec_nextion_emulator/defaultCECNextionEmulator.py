@@ -12,6 +12,8 @@ default_config_data = {
     "MCU Update Period": 250,
     "Master Cal": "",
     "NUMBER DELIMITER": ".",
+    "PWR Factor": 1.0,
+    "PWR SWR": "False",
     "SSB BFO": "",
     "Scan On Station Time": 5000,
     "Scan Set Settings": [
@@ -97,6 +99,7 @@ default_config_data = {
         ]
     ],
     "Serial Port": "",
+    "SWR Factor": 1.0,
     "TXOffset": "EEPROM",
     "VFO Touch Optimized": "True",
     "Virtual Keyboard Switch": "True"

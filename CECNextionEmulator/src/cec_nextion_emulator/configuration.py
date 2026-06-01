@@ -112,6 +112,51 @@ class configuration:
         self.config_data["MCU Read Wait Period"] = value
         self.saveConfig()
 
+        "PWR SWR"
+
+    def get_PWR_SWR_Switch(self):
+        if "PWR SWR" in self.config_data:
+            return self.config_data["PWR SWR"]
+        else:
+            self.config_data["PWR SWR"] = "False"
+            self.saveConfig()
+            return self.config_data["PWR SWR"]
+
+    def set_PWR_SWR_Switch(self, value):
+        self.config_data["PWR SWR"] = value
+        self.saveConfig()
+
+
+    def get_SWR_Factor(self):
+        if "SWR Factor" in self.config_data:
+            return self.config_data["SWR Factor"]
+        else:
+            self.config_data["SWR Factor"] = 1.0
+            self.saveConfig()
+            return self.config_data["SWR Factor"]
+
+    def set_SWR_Factor(self, value):
+        self.config_data["SWR Factor"] = value
+        self.saveConfig()
+
+
+
+    def get_PWR_Factor(self):
+        if "PWR Factor" in self.config_data:
+            return self.config_data["PWR Factor"]
+        else:
+            self.config_data["PWR Factor"] = 1.0
+            self.saveConfig()
+            return self.config_data["PWR Factor"]
+
+    def set_PWR_Factor(self, value):
+        self.config_data["PWR Factor"] = value
+        self.saveConfig()
+
+    def set_Template(self, value):
+        self.config_data["Template"] = value
+        self.saveConfig()
+
     def get_NUMBER_DELIMITER(self):
         return self.config_data["NUMBER DELIMITER"]
 
