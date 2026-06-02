@@ -22,6 +22,9 @@ def get_image(filename):
 
 config = None
 
+APPVERSION = "1.0"
+APPDATE = "June 15, 2026"
+
 RADIOTIMEOUT=5          # give the operator 5 seconds to remember to turn on the radio.
 
 MAIN_WINDOW_OFFSET = "+5+30"

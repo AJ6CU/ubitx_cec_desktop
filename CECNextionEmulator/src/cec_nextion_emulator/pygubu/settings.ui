@@ -102,10 +102,11 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Button" id="settingsReserved2_Button" named="True">
-                <property name="state">disabled</property>
+              <object class="ttk.Button" id="settingsAbout_Button" named="True">
+                <property name="command" type="command" cbtype="simple">settingsAbout_CB</property>
+                <property name="state">normal</property>
                 <property name="style">Button1Raised.TButton</property>
-                <property name="text" translatable="yes">tbd</property>
+                <property name="text" translatable="yes">About</property>
                 <property name="width">15</property>
                 <layout manager="grid">
                   <property name="column">2</property>

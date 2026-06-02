@@ -7,8 +7,10 @@ from cwSettings import cwSettings
 from settingsMachine import settingsMachine
 from settingsGeneral import settingsGeneral
 from settingsBackup import settingsBackup
+from settingsAbout import settingsAbout
 from tkinter import messagebox
 import globalvars as gv
+from src.cec_nextion_emulator.settingsAbout import settingsAbout
 
 
 #
@@ -46,6 +48,7 @@ class settings(baseui.settingsUI):
         self.settingsBackupWindow = None
         self.settingsFactoryResetWindow = None
         self.settingsRebootWindow = None
+        self.settingsAboutWindow = None
         #
         #   Can now kickoff the UX
         #
@@ -94,6 +97,9 @@ class settings(baseui.settingsUI):
     def settingsReboot_CB(self):
         if messagebox.askokcancel("Reboot?", "Do you really want to reboot?", parent=self):
             self.mainWindow.theRadio.rebootRadio()
+
+    def settingsAbout_CB(self):
+        self.settingsAboutWindow = settingsAbout(self.master, self.mainWindow)
 
 
 

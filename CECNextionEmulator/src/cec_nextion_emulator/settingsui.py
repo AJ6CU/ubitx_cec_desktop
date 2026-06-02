@@ -82,12 +82,16 @@ class settingsUI(ttk.Labelframe):
         self.settingsBackup_Button.grid(
             column=2, ipady=25, padx=10, pady=10, row=0)
         self.settingsBackup_Button.configure(command=self.settingsBackup_CB)
-        self.settingsReserved2_Button = ttk.Button(
-            self.settingsButtons_Frame, name="settingsreserved2_button")
-        self.settingsReserved2_Button.configure(
-            state="disabled", style="Button1Raised.TButton", text='tbd', width=15)
-        self.settingsReserved2_Button.grid(
+        self.settingsAbout_Button = ttk.Button(
+            self.settingsButtons_Frame, name="settingsabout_button")
+        self.settingsAbout_Button.configure(
+            state="normal",
+            style="Button1Raised.TButton",
+            text='About',
+            width=15)
+        self.settingsAbout_Button.grid(
             column=2, ipady=25, padx=10, pady=10, row=3)
+        self.settingsAbout_Button.configure(command=self.settingsAbout_CB)
         self.settingsMachine_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingsmachine_button")
         self.settingsMachine_Button.configure(
@@ -138,6 +142,9 @@ class settingsUI(ttk.Labelframe):
         pass
 
     def settingsBackup_CB(self):
+        pass
+
+    def settingsAbout_CB(self):
         pass
 
     def SettingsMachine_CB(self):
