@@ -128,6 +128,7 @@ def setup_ttk_styles(master=None):
 
     style.configure('Entry1b.TEntry', font=fontList['Heading1b'])
     style.configure('Entry2b.TEntry', font=fontList['Heading2'])
+    style.configure('Entry2bCopy.TEntry', font=fontList['Heading2'],highlightthickness=0, borderwidth=0, background='red', readonlybackground='red',bd=0)
     style.configure('NoBorder.TEntry',font=fontList['Normal'], highlightthickness=0, borderwidth=0, bd=0)
 
     style.configure('Title.TFrame', background='blue', foreground='white')

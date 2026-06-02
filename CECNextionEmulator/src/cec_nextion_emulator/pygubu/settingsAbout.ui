@@ -175,12 +175,17 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="configurationFileLocation_Label" named="True">
-                <property name="anchor">ne</property>
-                <property name="justify">left</property>
-                <property name="style">Heading2b.TLabel</property>
+              <object class="tk.Entry" id="configurationFileLocation_Entry" named="True">
+                <property name="background">gray</property>
+                <property name="borderwidth">0</property>
+                <property name="font">{Arial} 14 {bold}</property>
+                <property name="foreground">white</property>
+                <property name="highlightbackground">gray</property>
+                <property name="readonlybackground">gray</property>
+                <property name="state">readonly</property>
                 <property name="text" translatable="yes">&gt;&gt;&gt;location&lt;&lt;&lt;</property>
                 <property name="textvariable">string:configurationFileLocation_VAR</property>
+                <property name="width">50</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
@@ -205,12 +210,17 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="logFileLocation_Label" named="True">
-                <property name="anchor">ne</property>
-                <property name="justify">left</property>
-                <property name="style">Heading2b.TLabel</property>
+              <object class="tk.Entry" id="logFileLocation_Entry" named="True">
+                <property name="background">gray</property>
+                <property name="borderwidth">0</property>
+                <property name="font">{Arial} 14 {bold}</property>
+                <property name="foreground">white</property>
+                <property name="highlightbackground">gray</property>
+                <property name="readonlybackground">gray</property>
+                <property name="state">readonly</property>
                 <property name="text" translatable="yes">&gt;&gt;&gt;location&lt;&lt;&lt;</property>
                 <property name="textvariable">string:logFileLocation_VAR</property>
+                <property name="width">50</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
