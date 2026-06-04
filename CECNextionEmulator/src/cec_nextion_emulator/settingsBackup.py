@@ -28,15 +28,8 @@ class settingsBackup(baseui.settingsBackupUI):
         #
         #   This pops up a warning dialog that this operation could take several seconds
         #
-        # self.delayDialog = tk.Toplevel(self.master)
         self.delayDialog=delayWarning()
         self.delayDialog.warningLabel_VAR.set("Loading Radio Settings from EEPROM...\n\nThis could take a couple seconds...")
-        # self.delayDialog.update()
-
-        # self.delayDialog.wait_visibility()  # required on Linux
-        #
-
-        # self.delayDialog.transient(self.mainWindow)
 
         #
         #   Create a toplevel window to contain the settings popup

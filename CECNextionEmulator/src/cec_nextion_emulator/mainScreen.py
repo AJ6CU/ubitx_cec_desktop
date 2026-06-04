@@ -183,6 +183,7 @@ class mainScreen(baseui.mainScreenUI):
         self.update()       # since we just created the window, need to run update to get width and height calculated
 
         self.master.geometry(str(self.winfo_width()) + "x" + str(self.winfo_height()) + gv.MAIN_WINDOW_OFFSET)
+        self.master.title("CECNextionEmulator - A Nextion Emulator for CEC Firmware running on the uBITX")
 
         self.master.protocol("WM_DELETE_WINDOW", lambda: self.close_MainWindow())
         self.SWR_PWR_Frame.grid_remove()

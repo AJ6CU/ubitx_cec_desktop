@@ -35,11 +35,6 @@ class channels(baseui.channelsUI):
         self.delayDialog=delayWarning()
         self.delayDialog.warningLabel_VAR.set("Loading Channels from EEPROM...\n\nThis could take several seconds...")
 
-        # self.delayDialog.wait_visibility()  # required on Linux
-
-        # self.delayDialog.transient(self.mainWindow)
-
-
         self.popup = tk.Toplevel(self.master)           # Create a top level window to contain the channel window
 
         super().__init__(self.popup, **kw)
