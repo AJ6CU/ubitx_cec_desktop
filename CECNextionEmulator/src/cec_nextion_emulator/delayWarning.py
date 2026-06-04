@@ -19,6 +19,8 @@ class delayWarning(baseui.delayWarningUI):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
 
+        self.update()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
