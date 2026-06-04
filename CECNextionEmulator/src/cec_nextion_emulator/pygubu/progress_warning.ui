@@ -4,7 +4,7 @@
     <settings>
       <setting id="name">Progress Warning Dialog</setting>
       <setting id="description">Just pops up a warning dialog</setting>
-      <setting id="template">widgetds</setting>
+      <setting id="template">widget</setting>
       <setting id="main_widget">delay_warning</setting>
       <setting id="module_namespace">delayWarning</setting>
       <setting id="module_name">delayWarning</setting>
