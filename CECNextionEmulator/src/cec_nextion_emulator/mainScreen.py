@@ -654,7 +654,7 @@ class mainScreen(baseui.mainScreenUI):
     def al_UX_S_Meter_Value(self, buffer):
         value = self.extractValue(buffer, 6, len(buffer) - 3)
         if value.isnumeric():
-            # print("correcting for mal formed s-meter commend", buffer, "setting s-meter to", value)
+            print("correcting for mal formed s-meter commend", buffer, "setting s-meter to", value)
             self.s_meter_Progressbar_VAR.set(int(value))
         else:
             print("another weird malformed command, buffer =", buffer)
@@ -1001,7 +1001,7 @@ class mainScreen(baseui.mainScreenUI):
                     self.theRadio.Factory_CW_Sidetone_Setter(str(int(value, 16)))
 
                 case "Spectrum_Scan":
-                    # print("Spectrum_Scan")
+                    # print("Spectrum_Scan", self.theRadio.lenMemoryQueue(), buffer)
                     self.consumerSpectrumdata.process_Spectrum_Data(value)
 
                 case _:

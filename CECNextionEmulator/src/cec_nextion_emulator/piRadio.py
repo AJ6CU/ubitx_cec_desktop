@@ -225,8 +225,8 @@ class piRadio:
                 #   CEC sends a zero to start, just ignore it
                 #
                 if ((len(buffer) == 0) and (in_byte.decode(errors='ignore') != 'p')):
-                    # if self.mainWindow.startingspectrum == True:
-                    print("skipping prior byte:", in_byte)
+                    if in_byte != b'\xff':
+                        print("skipping prior byte:", in_byte)
                     pass
                 else:
 
