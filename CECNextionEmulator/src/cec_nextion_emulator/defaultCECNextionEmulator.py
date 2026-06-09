@@ -8,7 +8,7 @@ default_config_data = {
         "Callsign": "",
         "DSP": "True",
         "Logbook Location": "~",
-        "Logbook Name": "logbook",
+        "Logbook Name": "uBITX_Logbook",
         "Logbook Switch": "False",
         "Logbook Type": "ADI",
         "MCU Command Headroom": 0.09,

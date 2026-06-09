@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import os
 import shutil
 from datetime import datetime
@@ -14,11 +15,16 @@ class QSOLogger:
 
     def __init__(self, format_preference="csv", base_filename="qrz_logbook", app_id=None):
         self.app_id = app_id
-        self.qrz_fields = ['call', 'band', 'mode', 'qso_date', 'time_on', 'freq', 'rst_sent', 'rst_rcvd']
+        # Expanded fields to explicitly track and format 'app_id' in both CSV and ADIF modes
+        self.qrz_fields = ['call', 'band', 'mode', 'qso_date', 'time_on', 'freq', 'rst_sent', 'rst_rcvd', 'app_id']
 
         # Initialize a hidden Tkinter root window to prevent an empty GUI window from populating
         self._root = tk.Tk()
         self._root.withdraw()
+
+        # Backup rate-limiting variables
+        self.backup_interval_minutes = 0  # Default: backup every time (0 minutes)
+        self._last_backup_time = None  # Tracks when the last backup happened
 
         # Initialize state variables and set the filename cleanly using the helper logic
         self.format_preference = format_preference
@@ -42,66 +48,30 @@ class QSOLogger:
 
         print(f"Logger target updated. Current output destination: '{self.filename}'")
 
-    def change_format(self, new_format):
-        """
-        Changes the output file extension on the fly while retaining
-        the underlying base filename.
+    def set_backup_interval(self, minutes):
+        """Sets the minimum minutes that must elapse before generating a new file backup."""
+        try:
+            val = float(minutes)
+            if val < 0:
+                raise ValueError("Interval cannot be negative.")
+            self.backup_interval_minutes = val
+            print(f"Backup cooldown interval set to {self.backup_interval_minutes} minutes.")
+        except (ValueError, TypeError):
+            self._show_gui_error("Configuration Error", "Backup interval must be a valid positive number.")
 
-        :param new_format: String ('csv', 'adi', or 'adif')
-        """
-        # Validate input format string
-        clean_format = str(new_format).lower().strip()
-        if clean_format not in ['csv', 'adi', 'adif']:
-            self._show_gui_error(
-                "Invalid Format Selection",
-                f"'{new_format}' is not supported. Choose 'csv' or 'adif'."
-            )
-            return False
 
-        # Extract the current raw base name without its existing extension
-        current_base = os.path.splitext(self.filename)[0]
-
-        # Apply the new format preference and recalculate attributes
-        self.format_preference = clean_format
-        self.set_filename(current_base)
-        return True
 
     def _show_gui_error(self, title, error_message):
         """Displays a graphical error modal using Tkinter."""
         messagebox.showerror(title, error_message)
 
-    def _calculate_band_from_freq(self, freq_mhz):
-        """Internal frequency-to-band string calculator."""
-        try:
-            f = float(freq_mhz)
-            if 1.8 <= f <= 2.0:
-                return "160m"
-            elif 3.5 <= f <= 4.0:
-                return "80m"
-            elif 7.0 <= f <= 7.3:
-                return "40m"
-            elif 10.1 <= f <= 10.15:
-                return "30m"
-            elif 14.0 <= f <= 14.35:
-                return "20m"
-            elif 18.068 <= f <= 18.168:
-                return "17m"
-            elif 21.0 <= f <= 21.45:
-                return "15m"
-            elif 24.89 <= f <= 24.99:
-                return "12m"
-            elif 28.0 <= f <= 29.7:
-                return "10m"
-            elif 50.0 <= f <= 54.0:
-                return "6m"
-            elif 144.0 <= f <= 148.0:
-                return "2m"
-            elif 420.0 <= f <= 450.0:
-                return "70cm"
-            else:
-                return "Custom"
-        except (ValueError, TypeError):
-            return "Unknown"
+    def _generate_deterministic_id(self, call, qso_date, time_on, band):
+        """
+        Generates a reliable unique hash key for a contact.
+        If the exact same contact is processed again, it recreates the exact same ID.
+        """
+        unique_string = f"{call.upper()}-{qso_date}-{time_on}-{band.lower()}"
+        return hashlib.md5(unique_string.encode('utf-8')).hexdigest()[:12]
 
     def _extract_adif_field(self, record_str, field_name):
         """Internal tracking helper for parsing out existing ADIF tags."""
@@ -117,19 +87,7 @@ class QSOLogger:
         except Exception:
             return None
 
-    def _create_file_backup(self):
-        """Creates a timestamped copy of the active file before updates hit."""
-        if not os.path.isfile(self.filename) or os.path.getsize(self.filename) == 0:
-            return True
-        try:
-            base, ext = os.path.splitext(self.filename)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_filename = f"{base}_backup_{timestamp}{ext}"
-            shutil.copy2(self.filename, backup_filename)
-            return True
-        except Exception as e:
-            self._show_gui_error("Backup System Failure", f"Failed to backup {self.filename}:\n{str(e)}")
-            return False
+
 
     def _load_existing_qsos(self):
         """Scans the active target file dynamically to index historical records."""
@@ -165,19 +123,68 @@ class QSOLogger:
             self._show_gui_error("Log Read Error", f"Could not scan existing log database index:\n{str(e)}")
         return existing_records
 
+    def change_format(self, new_format, force_backup=True):
+        """
+        Changes the output file extension on the fly while retaining the base filename.
+        Forces a file backup instantly by default before switching formats.
+        """
+        clean_format = str(new_format).lower().strip()
+        if clean_format not in ['csv', 'adi', 'adif']:
+            self._show_gui_error("Invalid Format", f"'{new_format}' is not supported.")
+            return False
+
+        # Create an instant backup of the current file before updating names/formats
+        if force_backup:
+            self._create_file_backup(force=True)
+
+        current_base = os.path.splitext(self.filename)[0]
+        self.format_preference = clean_format
+        self.set_filename(current_base)
+        return True
+
+    def _create_file_backup(self, force=False):
+        """
+        Creates a timestamped copy of the active file.
+        Honors the time threshold limit unless 'force' is set to True.
+        """
+        if not os.path.isfile(self.filename) or os.path.getsize(self.filename) == 0:
+            return True
+
+        now = datetime.now()
+
+        # Check time threshold ONLY if force is False
+        if not force and self._last_backup_time is not None:
+            elapsed_minutes = (now - self._last_backup_time).total_seconds() / 60.0
+            if elapsed_minutes < self.backup_interval_minutes:
+                return True
+
+        try:
+            base, ext = os.path.splitext(self.filename)
+            timestamp = now.strftime("%Y%m%d_%H%M%S")
+            # If it's a forced backup due to format change, label it clearly
+            suffix = "_format_switch" if force else ""
+            backup_filename = f"{base}_backup_{timestamp}{suffix}{ext}"
+
+            shutil.copy2(self.filename, backup_filename)
+
+            self._last_backup_time = now
+            print(f"Backup created successfully: {backup_filename}")
+            return True
+        except Exception as e:
+            self._show_gui_error("Backup System Failure", f"Failed to backup {self.filename}:\n{str(e)}")
+            return False
+
     def append_qso(self, qso):
         """Validates, deduplicates, and saves a single QSO record down to disk."""
         try:
-            required_keys = ['call', 'mode', 'qso_date', 'time_on', 'freq', 'rst_sent', 'rst_rcvd', 'band']
+            required_keys = ['call', 'band', 'mode', 'qso_date', 'time_on', 'freq', 'rst_sent', 'rst_rcvd']
             missing_fields = [field for field in required_keys if field not in qso]
             if missing_fields:
                 raise ValueError(f"Missing required fields: {missing_fields}")
 
-            # calculated_band = self._calculate_band_from_freq(qso['freq'])
-            # band = str(qso.get('band', calculated_band)).lower().strip()
-            # if band in ["unknown", "custom"]:
-            #     band = calculated_band
-            band = qso['band'].lower().strip()
+            band = str(qso['band']).lower().strip()
+            if not band:
+                raise ValueError("The field 'band' cannot be empty.")
 
             call = str(qso['call']).upper().strip()
             qso_date = str(qso['qso_date']).strip()
@@ -193,12 +200,22 @@ class QSOLogger:
             messagebox.showinfo("Duplicate QSO", f"Skipped contact: {call} on {band} already exists in log.")
             return False
 
-        if not self._create_file_backup():
+        # Regular appending relies on standard time threshold restrictions (force=False)
+        if not self._create_file_backup(force=False):
             return False
 
         sanitized_qso = qso.copy()
         sanitized_qso['call'] = call
         sanitized_qso['band'] = band
+
+        if 'app_id' in sanitized_qso and sanitized_qso['app_id']:
+            final_id = str(sanitized_qso['app_id']).strip()
+        elif self.app_id:
+            final_id = str(self.app_id).strip()
+        else:
+            final_id = self._generate_deterministic_id(call, qso_date, time_on, band)
+
+        sanitized_qso['app_id'] = final_id
 
         try:
             file_exists = os.path.isfile(self.filename) and os.path.getsize(self.filename) > 0
@@ -211,50 +228,25 @@ class QSOLogger:
 
                     adif_row = ""
                     for field in self.qrz_fields:
-                        val = str(sanitized_qso[field])
-                        adif_row += f"<{field}:{len(val)}>{val} "
-                    if self.app_id:
-                        app_str = str(self.app_id)
-                        adif_row += f"<app_qrzlog_logid:{len(app_str)}>{app_str} "
+                        if field == 'app_id':
+                            adif_row += f"<app_qrzlog_logid:{len(final_id)}>{final_id} "
+                        else:
+                            val = str(sanitized_qso[field])
+                            adif_row += f"<{field}:{len(val)}>{val} "
                     f.write(adif_row + "<EOR>\n")
             else:
-                has_valid_header = False
-                if file_exists:
-                    with open(self.filename, mode='r', newline='', encoding='utf-8') as f:
-                        reader = csv.reader(f)
-                        if next(reader, None) == self.qrz_fields:
-                            has_valid_header = True
-
-                final_fields = self.qrz_fields + ['app_qrzlog_logid'] if self.app_id else self.qrz_fields
-
-                with open(self.filename, mode='a' if has_valid_header else 'w', newline='',
-                          encoding='utf-8') as csvfile:
-                    writer = csv.DictWriter(csvfile, fieldnames=final_fields, extrasaction='ignore')
-                    if not has_valid_header:
+                with open(self.filename, mode='a' if file_exists else 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.DictWriter(f, fieldnames=self.qrz_fields)
+                    if not file_exists:
                         writer.writeheader()
-                    if self.app_id:
-                        sanitized_qso['app_qrzlog_logid'] = self.app_id
-                    writer.writerow(sanitized_qso)
 
-            print(f"Successfully tracked contact {call} inside '{self.filename}'.")
+                    row_data = {field: sanitized_qso.get(field, '') for field in self.qrz_fields}
+                    writer.writerow(row_data)
+
+            print(f"Successfully added record {call} to storage file with ID: {final_id}")
             return True
         except Exception as e:
-            self._show_gui_error("Write Failure", f"Critical crash writing record to disk:\n{str(e)}")
+            self._show_gui_error("File Write Error", f"Could not append record to storage file:\n{str(e)}")
             return False
 
 
-# ==========================================
-# Execution Demo Setup
-# ==========================================
-if __name__ == "__main__":
-    valid_record = {'call': 'W7AW', 'mode': 'FT8', 'qso_date': '20260605', 'time_on': '231000', 'freq': '14.074',
-                    'rst_sent': '-12', 'rst_rcvd': '-15'}
-
-    # Initialize with default name
-    logger = QSOLogger(format_preference="csv", base_filename="june_log")
-    logger.append_qso(valid_record)
-
-    # Switch filename on the same instance to route the next contact somewhere else
-    print("\n--- Changing Log File Destination ---")
-    logger.set_filename("july_log")
-    logger.append_qso(valid_record)

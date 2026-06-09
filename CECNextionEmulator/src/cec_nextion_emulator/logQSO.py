@@ -115,6 +115,7 @@ class logQSO(baseui.logQSOUI):
 
         'call', 'mode', 'qso_date', 'time_on', 'freq', 'rst_sent', 'rst_rcvd'
         self.mainWindow.QSOLogger_Object.append_qso(qso)
+        self.popup.destroy()
 
     def cancel_CB(self):
         self.popup.destroy()

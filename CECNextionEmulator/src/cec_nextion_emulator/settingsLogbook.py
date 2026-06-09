@@ -129,6 +129,7 @@ class settingsLogbook(baseui.settingsLogbookUI):
                     self.mainWindow.QSOLogger_Object.change_format(self.logbookType_VAR.get())
                 if newName:
                     self.mainWindow.QSOLogger_Object.set_filename(theLogbook)
+            self.mainWindow.QSOLogger_Object.set_backup_interval(5)
 
         self.popup.destroy()
 
