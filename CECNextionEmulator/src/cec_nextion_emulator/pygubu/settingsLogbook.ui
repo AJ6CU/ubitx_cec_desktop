@@ -24,9 +24,7 @@
     <resources />
   </project>
   <object class="tk.Toplevel" id="settingsLogbook_Toplevel" named="True">
-    <property name="height">550</property>
     <property name="title" translatable="yes">Settings</property>
-    <property name="width">550</property>
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
         <property name="style">Heading2.TLabelframe</property>
@@ -63,7 +61,7 @@
             <child>
               <object class="ttk.Menubutton" id="logbookSwitch_Menbutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:Virtual_Keyboard_VAR</property>
+                <property name="textvariable">string:logbookSwitch_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -112,7 +110,7 @@
             <child>
               <object class="ttk.Menubutton" id="logbookType_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:VFO_Touch_Optimized_VAR</property>
+                <property name="textvariable">string:logbookType_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -128,7 +126,7 @@
                       <object class="tk.Menuitem.Command" id="selectLogbookType_CSV_Command" named="True">
                         <property name="command" type="command" cbtype="simple">selectLogbookType_CSV_CB</property>
                         <property name="font">{Arial} 36 {}</property>
-                        <property name="label" translatable="yes">CSV (QRZ)</property>
+                        <property name="label" translatable="yes">CSV</property>
                         <property name="state">normal</property>
                       </object>
                     </child>
@@ -136,7 +134,7 @@
                       <object class="tk.Menuitem.Command" id="selectLogbookType_ADI_Command" named="True">
                         <property name="command" type="command" cbtype="simple">selectLogbookType_ADI_CB</property>
                         <property name="font">{Arial} 36 {}</property>
-                        <property name="label" translatable="yes">ADI (ARRL)</property>
+                        <property name="label" translatable="yes">ADI</property>
                         <property name="state">normal</property>
                       </object>
                     </child>
@@ -146,12 +144,15 @@
             </child>
             <child>
               <object class="pygubu.widgets.PathChooserButton" id="logbookFileSelectorButton" named="True">
+                <property name="initialdir">~</property>
                 <property name="mustexist">true</property>
                 <property name="style">Button2Sunken.TButton</property>
                 <property name="text" translatable="yes">Select
 Logbook
 Location</property>
+                <property name="textvariable">string:logbookDirectoryLocation_VAR</property>
                 <property name="type">directory</property>
+                <bind sequence="&lt;&lt;PathChooserPathChanged&gt;&gt;" handler="newLogbookLocation_CB" add="True" />
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">10</property>
@@ -162,24 +163,27 @@ Location</property>
               </object>
             </child>
             <child>
-              <object class="tk.Entry" id="logbookSelectedDirectory" named="True">
+              <object class="tk.Text" id="logbookLocation_Text" named="True">
                 <property name="background">gray</property>
                 <property name="borderwidth">0</property>
                 <property name="font">{Arial} 14 {bold}</property>
                 <property name="foreground">white</property>
+                <property name="height">3</property>
                 <property name="highlightbackground">gray</property>
-                <property name="readonlybackground">gray</property>
-                <property name="state">readonly</property>
-                <property name="text" translatable="yes">&gt;&gt;&gt;location&lt;&lt;&lt;  </property>
-                <property name="textvariable">string:logbookSelectedDirectory_VAR</property>
+                <property name="highlightcolor">gray</property>
+                <property name="highlightthickness">0</property>
+                <property name="inactiveselectbackground">gray</property>
+                <property name="insertbackground">gray</property>
+                <property name="insertborderwidth">0</property>
+                <property name="selectbackground">blue</property>
+                <property name="selectborderwidth">0</property>
+                <property name="selectforeground">gray</property>
                 <property name="width">50</property>
+                <property name="wrap">char</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
-                  <property name="pady">40 10</property>
                   <property name="row">4</property>
-                  <property name="rowspan">1</property>
-                  <property name="sticky">nsw</property>
                 </layout>
               </object>
             </child>
@@ -197,22 +201,23 @@ Name</property>
               </object>
             </child>
             <child>
-              <object class="tk.Entry" id="logbookFileName_Entry" named="True">
+              <object class="tk.Entry" id="logbookName_Entry" named="True">
                 <property name="background">gray</property>
                 <property name="borderwidth">0</property>
                 <property name="font">{Arial} 14 {bold}</property>
                 <property name="foreground">white</property>
                 <property name="highlightbackground">gray</property>
+                <property name="justify">left</property>
                 <property name="readonlybackground">gray</property>
                 <property name="state">readonly</property>
-                <property name="text" translatable="yes">&gt;&gt;&gt;location&lt;&lt;&lt;  </property>
-                <property name="textvariable">string:logbookFileName_VAR</property>
-                <property name="width">50</property>
+                <property name="textvariable">string:logbookName_VAR</property>
+                <property name="width">40</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
                   <property name="pady">40 10</property>
                   <property name="row">5</property>
+                  <property name="rowspan">1</property>
                   <property name="sticky">nsw</property>
                 </layout>
               </object>

@@ -25,12 +25,14 @@ class logQSO(baseui.logQSOUI):
 
         super().__init__(self.popup, **kw)
 
-        # self.protocol("WM_DELETE_WINDOW", self.close_CB)
+        self.protocol("WM_DELETE_WINDOW", self.canel_CB)
 
         self.initUX()  # This deals with any initiation that needs to be done after the Object is fully
         # instantiated.
 
     def initUX(self):
+
+
         self.popup.geometry(gv.POPUP_WINDOW_OFFSET)
         self.popup.title("Log QSO")
 
@@ -39,6 +41,9 @@ class logQSO(baseui.logQSOUI):
         self.popup.transient(self.mainWindow)
 
         self.pack(expand=tk.YES, fill=tk.BOTH)
+
+    def cancel_CB(self):
+        self.popup.destroy()
 
 
 if __name__ == "__main__":

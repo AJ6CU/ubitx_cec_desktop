@@ -246,6 +246,58 @@ class configuration:
         self.config_data["DSP"] = value
         self.saveConfig()
 
+    def get_logbook_Switch(self):
+        if "Logbook Switch" in self.config_data:
+            return self.config_data["Logbook Switch"]
+        else:
+            self.config_data["Logbook Switch"] = "False"
+            self.saveConfig()
+            return self.config_data["Logbook Switch"]
+
+    def set_logbook_Switch(self, value):
+        self.config_data["Logbook Switch"] = value
+        self.saveConfig()
+
+
+    def get_logbook_Type(self):
+        if "Logbook Type" in self.config_data:
+            return self.config_data["Logbook Type"]
+        else:
+            self.config_data["Logbook Type"] = "ADI"
+            self.saveConfig()
+            return self.config_data["Logbook Type"]
+
+    def set_logbook_Type(self, value):
+        self.config_data["Logbook Type"] = value
+        self.saveConfig()
+
+
+
+    def get_logbook_Location(self):
+        if "Logbook Location" in self.config_data:
+            return self.config_data["Logbook Location"]
+        else:
+            self.config_data["Logbook Location"] = os.path.expanduser("~")
+            self.saveConfig()
+            return self.config_data["Logbook Location"]
+
+    def set_logbook_Location(self, value):
+        self.config_data["Logbook Location"] = value
+        self.saveConfig()
+
+
+    def get_logbook_Name(self):
+        if "Logbook Name" in self.config_data:
+            return self.config_data["Logbook Name"]
+        else:
+            self.config_data["Logbook Name"] = "logbook"
+            self.saveConfig()
+            return self.config_data["Logbook Name"]
+
+    def set_logbook_Name(self, value):
+        self.config_data["Logbook Name"] = value
+        self.saveConfig()
+
     #
     #   following is a template on how add new parameters to configuration file
     #

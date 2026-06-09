@@ -73,10 +73,10 @@ class settingsLogbookUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=1, sticky="e")
         self.logbookSwitch_Menbutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbookswitch_menbutton")
-        self.Virtual_Keyboard_VAR = tk.StringVar()
+        self.logbookSwitch_VAR = tk.StringVar()
         self.logbookSwitch_Menbutton.configure(
             style="Heading0.TMenubutton",
-            textvariable=self.Virtual_Keyboard_VAR,
+            textvariable=self.logbookSwitch_VAR,
             width=5)
         self.logbookSwitch_Menu = tk.Menu(
             self.logbookSwitch_Menbutton,
@@ -108,10 +108,10 @@ class settingsLogbookUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=2, sticky="e")
         self.logbookType_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbooktype_menubutton")
-        self.VFO_Touch_Optimized_VAR = tk.StringVar()
+        self.logbookType_VAR = tk.StringVar()
         self.logbookType_Menubutton.configure(
             style="Heading0.TMenubutton",
-            textvariable=self.VFO_Touch_Optimized_VAR,
+            textvariable=self.logbookType_VAR,
             width=5)
         self.logbookType_Menu = tk.Menu(
             self.logbookType_Menubutton,
@@ -121,48 +121,55 @@ class settingsLogbookUI(ttk.Labelframe):
             "command",
             command=self.selectLogbookType_CSV_CB,
             font="{Arial} 36 {}",
-            label='CSV (QRZ)',
+            label='CSV',
             state="normal")
         self.logbookType_Menu.add(
             "command",
             command=self.selectLogbookType_ADI_CB,
             font="{Arial} 36 {}",
-            label='ADI (ARRL)',
+            label='ADI',
             state="normal")
         self.logbookType_Menubutton.configure(menu=self.logbookType_Menu)
         self.logbookType_Menubutton.grid(
             column=1, padx="15 5", pady="40 20", row=2, sticky="w")
         self.logbookFileSelectorButton = PathChooserButton(
             self.general_Settings_Frame, name="logbookfileselectorbutton")
+        self.logbookDirectoryLocation_VAR = tk.StringVar(
+            value='Select\nLogbook\nLocation')
         self.logbookFileSelectorButton.configure(
+            initialdir="~",
             mustexist=True,
             style="Button2Sunken.TButton",
             text='Select\nLogbook\nLocation',
+            textvariable=self.logbookDirectoryLocation_VAR,
             type="directory")
         self.logbookFileSelectorButton.grid(
             column=0, padx=10, pady="40 10", row=4, sticky="nse")
-        self.logbookSelectedDirectory = tk.Entry(
+        self.logbookFileSelectorButton.bind(
+            "<<PathChooserPathChanged>>",
+            self.newLogbookLocation_CB,
+            add="+")
+        self.logbookLocation_Text = tk.Text(
             self.general_Settings_Frame,
-            name="logbookselecteddirectory")
-        self.logbookSelectedDirectory_VAR = tk.StringVar(
-            value='>>>location<<<  ')
-        self.logbookSelectedDirectory.configure(
+            name="logbooklocation_text")
+        self.logbookLocation_Text.configure(
             background="gray",
             borderwidth=0,
             font="{Arial} 14 {bold}",
             foreground="white",
+            height=3,
             highlightbackground="gray",
-            readonlybackground="gray",
-            state="readonly",
-            textvariable=self.logbookSelectedDirectory_VAR,
-            width=50)
-        _text_ = '>>>location<<<  '
-        self.logbookSelectedDirectory["state"] = "normal"
-        self.logbookSelectedDirectory.delete("0", "end")
-        self.logbookSelectedDirectory.insert("0", _text_)
-        self.logbookSelectedDirectory["state"] = "readonly"
-        self.logbookSelectedDirectory.grid(
-            column=1, padx=10, pady="40 10", row=4, rowspan=1, sticky="nsw")
+            highlightcolor="gray",
+            highlightthickness=0,
+            inactiveselectbackground="gray",
+            insertbackground="gray",
+            insertborderwidth=0,
+            selectbackground="blue",
+            selectborderwidth=0,
+            selectforeground="gray",
+            width=50,
+            wrap="char")
+        self.logbookLocation_Text.grid(column=1, padx=10, row=4)
         self.logbookName_Label1 = ttk.Label(
             self.general_Settings_Frame,
             name="logbookname_label1")
@@ -170,27 +177,28 @@ class settingsLogbookUI(ttk.Labelframe):
             style="Heading1b.TLabel", text='Logfile\nName')
         self.logbookName_Label1.grid(
             column=0, pady="20 0", row=5, sticky="nse")
-        self.logbookFileName_Entry = tk.Entry(
+        self.logbookName_Entry = tk.Entry(
             self.general_Settings_Frame,
-            name="logbookfilename_entry")
-        self.logbookFileName_VAR = tk.StringVar(value='>>>location<<<  ')
-        self.logbookFileName_Entry.configure(
+            name="logbookname_entry")
+        self.logbookName_VAR = tk.StringVar()
+        self.logbookName_Entry.configure(
             background="gray",
             borderwidth=0,
             font="{Arial} 14 {bold}",
             foreground="white",
             highlightbackground="gray",
+            justify="left",
             readonlybackground="gray",
             state="readonly",
-            textvariable=self.logbookFileName_VAR,
-            width=50)
-        _text_ = '>>>location<<<  '
-        self.logbookFileName_Entry["state"] = "normal"
-        self.logbookFileName_Entry.delete("0", "end")
-        self.logbookFileName_Entry.insert("0", _text_)
-        self.logbookFileName_Entry["state"] = "readonly"
-        self.logbookFileName_Entry.grid(
-            column=1, padx=10, pady="40 10", row=5, sticky="nsw")
+            textvariable=self.logbookName_VAR,
+            width=40)
+        self.logbookName_Entry.grid(
+            column=1,
+            padx=10,
+            pady="40 10",
+            row=5,
+            rowspan=1,
+            sticky="nsw")
         self.general_Settings_Frame.pack(padx=10, pady=10, side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
         self.closingFrame.configure(
@@ -222,6 +230,9 @@ class settingsLogbookUI(ttk.Labelframe):
         pass
 
     def selectLogbookType_ADI_CB(self):
+        pass
+
+    def newLogbookLocation_CB(self, event=None):
         pass
 
     def apply_CB(self):
