@@ -46,7 +46,7 @@ class QSOLogger:
             self.filename = f"{base_filename}.csv"
             self.is_adif = False
 
-        print(f"Logger target updated. Current output destination: '{self.filename}'")
+        # print(f"Logger target updated. Current output destination: '{self.filename}'")
 
     def set_backup_interval(self, minutes):
         """Sets the minimum minutes that must elapse before generating a new file backup."""
@@ -55,7 +55,7 @@ class QSOLogger:
             if val < 0:
                 raise ValueError("Interval cannot be negative.")
             self.backup_interval_minutes = val
-            print(f"Backup cooldown interval set to {self.backup_interval_minutes} minutes.")
+            # print(f"Backup cooldown interval set to {self.backup_interval_minutes} minutes.")
         except (ValueError, TypeError):
             self._show_gui_error("Configuration Error", "Backup interval must be a valid positive number.")
 
@@ -168,7 +168,7 @@ class QSOLogger:
             shutil.copy2(self.filename, backup_filename)
 
             self._last_backup_time = now
-            print(f"Backup created successfully: {backup_filename}")
+            # print(f"Backup created successfully: {backup_filename}")
             return True
         except Exception as e:
             self._show_gui_error("Backup System Failure", f"Failed to backup {self.filename}:\n{str(e)}")
@@ -243,7 +243,7 @@ class QSOLogger:
                     row_data = {field: sanitized_qso.get(field, '') for field in self.qrz_fields}
                     writer.writerow(row_data)
 
-            print(f"Successfully added record {call} to storage file with ID: {final_id}")
+            # print(f"Successfully added record {call} to storage file with ID: {final_id}")
             return True
         except Exception as e:
             self._show_gui_error("File Write Error", f"Could not append record to storage file:\n{str(e)}")

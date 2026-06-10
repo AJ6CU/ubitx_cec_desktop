@@ -9,6 +9,7 @@ UI source file: settingsLogbook.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 from pygubu.widgets.pathchooserinput import PathChooserButton
+from pygubu.widgets.simpletooltip import Tooltip
 
 
 def safe_i18n_translator(value):
@@ -62,101 +63,139 @@ class settingsLogbookUI(ttk.Labelframe):
         # First object created
         on_first_object_cb(self.general_Settings_Frame)
 
-        self.logbookSwitch_Label = ttk.Label(
+        self.LogbookSwitch_Label = ttk.Label(
             self.general_Settings_Frame,
             name="logbookswitch_label")
-        self.logbookSwitch_Label.configure(
+        self.LogbookSwitch_Label.configure(
             justify="right",
             style="Heading1b.TLabel",
             text='Logbook On')
-        self.logbookSwitch_Label.grid(
+        self.LogbookSwitch_Tooltip = Tooltip(self.LogbookSwitch_Label)
+        self.LogbookSwitch_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text="Turns off QSO logging. Any existing QSO's will be written to file.",
+            wraplength=300)
+        self.LogbookSwitch_Label.grid(
             column=0, padx=10, pady="40 20", row=1, sticky="e")
-        self.logbookSwitch_Menbutton = ttk.Menubutton(
-            self.general_Settings_Frame, name="logbookswitch_menbutton")
-        self.logbookSwitch_VAR = tk.StringVar()
-        self.logbookSwitch_Menbutton.configure(
+        self.LogbookSwitch_Menubutton = ttk.Menubutton(
+            self.general_Settings_Frame, name="logbookswitch_menubutton")
+        self.LogbookSwitch_VAR = tk.StringVar()
+        self.LogbookSwitch_Menubutton.configure(
             style="Heading0.TMenubutton",
-            textvariable=self.logbookSwitch_VAR,
+            textvariable=self.LogbookSwitch_VAR,
             width=5)
-        self.logbookSwitch_Menu = tk.Menu(
-            self.logbookSwitch_Menbutton,
+        self.LogbookSwitch_Menu = tk.Menu(
+            self.LogbookSwitch_Menubutton,
             name="logbookswitch_menu")
-        self.logbookSwitch_Menu.configure(tearoff=False)
-        self.logbookSwitch_Menu.add(
+        self.LogbookSwitch_Menu.configure(tearoff=False)
+        self.LogbookSwitch_Menu.add(
             "command",
             command=self.selectLogbookOn_CB,
             font="{Arial} 24 {}",
             label='True ',
             state="normal")
-        self.logbookSwitch_Menu.add(
+        self.LogbookSwitch_Menu.add(
             "command",
             command=self.selectLogbookOff_CB,
             font="{Arial} 24 {}",
             label='False',
             state="normal")
-        self.logbookSwitch_Menbutton.configure(menu=self.logbookSwitch_Menu)
-        self.logbookSwitch_Menbutton.grid(
+        self.LogbookSwitch_Menubutton.configure(menu=self.LogbookSwitch_Menu)
+        self.LogbookSwitch_Menubutton.grid(
             column=1, padx="15 5", pady="40 20", row=1, sticky="w")
-        self.logbookType_Label = ttk.Label(
+        self.LogbookType_Label = ttk.Label(
             self.general_Settings_Frame,
             name="logbooktype_label")
-        self.logbookType_Label.configure(
+        self.LogbookType_Label.configure(
             justify="right",
             style="Heading1b.TLabel",
             text='Logbook Type')
-        self.logbookType_Label.grid(
+        self.LogbookType_Tooltip = Tooltip(self.LogbookType_Label)
+        self.LogbookType_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Select format for Logbook file. ".csv" for comma separated, or ".adi" for standard format used by ARRL and QRZ')
+        self.LogbookType_Label.grid(
             column=0, padx=10, pady="40 20", row=2, sticky="e")
-        self.logbookType_Menubutton = ttk.Menubutton(
+        self.LogbookType_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbooktype_menubutton")
-        self.logbookType_VAR = tk.StringVar()
-        self.logbookType_Menubutton.configure(
+        self.LogbookType_VAR = tk.StringVar()
+        self.LogbookType_Menubutton.configure(
             style="Heading0.TMenubutton",
-            textvariable=self.logbookType_VAR,
+            textvariable=self.LogbookType_VAR,
             width=5)
-        self.logbookType_Menu = tk.Menu(
-            self.logbookType_Menubutton,
+        self.LogbookType_Menu = tk.Menu(
+            self.LogbookType_Menubutton,
             name="logbooktype_menu")
-        self.logbookType_Menu.configure(tearoff=False)
-        self.logbookType_Menu.add(
+        self.LogbookType_Menu.configure(tearoff=False)
+        self.LogbookType_Menu.add(
             "command",
             command=self.selectLogbookType_CSV_CB,
             font="{Arial} 24 {}",
             label='csv',
             state="normal")
-        self.logbookType_Menu.add(
+        self.LogbookType_Menu.add(
             "command",
             command=self.selectLogbookType_ADI_CB,
             font="{Arial} 24 {}",
             label='adi',
             state="normal")
-        self.logbookType_Menubutton.configure(menu=self.logbookType_Menu)
-        self.logbookType_Menubutton.grid(
+        self.LogbookType_Menubutton.configure(menu=self.LogbookType_Menu)
+        self.LogbookType_Menubutton.grid(
             column=1, padx="15 5", pady="40 20", row=2, sticky="w")
-        self.logbookFileSelectorButton = PathChooserButton(
+        self.backupInterval_Label = ttk.Label(
+            self.general_Settings_Frame,
+            name="backupinterval_label")
+        self.backupInterval_Label.configure(
+            justify="right",
+            style="Heading1b.TLabel",
+            text='Backup Interval')
+        self.backupInterval_Tooltip = Tooltip(self.backupInterval_Label)
+        self.backupInterval_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Determines how often the log file is backed up. A "0" means at every write. Non-zero number indicates the minimum minutes between backups.',
+            wraplength=300)
+        self.backupInterval_Label.grid(
+            column=0, padx=10, pady="40 20", row=3, sticky="e")
+        self.backupInterval_Spinbox = ttk.Spinbox(
+            self.general_Settings_Frame, name="backupinterval_spinbox")
+        self.Backup_Interval_VAR = tk.StringVar()
+        self.backupInterval_Spinbox.configure(
+            font="{Arial} 36 {}",
+            justify="right",
+            style="Custom.TSpinbox",
+            textvariable=self.Backup_Interval_VAR,
+            values="0 5 10 15 30 60 120",
+            width=3)
+        self.backupInterval_Spinbox.grid(
+            column=1, padx="20 0", pady="40 0", row=3, sticky="w")
+        self.LogbookFileSelectorButton = PathChooserButton(
             self.general_Settings_Frame, name="logbookfileselectorbutton")
-        self.logbookDirectoryLocation_VAR = tk.StringVar(
+        self.LogbookDirectoryLocation_VAR = tk.StringVar(
             value='Select\nLogbook\nLocation')
-        self.logbookFileSelectorButton.configure(
+        self.LogbookFileSelectorButton.configure(
             initialdir="~",
             mustexist=True,
             style="Button2Sunken.TButton",
             text='Select\nLogbook\nLocation',
-            textvariable=self.logbookDirectoryLocation_VAR,
+            textvariable=self.LogbookDirectoryLocation_VAR,
             type="directory")
-        self.logbookFileSelectorButton.grid(
+        self.LogbookFileSelectorButton.grid(
             column=0, padx=10, pady="40 10", row=4, sticky="nse")
-        self.logbookFileSelectorButton.bind(
+        self.LogbookFileSelectorButton.bind(
             "<<PathChooserPathChanged>>",
             self.newLogbookLocation_CB,
             add="+")
-        self.logbookLocation_Text = tk.Text(
+        self.LogbookLocation_Text = tk.Text(
             self.general_Settings_Frame,
             name="logbooklocation_text")
-        self.logbookLocation_Text.configure(
-            background="gray",
+        self.LogbookLocation_Text.configure(
+            background="white",
             borderwidth=0,
             font="{Arial} 14 {bold}",
-            foreground="white",
+            foreground="black",
             height=3,
             highlightbackground="gray",
             highlightcolor="gray",
@@ -169,36 +208,44 @@ class settingsLogbookUI(ttk.Labelframe):
             selectforeground="gray",
             width=50,
             wrap="char")
-        self.logbookLocation_Text.grid(column=1, padx=10, row=4)
-        self.logbookName_Label1 = ttk.Label(
+        self.LogbookLocation_Text.grid(column=1, padx=10, pady="40 10", row=4)
+        self.LogbookName_Label = ttk.Label(
             self.general_Settings_Frame,
-            name="logbookname_label1")
-        self.logbookName_Label1.configure(
-            style="Heading1b.TLabel", text='Logfile\nName')
-        self.logbookName_Label1.grid(
-            column=0, pady="20 0", row=5, sticky="nse")
-        self.logbookName_Entry = tk.Entry(
+            name="logbookname_label")
+        self.LogbookName_Label.configure(
+            style="Heading1b.TLabel", text='Logfile Name')
+        self.LogbookName_Label.grid(column=0, pady="20 0", row=5, sticky="e")
+        self.LogbookName_Entry = tk.Entry(
             self.general_Settings_Frame,
             name="logbookname_entry")
-        self.logbookName_VAR = tk.StringVar()
-        self.logbookName_Entry.configure(
-            background="gray",
+        self.LogbookName_VAR = tk.StringVar()
+        self.LogbookName_Entry.configure(
+            background="white",
             borderwidth=0,
+            cursor="arrow",
             font="{Arial} 14 {bold}",
-            foreground="white",
+            foreground="black",
             highlightbackground="gray",
+            insertbackground="black",
+            insertwidth=2,
             justify="left",
             readonlybackground="gray",
-            state="readonly",
-            textvariable=self.logbookName_VAR,
+            state="normal",
+            textvariable=self.LogbookName_VAR,
+            validate="focusout",
             width=40)
-        self.logbookName_Entry.grid(
+        self.LogbookName_Entry.grid(
             column=1,
             padx=10,
-            pady="40 10",
+            pady="20 0",
             row=5,
             rowspan=1,
-            sticky="nsw")
+            sticky="w")
+        _validatecmd = (self.LogbookName_Entry.register(
+            self.Logbook_Name_Validation_CB), "%P", "%V")
+        self.LogbookName_Entry.configure(validatecommand=_validatecmd)
+        self.LogbookName_Entry.bind(
+            "<Button>", self.Logbook_Name_Entered_CB, add="+")
         self.general_Settings_Frame.pack(padx=10, pady=10, side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
         self.closingFrame.configure(
@@ -233,6 +280,12 @@ class settingsLogbookUI(ttk.Labelframe):
         pass
 
     def newLogbookLocation_CB(self, event=None):
+        pass
+
+    def Logbook_Name_Validation_CB(self, p_entry_value, v_condition):
+        pass
+
+    def Logbook_Name_Entered_CB(self, event=None):
         pass
 
     def apply_CB(self):

@@ -7,6 +7,7 @@ default_config_data = {
         "CW Tone": "600",
         "Callsign": "",
         "DSP": "True",
+        "Logbook Backup Interval": "30",
         "Logbook Location": "~",
         "Logbook Name": "uBITX_Logbook",
         "Logbook Switch": "False",

@@ -58,7 +58,7 @@ class VirtualKeyboard(tk.Toplevel):
         #
 
         self.messageTooLong = "Too Many Chars, Max = " + str(self.maxChars)
-        self.messageNoBackslash = "Backslash (\\) not allowed in channel name"
+        self.messageNoBackslash = "Backslash (\\) not allowed in name"
         self.wait_visibility()      # required on Linux
         self.grab_set()                 # This line makes the window modal
         self.transient(self.master)     # Puts the keyboard on top of the underlying window that called up the keyboard
@@ -355,10 +355,11 @@ class VirtualKeyboard(tk.Toplevel):
     #
     def enter(self,event=None):
         label = self.localStrVar.get().replace(self.cursor, '')
-        self.localStrVar.set(label.ljust(5))
+        self.localStrVar.set(label.ljust(self.maxChars))
         if self.localStrVar.get() !=self.fieldStrVar.get():
             self.fieldStrVar.set(self.localStrVar.get())
-            self.dirty_CB()
+            if self.dirty_CB != None:
+                self.dirty_CB()
         self.destroy()
     #
     #   Moves the cursor to beginning of field

@@ -246,7 +246,7 @@ class configuration:
         self.config_data["DSP"] = value
         self.saveConfig()
 
-    def get_logbook_Switch(self):
+    def get_Logbook_Switch(self):
         if "Logbook Switch" in self.config_data:
             return self.config_data["Logbook Switch"]
         else:
@@ -254,12 +254,12 @@ class configuration:
             self.saveConfig()
             return self.config_data["Logbook Switch"]
 
-    def set_logbook_Switch(self, value):
+    def set_Logbook_Switch(self, value):
         self.config_data["Logbook Switch"] = value
         self.saveConfig()
 
 
-    def get_logbook_Type(self):
+    def get_Logbook_Type(self):
         if "Logbook Type" in self.config_data:
             return self.config_data["Logbook Type"]
         else:
@@ -267,13 +267,24 @@ class configuration:
             self.saveConfig()
             return self.config_data["Logbook Type"]
 
-    def set_logbook_Type(self, value):
+    def set_Logbook_Type(self, value):
         self.config_data["Logbook Type"] = value
         self.saveConfig()
 
+    def get_Logbook_Backup_Interval(self):
+        if "Logbook Backup Interval" in self.config_data:
+            return self.config_data["Logbook Backup Interval"]
+        else:
+            self.config_data["Logbook Backup Interval"] = "30"
+            self.saveConfig()
+            return self.config_data["Logbook Backup Interval"]
+
+    def set_Logbook_Backup_Interval(self, value):
+        self.config_data["Logbook Backup Interval"] = value
+        self.saveConfig()
 
 
-    def get_logbook_Location(self):
+    def get_Logbook_Location(self):
         if "Logbook Location" in self.config_data:
             return self.config_data["Logbook Location"]
         else:
@@ -281,20 +292,20 @@ class configuration:
             self.saveConfig()
             return self.config_data["Logbook Location"]
 
-    def set_logbook_Location(self, value):
+    def set_Logbook_Location(self, value):
         self.config_data["Logbook Location"] = value
         self.saveConfig()
 
 
-    def get_logbook_Name(self):
+    def get_Logbook_Name(self):
         if "Logbook Name" in self.config_data:
             return self.config_data["Logbook Name"]
         else:
-            self.config_data["Logbook Name"] = "logbook"
+            self.config_data["Logbook Name"] = "Logbook"
             self.saveConfig()
             return self.config_data["Logbook Name"]
 
-    def set_logbook_Name(self, value):
+    def set_Logbook_Name(self, value):
         self.config_data["Logbook Name"] = value
         self.saveConfig()
 

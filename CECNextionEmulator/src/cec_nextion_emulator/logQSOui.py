@@ -8,6 +8,7 @@ UI source file: logQSO.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
+from pygubu.widgets.simpletooltip import Tooltip
 
 
 def safe_i18n_translator(value):
@@ -68,6 +69,12 @@ class logQSOUI(ttk.Labelframe):
             self.callsign_Frame, name="callsign_label")
         self.callsign_Label.configure(
             style="Heading2b.TLabel", text='Callsign')
+        self.callsign_Tooltip = Tooltip(self.callsign_Label)
+        self.callsign_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Enter the call sign of the station you QSOed with.',
+            wraplength=300)
         self.callsign_Label.pack(pady="0 5")
         self.callsign_Entry = ttk.Entry(
             self.callsign_Frame, name="callsign_entry")
@@ -76,8 +83,14 @@ class logQSOUI(ttk.Labelframe):
             font="{Arial} 20 {}",
             style="Entry2b.TEntry",
             textvariable=self.callSign_VAR,
+            validate="focusout",
             width=12)
         self.callsign_Entry.pack()
+        _validatecmd = (
+            self.callsign_Entry.register(
+                self.callSign_Validate_CB), "%P", "%V")
+        self.callsign_Entry.configure(validatecommand=_validatecmd)
+        self.callsign_Entry.bind("<Button>", self.callsign_Entered_CB, add="+")
         self.callsign_Frame.grid(column=0, padx=10, pady="10 30", row=0)
         self.freq_Frame = ttk.Frame(self.logData_Frame, name="freq_frame")
         self.freq_Frame.configure(height=200, style="Normal.TFrame", width=200)
@@ -88,9 +101,21 @@ class logQSOUI(ttk.Labelframe):
             self.freq_Frame, name="frequency_label")
         self.frequency_Label.configure(
             style="Heading2b.TLabel", text='Frequency')
+        self.frequency_Tooltip = Tooltip(self.frequency_Label)
+        self.frequency_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Enter the frequency of the QSO to nearest 1kHZ.',
+            wraplength=300)
         self.frequency_Label.grid(column=1, row=0)
         self.mode_Label = ttk.Label(self.freq_Frame, name="mode_label")
         self.mode_Label.configure(style="Heading2b.TLabel", text='Mode')
+        self.mode_Tooltip = Tooltip(self.mode_Label)
+        self.mode_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Select from the drop down the type of communication.',
+            wraplength=300)
         self.mode_Label.grid(column=3, row=0)
         self.imputedBand_Label = ttk.Label(
             self.freq_Frame, name="imputedband_label")
@@ -109,11 +134,18 @@ class logQSOUI(ttk.Labelframe):
             justify="right",
             style="Entry2b.TEntry",
             textvariable=self.frequency_VAR,
+            validate="focusout",
             width=7)
         _text_ = '14.032'
         self.frequency_entry.delete("0", "end")
         self.frequency_entry.insert("0", _text_)
         self.frequency_entry.grid(column=1, row=1, sticky="n")
+        _validatecmd = (
+            self.frequency_entry.register(
+                self.frequency_Validate_CB), "%P", "%V")
+        self.frequency_entry.configure(validatecommand=_validatecmd)
+        self.frequency_entry.bind(
+            "<Button>", self.frequency_Entered_CB, add="+")
         self.frequency_ext = ttk.Label(self.freq_Frame, name="frequency_ext")
         self.lowFreqDigits = tk.StringVar(value='.000')
         self.frequency_ext.configure(
@@ -222,64 +254,182 @@ class logQSOUI(ttk.Labelframe):
             self.timeDate_Frame, name="qsotime_label")
         self.qsoTime_Label.configure(style="Heading2b.TLabel", text='Time')
         self.qsoTime_Label.grid(column=2, pady="0 5", row=0)
-        self.localLabel = ttk.Label(self.timeDate_Frame, name="locallabel")
-        self.localLabel.configure(style="Heading2b.TLabel", text='Local')
-        self.localLabel.grid(column=0, padx="0 10", pady="0 10", row=1)
-        self.qsoDateLocal_Entry = ttk.Entry(
-            self.timeDate_Frame, name="qsodatelocal_entry")
-        self.localDate_VAR = tk.StringVar(value='12/28/2026')
-        self.qsoDateLocal_Entry.configure(
-            font="{Arial} 20 {}",
-            justify="center",
-            style="Entry2b.TEntry",
-            textvariable=self.localDate_VAR,
-            width=9)
-        _text_ = '12/28/2026'
-        self.qsoDateLocal_Entry.delete("0", "end")
-        self.qsoDateLocal_Entry.insert("0", _text_)
-        self.qsoDateLocal_Entry.grid(column=1, padx="0 15", pady="0 10", row=1)
-        self.qsoTimeLocal_Entry = ttk.Entry(
-            self.timeDate_Frame, name="qsotimelocal_entry")
-        self.localTime_VAR = tk.StringVar(value='230520')
-        self.qsoTimeLocal_Entry.configure(
-            font="{Arial} 20 {}",
-            justify="center",
-            style="Entry2b.TEntry",
-            textvariable=self.localTime_VAR,
-            width=8)
-        _text_ = '230520'
-        self.qsoTimeLocal_Entry.delete("0", "end")
-        self.qsoTimeLocal_Entry.insert("0", _text_)
-        self.qsoTimeLocal_Entry.grid(column=2, pady="0 10", row=1)
         self.utc_Label = ttk.Label(self.timeDate_Frame, name="utc_label")
         self.utc_Label.configure(style="Heading2b.TLabel", text='UTC:')
-        self.utc_Label.grid(column=0, padx="0 10", row=2)
-        self.qsoDateUTC_Entry = ttk.Entry(
-            self.timeDate_Frame, name="qsodateutc_entry")
-        self.utcDate_VAR = tk.StringVar(value='12/28/2026')
-        self.qsoDateUTC_Entry.configure(
+        self.utc_Label.grid(column=0, row=1)
+        self.utcDate_Frame = ttk.Frame(
+            self.timeDate_Frame, name="utcdate_frame")
+        self.utcDate_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.utcYYYY_Entry = ttk.Entry(
+            self.utcDate_Frame, name="utcyyyy_entry")
+        self.utcDateYYYY_VAR = tk.StringVar(value='2026')
+        self.utcYYYY_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
-            textvariable=self.utcDate_VAR,
-            width=9)
-        _text_ = '12/28/2026'
-        self.qsoDateUTC_Entry.delete("0", "end")
-        self.qsoDateUTC_Entry.insert("0", _text_)
-        self.qsoDateUTC_Entry.grid(column=1, padx="0 15", row=2)
-        self.qsoTimeUTC_Entry = ttk.Entry(
-            self.timeDate_Frame, name="qsotimeutc_entry")
-        self.utcTime_VAR = tk.StringVar(value='230520')
-        self.qsoTimeUTC_Entry.configure(
+            textvariable=self.utcDateYYYY_VAR,
+            validate="focusout",
+            width=4)
+        _text_ = '2026'
+        self.utcYYYY_Entry.delete("0", "end")
+        self.utcYYYY_Entry.insert("0", _text_)
+        self.utcYYYY_Entry.grid(column=1, row=0)
+        _validatecmd = (self.utcYYYY_Entry.register(
+            self.utcDateYYYY_Validate_CB), "%P", "%V")
+        self.utcYYYY_Entry.configure(validatecommand=_validatecmd)
+        self.utcYYYY_Entry.bind(
+            "<Button>",
+            self.utcDateYYYY_Entered_CB,
+            add="+")
+        self.slash1_label = ttk.Label(self.utcDate_Frame, name="slash1_label")
+        self.slash1_label.configure(style="Heading1b.TLabel", text='-')
+        self.slash1_label.grid(column=2, row=0)
+        self.utcMM_Entry = ttk.Entry(self.utcDate_Frame, name="utcmm_entry")
+        self.utcDateMM_VAR = tk.StringVar(value='12')
+        self.utcMM_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
-            textvariable=self.utcTime_VAR,
-            width=8)
-        _text_ = '230520'
-        self.qsoTimeUTC_Entry.delete("0", "end")
-        self.qsoTimeUTC_Entry.insert("0", _text_)
-        self.qsoTimeUTC_Entry.grid(column=2, row=2)
+            textvariable=self.utcDateMM_VAR,
+            validate="focusout",
+            width=2)
+        _text_ = '12'
+        self.utcMM_Entry.delete("0", "end")
+        self.utcMM_Entry.insert("0", _text_)
+        self.utcMM_Entry.grid(column=3, row=0)
+        _validatecmd = (
+            self.utcMM_Entry.register(
+                self.utcDateMM_Validate_CB),
+            "%P",
+            "%V")
+        self.utcMM_Entry.configure(validatecommand=_validatecmd)
+        self.utcMM_Entry.bind("<Button>", self.utcDateMM_Entered_CB, add="+")
+        self.slash2_Label = ttk.Label(self.utcDate_Frame, name="slash2_label")
+        self.slash2_Label.configure(style="Heading1b.TLabel", text='-')
+        self.slash2_Label.grid(column=4, row=0)
+        self.utc_DD_Entry = ttk.Entry(self.utcDate_Frame, name="utc_dd_entry")
+        self.utcDateDD_VAR = tk.StringVar(value='28')
+        self.utc_DD_Entry.configure(
+            font="{Arial} 20 {}",
+            justify="center",
+            style="Entry2b.TEntry",
+            textvariable=self.utcDateDD_VAR,
+            validate="focusout",
+            width=2)
+        _text_ = '28'
+        self.utc_DD_Entry.delete("0", "end")
+        self.utc_DD_Entry.insert("0", _text_)
+        self.utc_DD_Entry.grid(column=5, row=0)
+        _validatecmd = (self.utc_DD_Entry.register(
+            self.utcDateDD_Validate_CB), "%P", "%V")
+        self.utc_DD_Entry.configure(validatecommand=_validatecmd)
+        self.utc_DD_Entry.bind(
+            "<ButtonPress>",
+            self.utcDateDD_Entered_CB,
+            add="+")
+        self.utcDate_Frame.grid(column=1, row=1, sticky="w")
+        self.utcTime_Frame = ttk.Frame(
+            self.timeDate_Frame, name="utctime_frame")
+        self.utcTime_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.utcTimeHH_Entry = ttk.Entry(
+            self.utcTime_Frame, name="utctimehh_entry")
+        self.utcTimeHH_VAR = tk.StringVar(value='23')
+        self.utcTimeHH_Entry.configure(
+            font="{Arial} 20 {}",
+            justify="center",
+            style="Entry2b.TEntry",
+            textvariable=self.utcTimeHH_VAR,
+            validate="focusout",
+            width=2)
+        _text_ = '23'
+        self.utcTimeHH_Entry.delete("0", "end")
+        self.utcTimeHH_Entry.insert("0", _text_)
+        self.utcTimeHH_Entry.grid(column=1, row=0)
+        _validatecmd = (
+            self.utcTimeHH_Entry.register(
+                self.utcTimeHH_Validate_CB), "%P", "%V")
+        self.utcTimeHH_Entry.configure(validatecommand=_validatecmd)
+        self.utcTimeHH_Entry.bind(
+            "<Button>", self.utcTimeHH_Entered_CB, add="+")
+        self.colon1_Label = ttk.Label(self.utcTime_Frame, name="colon1_label")
+        self.colon1_Label.configure(style="Heading1b.TLabel", text=':')
+        self.colon1_Label.grid(column=2, row=0)
+        self.entry5 = ttk.Entry(self.utcTime_Frame, name="entry5")
+        self.utcTimeMM_VAR = tk.StringVar(value='12')
+        self.entry5.configure(
+            font="{Arial} 20 {}",
+            justify="center",
+            style="Entry2b.TEntry",
+            textvariable=self.utcTimeMM_VAR,
+            width=2)
+        _text_ = '12'
+        self.entry5.delete("0", "end")
+        self.entry5.insert("0", _text_)
+        self.entry5.grid(column=3, row=0)
+        _validatecmd = (
+            self.entry5.register(
+                self.utcTimeMM_Validate_CB),
+            "%P",
+            "%V")
+        self.entry5.configure(validatecommand=_validatecmd)
+        self.entry5.bind("<Button>", self.utcTimeMM_Entered_CB, add="+")
+        self.utcTime_Frame.grid(column=2, padx=30, row=1, sticky="w")
+        self.dateClue_Frame = ttk.Frame(
+            self.timeDate_Frame, name="dateclue_frame")
+        self.dateClue_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.label10 = ttk.Label(self.dateClue_Frame, name="label10")
+        self.label10.configure(style="Heading2b.TLabel", text='YYYY')
+        self.label10.grid(column=2, padx="7 0", row=1)
+        self.label11 = ttk.Label(self.dateClue_Frame, name="label11")
+        self.label11.configure(style="Heading2b.TLabel", text='MM')
+        self.label11.grid(column=3, padx="21 0", row=1)
+        self.label12 = ttk.Label(self.dateClue_Frame, name="label12")
+        self.label12.configure(style="Heading2b.TLabel", text='DD')
+        self.label12.grid(column=5, padx="18 0", row=1)
+        self.dateClue_Frame.grid(column=1, row=2, sticky="w")
+        self.timeClue_Frame = ttk.Frame(
+            self.timeDate_Frame, name="timeclue_frame")
+        self.timeClue_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.timeClue_HH_Label = ttk.Label(
+            self.timeClue_Frame, name="timeclue_hh_label")
+        self.timeClue_HH_Label.configure(style="Heading2b.TLabel", text='HH')
+        self.timeClue_HH_Label.grid(column=2, padx="5 0", row=1)
+        self.timeClue_MM = ttk.Label(self.timeClue_Frame, name="timeclue_mm")
+        self.timeClue_MM.configure(style="Heading2b.TLabel", text='MM')
+        self.timeClue_MM.grid(column=3, padx="15 0", row=1)
+        self.timeClue_Frame.grid(
+            column=2,
+            padx=30,
+            pady="0 15",
+            row=2,
+            sticky="w")
+        self.localLabel = ttk.Label(self.timeDate_Frame, name="locallabel")
+        self.localLabel.configure(style="Heading2b.TLabel", text='Local:')
+        self.localLabel.grid(
+            column=0,
+            padx="0 10",
+            pady="0 10",
+            row=4,
+            sticky="e")
+        self.local_date_Label = ttk.Label(
+            self.timeDate_Frame, name="local_date_label")
+        self.localDate_VAR = tk.StringVar(value='2026-12-28')
+        self.local_date_Label.configure(
+            style="Heading2b.TLabel",
+            text='2026-12-28',
+            textvariable=self.localDate_VAR)
+        self.local_date_Label.grid(column=1, padx=15, pady="0 10", row=4)
+        self.label2 = ttk.Label(self.timeDate_Frame, name="label2")
+        self.localTime_VAR = tk.StringVar(value='23:12')
+        self.label2.configure(
+            style="Heading2b.TLabel",
+            text='23:12',
+            textvariable=self.localTime_VAR)
+        self.label2.grid(column=2, padx=30, pady="0 10", row=4)
         self.timeDate_Frame.grid(column=0, padx=10, pady="0 30", row=10)
         self.signalReport_Frame = ttk.Frame(
             self.logData_Frame, name="signalreport_frame")
@@ -288,10 +438,22 @@ class logQSOUI(ttk.Labelframe):
         self.rstSend_Label = ttk.Label(
             self.signalReport_Frame, name="rstsend_label")
         self.rstSend_Label.configure(style="Heading2b.TLabel", text='RST Sent')
+        self.rstSend_Tooltip = Tooltip(self.rstSend_Label)
+        self.rstSend_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Enter the signal report of the signal you received from the other party (in the appropriate format for your communication mode) ',
+            wraplength=300)
         self.rstSend_Label.grid(column=0, padx="0 20", pady="0 5", row=0)
         self.rstRcvd_Label = ttk.Label(
             self.signalReport_Frame, name="rstrcvd_label")
         self.rstRcvd_Label.configure(style="Heading2b.TLabel", text='RST Rcvd')
+        self.rstRcvd_Tooltip = Tooltip(self.rstRcvd_Label)
+        self.rstRcvd_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Enter the signal report that the other party sent you on the quality of your signal. (in the appropriate format for your communication mode) \n',
+            wraplength=300)
         self.rstRcvd_Label.grid(column=1, pady="0 5", row=0)
         self.rstSend_Entry = ttk.Entry(
             self.signalReport_Frame, name="rstsend_entry")
@@ -301,11 +463,17 @@ class logQSOUI(ttk.Labelframe):
             justify="center",
             style="Entry2b.TEntry",
             textvariable=self.sentRST_VAR,
+            validate="focusout",
             width=8)
         _text_ = '599'
         self.rstSend_Entry.delete("0", "end")
         self.rstSend_Entry.insert("0", _text_)
         self.rstSend_Entry.grid(column=0, padx="0 20", row=1)
+        _validatecmd = (
+            self.rstSend_Entry.register(
+                self.sentRST_Validate_CB), "%P", "%V")
+        self.rstSend_Entry.configure(validatecommand=_validatecmd)
+        self.rstSend_Entry.bind("<Button>", self.rstSend_Entered_CB, add="+")
         self.rstRcvd_Entry = ttk.Entry(
             self.signalReport_Frame, name="rstrcvd_entry")
         self.rcvdRST_VAR = tk.StringVar(value='599')
@@ -314,11 +482,17 @@ class logQSOUI(ttk.Labelframe):
             justify="center",
             style="Entry2b.TEntry",
             textvariable=self.rcvdRST_VAR,
+            validate="focusout",
             width=8)
         _text_ = '599'
         self.rstRcvd_Entry.delete("0", "end")
         self.rstRcvd_Entry.insert("0", _text_)
         self.rstRcvd_Entry.grid(column=1, row=1)
+        _validatecmd = (
+            self.rstRcvd_Entry.register(
+                self.rcvdRST_Validate_CB), "%P", "%V")
+        self.rstRcvd_Entry.configure(validatecommand=_validatecmd)
+        self.rstRcvd_Entry.bind("<Button>", self.rstRcvd_Entered_CB, add="+")
         self.signalReport_Frame.grid(column=0, padx=10, pady="0 30", row=11)
         self.logData_Frame.pack(padx=20, side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
@@ -348,7 +522,61 @@ class logQSOUI(ttk.Labelframe):
             width=200)
         # Layout for 'logQSO_Labelframe' skipped in custom widget template.
 
+    def callSign_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def callsign_Entered_CB(self, event=None):
+        pass
+
+    def frequency_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def frequency_Entered_CB(self, event=None):
+        pass
+
     def selectMode_CB(self, itemid):
+        pass
+
+    def utcDateYYYY_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def utcDateYYYY_Entered_CB(self, event=None):
+        pass
+
+    def utcDateMM_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def utcDateMM_Entered_CB(self, event=None):
+        pass
+
+    def utcDateDD_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def utcDateDD_Entered_CB(self, event=None):
+        pass
+
+    def utcTimeHH_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def utcTimeHH_Entered_CB(self, event=None):
+        pass
+
+    def utcTimeMM_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def utcTimeMM_Entered_CB(self, event=None):
+        pass
+
+    def sentRST_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def rstSend_Entered_CB(self, event=None):
+        pass
+
+    def rcvdRST_Validate_CB(self, p_entry_value, v_condition):
+        pass
+
+    def rstRcvd_Entered_CB(self, event=None):
         pass
 
     def logQSO_CB(self):

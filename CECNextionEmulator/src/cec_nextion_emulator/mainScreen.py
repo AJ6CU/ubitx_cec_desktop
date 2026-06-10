@@ -209,6 +209,9 @@ class mainScreen(baseui.mainScreenUI):
         self.upButton = self.upButton_Canvas.create_image(5,5, image=self.arrow_up_normal, anchor="nw")
         # self.upButton_Canvas.image_reference = self.arrow_up_normal
 
+        if gv.config.get_Logbook_Switch() == "False":               # Disable the Log QSO button on startup if log is disabled
+            self.logQSO_Button.configure(state="disabled")
+
 
     def close_MainWindow (self):
         self.portHandle.close()         # Close connection to Radio
@@ -581,7 +584,7 @@ class mainScreen(baseui.mainScreenUI):
         self.consumerSpectrumdata = bandScanner(self.master, self)
 
     def logQSO_CB(self):
-        print("logQSO_CB")
+        # print("logQSO_CB")
         self.logQSOWindow = logQSO(self.master, self)
 
 
@@ -1122,6 +1125,8 @@ class mainScreen(baseui.mainScreenUI):
         self.spectrumScan_Button.configure(state="disabled")
         self.bandScan_Button.configure(state="disabled")
 
+        self.logQSO_Button.configure(state="disabled")
+
 
 
     #
@@ -1150,6 +1155,10 @@ class mainScreen(baseui.mainScreenUI):
         self.cwDecode_Button.configure(state="normal")
         self.spectrumScan_Button.configure(state="normal")
         self.bandScan_Button.configure(state="normal")
+
+        if gv.config.get_Logbook_Switch() == "True":
+            self.logQSO_Button.configure(state="normal")
+
 
 
     def cj_UX_Speaker_Toggle(self, buffer):

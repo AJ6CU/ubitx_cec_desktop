@@ -45,7 +45,7 @@
               <property name="side">top</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="logbookSwitch_Label" named="True">
+              <object class="ttk.Label" id="LogbookSwitch_Label" named="True">
                 <property name="justify">right</property>
                 <property name="style">Heading1b.TLabel</property>
                 <property name="text" translatable="yes">Logbook On</property>
@@ -56,12 +56,20 @@
                   <property name="row">1</property>
                   <property name="sticky">e</property>
                 </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="LogbookSwitch_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Turns off QSO logging. Any existing QSO's will be written to file.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="ttk.Menubutton" id="logbookSwitch_Menbutton" named="True">
+              <object class="ttk.Menubutton" id="LogbookSwitch_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:logbookSwitch_VAR</property>
+                <property name="textvariable">string:LogbookSwitch_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -71,7 +79,7 @@
                   <property name="sticky">w</property>
                 </layout>
                 <child>
-                  <object class="tk.Menu" id="logbookSwitch_Menu" named="True">
+                  <object class="tk.Menu" id="LogbookSwitch_Menu" named="True">
                     <property name="tearoff">false</property>
                     <child>
                       <object class="tk.Menuitem.Command" id="selectLogbookOn_Command" named="True">
@@ -94,7 +102,7 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="logbookType_Label" named="True">
+              <object class="ttk.Label" id="LogbookType_Label" named="True">
                 <property name="justify">right</property>
                 <property name="style">Heading1b.TLabel</property>
                 <property name="text" translatable="yes">Logbook Type</property>
@@ -105,12 +113,19 @@
                   <property name="row">2</property>
                   <property name="sticky">e</property>
                 </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="LogbookType_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Select format for Logbook file. ".csv" for comma separated, or ".adi" for standard format used by ARRL and QRZ</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="ttk.Menubutton" id="logbookType_Menubutton" named="True">
+              <object class="ttk.Menubutton" id="LogbookType_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:logbookType_VAR</property>
+                <property name="textvariable">string:LogbookType_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -120,7 +135,7 @@
                   <property name="sticky">w</property>
                 </layout>
                 <child>
-                  <object class="tk.Menu" id="logbookType_Menu" named="True">
+                  <object class="tk.Menu" id="LogbookType_Menu" named="True">
                     <property name="tearoff">false</property>
                     <child>
                       <object class="tk.Menuitem.Command" id="selectLogbookType_CSV_Command" named="True">
@@ -143,14 +158,53 @@
               </object>
             </child>
             <child>
-              <object class="pygubu.widgets.PathChooserButton" id="logbookFileSelectorButton" named="True">
+              <object class="ttk.Label" id="backupInterval_Label" named="True">
+                <property name="justify">right</property>
+                <property name="style">Heading1b.TLabel</property>
+                <property name="text" translatable="yes">Backup Interval</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">10</property>
+                  <property name="pady">40 20</property>
+                  <property name="row">3</property>
+                  <property name="sticky">e</property>
+                </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="backupInterval_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Determines how often the log file is backed up. A "0" means at every write. Non-zero number indicates the minimum minutes between backups.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Spinbox" id="backupInterval_Spinbox" named="True">
+                <property name="font">{Arial} 36 {}</property>
+                <property name="justify">right</property>
+                <property name="style">Custom.TSpinbox</property>
+                <property name="textvariable">string:Backup_Interval_VAR</property>
+                <property name="values">0 5 10 15 30 60 120</property>
+                <property name="width">3</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">20 0</property>
+                  <property name="pady">40 0</property>
+                  <property name="row">3</property>
+                  <property name="sticky">w</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="pygubu.widgets.PathChooserButton" id="LogbookFileSelectorButton" named="True">
                 <property name="initialdir">~</property>
                 <property name="mustexist">true</property>
                 <property name="style">Button2Sunken.TButton</property>
                 <property name="text" translatable="yes">Select
 Logbook
 Location</property>
-                <property name="textvariable">string:logbookDirectoryLocation_VAR</property>
+                <property name="textvariable">string:LogbookDirectoryLocation_VAR</property>
                 <property name="type">directory</property>
                 <bind sequence="&lt;&lt;PathChooserPathChanged&gt;&gt;" handler="newLogbookLocation_CB" add="True" />
                 <layout manager="grid">
@@ -163,11 +217,11 @@ Location</property>
               </object>
             </child>
             <child>
-              <object class="tk.Text" id="logbookLocation_Text" named="True">
-                <property name="background">gray</property>
+              <object class="tk.Text" id="LogbookLocation_Text" named="True">
+                <property name="background">white</property>
                 <property name="borderwidth">0</property>
                 <property name="font">{Arial} 14 {bold}</property>
-                <property name="foreground">white</property>
+                <property name="foreground">black</property>
                 <property name="height">3</property>
                 <property name="highlightbackground">gray</property>
                 <property name="highlightcolor">gray</property>
@@ -183,42 +237,48 @@ Location</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
+                  <property name="pady">40 10</property>
                   <property name="row">4</property>
                 </layout>
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="logbookName_Label1" named="True">
+              <object class="ttk.Label" id="LogbookName_Label" named="True">
                 <property name="style">Heading1b.TLabel</property>
-                <property name="text" translatable="yes">Logfile
-Name</property>
+                <property name="text" translatable="yes">Logfile Name</property>
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="pady">20 0</property>
                   <property name="row">5</property>
-                  <property name="sticky">nse</property>
+                  <property name="sticky">e</property>
                 </layout>
               </object>
             </child>
             <child>
-              <object class="tk.Entry" id="logbookName_Entry" named="True">
-                <property name="background">gray</property>
+              <object class="tk.Entry" id="LogbookName_Entry" named="True">
+                <property name="background">white</property>
                 <property name="borderwidth">0</property>
+                <property name="cursor">arrow</property>
                 <property name="font">{Arial} 14 {bold}</property>
-                <property name="foreground">white</property>
+                <property name="foreground">black</property>
                 <property name="highlightbackground">gray</property>
+                <property name="insertbackground">black</property>
+                <property name="insertwidth">2</property>
                 <property name="justify">left</property>
                 <property name="readonlybackground">gray</property>
-                <property name="state">readonly</property>
-                <property name="textvariable">string:logbookName_VAR</property>
+                <property name="state">normal</property>
+                <property name="textvariable">string:LogbookName_VAR</property>
+                <property name="validate">focusout</property>
+                <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">Logbook_Name_Validation_CB</property>
                 <property name="width">40</property>
+                <bind sequence="&lt;Button&gt;" handler="Logbook_Name_Entered_CB" add="True" />
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
-                  <property name="pady">40 10</property>
+                  <property name="pady">20 0</property>
                   <property name="row">5</property>
                   <property name="rowspan">1</property>
-                  <property name="sticky">nsw</property>
+                  <property name="sticky">w</property>
                 </layout>
               </object>
             </child>

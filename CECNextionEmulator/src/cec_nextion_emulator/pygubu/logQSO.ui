@@ -66,6 +66,14 @@
                     <layout manager="pack">
                       <property name="pady">0 5</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="callsign_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Enter the call sign of the station you QSOed with.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -73,7 +81,10 @@
                     <property name="font">{Arial} 20 {}</property>
                     <property name="style">Entry2b.TEntry</property>
                     <property name="textvariable">string:callSign_VAR</property>
+                    <property name="validate">focusout</property>
+                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">callSign_Validate_CB</property>
                     <property name="width">12</property>
+                    <bind sequence="&lt;Button&gt;" handler="callsign_Entered_CB" add="True" />
                     <layout manager="pack" />
                   </object>
                 </child>
@@ -108,6 +119,14 @@
                       <property name="column">1</property>
                       <property name="row">0</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="frequency_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Enter the frequency of the QSO to nearest 1kHZ.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -118,6 +137,14 @@
                       <property name="column">3</property>
                       <property name="row">0</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="mode_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Select from the drop down the type of communication.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -141,7 +168,10 @@
                     <property name="style">Entry2b.TEntry</property>
                     <property name="text" translatable="yes">14.032</property>
                     <property name="textvariable">string:frequency_VAR</property>
+                    <property name="validate">focusout</property>
+                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">frequency_Validate_CB</property>
                     <property name="width">7</property>
+                    <bind sequence="&lt;Button&gt;" handler="frequency_Entered_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
                       <property name="row">1</property>
@@ -288,85 +318,271 @@
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Label" id="localLabel" named="True">
-                    <property name="style">Heading2b.TLabel</property>
-                    <property name="text" translatable="yes">Local</property>
-                    <layout manager="grid">
-                      <property name="column">0</property>
-                      <property name="padx">0 10</property>
-                      <property name="pady">0 10</property>
-                      <property name="row">1</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Entry" id="qsoDateLocal_Entry" named="True">
-                    <property name="font">{Arial} 20 {}</property>
-                    <property name="justify">center</property>
-                    <property name="style">Entry2b.TEntry</property>
-                    <property name="text" translatable="yes">12/28/2026</property>
-                    <property name="textvariable">string:localDate_VAR</property>
-                    <property name="width">9</property>
-                    <layout manager="grid">
-                      <property name="column">1</property>
-                      <property name="padx">0 15</property>
-                      <property name="pady">0 10</property>
-                      <property name="row">1</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Entry" id="qsoTimeLocal_Entry" named="True">
-                    <property name="font">{Arial} 20 {}</property>
-                    <property name="justify">center</property>
-                    <property name="style">Entry2b.TEntry</property>
-                    <property name="text" translatable="yes">230520</property>
-                    <property name="textvariable">string:localTime_VAR</property>
-                    <property name="width">8</property>
-                    <layout manager="grid">
-                      <property name="column">2</property>
-                      <property name="pady">0 10</property>
-                      <property name="row">1</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
                   <object class="ttk.Label" id="utc_Label" named="True">
                     <property name="style">Heading2b.TLabel</property>
                     <property name="text" translatable="yes">UTC:</property>
                     <layout manager="grid">
                       <property name="column">0</property>
-                      <property name="padx">0 10</property>
-                      <property name="row">2</property>
+                      <property name="row">1</property>
                     </layout>
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Entry" id="qsoDateUTC_Entry" named="True">
-                    <property name="font">{Arial} 20 {}</property>
-                    <property name="justify">center</property>
-                    <property name="style">Entry2b.TEntry</property>
-                    <property name="text" translatable="yes">12/28/2026</property>
-                    <property name="textvariable">string:utcDate_VAR</property>
-                    <property name="width">9</property>
+                  <object class="ttk.Frame" id="utcDate_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
                     <layout manager="grid">
                       <property name="column">1</property>
-                      <property name="padx">0 15</property>
+                      <property name="row">1</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Entry" id="utcYYYY_Entry" named="True">
+                        <property name="font">{Arial} 20 {}</property>
+                        <property name="justify">center</property>
+                        <property name="style">Entry2b.TEntry</property>
+                        <property name="text" translatable="yes">2026</property>
+                        <property name="textvariable">string:utcDateYYYY_VAR</property>
+                        <property name="validate">focusout</property>
+                        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">utcDateYYYY_Validate_CB</property>
+                        <property name="width">4</property>
+                        <bind sequence="&lt;Button&gt;" handler="utcDateYYYY_Entered_CB" add="True" />
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="slash1_label" named="True">
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">-</property>
+                        <layout manager="grid">
+                          <property name="column">2</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="utcMM_Entry" named="True">
+                        <property name="font">{Arial} 20 {}</property>
+                        <property name="justify">center</property>
+                        <property name="style">Entry2b.TEntry</property>
+                        <property name="text" translatable="yes">12</property>
+                        <property name="textvariable">string:utcDateMM_VAR</property>
+                        <property name="validate">focusout</property>
+                        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">utcDateMM_Validate_CB</property>
+                        <property name="width">2</property>
+                        <bind sequence="&lt;Button&gt;" handler="utcDateMM_Entered_CB" add="True" />
+                        <layout manager="grid">
+                          <property name="column">3</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="slash2_Label" named="True">
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">-</property>
+                        <layout manager="grid">
+                          <property name="column">4</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="utc_DD_Entry" named="True">
+                        <property name="font">{Arial} 20 {}</property>
+                        <property name="justify">center</property>
+                        <property name="style">Entry2b.TEntry</property>
+                        <property name="text" translatable="yes">28</property>
+                        <property name="textvariable">string:utcDateDD_VAR</property>
+                        <property name="validate">focusout</property>
+                        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">utcDateDD_Validate_CB</property>
+                        <property name="width">2</property>
+                        <bind sequence="&lt;ButtonPress&gt;" handler="utcDateDD_Entered_CB" add="True" />
+                        <layout manager="grid">
+                          <property name="column">5</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="utcTime_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="padx">30</property>
+                      <property name="row">1</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Entry" id="utcTimeHH_Entry" named="True">
+                        <property name="font">{Arial} 20 {}</property>
+                        <property name="justify">center</property>
+                        <property name="style">Entry2b.TEntry</property>
+                        <property name="text" translatable="yes">23</property>
+                        <property name="textvariable">string:utcTimeHH_VAR</property>
+                        <property name="validate">focusout</property>
+                        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">utcTimeHH_Validate_CB</property>
+                        <property name="width">2</property>
+                        <bind sequence="&lt;Button&gt;" handler="utcTimeHH_Entered_CB" add="True" />
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="colon1_Label" named="True">
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">:</property>
+                        <layout manager="grid">
+                          <property name="column">2</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="entry5" named="True">
+                        <property name="font">{Arial} 20 {}</property>
+                        <property name="justify">center</property>
+                        <property name="style">Entry2b.TEntry</property>
+                        <property name="text" translatable="yes">12</property>
+                        <property name="textvariable">string:utcTimeMM_VAR</property>
+                        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">utcTimeMM_Validate_CB</property>
+                        <property name="width">2</property>
+                        <bind sequence="&lt;Button&gt;" handler="utcTimeMM_Entered_CB" add="True" />
+                        <layout manager="grid">
+                          <property name="column">3</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="dateClue_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
                       <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="label10" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">YYYY</property>
+                        <layout manager="grid">
+                          <property name="column">2</property>
+                          <property name="padx">7 0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="label11" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">MM</property>
+                        <layout manager="grid">
+                          <property name="column">3</property>
+                          <property name="padx">21 0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="label12" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">DD</property>
+                        <layout manager="grid">
+                          <property name="column">5</property>
+                          <property name="padx">18 0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="timeClue_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="padx">30</property>
+                      <property name="pady">0 15</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="timeClue_HH_Label" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">HH</property>
+                        <layout manager="grid">
+                          <property name="column">2</property>
+                          <property name="padx">5 0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="timeClue_MM" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">MM</property>
+                        <layout manager="grid">
+                          <property name="column">3</property>
+                          <property name="padx">15 0</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="localLabel" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">Local:</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">0 10</property>
+                      <property name="pady">0 10</property>
+                      <property name="row">4</property>
+                      <property name="sticky">e</property>
                     </layout>
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Entry" id="qsoTimeUTC_Entry" named="True">
-                    <property name="font">{Arial} 20 {}</property>
-                    <property name="justify">center</property>
-                    <property name="style">Entry2b.TEntry</property>
-                    <property name="text" translatable="yes">230520</property>
-                    <property name="textvariable">string:utcTime_VAR</property>
-                    <property name="width">8</property>
+                  <object class="ttk.Label" id="local_date_Label" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">2026-12-28</property>
+                    <property name="textvariable">string:localDate_VAR</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">15</property>
+                      <property name="pady">0 10</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="label2" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">23:12</property>
+                    <property name="textvariable">string:localTime_VAR</property>
                     <layout manager="grid">
                       <property name="column">2</property>
-                      <property name="row">2</property>
+                      <property name="padx">30</property>
+                      <property name="pady">0 10</property>
+                      <property name="row">4</property>
                     </layout>
                   </object>
                 </child>
@@ -393,6 +609,14 @@
                       <property name="pady">0 5</property>
                       <property name="row">0</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="rstSend_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Enter the signal report of the signal you received from the other party (in the appropriate format for your communication mode) </property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -404,6 +628,15 @@
                       <property name="pady">0 5</property>
                       <property name="row">0</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="rstRcvd_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Enter the signal report that the other party sent you on the quality of your signal. (in the appropriate format for your communication mode) 
+</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -413,7 +646,10 @@
                     <property name="style">Entry2b.TEntry</property>
                     <property name="text" translatable="yes">599</property>
                     <property name="textvariable">string:sentRST_VAR</property>
+                    <property name="validate">focusout</property>
+                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">sentRST_Validate_CB</property>
                     <property name="width">8</property>
+                    <bind sequence="&lt;Button&gt;" handler="rstSend_Entered_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">0 20</property>
@@ -428,7 +664,10 @@
                     <property name="style">Entry2b.TEntry</property>
                     <property name="text" translatable="yes">599</property>
                     <property name="textvariable">string:rcvdRST_VAR</property>
+                    <property name="validate">focusout</property>
+                    <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">rcvdRST_Validate_CB</property>
                     <property name="width">8</property>
+                    <bind sequence="&lt;Button&gt;" handler="rstRcvd_Entered_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
                       <property name="row">1</property>

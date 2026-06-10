@@ -34,7 +34,18 @@ class logQSO(baseui.logQSOUI):
         # instantiated.
 
     def initUX(self):
+        #
+        #   Make sure a log exists
+        #
 
+
+        if self.mainWindow.QSOLogger_Object == None:  # Create new object
+            theLogbook = os.path.expanduser(
+                os.path.join(gv.config.get_Logbook_Location(), gv.config.get_Logbook_Name()))
+            self.mainWindow.QSOLogger_Object = QSOLogger(gv.config.get_Logbook_Type(), theLogbook)
+            self.mainWindow.QSOLogger_Object.set_backup_interval(int(gv.config.get_Logbook_Backup_Interval()))
+
+        # self.frequency_VAR.set(self.mainWindow.theVFO_Object.getFormattedPrimaryVFO()[:-3].rstrip("\r\n"))
         self.frequency_VAR.set(self.mainWindow.theVFO_Object.getFormattedPrimaryVFO()[:-4])
         if gv.NUMBER_DELIMITER == ",":
             self.lowFreqDigits.set(",000")
@@ -46,8 +57,13 @@ class logQSO(baseui.logQSOUI):
         self.localDate_VAR.set(datetime.now().strftime("%Y-%m-%d"))
         self.localTime_VAR.set(datetime.now().strftime("%H:%M"))
 
-        self.utcDate_VAR.set(datetime.now(UTC).strftime("%Y-%m-%d"))
-        self.utcTime_VAR.set(datetime.now(UTC).strftime("%H:%M"))
+        self.utcDateYYYY_VAR.set(datetime.now(UTC).strftime("%Y"))
+        self.utcDateMM_VAR.set(datetime.now(UTC).strftime("%m"))
+        self.utcDateDD_VAR.set(datetime.now(UTC).strftime("%d"))
+
+        self.utcTimeHH_VAR.set(datetime.now(UTC).strftime("%H"))
+        self.utcTimeHH_VAR.set(datetime.now(UTC).strftime("%M"))
+
 
         if self.mainWindow.primary_Mode_VAR.get() == "CWL" or self.mainWindow.primary_Mode_VAR.get() == "CWU":
             self.commType_VAR.set("CW")
@@ -106,8 +122,8 @@ class logQSO(baseui.logQSOUI):
         qso={}
         qso['call'] = self.callSign_VAR.get()
         qso['mode'] = self.commType_VAR.get()
-        qso['qso_date'] = self.utcDate_VAR.get().replace("-","")
-        qso['time_on'] = self.utcTime_VAR.get().replace(":","") + "00"
+        qso['qso_date'] = self.utcDateYYYY_VAR.get()+self.utcDateMM_VAR.get()+self.utcDateDD_VAR.get()
+        qso['time_on'] = self.utcTimeHH_VAR.get()+self.utcTimeMM_VAR.get()
         qso['freq'] = self.frequency_VAR.get()
         qso['band'] = self.bandName_VAR.get()
         qso['rst_sent'] = self.sentRST_VAR.get()
