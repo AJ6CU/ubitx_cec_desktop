@@ -82,6 +82,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
     #   the label string is updated and it is declared "dirty"
     #
 
+
     def channel_Label_Entered_CB(self, event=None):
         self.channel_label_save.set(self.channel_Label_VAR.get())
         self.channel_Label_VAR.set(self.channel_label_save.get().replace(" ",""))
@@ -91,9 +92,10 @@ class frequencyChannel(baseui.frequencyChannelUI):
     def channel_Label_Validation_CB(self, p_entry_value, v_condition):
         if (v_condition == "focusout") and (gv.config.get_Virtual_Keyboard_Switch() == "False"):
             if len(p_entry_value) > 5:
-                messagebox.showinfo("Error Too Long", "Maximum of 5 characters in a channel label.\n"
-                                    + "Your label has been truncated to left most 5 characters", parent=self)
-                p_entry_value = p_entry_value[:5]
+                # messagebox.showinfo("Error Too Long", "Maximum of 5 characters in a channel label.\n"
+                #                     + "Your label has been truncated to left most 5 characters", parent=self)
+                # p_entry_value = p_entry_value[:5]
+                return False
 
             p_entry_value = p_entry_value.ljust(5)          # blank pad if needed
 
@@ -101,9 +103,14 @@ class frequencyChannel(baseui.frequencyChannelUI):
                 self.channel_Label_VAR.set(p_entry_value)
                 self.channel_Dirty()
         return True
-    #
-    # def alphanumeric_Keyboard(self, channel_Label_strvar, change_CB, maxChars):
-    #     keypad = VirtualKeyboard(self, channel_Label_strvar, change_CB, maxChars)
+
+    def channel_Label_Invalid_CB(self, p_entry_value):
+        messagebox.showinfo("Error Too Long", "Maximum of 5 characters in a channel label.\n"
+                            + "Your label has been truncated to left most 5 characters", parent=self)
+        p_entry_value = p_entry_value[:5]
+        if (self.channel_label_save.get() != p_entry_value):
+            self.channel_Label_VAR.set(p_entry_value)
+            self.channel_Dirty()
 
 
     #
@@ -111,7 +118,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
     #
 
 
-    def numeric_Keypad_CB(self, event=None):
+    def freq_Entry_Entrered_CB(self, event=None):
         self.channel_Freq_save = gv.unformatFrequency(self.channel_Freq_VAR.get())        # save unformated version
         if gv.config.get_Virtual_Keyboard_Switch() == "True":
             self.vNumericPad = VirtualNumericKeyboard(self, self.channel_Freq_VAR, self.Channel_Freq_Changed_CB,8)
@@ -123,16 +130,33 @@ class frequencyChannel(baseui.frequencyChannelUI):
 
             unformatted_p_entry_value = gv.unformatFrequency(p_entry_value)
 
-            if(gv.validateNumber(unformatted_p_entry_value, gv.FREQ_BOUNDS['LOW'], gv.FREQ_BOUNDS['HIGH'], "Frequency", self)):
-
+            if(gv.validateNumber(unformatted_p_entry_value, gv.FREQ_BOUNDS['LOW'], gv.FREQ_BOUNDS['HIGH'], "Frequency")):
+                self.channel_Freq_VAR.set(gv.formatVFO(unformatted_p_entry_value))
                 if (unformatted_p_entry_value != self.channel_Freq_save):              #compare the unformatted string versions
-                    self.channel_Freq_VAR.set(gv.formatVFO(unformatted_p_entry_value))
                     self.channel_Dirty()
                 return True
             else:                           # bad frequency entered, reset to original formatted value
-                self.channel_Freq_VAR.set(gv.formatVFO(self.channel_Freq_save))
+                # self.channel_Freq_VAR.set(gv.formatVFO(self.channel_Freq_save))
                 return False
         return True
+
+    def channel_Freq_Invalid_CB(self, p_entry_value):
+        messagebox.showinfo("Error Invalid Frequency", "A frequency outside the range of this radio has been entered.\n"
+                            + "Resetting to original value", parent=self)
+        self.channel_Freq_VAR.set(gv.formatVFO(self.channel_Freq_save))
+
+
+    def Channel_Freq_Changed_CB(self):
+        unformatted_Freq_value = gv.unformatFrequency(self.channel_Freq_VAR.get())
+
+        if (gv.validateNumber(unformatted_Freq_value, gv.FREQ_BOUNDS['LOW'], gv.FREQ_BOUNDS['HIGH'], "Frequency")):
+
+            if (unformatted_Freq_value != self.channel_Freq_save):  # compare the unformatted string versions
+                self.channel_Freq_VAR.set(gv.formatVFO(unformatted_Freq_value))
+                self.channel_Dirty()
+        else:
+            self.channel_Freq_Invalid_CB(self.channel_Freq_VAR.get())
+
 
     #
     #   Get/Set mode combo box
@@ -196,8 +220,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
         self.channel_Mode_VAR.set(itemid)
         self.channel_Dirty()
 
-    def Channel_Freq_Changed_CB(self):
-        self.channel_Dirty()
+
 
 
 

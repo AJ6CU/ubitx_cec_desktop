@@ -214,6 +214,14 @@ Location</property>
                   <property name="row">4</property>
                   <property name="sticky">nse</property>
                 </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="LogbookFileSelector_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Press this button and then navigate to the directory where you want your logbooks stored.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -252,6 +260,14 @@ Location</property>
                   <property name="row">5</property>
                   <property name="sticky">e</property>
                 </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="LogbookName_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Enter a file name for your logfile. Files will be stored in the location specified above with either a "csv" or "adi" extension as appropriate.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -264,6 +280,7 @@ Location</property>
                 <property name="highlightbackground">gray</property>
                 <property name="insertbackground">black</property>
                 <property name="insertwidth">2</property>
+                <property name="invalidcommand" type="command" cbtype="entry_validate" args="%P">Logbook_Name_Invalid_CB</property>
                 <property name="justify">left</property>
                 <property name="readonlybackground">gray</property>
                 <property name="state">normal</property>

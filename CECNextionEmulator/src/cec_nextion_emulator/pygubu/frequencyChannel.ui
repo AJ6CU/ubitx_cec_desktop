@@ -62,10 +62,11 @@
     <child>
       <object class="ttk.Entry" id="channel_Name_Entry" named="True">
         <property name="font">{Arial} 20 {bold}</property>
+        <property name="invalidcommand" type="command" cbtype="entry_validate" args="%P">channel_Label_Invalid_CB</property>
         <property name="justify">left</property>
         <property name="textvariable">string:channel_Label_VAR</property>
         <property name="validate">focusout</property>
-        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">channel_Lavel_Validation_CB</property>
+        <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">channel_Label_Validation_CB</property>
         <property name="width">6</property>
         <bind sequence="&lt;Button&gt;" handler="channel_Label_Entered_CB" add="True" />
         <layout manager="grid">
@@ -80,13 +81,14 @@
     <child>
       <object class="ttk.Entry" id="freq_Entry" named="True">
         <property name="font">{Arial} 20 {bold}</property>
+        <property name="invalidcommand" type="command" cbtype="entry_validate" args="%P">channel_Freq_Invalid_CB</property>
         <property name="justify">right</property>
         <property name="style">Entry1b.TEntry</property>
         <property name="textvariable">string:channel_Freq_VAR</property>
         <property name="validate">focusout</property>
         <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">channel_Freq_Validation_CB</property>
         <property name="width">10</property>
-        <bind sequence="&lt;Button&gt;" handler="numeric_Keypad_CB" add="True" />
+        <bind sequence="&lt;Button&gt;" handler="freq_Entry_Entrered_CB" add="True" />
         <layout manager="grid">
           <property name="column">3</property>
           <property name="ipady">2</property>

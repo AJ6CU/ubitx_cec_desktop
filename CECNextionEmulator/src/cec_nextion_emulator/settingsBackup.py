@@ -117,9 +117,11 @@ class settingsBackup(baseui.settingsBackupUI):
 
     def set_Current_Master_Cal(self,value):
 
-        if gv.validateNumber(value, gv.MASTER_CAL_BOUNDS['LOW'], gv.MASTER_CAL_BOUNDS['HIGH'], "Master Cal", self):
+        if gv.validateNumber(value, gv.MASTER_CAL_BOUNDS['LOW'], gv.MASTER_CAL_BOUNDS['HIGH'], "Master Cal"):
             self.mainWindow.theRadio.Set_Master_Cal(value)
             self.reboot = True
+        else:   # Generate appropriate error message
+            self.invalidValue (value, "Master Cal", gv.MASTER_CAL_BOUNDS['LOW'], gv.MASTER_CAL_BOUNDS['HIGH'])
 
 
     #       ConfigFile Master Cal getters/setters
@@ -144,9 +146,11 @@ class settingsBackup(baseui.settingsBackupUI):
 
     def set_Current_SSB_BFO(self,value):
 
-        if gv.validateNumber(value, gv.BFO_CAL_BOUNDS['LOW'], gv.BFO_CAL_BOUNDS['HIGH'], "SSB BFO", self):
+        if gv.validateNumber(value, gv.BFO_CAL_BOUNDS['LOW'], gv.BFO_CAL_BOUNDS['HIGH'], "SSB BFO"):
             self.mainWindow.theRadio.Set_SSB_BFO(value)
             self.reboot = True
+        else:  # Generate appropriate error message
+            self.invalidValue(value, "SSB BFO", gv.BFO_CAL_BOUNDS['LOW'], gv.BFO_CAL_BOUNDS['HIGH'])
 
     #       ConfigFile SSB_BFO Cal getters/setters
     def get_ConfigFile_SSB_BFO(self):
@@ -158,7 +162,17 @@ class settingsBackup(baseui.settingsBackupUI):
 
     #
     #   CW_BFO getters/setters
+    #   Common error message first
     #
+    def invalidValue(self, value, name, lowbound, highbound):
+            if str(value) == "":
+                messagebox.showinfo("Illegal Value for " + name,
+                                    "Source value for " + name + " is empty\n\nRequested change ignored", parent=parent)
+            else:
+                messagebox.showinfo("Value for " + name + " is out of range",
+                                    "Source value (" + str(value) + ") for " + name + " is not within "
+                                    + str(lowbound) + " to " + str(highbound) + " \n\nRequested change ignored",
+                                    parent=self)
 
     #       Current CW_BFO Cal getters/setters
     def load_Current_CW_BFO(self, value):
@@ -168,9 +182,13 @@ class settingsBackup(baseui.settingsBackupUI):
         return self.EEPROM_Current_CW_BFO_VAR.get()
 
     def set_Current_CW_BFO(self,value):
-        if gv.validateNumber(value, gv.CW_CAL_BOUNDS['LOW'], gv.CW_CAL_BOUNDS['HIGH'], "CW BFO", self):
+        if gv.validateNumber(value, gv.CW_CAL_BOUNDS['LOW'], gv.CW_CAL_BOUNDS['HIGH'], "CW BFO"):
             self.mainWindow.theRadio.Set_CW_BFO(value)
             self.reboot = True
+        else:   # Generate appropriate error message
+            self.invalidValue (value,"CW BFO", gv.CW_CAL_BOUNDS['LOW'], gv.CW_CAL_BOUNDS['HIGH'])
+
+
 
 
     #       ConfigFile CW_BFO Cal getters/setters
@@ -237,8 +255,10 @@ class settingsBackup(baseui.settingsBackupUI):
         return self.mainWindow.key_speed_value_VAR.get()
 
     def set_Current_CW_Speed(self,value):
-        if gv.validateNumber(value, gv.CW_SPEED_WPM_BOUNDS['LOW'], gv.CW_SPEED_WPM_BOUNDS['HIGH'], "CW WPM", self):
+        if gv.validateNumber(value, gv.CW_SPEED_WPM_BOUNDS['LOW'], gv.CW_SPEED_WPM_BOUNDS['HIGH'], "CW WPM"):
             self.mainWindow.theRadio.Set_CW_Speed(value)
+        else:   # Generate appropriate error message
+            self.invalidValue (value,"CW WPM", gv.CW_SPEED_WPM_BOUNDS['LOW'], gv.CW_SPEED_WPM_BOUNDS['HIGH'])
 
 
     def get_ConfigFile_CW_Speed(self):
@@ -265,9 +285,11 @@ class settingsBackup(baseui.settingsBackupUI):
         return self.mainWindow.tone_value_VAR.get()
 
     def set_Current_CW_Tone(self, value):
-        if gv.validateNumber(value, gv.CW_TONE_BOUNDS['LOW'], gv.CW_TONE_BOUNDS['HIGH'], "CW Sidetone", self):
+        if gv.validateNumber(value, gv.CW_TONE_BOUNDS['LOW'], gv.CW_TONE_BOUNDS['HIGH'], "CW Sidetone"):
             self.mainWindow.theRadio.Set_CW_Tone(value)
             self.reboot = True
+        else:   # Generate appropriate error message
+            self.invalidValue (value, "CW Sidetone", gv.CW_TONE_BOUNDS['LOW'], gv.CW_TONE_BOUNDS['HIGH'])
 
     #       ConfigFile CW_Sidetone getters/setters
     def get_ConfigFile_CW_Tone(self):
@@ -286,9 +308,11 @@ class settingsBackup(baseui.settingsBackupUI):
         return self.mainWindow.delay_starting_tx_value_VAR.get()
 
     def set_Current_CW_Delay_Before_TX(self, value):
-        if gv.validateNumber(value, gv.CW_START_TX_BOUNDS['LOW'], gv.CW_START_TX_BOUNDS['HIGH'], "Delay->TX", self):
+        if gv.validateNumber(value, gv.CW_START_TX_BOUNDS['LOW'], gv.CW_START_TX_BOUNDS['HIGH'], "Delay->TX"):
             self.mainWindow.theRadio.Set_CW_Delay_Starting_TX(value)
             self.reboot = True
+        else:   # Generate appropriate error message
+            self.invalidValue (value, "Delay->TX", gv.CW_START_TX_BOUNDS['LOW'], gv.CW_START_TX_BOUNDS['HIGH'])
 
     #       ConfigFile Delay_Before_TX_Value getters/setters
     def get_ConfigFile_CW_Delay_Before_TX(self):
@@ -306,9 +330,11 @@ class settingsBackup(baseui.settingsBackupUI):
         return self.mainWindow.delay_returning_to_rx_value_VAR.get()
 
     def set_Current_CW_Delay_Returning_To_RX(self, value):
-        if gv.validateNumber(value, gv.CW_DELAY_Return_RX_BOUNDS['LOW'], gv.CW_DELAY_Return_RX_BOUNDS['HIGH'], "Delay->RX", self):
+        if gv.validateNumber(value, gv.CW_DELAY_Return_RX_BOUNDS['LOW'], gv.CW_DELAY_Return_RX_BOUNDS['HIGH'], "Delay->RX"):
             self.mainWindow.theRadio.Set_CW_Delay_Returning_To_RX(value)
             self.reboot = True
+        else:   # Generate appropriate error message
+            self.invalidValue (value, "Delay->RX", gv.CW_DELAY_Return_RX_BOUNDS['LOW'], gv.CW_DELAY_Return_RX_BOUNDS['HIGH'])
 
     #       ConfigFile Delay_Returning_To_RX_Value getters/setters
     def get_ConfigFile_CW_Delay_Returning_To_RX(self):

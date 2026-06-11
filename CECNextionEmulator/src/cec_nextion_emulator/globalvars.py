@@ -149,15 +149,12 @@ def formatCombobox( combobox, family="Arial", size="36", weight="bold"):
     # #   configure popdown font
     # combobox.tk.call('%s.f.l' % popdown, 'co        self.popup.geometry(gv.POPUP_WINDOW_OFFSET)nfigure', '-font', combobox['font'])
 
-def validateNumber(value, lowbound, highbound, name, parent):
+def validateNumber(value, lowbound, highbound, name):
     if str(value) == "":
-        messagebox.showinfo("Illegal Value for "+ name, "Source value for "+ name+ " is empty\n\nRequested change ignored", parent=parent)
         return False
     elif ((lowbound <= int(value)) & (highbound >= int(value))):
         return True
     else:
-        messagebox.showinfo("Value for " + name+ " is out of range", "Source value (" + str(value) +") for "+ name+ " is not within "
-                            + str(lowbound) +" to "+ str(highbound) +" \n\nRequested change ignored", parent=parent)
         return False
 
 def validateKeyInDict(dict, key, name, parent):

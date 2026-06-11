@@ -14,6 +14,7 @@ from QSOLogger import QSOLogger
 from tkinter import messagebox
 from VirtualKeyboard import VirtualKeyboard
 import os
+from pathvalidate import sanitize_filename, is_valid_filename
 
 
 #
@@ -158,33 +159,40 @@ class settingsLogbook(baseui.settingsLogbookUI):
 
         self.popup.destroy()
 
+    #
+    #   The following callbacks handle the entry of the filename for the log.
+    #   Logbook_Name_Entered_CB is fired when the user clicks down on the entry field. If
+    #   the virtual keyboard switch is true, a virtual keyboard will be popped up on the screen.
+    #   After the user enters the new filename, the LogbookName_VKeyboard_Validate is called.
+    #   It checks the validity of the entry and if not valid, calls the Logbook_Name_Invalid_CB to
+    #   eliminate bad characters and set the file name.
+    #
+    #   If there is no virtual keyboard in use, the user enters via the keyboard and when focus goes out, the
+    #   Logbook_Name_Validation_CB is fired to check the entry. If it returns, False, then the Logbook_Name_Invalid_CB
+    #   is used to delete bad characters and make a best quess
+    #
+
     def Logbook_Name_Entered_CB(self, event=None):
-        # self.LogbookNameSave = self.LogbookName_VAR.get()
-
         if gv.config.get_Virtual_Keyboard_Switch() == "True":
-            self.vKeyboard = VirtualKeyboard(self, self.LogbookName_VAR, self.LogbookName_Dirty_CB, 40)
-
+            self.vKeyboard = VirtualKeyboard(self, self.LogbookName_VAR, self.LogbookName_Vkeyboard_Validate, 40)
 
     def Logbook_Name_Validation_CB(self, p_entry_value, v_condition):
+        if is_valid_filename(p_entry_value):
+            return True
+        else:
+            return False
 
+    def Logbook_Name_Invalid_CB(self, p_entry_value):
+        self.validFname = sanitize_filename(p_entry_value)
 
-        if (v_condition == "focusout") and (gv.config.get_Virtual_Keyboard_Switch() == "False"):
+        self.LogbookName_Entry.delete(0, "end")
+        self.LogbookName_Entry.insert(0, self.validFname)
+        messagebox.showinfo("Error Illegal Filename", p_entry_value + "\n\nis not a legal filename.\n\n" +
+                            self.validFname + "\n\nis the closest legal name and will be used.", parent=self)
 
-            bookName = self.LogbookName_Sanitize(p_entry_value)
-
-            if len(p_entry_value) > 40:
-                messagebox.showinfo("Error Filename Too Long", "Maximum of 40 characters\n"
-                                    + "Your Filename has been truncated to left most valid 40 characters", parent=self)
-            self.after_idle(lambda: self.LogbookName_VAR.set(bookName))
-
-        return True
-
-    def LogbookName_Dirty_CB(self):
-        fixedBookName = self.LogbookName_Sanitize(self.LogbookName_VAR.get())
-        self.LogbookName_VAR.set(fixedBookName)
-
-    def LogbookName_Sanitize(self, book):
-        return book[:40].replace(" ","").replace(" ", "").replace("\\", "").replace(":", "").replace("/","")
+    def LogbookName_Vkeyboard_Validate(self):
+        if is_valid_filename(self.LogbookName_VAR.get()) == False:
+            self.Logbook_Name_Invalid_CB(self.LogbookName_VAR.get())
 
 
     def cancel_CB(self):

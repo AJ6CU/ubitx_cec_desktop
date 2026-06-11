@@ -87,8 +87,12 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Name_Entry.grid(
             column=2, ipady=2, padx="5 0", row=0, sticky="w")
         _validatecmd = (self.channel_Name_Entry.register(
-            self.channel_Lavel_Validation_CB), "%P", "%V")
+            self.channel_Label_Validation_CB), "%P", "%V")
         self.channel_Name_Entry.configure(validatecommand=_validatecmd)
+        _validatecmd = (
+            self.channel_Name_Entry.register(
+                self.channel_Label_Invalid_CB), "%P")
+        self.channel_Name_Entry.configure(invalidcommand=_validatecmd)
         self.channel_Name_Entry.bind(
             "<Button>", self.channel_Label_Entered_CB, add="+")
         self.freq_Entry = ttk.Entry(self, name="freq_entry")
@@ -107,7 +111,11 @@ class frequencyChannelUI(ttk.Frame):
             "%P",
             "%V")
         self.freq_Entry.configure(validatecommand=_validatecmd)
-        self.freq_Entry.bind("<Button>", self.numeric_Keypad_CB, add="+")
+        _validatecmd = (
+            self.freq_Entry.register(
+                self.channel_Freq_Invalid_CB), "%P")
+        self.freq_Entry.configure(invalidcommand=_validatecmd)
+        self.freq_Entry.bind("<Button>", self.freq_Entry_Entrered_CB, add="+")
         self.dirtyChannel_Label = ttk.Label(self, name="dirtychannel_label")
         self.dirtyChannel_Label.configure(style="GreenLED.TLabel", width=2)
         self.dirtyChannel_Label.grid(column=7, padx="10 5", row=0)
@@ -242,7 +250,10 @@ class frequencyChannelUI(ttk.Frame):
     def channel_Select_CB(self):
         pass
 
-    def channel_Lavel_Validation_CB(self, p_entry_value, v_condition):
+    def channel_Label_Validation_CB(self, p_entry_value, v_condition):
+        pass
+
+    def channel_Label_Invalid_CB(self, p_entry_value):
         pass
 
     def channel_Label_Entered_CB(self, event=None):
@@ -251,7 +262,10 @@ class frequencyChannelUI(ttk.Frame):
     def channel_Freq_Validation_CB(self, p_entry_value, v_condition):
         pass
 
-    def numeric_Keypad_CB(self, event=None):
+    def channel_Freq_Invalid_CB(self, p_entry_value):
+        pass
+
+    def freq_Entry_Entrered_CB(self, event=None):
         pass
 
     def Channel_Mode_Changed_CB(self, itemid):

@@ -182,6 +182,13 @@ class settingsLogbookUI(ttk.Labelframe):
             text='Select\nLogbook\nLocation',
             textvariable=self.LogbookDirectoryLocation_VAR,
             type="directory")
+        self.LogbookFileSelector_Tooltip = Tooltip(
+            self.LogbookFileSelectorButton)
+        self.LogbookFileSelector_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Press this button and then navigate to the directory where you want your logbooks stored.',
+            wraplength=300)
         self.LogbookFileSelectorButton.grid(
             column=0, padx=10, pady="40 10", row=4, sticky="nse")
         self.LogbookFileSelectorButton.bind(
@@ -214,6 +221,12 @@ class settingsLogbookUI(ttk.Labelframe):
             name="logbookname_label")
         self.LogbookName_Label.configure(
             style="Heading1b.TLabel", text='Logfile Name')
+        self.LogbookName_Tooltip = Tooltip(self.LogbookName_Label)
+        self.LogbookName_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Enter a file name for your logfile. Files will be stored in the location specified above with either a "csv" or "adi" extension as appropriate.',
+            wraplength=300)
         self.LogbookName_Label.grid(column=0, pady="20 0", row=5, sticky="e")
         self.LogbookName_Entry = tk.Entry(
             self.general_Settings_Frame,
@@ -244,6 +257,10 @@ class settingsLogbookUI(ttk.Labelframe):
         _validatecmd = (self.LogbookName_Entry.register(
             self.Logbook_Name_Validation_CB), "%P", "%V")
         self.LogbookName_Entry.configure(validatecommand=_validatecmd)
+        _validatecmd = (
+            self.LogbookName_Entry.register(
+                self.Logbook_Name_Invalid_CB), "%P")
+        self.LogbookName_Entry.configure(invalidcommand=_validatecmd)
         self.LogbookName_Entry.bind(
             "<Button>", self.Logbook_Name_Entered_CB, add="+")
         self.general_Settings_Frame.pack(padx=10, pady=10, side="top")
@@ -283,6 +300,9 @@ class settingsLogbookUI(ttk.Labelframe):
         pass
 
     def Logbook_Name_Validation_CB(self, p_entry_value, v_condition):
+        pass
+
+    def Logbook_Name_Invalid_CB(self, p_entry_value):
         pass
 
     def Logbook_Name_Entered_CB(self, event=None):

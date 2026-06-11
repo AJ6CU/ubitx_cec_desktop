@@ -238,7 +238,7 @@ class VirtualKeyboard(tk.Toplevel):
         #   This row has a special entry field that displays what the user is typing. This is necessary because the
         #   keyboard is so large that on smaller screens it will overlap the window where the information will end up
         #
-        self.entryField = ttk.Entry(keyframe5, style='Entry1b.TEntry',font=('Arial',18, 'italic' ), textvariable=self.localStrVar, width=6)
+        self.entryField = ttk.Entry(keyframe5, style='Entry1b.TEntry',font=('Arial',18, 'italic' ), textvariable=self.localStrVar, width=40)
         keyframe5.columnconfigure(0, weight=0)
 
 
@@ -249,7 +249,7 @@ class VirtualKeyboard(tk.Toplevel):
 
             if key == "spacebar":
                 keyframe5.columnconfigure(ind+1, weight=12)
-                self.row5buttons[ind].config(text="Space", width=24)
+                self.row5buttons[ind].config(text="Space", width=15)
             elif key == "left":
                 self.row5buttons[ind].config(text="\u2190", width=3)
                 keyframe5.columnconfigure(ind + 1, weight=1)
@@ -354,8 +354,8 @@ class VirtualKeyboard(tk.Toplevel):
     #   Calls a function in the parent to indicate if the value is now "dirty"
     #
     def enter(self,event=None):
-        label = self.localStrVar.get().replace(self.cursor, '')
-        self.localStrVar.set(label.ljust(self.maxChars))
+        # label = self.localStrVar.get().replace(self.cursor, '')
+        self.localStrVar.set(self.localStrVar.get().replace(self.cursor, ''))
         if self.localStrVar.get() !=self.fieldStrVar.get():
             self.fieldStrVar.set(self.localStrVar.get())
             if self.dirty_CB != None:

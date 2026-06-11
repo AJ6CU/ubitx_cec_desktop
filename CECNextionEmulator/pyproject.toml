@@ -69,7 +69,7 @@ classifiers = [
 #
 # For an analysis of this field vs pip's requirements files see:
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
-dependencies = ["pyserial", "pygubu"]
+dependencies = ["pyserial", "pygubu", "pathvalidate"]
 
 #dependencies = ["pyserial", "pygubu", "pillow"]
 # List additional groups of dependencies here (e.g. development
