@@ -592,7 +592,7 @@ class theVFO(baseui.theVFOUI):
                     self.RX_VFO_VAR.set(gv.formatFrequency(self.intDisplayedPrimaryVFO))
 
             if self.SPLITmode:
-                # Need to adjust vfo B by TX offset
+                # offset handled by copy option
                 pass
         else:
             #
