@@ -1,6 +1,7 @@
 import socket
 import json
 import os
+import time
 from datetime import datetime
 from typing import List, Dict, Union
 
@@ -9,7 +10,7 @@ class SDRPlusPlusController:
     """
     An advanced object-oriented controller to interface with SDR++ using
     the Hamlib RigCTL network protocol wrapper driven natively by Tkinter's .after() loop.
-    Part 1: Dynamic Short-Label Channel Manager, Logging Framework, and JSON Storage.
+    Part 1: Initialization, Log Storage, and Dynamic Channel Management.
     """
 
     HAM_BANDS = {
@@ -21,12 +22,11 @@ class SDRPlusPlusController:
         '2m': (145000000, 'FM', 12500)
     }
 
-    DEFAULT_FILTER_FALLBACKS = {
+    FACTORY_DEFAULTS = {
         'USB': 2400, 'LSB': 2400, 'CW': 500, 'CW_L': 500, 'CW_U': 500,
         'AM': 6000, 'NFM': 12500, 'FM': 12500, 'WFM': 180000
     }
 
-    # Absolute JSON file path tracking location mapping profile
     JSON_FILE = "sdr_scan_channels.json"
 
     def __init__(self, root, host: str = '127.0.0.1', port: int = 4532):
@@ -35,15 +35,19 @@ class SDRPlusPlusController:
         self.port = port
         self.sock = None
         self.is_connected = False
+        self.is_running = False
 
         # State tracking cache variables
         self.current_frequency = 0
         self.current_mode = "UNKNOWN"
         self.current_filter_width = 2400
 
-        # MANAGED SHORT-LABEL SCAN LIST
+        # Mutatable Fallback Dictionary Registry
+        self.DEFAULT_FILTER_FALLBACKS = dict(self.FACTORY_DEFAULTS)
+
+        # Managed Scan Array
         self.scan_channels: List[Dict[str, Union[int, str]]] = []
-        self._load_channels_from_json()  # Load saved list immediately on startup []
+        self._load_channels_from_json()
 
         # Scanner runtime properties
         self.is_scanning = False
@@ -59,14 +63,25 @@ class SDRPlusPlusController:
         self.on_filter_change = None
         self.on_scan_step = None
         self.on_disconnect = None
+        self.on_incompatible_mode = None  # Bidirectional verification callback
 
     def connect(self) -> bool:
+        if self.sock:
+            try:
+                self.sock.close()
+            except socket.error:
+                pass
+
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.sock.settimeout(0.15)
             self.sock.connect((self.host, self.port))
             self.is_connected = True
-            self._tkinter_tick_loop()
+
+            if not self.is_running:
+                self.is_running = True
+                self.root.after(300, self._tkinter_tick_loop)
             return True
         except Exception:
             self.is_connected = False
@@ -74,6 +89,7 @@ class SDRPlusPlusController:
 
     def disconnect(self):
         self.stop_scan()
+        self.is_running = False
         self.is_connected = False
         if self.sock:
             try:
@@ -87,48 +103,50 @@ class SDRPlusPlusController:
             self.stop_scan()
             if self.on_disconnect: self.on_disconnect()
 
-    # =========================================================================
-    #  JSON STORAGE DISK ROUTINES
-    # =========================================================================
+    def set_mode_fallback_width(self, mode: str, fallback_hz: int) -> bool:
+        clean_mode = mode.upper().strip()
+        if not clean_mode or int(fallback_hz) <= 0: return False
+        self.DEFAULT_FILTER_FALLBACKS[clean_mode] = int(fallback_hz)
+        if clean_mode in ["CW_L", "CW_U"]:
+            self.DEFAULT_FILTER_FALLBACKS["CW"] = int(fallback_hz)
+
+        if self.is_connected:
+            if clean_mode == self.current_mode or (clean_mode in ["CW_L", "CW_U"] and self.current_mode == "CW"):
+                self.set_filter_width_hz(int(fallback_hz))
+        return True
+
+    def get_all_mode_fallbacks(self) -> Dict[str, int]:
+        return self.DEFAULT_FILTER_FALLBACKS
+
+    def reset_fallbacks_to_factory(self):
+        self.DEFAULT_FILTER_FALLBACKS = dict(self.FACTORY_DEFAULTS)
+
     def _load_channels_from_json(self):
-        """Attempts to read and decode custom entries from local storage on startup []."""
         if os.path.exists(self.JSON_FILE):
             try:
                 with open(self.JSON_FILE, 'r', encoding='utf-8') as f:
                     self.scan_channels = json.load(f)
-                print(f"[✔ Storage] Successfully loaded {len(self.scan_channels)} channels from disk.")
-            except Exception as e:
-                print(f"[-] Storage Exception: Failed to decode channels backup -> {e}")
+            except Exception:
                 self.scan_channels = []
 
     def _save_channels_to_json(self):
-        """Saves current memory registry arrays directly out to a clean JSON file []."""
         try:
             with open(self.JSON_FILE, 'w', encoding='utf-8') as f:
                 json.dump(self.scan_channels, f, indent=4)
-            print("[✔ Storage] Scan channels saved to disk database cleanly.")
-        except Exception as e:
-            print(f"[-] Storage Exception: Failed to write database backup -> {e}")
-
-    # =========================================================================
-    #  LABEL-BASED CHANNEL LIST MANAGEMENT METHODS
-    # =========================================================================
+        except Exception:
+            pass
     def add_channel(self, label: str, freq_hz: int, mode: str, filter_hz: int, name: str) -> bool:
         clean_label = label.strip().upper()
         if not clean_label: return False
-
         for ch in self.scan_channels:
             if ch["label"] == clean_label: return False
 
         new_channel = {
-            "label": clean_label,
-            "freq_hz": int(freq_hz),
-            "mode": mode.upper().strip(),
-            "filter_hz": int(filter_hz),
-            "name": name.strip() if name else f"Station {clean_label}"
+            "label": clean_label, "freq_hz": int(freq_hz), "mode": mode.upper().strip(),
+            "filter_hz": int(filter_hz), "name": name.strip() if name else f"Station {clean_label}"
         }
         self.scan_channels.append(new_channel)
-        self._save_channels_to_json()  # Commit changes to disk immediately []
+        self._save_channels_to_json()
         return True
 
     def delete_channel(self, label: str) -> bool:
@@ -142,7 +160,7 @@ class SDRPlusPlusController:
             was_scanning = self.is_scanning
             self.stop_scan()
             self.scan_channels.pop(target_idx)
-            self._save_channels_to_json()  # Commit changes to disk immediately []
+            self._save_channels_to_json()
             if was_scanning and self.scan_channels:
                 self.scan_idx = 0
                 self.is_scanning = True
@@ -162,9 +180,7 @@ class SDRPlusPlusController:
         hz_key = self.current_frequency
         log_entry = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "mhz": hz_key / 1_000_000,
-            "mode": self.current_mode,
-            "filter_hz": self.current_filter_width,
+            "mhz": hz_key / 1_000_000, "mode": self.current_mode, "filter_hz": self.current_filter_width,
             "description": description if description else "Manual Log Entry"
         }
         self.logged_signals[hz_key] = log_entry
@@ -180,7 +196,7 @@ class SDRPlusPlusController:
         return self.logged_signals
 
     # =========================================================================
-    #  Part 2: Core Tuning Commands, Memory Scanning, and Telemetry Loop Threads
+    #  Part 3: Core Tuning Commands, Memory Scanning, and Telemetry Loop Threads
     # =========================================================================
 
     def set_frequency_hz(self, hz: int) -> bool:
@@ -202,14 +218,16 @@ class SDRPlusPlusController:
         input_mode = mode.upper().strip()
 
         if input_mode in ["CW", "CW_L", "CW_U"]:
-            self.current_mode = "CW"
+            target_lookup_mode = "CW"
+            network_mode = "CW"
         else:
-            self.current_mode = input_mode
+            target_lookup_mode = input_mode
+            network_mode = input_mode
 
         if passband_hz == 0:
-            passband_hz = self.DEFAULT_FILTER_FALLBACKS.get(input_mode, 2400)
+            passband_hz = self.DEFAULT_FILTER_FALLBACKS.get(target_lookup_mode, 2400)
 
-        network_mode = "CW" if "CW" in input_mode else input_mode
+        self.current_mode = target_lookup_mode
         self.current_filter_width = passband_hz
 
         try:
@@ -237,7 +255,6 @@ class SDRPlusPlusController:
         return self.set_mode(target_mode, target_width)
 
     def get_filter_width_hz(self) -> int:
-        """Exposes the public method required by main_app.py to fix the AttributeError."""
         self._sync_mode_only()
         return self.current_filter_width
 
@@ -285,26 +302,43 @@ class SDRPlusPlusController:
         self.root.after(self.scan_delay_ms, self._tkinter_scan_tick)
 
     def _sync_mode_only(self):
-        if not self.is_connected: return
+        if not self.is_connected or not self.is_running: return
         try:
             self.sock.sendall(b'm\n')
             mode_resp = self.sock.recv(1024).decode('utf-8').strip()
             clean_lines = mode_resp.replace('\r', '').replace('RPRT 0', '').strip().split('\n')
 
             if clean_lines and len(clean_lines) >= 1:
-                first_line = clean_lines[0].strip().upper()
-                if first_line and first_line != self.current_mode:
-                    if not ("CW" in first_line and self.current_mode == "CW"):
-                        self.current_mode = first_line
-                        self.current_filter_width = self.DEFAULT_FILTER_FALLBACKS.get(first_line, 2400)
-                        if self.on_mode_change: self.on_mode_change(first_line)
+                raw_mode = clean_lines[0].strip().upper()
+                is_compatible = True
+
+                if "CW" in raw_mode:
+                    mapped_mode = "CW"
+                elif raw_mode in ["LSB"]:
+                    mapped_mode = "LSB"
+                elif raw_mode in ["USB"]:
+                    mapped_mode = "USB"
+                else:
+                    mapped_mode = "USB"
+                    is_compatible = False
+
+                if not is_compatible:
+                    if self.on_incompatible_mode: self.on_incompatible_mode(raw_mode, mapped_mode)
+                    self.set_mode(mapped_mode, passband_hz=0)
+                    return
+
+                if mapped_mode != self.current_mode:
+                    self.current_mode = mapped_mode
+                    self.current_filter_width = self.DEFAULT_FILTER_FALLBACKS.get(raw_mode, 2400)
+                    if self.on_mode_change: self.on_mode_change(mapped_mode)
         except socket.error:
             self._handle_unexpected_disconnect()
 
     def _tkinter_tick_loop(self):
-        if not self.is_connected: return
+        if not self.is_connected or not self.is_running: return
         try:
             if not self.is_scanning:
+                # 1. Poll Frequency
                 self.sock.sendall(b'f\n')
                 freq_resp = self.sock.recv(1024).decode('utf-8').strip()
                 clean_freq = freq_resp.replace('\r', '').replace('RPRT 0', '').strip()
@@ -314,16 +348,35 @@ class SDRPlusPlusController:
                         self.current_frequency = freq_val
                         if self.on_frequency_change: self.on_frequency_change(freq_val)
 
+                # 2. Poll Mode and Filter Attributes Safely
                 self.sock.sendall(b'm\n')
                 mode_resp = self.sock.recv(1024).decode('utf-8').strip()
                 clean_lines = mode_resp.replace('\r', '').replace('RPRT 0', '').strip().split('\n')
 
                 if clean_lines and len(clean_lines) >= 1:
-                    first_line = clean_lines[0].strip().upper()
-                    if first_line and first_line != self.current_mode:
-                        if not ("CW" in first_line and self.current_mode == "CW"):
-                            self.current_mode = first_line
-                            if self.on_mode_change: self.on_mode_change(first_line)
+                    raw_mode = clean_lines[0].strip().upper()
+                    is_compatible = True
+
+                    if "CW" in raw_mode:
+                        mapped_mode = "CW"
+                    elif raw_mode in ["LSB"]:
+                        mapped_mode = "LSB"
+                    elif raw_mode in ["USB"]:
+                        mapped_mode = "USB"
+                    else:
+                        mapped_mode = "USB"
+                        is_compatible = False
+
+                    # FIXED: If incompatible, re-queue the next loop cycle BEFORE returning!
+                    if not is_compatible:
+                        if self.on_incompatible_mode: self.on_incompatible_mode(raw_mode, mapped_mode)
+                        self.set_mode(mapped_mode, passband_hz=0)
+                        self.root.after(200, self._tkinter_tick_loop)  # Loop stays alive!
+                        return
+
+                    if mapped_mode != self.current_mode:
+                        self.current_mode = mapped_mode
+                        if self.on_mode_change: self.on_mode_change(mapped_mode)
 
                 if clean_lines and len(clean_lines) >= 2:
                     second_line = clean_lines[1].strip()
@@ -339,4 +392,5 @@ class SDRPlusPlusController:
             self._handle_unexpected_disconnect()
             return
 
+        # Standard re-queue path for valid modes
         self.root.after(200, self._tkinter_tick_loop)

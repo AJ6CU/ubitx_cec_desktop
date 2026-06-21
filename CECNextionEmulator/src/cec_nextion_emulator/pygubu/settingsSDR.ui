@@ -1,0 +1,497 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">settingsSDR</setting>
+      <setting id="description">Used to save of machines</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">settingsSDR_Labelframe</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">settingsSDR</setting>
+      <setting id="main_classname">settingsSDR</setting>
+      <setting id="output_dir">..</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">..</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">True</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file">../mystyles.py</setting>
+    </settings>
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="tk.Toplevel" id="settings_Window" named="True">
+    <property name="title" translatable="yes">Machine Settings</property>
+    <child>
+      <object class="ttk.Labelframe" id="settingsSDR_Labelframe" named="True">
+        <property name="cursor">arrow</property>
+        <property name="style">Heading2.TLabelframe</property>
+        <property name="text" translatable="yes">SDR Settings </property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="frame1">
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="anchor">center</property>
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="SDR_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">NormalOutline.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="columnspan">2</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="SDR_Enable_Label" named="True">
+                    <property name="state">disabled</property>
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">Enable SDR</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">10 5</property>
+                      <property name="pady">5</property>
+                      <property name="row">0</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="DSP_Enable_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">CW decoding requires a second processor running I2cmeter1 software. If you have this processor installed, set this switch to True. Otherwise set it to False.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Menubutton" id="SDR_Enable_Menubutton" named="True">
+                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="takefocus">true</property>
+                    <property name="textvariable">string:SDR_Enable_VAR</property>
+                    <property name="width">5</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">43 10</property>
+                      <property name="pady">5</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <child>
+                      <object class="tk.Menu" id="SDR_Enable_Menu" named="True">
+                        <property name="tearoff">false</property>
+                        <child>
+                          <object class="tk.Menuitem.Command" id="selectSDR_On_Command" named="True">
+                            <property name="command" type="command" cbtype="simple">selectSDR_On_CB</property>
+                            <property name="font">{Arial} 24 {}</property>
+                            <property name="label" translatable="yes">True</property>
+                            <property name="state">normal</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Menuitem.Command" id="selectSDR_Off_Command" named="True">
+                            <property name="command" type="command" cbtype="simple">selectSDR_Off_CB</property>
+                            <property name="font">{Arial} 24 {}</property>
+                            <property name="label" translatable="yes">False</property>
+                            <property name="state">normal</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="SDR_Network_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">NormalOutline.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="columnspan">2</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">2</property>
+                  <property name="sticky">ew</property>
+                </layout>
+                <child>
+                  <object class="ttk.Frame" id="heading_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="columnspan">2</property>
+                      <property name="padx">10</property>
+                      <property name="pady">10 0</property>
+                      <property name="row">0</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="networkAddress_Label" named="True">
+                        <property name="state">disabled</property>
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">SDR Network Address</property>
+                        <layout manager="pack">
+                          <property name="anchor">w</property>
+                          <property name="side">top</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="networkAddress_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="networkAddressSuggestion_Label" named="True">
+                        <property name="style">Heading2bi.TLabel</property>
+                        <property name="text" translatable="yes">Usually 127.0.0.1 or localhost with port 4532 or 4533 (less common)</property>
+                        <property name="width">60</property>
+                        <layout manager="pack">
+                          <property name="side">left</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="address_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="padx">125</property>
+                      <property name="pady">20</property>
+                      <property name="row">1</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="ipAddress_Label" named="True">
+                        <property name="state">disabled</property>
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">Network address:</property>
+                        <layout manager="pack" />
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="ipAddress_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="tooltip2" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="ipAddress_Entry" named="True">
+                        <property name="font">{Arial} 24 {}</property>
+                        <property name="justify">right</property>
+                        <property name="takefocus">true</property>
+                        <property name="text" translatable="yes">127.0.0.1</property>
+                        <property name="textvariable">string:PWR_Factor_VAR</property>
+                        <property name="width">8</property>
+                        <layout manager="pack" />
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="port_Label" named="True">
+                        <property name="state">disabled</property>
+                        <property name="style">Heading1b.TLabel</property>
+                        <property name="text" translatable="yes">Port:</property>
+                        <layout manager="pack">
+                          <property name="pady">10 0</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="port_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Check SDR++ Module Manager/Rigel Server entry. Typically 4532 or perghaps 4533.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="tooltip3" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Check SDR++ Module Manager/Rigel Server entry. Typically 4532 or perghaps 4533.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="port_Entry" named="True">
+                        <property name="font">{Arial} 24 {}</property>
+                        <property name="justify">right</property>
+                        <property name="takefocus">true</property>
+                        <property name="text" translatable="yes">4532</property>
+                        <property name="textvariable">string:SWR_Factor_VAR</property>
+                        <property name="width">5</property>
+                        <layout manager="pack" />
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="test_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="pady">20</property>
+                      <property name="row">2</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Button" id="button1">
+                        <property name="command" type="command" cbtype="simple">sdrTest_CB</property>
+                        <property name="style">Button1bARaised.TButton</property>
+                        <property name="text" translatable="yes">Test</property>
+                        <property name="textvariable">string:sdrTest_VAR</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="padx">100 20</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="label4" named="True">
+                        <property name="style">Heading2bi.TLabel</property>
+                        <property name="text" translatable="yes">Success!</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="SDR_Options_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">NormalOutline.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="columnspan">2</property>
+                  <property name="pady">10</property>
+                  <property name="row">4</property>
+                  <property name="sticky">ew</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="MCU_Command_Headroom_Label" named="True">
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">Minimum time between
+commands sent to
+Radio (ms):</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">5</property>
+                      <property name="pady">10 0</property>
+                      <property name="row">0</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="MCU_Command_Headroom_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">The Raduino MCU can get overwhelmed with demands from the UX. If you start to see random errors on the log, increase this value slightly.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Spinbox" id="MCU_Command_Headroom_Spinbox" named="True">
+                    <property name="font">{Arial} 36 {}</property>
+                    <property name="from_">1</property>
+                    <property name="justify">right</property>
+                    <property name="style">Custom.TSpinbox</property>
+                    <property name="takefocus">true</property>
+                    <property name="textvariable">string:MCU_Command_Headroom_VAR</property>
+                    <property name="to">20</property>
+                    <property name="width">4</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">15 10</property>
+                      <property name="pady">10 0</property>
+                      <property name="row">0</property>
+                      <property name="sticky">e</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="MCU_Update_Period_Label" named="True">
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">Frequency to check for
+UX changes (ms):</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">5</property>
+                      <property name="pady">15 0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="MCU_Update_Period_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">This controls how frequently the  system checks for changes made by the user. IF you notice changes in the user interface start to lag, you can try decreasing this number. If it is too small, it can also put a burden on the processor that will also create lag.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Spinbox" id="MCU_Update_Period_Spinbox" named="True">
+                    <property name="font">{Arial} 36 {}</property>
+                    <property name="from_">1</property>
+                    <property name="justify">right</property>
+                    <property name="style">Custom.TSpinbox</property>
+                    <property name="takefocus">true</property>
+                    <property name="textvariable">string:MCU_Update_Period_VAR</property>
+                    <property name="to">20</property>
+                    <property name="width">4</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">15 10</property>
+                      <property name="pady">15 0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">e</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="MCU_Read_Wait_Period_Label" named="True">
+                    <property name="style">Heading1b.TLabel</property>
+                    <property name="text" translatable="yes">Wait time for completion 
+of data transfer from
+MCU/DPS (ms):</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">5</property>
+                      <property name="pady">15 10</property>
+                      <property name="row">3</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="MCU_Read_Wait_Period_Tooltip" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">The processor hosting the User Interface can look for data prior to the Raduino completing the writing of the data. This allows you to increase the wait time for the Raduino to complete writing the data. Too short, will generate data errors that you will see in the log.</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Spinbox" id="MCU_Read_Wait_Period_Spinbox" named="True">
+                    <property name="font">{Arial} 36 {}</property>
+                    <property name="from_">1</property>
+                    <property name="justify">right</property>
+                    <property name="style">Custom.TSpinbox</property>
+                    <property name="takefocus">true</property>
+                    <property name="textvariable">string:MCU_Read_Wait_Period_VAR</property>
+                    <property name="to">20</property>
+                    <property name="width">4</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">15 10</property>
+                      <property name="pady">15 10</property>
+                      <property name="row">3</property>
+                      <property name="sticky">e</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="closingFrame" named="True">
+            <property name="height">50</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="anchor">center</property>
+              <property name="expand">false</property>
+              <property name="pady">20</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="apply_Button" named="True">
+                <property name="command" type="command" cbtype="simple">apply_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="takefocus">true</property>
+                <property name="text" translatable="yes">Apply</property>
+                <layout manager="pack">
+                  <property name="anchor">center</property>
+                  <property name="padx">10</property>
+                  <property name="side">left</property>
+                </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="apply_Button_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Updates the setting and closes the window.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="cancel_Buttom" named="True">
+                <property name="command" type="command" cbtype="simple">cancel_CB</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="takefocus">true</property>
+                <property name="text" translatable="yes">Cancel</property>
+                <layout manager="pack">
+                  <property name="anchor">center</property>
+                  <property name="padx">10</property>
+                  <property name="side">left</property>
+                </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="cancel_Button_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Exit without writing any changes.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
