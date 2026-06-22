@@ -6,6 +6,7 @@ import time
 import subprocess
 from datetime import datetime
 from typing import List, Dict, Union
+import globalvars as gv
 
 
 class SDRPlusPlusController:
@@ -29,10 +30,10 @@ class SDRPlusPlusController:
         'AM': 6000, 'NFM': 12500, 'FM': 12500, 'WFM': 180000
     }
 
-    def __init__(self, root, host: str = '127.0.0.1', port: int = 4532):
+    def __init__(self, root):
         self.root = root
-        self.host = host
-        self.port = port
+        self.host = gv.config.get("SDR Server IP", '127.0.0.1')
+        self.port = int(gv.config.get("SDR TCP Port", 4532))
         self.sock = None
         self.is_connected = False
         self.is_running = False
@@ -112,45 +113,39 @@ class SDRPlusPlusController:
     def _load_channels_from_json(self):
         """Loads nested multi-scan sets from the unified application config profile."""
         try:
-            from defaultCECNextionEmulator import default_config_data
-            self.scan_sets_dict = default_config_data.get("Scan Channels Registry Queue", {})
-
+            # UNIFIED PATTERN: Read directly out of gv.config
+            self.scan_sets_dict = gv.config.get("Scan Channels Registry Queue", {})
             if not isinstance(self.scan_sets_dict, dict) or not self.scan_sets_dict:
                 self.scan_sets_dict = {"DEFAULT SET": []}
-
             if self.active_scan_set not in self.scan_sets_dict:
                 self.active_scan_set = list(self.scan_sets_dict.keys())[0]
-
             self.scan_channels = self.scan_sets_dict[self.active_scan_set]
-        except Exception:
+        except Exception as e:
+            print(f"[-] Config Load Exception: {e}")
             self.scan_sets_dict = {"DEFAULT SET": []}
             self.scan_channels = []
 
     def _save_channels_to_json(self):
-        """
-        Appends runtime channel updates into the unified dictionary configuration,
-        and saves it back as an executable Python module file to prevent boot crashes.
-        """
+        """Appends active scan set updates via global configuration manager."""
         try:
-            # 1. Update the local in-memory import handle data structure safely
-            from defaultCECNextionEmulator import default_config_data
             self.scan_sets_dict[self.active_scan_set] = self.scan_channels
-            default_config_data["Scan Channels Registry Queue"] = self.scan_sets_dict
 
-            # 2. Use deep text string serialization to build clean Python code blocks
-            import pprint
-            formatted_text = pprint.pformat(default_config_data, indent=4, width=120)
+            # UNIFIED: Hand the data directly to gv.config
+            gv.config.set("Scan Channels Registry Queue", self.scan_sets_dict)
 
-            # 3. FIXED: Wrap the python output file context securely using explicit newlines
-            # and a hard variable string mapping token. This prevents the compiler from cutting off
-            # the opening bracket variable assignment on Line 1!
-            with open("defaultCECNextionEmulator.py", "w", encoding="utf-8") as f:
-                f.write("# Calibrated CEC Nextion Emulator Unified Configuration Data Profile Module\n\n")
-                f.write(f"default_config_data = {formatted_text}\n")
-
-            print(f"[✔ Disk Sync] Saved all scan sets. Active set: '{self.active_scan_set}' safely committed.")
+            print(f"[✔ Disk Sync] Saved active set: '{self.active_scan_set}'")
         except Exception as e:
             print(f"[-] Disk Sync Exception: {e}")
+
+    def _save_all_channels_to_json(self):
+        """Saves the entire registry tracking block via global configuration manager."""
+        try:
+            # UNIFIED: Hand the full dictionary to gv.config
+            gv.config.set("Scan Channels Registry Queue", self.scan_sets_dict)
+
+            print("[✔ Disk Sync] Successfully committed all master scan sets to gv.config")
+        except Exception as e:
+            print(f"[-] Master Disk Sync Exception: {e}")
 
     def change_active_scan_set(self, set_name: str) -> bool:
         """Swaps the active scanning target profile list cleanly to a different scan set."""
@@ -281,7 +276,25 @@ class SDRPlusPlusController:
 
         if self.on_mode_change: self.on_mode_change(target_mode)
         if self.on_filter_change: self.on_filter_change(target_width)
+
+        # UNIFIED PATTERN: Save both configurations safely to disk on update
+        try:
+            gv.config.set("SDR Filter Width HZ", target_width)
+            gv.config.set("SDR Current Mode", target_mode)
+        except Exception as e:
+            print(f"[-] Config Save Error inside set_filter_width_hz: {e}")
+
         return self.set_mode(target_mode, target_width)
+
+    def get_filter_width_hz(self) -> int:
+        """Fetches the filter width from config, falling back to the local variable or 120000 Hz."""
+        try:
+            # Fall back to the active tracking instance variable if the key doesn't exist yet
+            default_fallback = getattr(self, 'current_filter_width', 120000)
+            return int(gv.config.get("SDR Filter Width HZ", default_fallback))
+        except Exception as e:
+            print(f"[-] Error retrieving filter width: {e}")
+            return 120000
 
     def widen(self, step_hz: int = 200) -> bool:
         active_step = 50 if "CW" in self.current_mode or self.current_filter_width <= 500 else step_hz
@@ -292,26 +305,22 @@ class SDRPlusPlusController:
         return self.set_filter_width_hz(self.current_filter_width - active_step)
 
     def start_memory_scan(self, delay_ms: int = None):
-        """
-        Begins the automated memory channel sweep loop.
-        Natively prioritizes the unified configuration module profile parameter
-        if no custom manual override delay value is supplied [1.11].
-        """
+        """Begins scan loop, utilizing config file for delay."""
         if not self.is_connected or not self.scan_channels: return
-
-        # Pull the live delay directly out of your global configuration settings
-        if delay_ms is None:
-            try:
-                from defaultCECNextionEmulator import default_config_data
-                self.scan_delay_ms = default_config_data.get("Scan On Station Time", 5000)
-            except Exception:
-                self.scan_delay_ms = 5000  # Standard safe fallback buffer configuration
-        else:
-            self.scan_delay_ms = int(delay_ms)
-
+        self.scan_delay_ms = int(delay_ms) if delay_ms is not None else gv.config.get("Scan On Station Time", 5000)
         self.scan_idx = 0
         self.is_scanning = True
         self._tkinter_scan_tick()
+
+    def set_scan_station_time_ms(self, milliseconds: int) -> bool:
+        """Adjusts and saves scan dwell time to config."""
+        try:
+            self.scan_delay_ms = max(200, int(milliseconds))
+            gv.config.set("Scan On Station Time", self.scan_delay_ms)
+            return True
+        except Exception as e:
+            print(f"[-] Timing Save Error: {e}")
+            return False
 
     def stop_scan(self):
         self.is_scanning = False

@@ -1290,7 +1290,7 @@ class mainScreen(baseui.mainScreenUI):
             self.speaker_Button_On = True
             self.speaker_Button.configure(style='RedButton2b.TButton', state="pressed")
             self.speaker_VAR.set("\nSDR\n")
-            self.theSDR = SDRPlusPlusController(self.master, host='127.0.0.1', port=4532)
+            self.theSDR = SDRPlusPlusController(self.master)
             if self.theSDR.connect():
                 print("sdr connected")
                 self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))

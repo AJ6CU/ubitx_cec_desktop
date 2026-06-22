@@ -6,7 +6,7 @@ import tkinter.font as font
 import tkinter.font as tkFont
 
 import settingsGeneralui as baseui
-from configuration import configuration
+from configuration import ConfigurationManager
 import globalvars as gv
 
 

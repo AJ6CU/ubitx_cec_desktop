@@ -3,7 +3,7 @@ from urllib import response
 import serial
 from time import sleep
 from timeit import default_timer as timer
-from configuration import configuration
+from configuration import ConfigurationManager
 import globalvars as gv
 from tkinter import messagebox
 import EEPROM as EEPROM

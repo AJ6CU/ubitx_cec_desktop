@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 
 
 import settingsBackupui as baseui
-from configuration import configuration
+from configuration import ConfigurationManager
 from delayWarning import delayWarning
 import globalvars as gv
 from time import sleep

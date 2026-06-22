@@ -2,45 +2,77 @@
 import json
 import os
 import platform
+import threading
 import tkinter as tk
 from tkinter import messagebox
 import globalvars as gv
 from defaultCECNextionEmulator import default_config_data
 
 
-configuration_file = os.path.expanduser(os.path.join("~", ".CECNextionEmulator.ini"))
 
-class configuration:
 
-    def __init__(self, master=None, **kw):
+class ConfigurationManager:
+    def __init__(self,Master=None):
+        """
+                Initializes the application configuration settings provider.
+                Dynamically targets a hidden user-space config file in the user's home directory.
+                """
         self.observers = {}
-        try:
-            config_file=open(configuration_file, 'r+')
+        # Targets: /home/username/.CECNextionEmulator.ini safely across Linux, Windows, and Mac
+        self.configuration_file = os.path.expanduser(os.path.join("~", ".CECNextionEmulator.ini"))
+        print(self.configuration_file)
+        self.config_data = {}
+        self.lock = threading.Lock()  # Thread-safe wrapper preventing race conditions
+        self.loadConfig()
 
-            if (os.stat(configuration_file).st_size == 0):
-                # top = tk.Toplevel(master)
-                messagebox.showinfo("Information", "Empty configuration file was found\n" +
-                                                    "Default values saved in" + configuration_file +
-                                                    "\nReview and edit this file if needed",
-                                                    parent=master)
-                self.writeDefaults()
-            else:
-                self.config_data = json.load(config_file)
-                config_file.close()
-                self.distributeConfigData()  # Once config is read in, its values needs to be propagated to objects create prior
-        except FileNotFoundError:
-            # top = tk.Toplevel(master)
-            messagebox.showinfo("Information", "No configuration file was found\n" +
-                                                "Default values saved in" + configuration_file +
-                                                "\nReview and edit this file if needed",
-                                                parent=master)
 
-            self.writeDefaults()
+    def loadConfig(self):
+        """Loads configuration from disk, falling back to Python dictionary defaults if missing/corrupt."""
+        if os.path.exists(self.configuration_file):
+            try:
+                with open(self.configuration_file, 'r', encoding='utf-8') as f:
+                    self.config_data = json.load(f)
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"[-] Config parse error: {e}. Falling back to default dictionary parameters.")
+                self.config_data = default_config_data.copy()
+        else:
+            # First-time app launch: seed the file with your baseline default dictionary values
+            print(f"[+] Creating fresh configuration profile at: {self.configuration_file}")
+            self.config_data = default_config_data.copy()
+            self.saveConfig()
 
-    def distributeConfigData(self):
-        gv.NUMBER_DELIMITER = self.get_NUMBER_DELIMITER()
-        # print("delimiter number is ", gv.NUMBER_DELIMITER)
-        self.register_observer("NUMBER DELIMITER", gv.updateNUMBER_DELIMITER)
+
+    def saveConfig(self):
+        """Thread-safely serializes and flushes the dictionary data pool to disk via JSON formatting."""
+        with self.lock:
+            try:
+                # 'with open' context block guarantees file handle closes cleanly even if a crash happens
+                with open(self.configuration_file, 'w', encoding='utf-8') as config_file:
+                    json.dump(self.config_data, config_file, indent=4, sort_keys=True)
+            except IOError as e:
+                print(f"[-] Critical Error writing configuration profile to disk: {e}")
+
+
+    def get(self, key, fallback=None):
+        """
+        Safely fetches an item from the configuration memory array.
+        Returns the specified fallback if the requested key does not exist.
+        """
+        return self.config_data.get(key, fallback)
+
+
+    def set(self, key, value):
+        """
+        Updates an app profile configuration parameter and immediately
+        commits the update to disk cleanly.
+        """
+        self.config_data[key] = value
+        self.saveConfig()  # Automatically triggers disk synchronization on value change
+
+        def distributeConfigData(self):
+            gv.NUMBER_DELIMITER = self.get_NUMBER_DELIMITER()
+            # print("delimiter number is ", gv.NUMBER_DELIMITER)
+            self.register_observer("NUMBER DELIMITER", gv.updateNUMBER_DELIMITER)
 
 
     def writeDefaults(self):
@@ -339,7 +371,7 @@ class configuration:
 
 
     def saveConfig(self):
-        config_file = open(configuration_file, 'w')
+        config_file = open(self.configuration_file, 'w')
         json.dump(self.config_data, config_file, indent=4, sort_keys=True)
         config_file.close()
 

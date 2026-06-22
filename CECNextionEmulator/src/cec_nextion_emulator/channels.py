@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import channelsui as baseui
 from tkinter import messagebox
-from configuration import configuration
+from configuration import ConfigurationManager
 import globalvars as gv
 import EEPROM as EEPROM
 from delayWarning import delayWarning

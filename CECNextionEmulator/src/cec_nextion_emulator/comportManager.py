@@ -10,7 +10,7 @@ from tkinter import messagebox
 
 from time import sleep
 import globalvars as gv
-from configuration import configuration
+from configuration import ConfigurationManager
 
 import os
 import ipaddress

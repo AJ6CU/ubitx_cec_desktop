@@ -11,7 +11,7 @@ from time import sleep
 # import piCEC_UXui as baseui
 from mainScreen import mainScreen
 from piRadio import piRadio
-from configuration import configuration
+from configuration import ConfigurationManager
 from comportManager import comportManager
 import globalvars as gv
 
@@ -59,7 +59,7 @@ def startMainWindow(radioPortName, radioPortHandle):
 #
 root = tk.Tk()
 
-gv.config = configuration(root)                    # Read in config data, if missing preload with defaults
+gv.config = ConfigurationManager(root)                    # Read in config data, if missing preload with defaults
                                                 # Root is passed to allow popup error messages
 
 mainWindow = mainScreen(root)

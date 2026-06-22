@@ -12,6 +12,7 @@ except Exception:
 import tkinter as tk
 from tkinter import messagebox, scrolledtext
 from tkinter import ttk  # Themed Notebook management loops library
+import globalvars as gv
 from SDRPlusPlusController import SDRPlusPlusController
 
 
@@ -43,8 +44,9 @@ class LabeledSDRDashboardApp:
         self.pre_mute_volume = 50
         self.is_connected_flag = False
 
-        # Instantiate controller object on explicit IPv4 loopback socket
-        self.sdr = SDRPlusPlusController(self.root, host="127.0.0.1", port=4532)
+        # Instantiate controller object utilizing live central gv.config allocations
+        self.sdr = SDRPlusPlusController(self.root)
+
         self.sdr.on_frequency_change = self.cb_frequency
         self.sdr.on_mode_change = self.cb_mode
         self.sdr.on_filter_change = self.cb_filter
@@ -291,7 +293,7 @@ class LabeledSDRDashboardApp:
         self.fb_frame.columnconfigure(1, weight=1)
 
         # --- TAB 3: SCANNER TIMERS DWELL LAYER (NEW DETACHED PANEL) ---
-        self.tab3_frame = tk.Frame(self.notebook, bg=self.THEME_BG, padx=15, pady=15)
+        self.tab3_frame = tk. Frame(self.notebook, bg=self.THEME_BG, padx=15, pady=15)
         self.notebook.add(self.tab3_frame, text=" Scanner Timers ")
 
         self.timer_frame = tk.LabelFrame(self.tab3_frame, text=" Operational Dwell Configurations ",
@@ -299,19 +301,12 @@ class LabeledSDRDashboardApp:
                                          fg=self.THEME_FG)
         self.timer_frame.pack(fill="both", expand=True)
 
-        tk.Label(self.timer_frame, text="Scan Delay Period (ms):", bg=self.THEME_BG, fg=self.THEME_FG).grid(row=0,
-                                                                                                            column=0,
-                                                                                                            sticky="w",
-                                                                                                            padx=2,
-                                                                                                            pady=8)
+        tk.Label(self.timer_frame, text="Scan Delay Period (ms):", bg=self.THEME_BG, fg=self.THEME_FG).grid(row=0, column=0, sticky="w", padx=2, pady=8)
         self.ent_scan_time = tk.Entry(self.timer_frame, width=15, highlightbackground=self.THEME_BG)
         self.ent_scan_time.grid(row=0, column=1, sticky="w", padx=4, pady=8)
 
-        try:
-            from defaultCECNextionEmulator import default_config_data
-            starting_delay = default_config_data.get("Scan On Station Time", 5000)
-        except Exception:
-            starting_delay = 5000
+        # UNIFIED PATTERN: Read directly out of gv.config with an active fallback default
+        starting_delay = gv.config.get("Scan On Station Time", 5000)
         self.ent_scan_time.insert(0, str(starting_delay))
 
         self.btn_update_scan_time = tk.Button(self.timer_frame, text="⏱ Save Scan Station Delay",
@@ -425,8 +420,12 @@ class LabeledSDRDashboardApp:
             if len(parts) >= 1:
                 lbl_target = parts[0].replace("[", "").strip()
                 if self.sdr.delete_channel(lbl_target):
+                    # 1. Clear text inputs cleanly
+                    self.ent_label.delete(0, tk.END)
+                    self.ent_freq.delete(0, tk.END)
+
+                    # 2. Re-render the visual display lists smoothly
                     self.refresh_listbox_view()
-                    self.lbl_scan_
 
     def action_display_dict(self):
         """Generates a structured multi-set JSON code diagnostic readout array popup."""
@@ -517,6 +516,10 @@ class LabeledSDRDashboardApp:
         active_mode = self.sdr.current_mode
         if active_mode == "UNKNOWN": active_mode = "USB"
         self.lbl_mode_filter.config(text=f"Mode: {active_mode}  |  Filter Width: {int(width_hz)} Hz", fg="#3498db")
+
+
+
+
 
     def cb_signal_handler(self, dbfs_value):
         """Converts incoming RF dbfs metrics into a monospaced, calibrated S-Unit index layout row grid."""
@@ -718,6 +721,12 @@ class LabeledSDRDashboardApp:
 # =========================================================================
 def main():
     root = tk.Tk()
+
+    # UNIFIED STARTUP: Import your manager, assign it to gv.config before continuing!
+    # import globalvars as gv
+    from configuration import ConfigurationManager
+    gv.config = ConfigurationManager()
+
     app = LabeledSDRDashboardApp(root)
     root.protocol("WM_DELETE_WINDOW", lambda: app.sdr.disconnect() or root.destroy())
     root.mainloop()
