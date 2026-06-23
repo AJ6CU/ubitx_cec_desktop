@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 import pygubu
 import random
 import globalvars as gv
+import os
 from SDRPlusPlusController import SDRPlusPlusController
 
 
@@ -12,7 +13,11 @@ class LabeledSDRDashboardApp:
 
         # 1. Initialize Pygubu layout builder targeting your local UI template
         self.builder = pygubu.Builder()
-        self.builder.add_from_file('./pygubu/main_dashboard.ui')
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        ui_absolute_path = os.path.join(script_dir, "pygubu", "sdrDashboard.ui")
+
+        self.builder.add_from_file(ui_absolute_path)
         self.main_window = self.builder.get_object('main_frame', root)
 
         # 2. Extract configuration input field widgets from XML template
@@ -435,16 +440,37 @@ class LabeledSDRDashboardApp:
         self.combobox_target_sets['values'] = banks_list
 
 
-def main():
-    root = tk.Tk()
-    root.title("CEC Nextion Full Emulator Engineering Console")
-    import globalvars as gv
-    from configuration import ConfigurationManager
-    gv.config = ConfigurationManager()
-    app = LabeledSDRDashboardApp(root)
-    root.protocol("WM_DELETE_WINDOW", lambda: root.destroy())
-    root.mainloop()
+class SDRDashboardPopup:
+    def __init__(self, parent_window):
+        # 1. Create a dedicated popup window layer bound to the main app
+        self.popup = tk.Toplevel(parent_window)
+        self.popup.title("SDR++ Memory Matrix Console")
+
+        # 2. Force modal focus (Stops user from clicking back to the main app until closed)
+        self.popup.transient(parent_window)
+        # self.popup.grab_set()
+
+        # 3. Instantiate your UI application frame right inside this popup window container
+        self.app = LabeledSDRDashboardApp(self.popup)
+
+        # 4. Clean up background hooks instantly if the user closes the popup window
+        self.popup.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def get_app(self):
+        """Returns the memory handle pointer to the core dashboard application."""
+        return self.app.sdr
+
+    def on_close(self):
+        """Ensures scanning timer engines freeze quietly when the window disappears."""
+        try:
+            self.app.sdr.stop_scan()  # Halt active backgrounds
+        except Exception:
+            pass
+        self.popup.destroy()  # Close window container safely
 
 
-if __name__ == "__main__":
-    main()
+def launch_sdr_popup(parent):
+    """The master trigger hook called by your primary application driver."""
+    return SDRDashboardPopup(parent)
+
+

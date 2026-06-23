@@ -17,6 +17,7 @@ from cwLogger import cwLogger
 from QSOLogger import QSOLogger
 from Classic_uBITX_Control import Classic_uBITX_Control
 from SDRPlusPlusController import SDRPlusPlusController
+from sdrDashboard import launch_sdr_popup
 
 import mystyles  # Styles definition module
 from time import sleep
@@ -46,13 +47,15 @@ class mainScreen(baseui.mainScreenUI):
         self.startingspectrum = False
 
         self.theRadio = None            # Object pointer for the Radio
-        self.theSDR = None              # Object pointer to the SDR
+        self.theSDR = None              # This is an Object pointer to the SDR itself.
+        self.theSDRWindow = None  # This an object pointer to the popup window for sdrDashboard
         self.sdrplusplus_handle = None # process handle for launch of sdr++
         self.theVFO_Object.attachMainWindow(self)
         self.cwSettingsWindow = None    # Object pointer for the CW Settinge Window
         self.settingsWindow = None      # Object pointer for the General Settings Window
         self.channelsWindow = None      # object pointer for the Memory-> VFO Window
         self.logQSOWindow = None
+
         self.spectrumWindow = None       #object point for the SpectrumScan Window
         self.consumerSpectrumdata = None #Object pointer to the current consumer of spectrum data
 
@@ -1290,7 +1293,8 @@ class mainScreen(baseui.mainScreenUI):
             self.speaker_Button_On = True
             self.speaker_Button.configure(style='RedButton2b.TButton', state="pressed")
             self.speaker_VAR.set("\nSDR\n")
-            self.theSDR = SDRPlusPlusController(self.master)
+            self.theSDRWindow = launch_sdr_popup(self)
+            self.theSDR = self.theSDRWindow.get_app()
             if self.theSDR.connect():
                 print("sdr connected")
                 self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
