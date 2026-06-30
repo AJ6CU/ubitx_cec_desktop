@@ -76,25 +76,41 @@ class SDRPlusPlusController:
         self.on_incompatible_mode = None
         self.on_signal_change = None
 
-    def connect(self) -> bool:
-        if self.sock:
-            try:
-                self.sock.close()
-            except socket.error:
-                pass
-
+    def connect(self, host="localhost", port=4532):
+        """Establishes the connection and forces an immediate live hardware state query."""
         try:
+            import socket
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sock.settimeout(0.15)
-            self.sock.connect((self.host, self.port))
+            self.sock.settimeout(2.0)
+            self.sock.connect((host, port))
             self.is_connected = True
 
-            if not self.is_running:
-                self.is_running = True
-                self.root.after(300, self._tkinter_tick_loop)
+            # CRITICAL STARTUP SYNC: Force a blocking read of the exact real radio state
+            # right now, before the asynchronous tkinter background loops begin.
+            self.sock.sendall(b'm\n')
+            mode_resp = self.sock.recv(1024).decode('utf-8').strip()
+            clean_lines = mode_resp.split('\n')
+
+            if clean_lines and len(clean_lines) >= 1:
+                raw_mode = clean_lines[0].strip().upper()
+                self.current_mode = "CW" if "CW" in raw_mode else ("LSB" if "LSB" in raw_mode else "USB")
+
+                # Capture the true 3950 Hz filter size straight from the hardware buffer!
+                if len(clean_lines) >= 2 and clean_lines[1].strip().isdigit():
+                    self.current_filter_width = int(clean_lines[1].strip())
+                else:
+                    self.current_filter_width = 3950  # Better safe fallback matching your standard profile
+
+            # Reset socket back to non-blocking or standard behavior for loop compatibility
+            self.sock.settimeout(None)
+
+            # Start your normal loop
+            self.is_running = True
+            self._tkinter_tick_loop()
+            print(f"[+] Connected to SDR++. Synchronized Live Bandwidth: {self.current_filter_width} Hz")
             return True
-        except Exception:
+        except Exception as e:
+            print(f"[-] Connection initialization failed: {e}")
             self.is_connected = False
             return False
 
@@ -244,57 +260,63 @@ class SDRPlusPlusController:
             self._handle_unexpected_disconnect()
             return False
 
+    #
     def set_mode(self, mode_str: str, passband_hz: int = 0):
-        if not self.is_connected or not self.sock:
-            return
+        """Changes the mode cleanly. Always guarantees a valid trailing bandwidth configuration argument."""
+        if not self.is_connected or not self.sock: return
 
         mode_str = mode_str.strip().upper()
-
-        # FIX: If passband is 0 or uninitialized, explicitly ask SDR++ right now
-        # instead of relying on a local variable that might be unpopulated at startup.
-        if passband_hz <= 0:
-            try:
-                self.sock.sendall(b'm\n')
-                mode_resp = self.sock.recv(1024).decode('utf-8').strip()
-                clean_lines = mode_resp.split('\n')
-                if len(clean_lines) >= 2 and clean_lines[1].strip().isdigit():
-                    passband_hz = int(clean_lines[1].strip())
-                else:
-                    passband_hz = 2400  # True safe global fallback if socket read fails
-            except:
-                passband_hz = 2400
+        if "WFM" in mode_str: mode_str = "WFM"
+        elif "FM" in mode_str: mode_str = "NFM"
+        elif "RAW" in mode_str: mode_str = "AM"
 
         self.current_mode = mode_str
-        self.current_filter_width = passband_hz
 
-        # Format and send standard mode payload
+        # If a specific layout row click target is requested, use it
+        if passband_hz > 0:
+            self.current_filter_width = passband_hz
+        else:
+            # Otherwise, read our tracking cache variable. Because we populated it
+            # at the exact millisecond of connection, it will accurately be 3950!
+            passband_hz = getattr(self, 'current_filter_width', 3950)
+
+        # Always send the full command to prevent SDR++ from falling back internally
         command = f"M {mode_str} {passband_hz}\n"
         try:
             self.sock.setblocking(True)
             self.sock.sendall(command.encode('utf-8'))
-            self.sock.recv(1024)  # flush ack
+            self.sock.recv(1024)  # Flush standard acknowledgement response ("RPRT 0\n")
         except socket.error:
             self._handle_unexpected_disconnect()
 
-    def set_filter_width_hz(self, passband_hz: int) -> bool:
-        if not self.is_connected or self.current_mode == "UNKNOWN": return False
-        if self.current_mode == "LSB" or self.current_mode == "USB":
-            target_width = max(500, passband_hz)
-        elif self.current_mode == "CW":
-            target_width = max(50, passband_hz)
 
-        self.current_filter_width = target_width
-
-        if self.on_filter_change: self.on_filter_change(target_width)
-
-        # UNIFIED PATTERN: Save both configurations safely to disk on update
+    def get_filter_width_hz(self) -> int:
+        """Fetches the live active filter width tracking variable from the radio safely."""
         try:
-            gv.config.set_sdr_filter_width_hz(target_width)
+            # Return the live background variable directly updated by the tick loop
+            return int(self.current_filter_width)
         except Exception as e:
-            print(f"[-] Config Save Error inside set_filter_width_hz: {e}")
+            print(f"[-] Error retrieving live filter width variable: {e}")
+            return 2400 # Safe global fallback default if uninitialized
 
-        return self.set_mode(self.current_mode, target_width)
 
+    #
+    def set_filter_width_hz(self, width_hz: int):
+        """Changes the radio filter width safely by using the supported Hamlib 'M' command."""
+        if not self.is_connected: return
+        try:
+            # 1. Fetch the live mode string to keep it unchanged
+            current_mode_str = self.current_mode if self.current_mode else "USB"
+
+            # 2. Re-send the mode with our new target bandwidth
+            command = f"M {current_mode_str} {width_hz}\n"
+            self.sock.sendall(command.encode('utf-8'))
+            self.sock.recv(1024)  # Flush the 'RPRT 0\n' acknowledgment
+
+            # 3. Secure the state mirror immediately
+            self.current_filter_width = width_hz
+        except Exception as e:
+            print(f"[-] Failed to push custom filter bandwidth target: {e}")
 
     def get_filter_width_hz(self) -> int:
         """Fetches the live active filter width tracking variable from the radio."""
@@ -307,13 +329,13 @@ class SDRPlusPlusController:
 
 
 
-    # def widen(self, step_hz: int = 200) -> bool:
-    #     active_step = 50 if "CW" in self.current_mode or self.current_filter_width <= 500 else step_hz
-    #     return self.set_filter_width_hz(self.current_filter_width + active_step)
-    #
-    # def narrow(self, step_hz: int = 200) -> bool:
-    #     active_step = 50 if "CW" in self.current_mode or self.current_filter_width <= 500 else step_hz
-    #     return self.set_filter_width_hz(self.current_filter_width - active_step)
+    def widen(self, step_hz: int = 500) -> bool:
+        active_step = 50 if "CW" in self.current_mode or self.current_filter_width <= 500 else step_hz
+        return self.set_filter_width_hz(self.current_filter_width + active_step)
+
+    def narrow(self, step_hz: int = 500) -> bool:
+        active_step = 50 if "CW" in self.current_mode or self.current_filter_width <= 500 else step_hz
+        return self.set_filter_width_hz(self.current_filter_width - active_step)
 
 
     def start_memory_scan(self, delay_ms: int = None):

@@ -511,26 +511,12 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def action_filter_widen(self):
         if not self.sdr.is_connected: return
-        current_bw = self.sdr.get_filter_width_hz()
-        if current_bw <= 500:
-            new_bw = current_bw + 50
-        elif current_bw <= 20000:
-            new_bw = current_bw + 500
-        else:
-            new_bw = current_bw + 5000
-        self.sdr.set_filter_width_hz(min(250000, new_bw))
+        self.sdr.widen()
 
     def action_filter_narrow(self):
-        if not self.sdr.is_connected: return
-        current_bw = self.sdr.get_filter_width_hz()
-        if current_bw <= 500:
-            new_bw = current_bw - 50
-        elif current_bw <= 20000:
-            new_bw = current_bw - 500
-        else:
-            new_bw = current_bw - 5000
 
-        self.sdr.set_filter_width_hz(max(50, new_bw))
+        if not self.sdr.is_connected: return
+        self.sdr.narrow()
 
     def action_filter_reset(self):
         if not self.sdr.is_connected: return
