@@ -244,31 +244,37 @@ class SDRPlusPlusController:
             self._handle_unexpected_disconnect()
             return False
 
-    def set_mode(self, mode: str, passband_hz: int = 0) -> bool:
-        if not self.is_connected: return False
-        input_mode = mode.upper().strip()
-        if input_mode in ["CW", "CW_L", "CW_U"]:
-            target_lookup_mode, network_mode = "CW", "CW"
-        else:
-            target_lookup_mode, network_mode = input_mode, input_mode
+    def set_mode(self, mode_str: str, passband_hz: int = 0):
+        if not self.is_connected or not self.sock:
+            return
 
-        if passband_hz == 0:
-            passband_hz = self.DEFAULT_FILTER_FALLBACKS.get(target_lookup_mode, 2400)
+        mode_str = mode_str.strip().upper()
 
-        self.current_mode = target_lookup_mode
+        # FIX: If passband is 0 or uninitialized, explicitly ask SDR++ right now
+        # instead of relying on a local variable that might be unpopulated at startup.
+        if passband_hz <= 0:
+            try:
+                self.sock.sendall(b'm\n')
+                mode_resp = self.sock.recv(1024).decode('utf-8').strip()
+                clean_lines = mode_resp.split('\n')
+                if len(clean_lines) >= 2 and clean_lines[1].strip().isdigit():
+                    passband_hz = int(clean_lines[1].strip())
+                else:
+                    passband_hz = 2400  # True safe global fallback if socket read fails
+            except:
+                passband_hz = 2400
+
+        self.current_mode = mode_str
         self.current_filter_width = passband_hz
 
-        if self.on_mode_change_primary: self.on_mode_change_primary(target_lookup_mode)
-        if self.on_mode_change_secondary: self.on_mode_change_secondary(target_lookup_mode)
-        if self.on_filter_change: self.on_filter_change(passband_hz)
-
+        # Format and send standard mode payload
+        command = f"M {mode_str} {passband_hz}\n"
         try:
-            self.sock.sendall(f"M {network_mode} {int(passband_hz)}\n".encode('ascii'))
-            self.sock.recv(1024)
-            return True
+            self.sock.setblocking(True)
+            self.sock.sendall(command.encode('utf-8'))
+            self.sock.recv(1024)  # flush ack
         except socket.error:
             self._handle_unexpected_disconnect()
-            return False
 
     def set_filter_width_hz(self, passband_hz: int) -> bool:
         if not self.is_connected or self.current_mode == "UNKNOWN": return False
@@ -291,8 +297,14 @@ class SDRPlusPlusController:
 
 
     def get_filter_width_hz(self) -> int:
-        """Fetches the filter width from config, falling back to the local variable or 120000 Hz."""
-        return self.current_filter_width
+        """Fetches the live active filter width tracking variable from the radio."""
+        try:
+            # Return the live background variable directly
+            return int(self.current_filter_width)
+        except Exception as e:
+            print(f"[-] Error retrieving live filter width variable: {e}")
+            return 120000
+
 
 
     # def widen(self, step_hz: int = 200) -> bool:
@@ -451,85 +463,60 @@ class SDRPlusPlusController:
         return self.set_volume(restore_volume)
 
     def _tkinter_tick_loop(self):
-        """Asynchronous updater loop. Simulates real-world radio propagation profiles safely [1.11]."""
+        """Asynchronous updater loop. Passively synchronizes state with SDR++ without overriding."""
         if not self.is_connected or not self.is_running: return
         try:
             if not self.is_scanning:
-                # 1. Sync VFO Frequency Counter
+                # 1. Sync VFO Frequency
                 self.sock.sendall(b'f\n')
-                freq_resp = self.sock.recv(1024).decode('utf-8').strip()
-                clean_freq = freq_resp.replace('\r', '').replace('RPRT 0', '').strip()
-                if clean_freq.isdigit() and int(clean_freq) != self.current_frequency:
-                    self.current_frequency = int(clean_freq)
-                    if self.on_frequency_change_primary:
-                        self.on_frequency_change_primary(self.current_frequency)
-                    if self.on_frequency_change_secondary:
-                        self.on_frequency_change_secondary(self.current_frequency)
+                freq_resp = self.sock.recv(1024).decode('utf-8').strip().replace('\r', '').replace('RPRT 0', '').strip()
+                if freq_resp.isdigit() and int(freq_resp) != self.current_frequency:
+                    self.current_frequency = int(freq_resp)
+                    if self.on_frequency_change_primary: self.on_frequency_change_primary(self.current_frequency)
 
-                # 2. Sync VFO Mode State
+                # 2. Sync VFO Mode and Dynamic Bandwidth (Passive Read Only)
                 self.sock.sendall(b'm\n')
-                mode_resp = self.sock.recv(1024).decode('utf-8').strip()
-                clean_lines = mode_resp.replace('\r', '').replace('RPRT 0', '').strip().split('\n')
+                mode_resp = self.sock.recv(1024).decode('utf-8').strip().replace('\r', '').replace('RPRT 0', '').strip()
+                clean_lines = mode_resp.split('\n')
 
                 if clean_lines and len(clean_lines) >= 1:
                     raw_mode = clean_lines[0].strip().upper()
-                    is_compatible = "CW" in raw_mode or raw_mode in ["LSB", "USB"]
-                    mapped_mode = "CW" if "CW" in raw_mode else ("LSB" if raw_mode == "LSB" else "USB")
+                    mapped_mode = "CW" if "CW" in raw_mode else ("LSB" if "LSB" in raw_mode else "USB")
 
-                    if not is_compatible:
-                        if self.on_incompatible_mode: self.on_incompatible_mode(raw_mode, mapped_mode)
-                        self.set_mode(mapped_mode, passband_hz=0)
-                        self.root.after(200, self._tkinter_tick_loop)
-                        return
+                    # Parse dynamic live bandwidth from line 2 if available
+                    live_bandwidth = None
+                    if len(clean_lines) >= 2 and clean_lines[1].strip().isdigit():
+                        live_bandwidth = int(clean_lines[1].strip())
+
+                    # Passive State Tracking: Update properties only if they changed on the radio
+                    state_changed = False
 
                     if mapped_mode != self.current_mode:
                         self.current_mode = mapped_mode
-                        self.current_filter_width = self.DEFAULT_FILTER_FALLBACKS.get(mapped_mode, 2400)
-                        if self.on_mode_change_primary:
-                            self.on_mode_change_primary(mapped_mode)
+                        if self.on_mode_change_primary: self.on_mode_change_primary(mapped_mode)
+                        state_changed = True
 
-                        if self.on_mode_change_secondary:
-                            self.on_mode_change_secondary(mapped_mode)
+                    if live_bandwidth is not None and live_bandwidth != self.current_filter_width:
+                        self.current_filter_width = live_bandwidth
+                        if self.on_filter_change: self.on_filter_change(live_bandwidth)
+                        state_changed = True
 
-                        if self.on_filter_change: self.on_filter_change(self.current_filter_width)
+                    # Optional: Commit to global configuration tracking only if a change happened
+                    if state_changed:
+                        try:
+                            gv.config.set_sdr_current_mode(self.current_mode)
+                            gv.config.set_sdr_filter_width_hz(self.current_filter_width)
+                        except Exception as e:
+                            print(f"[-] Config local write skipped: {e}")
 
-                # 3. Frequency-Aware Propagation S-Meter Calculations [1.11]
+                # 3. Simulate S-Meter
                 import random
-                freq_mhz = self.current_frequency / 1_000_000.0
-                if self.current_mode == "CW":
-                    base_dbfs = -94.0 if freq_mhz > 30.0 else -82.0
-                    jitter_range = (-1.8, 2.2)
-                else:
-                    if freq_mhz <= 4.0:
-                        base_dbfs, jitter_range = -54.0, (-4.2, 4.5)
-                    elif 4.0 < freq_mhz <= 8.0:
-                        base_dbfs, jitter_range = -58.0, (-3.8, 5.2)
-                    elif 14.0 <= freq_mhz <= 29.7:
-                        base_dbfs, jitter_range = -74.0, (-2.5, 3.2)
-                    elif 144.0 <= freq_mhz <= 148.0:
-                        base_dbfs, jitter_range = -98.0, (-1.1, 1.4)
-                    else:
-                        base_dbfs, jitter_range = -72.0, (-2.0, 2.5)
-
-                signal_spike = 0.0
-                if int(self.current_frequency) % 7 == 0:
-                    signal_spike = random.uniform(12.5, 34.0)
-                elif int(self.current_frequency) % 3 == 0:
-                    signal_spike = random.uniform(4.0, 11.5)
-
-                simulated_signal = base_dbfs + random.uniform(*jitter_range) + signal_spike
-                self.current_signal_dbfs = min(-5.0, simulated_signal)
+                self.current_signal_dbfs = -70.0 + random.uniform(-5.0, 5.0)
                 if self.on_signal_change: self.on_signal_change(self.current_signal_dbfs)
 
-                # 4. Filter Sanitation Lock
-                if self.current_mode == "CW" and self.current_filter_width > 500:
-                    self.current_filter_width = 500
-                    if self.on_filter_change: self.on_filter_change(500)
-                else:
-                    if self.on_filter_change: self.on_filter_change(self.current_filter_width)
-
-        except socket.timeout:
-            pass
         except socket.error:
-            self._handle_unexpected_disconnect(); return
+            self._handle_unexpected_disconnect()
+            return
+
         self.root.after(200, self._tkinter_tick_loop)
+

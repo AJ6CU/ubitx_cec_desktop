@@ -88,10 +88,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.setAccordionState(self.scanAccordion_Frame, self.scanToggle_Button, self.scanAccordionState)
         self.setAccordionState(self.channelsAccordion_Frame, self.channelsToggle_Button, self.channelsAccordionState)
 
-        if self.sdr.current_mode == "CW":
-            self.sdr.set_filter_width_hz('500')       # Forces filters to start at same spot
-        else:
-            self.sdr.set_filter_width_hz('2400')
+        # if self.sdr.current_mode == "CW":
+        #     self.sdr.set_filter_width_hz('500')       # Forces filters to start at same spot
+        # else:
+        #     self.sdr.set_filter_width_hz('2400')
         self.action_filter_reset()
         self.refresh_listbox_view()
         self.update_smeter_loop()
@@ -130,8 +130,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def update_smeter_loop(self):
         if self.sdr.is_connected:
+            # 1. Process S-Meter Metrics
             dbfs_value = random.randint(45, 85) if getattr(self.sdr, 'is_scanning', False) else random.randint(15, 55)
             self.smeter_Progressbar.config(value=dbfs_value)
+
             if dbfs_value < 20:
                 s_unit = "S1"
             elif dbfs_value < 35:
@@ -146,15 +148,20 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 s_unit = "+10dB"
             else:
                 s_unit = "+30dB"
+
             raw_dbfs = -120.0 + (float(dbfs_value) * 1.2)
-            self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30")
-            # self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30  [{s_unit}]")
+            self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30 [{s_unit}]")
             self.label_smeter_val.config(text=f"Signal Strength Metrics: {raw_dbfs:.1f} dBFS")
+
+            # 2. Passive UI Pass-through pointing to the correct object context
+            if hasattr(self.sdr, 'on_filter_change') and self.sdr.on_filter_change:
+                self.sdr.on_filter_change(self.sdr.get_filter_width_hz())
 
         else:
             self.smeter_Progressbar.config(value=0)
-            self.label_smeter_ticks.config(text="S1 . S3 . S5 . S7 . S9 . +10 . +30  [OFFLINE]")
+            self.label_smeter_ticks.config(text="S1 . S3 . S5 . S7 . S9 . +10 . +30 [OFFLINE]")
             self.label_smeter_val.config(text="Signal Strength Metrics: Offline")
+
         self.master.after(250, self.update_smeter_loop)
 
     def refresh_listbox_view(self):
@@ -215,19 +222,43 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 self.button_mute_toggle.config(text="🔊 Mute Audio")
 
     def action_on_channel_row_click(self, event):
-        if not self.sdr.is_connected: return
+        """Dispatched when a user clicks a channel row within the memory grid."""
+        if not self.sdr.is_connected:
+            return
+
         selected_item = self.treeChannels.selection()
-        if not selected_item: return
+        if not selected_item:
+            return
 
         row_values = self.treeChannels.item(selected_item, 'values')
-        if row_values and len(row_values) >= 2:
+
+        # Ensure the row contains all necessary parameters (Label, Freq, Mode, Desc)
+        if row_values and len(row_values) >= 3:
             try:
-                freq_hz = int(float(row_values[1]) * 1000000)
-                mode_str = str(row_values[2]).strip()
+                # 1. Unpack data fields and convert strings safely to native numeric types
+                label_target = str(row_values[0]).strip()
+                freq_mhz_str = str(row_values[1]).strip()
+                mode_str = str(row_values[2]).strip().upper()
+
+                # Convert MHz string directly back to Hz integer
+                freq_hz = int(float(freq_mhz_str) * 1000000)
+
+                # 2. Match the unique channel label against the scan database to grab its saved bandwidth
+                saved_bw = 0  # Pass 0 to tell the updated set_mode to look up the current active bandwidth
+                for ch in self.sdr.scan_channels:
+                    if ch.get('label') == label_target:
+                        # Extract saved filter configuration if it exists, otherwise default to 0 (passive tracking)
+                        saved_bw = int(ch.get('filter_width_hz', 0))
+                        break
+
+                # 3. Apply the targets sequentially over the network link
                 self.sdr.set_frequency_hz(freq_hz)
-                self.master.after(50, lambda: self.sdr.set_mode(mode_str))
-            except Exception:
-                pass
+
+                # Use a Tkinter delayed wrapper to let the frequency lock clear before updating mode/bandwidth
+                self.master.after(50, lambda: self.sdr.set_mode(mode_str, passband_hz=saved_bw))
+
+            except (ValueError, IndexError) as e:
+                print(f"[-] Grid selection data conversion error: {e}")
 
     def action_capture_live_vfo_to_channel(self):
         """Grabs current live frequency, mode, and filter bandwidth straight into active memory structures."""
