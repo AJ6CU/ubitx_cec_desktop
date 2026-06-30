@@ -9,6 +9,7 @@ UI source file: sdrDashboard.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
+from pygubu.widgets.accordionframe import AccordionFrame
 import pygubu
 import random
 
@@ -46,10 +47,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         # Setup column widths and text headers
         self.treeChannels.column('label', anchor='w')
-        self.treeChannels.column('label', width=110, minwidth=90, stretch=tk.YES)
-        self.treeChannels.column('frequency', width=120, minwidth=100, stretch=tk.YES)
-        self.treeChannels.column('mode', width=70, minwidth=60, stretch=tk.YES)
-        self.treeChannels.column('description', width=220, minwidth=150, stretch=tk.YES)
+        self.treeChannels.column('label', width=90, minwidth=90, stretch=tk.YES)
+        self.treeChannels.column('frequency', width=75, minwidth=75, stretch=tk.YES)
+        self.treeChannels.column('mode', width=40, minwidth=40, stretch=tk.YES)
+        self.treeChannels.column('description', width=125, minwidth=100, stretch=tk.YES)
 
         self.treeChannels.heading('label', text='Channel Label', anchor='w')
         self.treeChannels.heading('frequency', text='Frequency (MHz)', anchor='w')
@@ -68,17 +69,48 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         # Seed initialization field parameters
         self.entry_scan_time.insert(0, str(gv.config.get_scan_station_time_ms()))
-        self.entry_radio_ip.insert(0, str(gv.config.get_sdr_server_ip()))
-        self.entry_radio_port.insert(0, str(gv.config.get_sdr_tcp_port()))
+        self.sdrIPAddress_VAR.set(str(gv.config.get_sdr_server_ip()))
+        self.sdrPortNumber_VAR.set(str(gv.config.get_sdr_tcp_port()))
         self.volume_scale.set(self.pre_mute_volume)
         self.label_volume_val.config(text=f"{self.pre_mute_volume}%")
 
+        # Get persistent references to collapse and open buttons
+        self.btn_expand_icon = gv.get_image("expand_40x40.png")
+        self.btn_collapse_icon = gv.get_image("collapse_40x40.png")
 
+        # Set state for accordion panels
+        self.channelsAccordionState = False
+        self.bandsAccordionState = True
+        self.scanAccordionState = False
+
+
+        self.setAccordionState(self.bandsAccordion_Frame, self.bandsToggle_Button, self.bandsAccordionState)
+        self.setAccordionState(self.scanAccordion_Frame, self.scanToggle_Button, self.scanAccordionState)
+        self.setAccordionState(self.channelsAccordion_Frame, self.channelsToggle_Button, self.channelsAccordionState)
+
+        self.action_filter_reset()
         self.refresh_listbox_view()
         self.update_smeter_loop()
         self.sourceBank_Combobox.set("DEFAULT SET")
 
+        if self.sdr.connect():
+            self.linkStatus_Label.configure(
+                style="GreenLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Connected')
+            self.reconnect_Button.state(['disabled'])
+        else:
+            self.linkStatus_Label.configure(
+                style="RedLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Disconnected')
+            self.reconnect_Button.state(['normal'])
+
+
+
         self.pack(expand=tk.YES, fill=tk.BOTH)
+
+
 
 
     def update_frequency_telemetry(self, freq_hz):
@@ -90,11 +122,14 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def update_filter_telemetry(self, filter_hz):
         self.current_live_filter_hz = int(filter_hz)
+        self.currentFilterWidth_VAR.set(str(filter_hz))
 
     def update_smeter_loop(self):
         if self.sdr.is_connected:
+            # 1. Process S-Meter Metrics
             dbfs_value = random.randint(45, 85) if getattr(self.sdr, 'is_scanning', False) else random.randint(15, 55)
             self.smeter_Progressbar.config(value=dbfs_value)
+
             if dbfs_value < 20:
                 s_unit = "S1"
             elif dbfs_value < 35:
@@ -109,14 +144,20 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 s_unit = "+10dB"
             else:
                 s_unit = "+30dB"
+
             raw_dbfs = -120.0 + (float(dbfs_value) * 1.2)
-            self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30  [{s_unit}]")
+            self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30 [{s_unit}]")
             self.label_smeter_val.config(text=f"Signal Strength Metrics: {raw_dbfs:.1f} dBFS")
+
+            # 2. Passive UI Pass-through pointing to the correct object context
+            if hasattr(self.sdr, 'on_filter_change') and self.sdr.on_filter_change:
+                self.sdr.on_filter_change(self.sdr.get_filter_width_hz())
 
         else:
             self.smeter_Progressbar.config(value=0)
-            self.label_smeter_ticks.config(text="S1 . S3 . S5 . S7 . S9 . +10 . +30  [OFFLINE]")
+            self.label_smeter_ticks.config(text="S1 . S3 . S5 . S7 . S9 . +10 . +30 [OFFLINE]")
             self.label_smeter_val.config(text="Signal Strength Metrics: Offline")
+
         self.master.after(250, self.update_smeter_loop)
 
     def refresh_listbox_view(self):
@@ -133,10 +174,13 @@ class sdrDashboard(baseui.sdrDashboardUI):
         banks_list = list(self.sdr.scan_sets_dict.keys())
         self.sourceBank_Combobox['values'] = banks_list
         self.targetBank_Combobox['values'] = banks_list
+        self.scanBankSelect_Combobox['values'] = banks_list
 
     def action_connect(self):
-        gv.config.set_sdr_server_ip(self.entry_radio_ip.get().strip())
-        gv.config.set_sdr_tcp_port(int(self.entry_radio_port.get().strip()))
+        gv.config.set_sdr_server_ip(self.sdrIPAddress_VAR.get().strip())
+        gv.config.set_sdr_tcp_port(int(self.sdrPortNumber_VAR.get().strip()))
+        # gv.config.set_sdr_server_ip(self.entry_radio_ip.get().strip())
+        # gv.config.set_sdr_tcp_port(int(self.entry_radio_port.get().strip()))
         if self.sdr.connect():
             messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.")
         else:
@@ -174,19 +218,43 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 self.button_mute_toggle.config(text="🔊 Mute Audio")
 
     def action_on_channel_row_click(self, event):
-        if not self.sdr.is_connected: return
+        """Dispatched when a user clicks a channel row within the memory grid."""
+        if not self.sdr.is_connected:
+            return
+
         selected_item = self.treeChannels.selection()
-        if not selected_item: return
+        if not selected_item:
+            return
 
         row_values = self.treeChannels.item(selected_item, 'values')
-        if row_values and len(row_values) >= 2:
+
+        # Ensure the row contains all necessary parameters (Label, Freq, Mode, Desc)
+        if row_values and len(row_values) >= 3:
             try:
-                freq_hz = int(float(row_values[1]) * 1000000)
-                mode_str = str(row_values[2]).strip()
+                # 1. Unpack data fields and convert strings safely to native numeric types
+                label_target = str(row_values[0]).strip()
+                freq_mhz_str = str(row_values[1]).strip()
+                mode_str = str(row_values[2]).strip().upper()
+
+                # Convert MHz string directly back to Hz integer
+                freq_hz = int(float(freq_mhz_str) * 1000000)
+
+                # 2. Match the unique channel label against the scan database to grab its saved bandwidth
+                saved_bw = 0  # Pass 0 to tell the updated set_mode to look up the current active bandwidth
+                for ch in self.sdr.scan_channels:
+                    if ch.get('label') == label_target:
+                        # Extract saved filter configuration if it exists, otherwise default to 0 (passive tracking)
+                        saved_bw = int(ch.get('filter_width_hz', 0))
+                        break
+
+                # 3. Apply the targets sequentially over the network link
                 self.sdr.set_frequency_hz(freq_hz)
-                self.master.after(50, lambda: self.sdr.set_mode(mode_str))
-            except Exception:
-                pass
+
+                # Use a Tkinter delayed wrapper to let the frequency lock clear before updating mode/bandwidth
+                self.master.after(50, lambda: self.sdr.set_mode(mode_str, passband_hz=saved_bw))
+
+            except (ValueError, IndexError) as e:
+                print(f"[-] Grid selection data conversion error: {e}")
 
     def action_capture_live_vfo_to_channel(self):
         """Grabs current live frequency, mode, and filter bandwidth straight into active memory structures."""
@@ -383,36 +451,68 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if not self.sdr.is_connected: return
 
         match widget_id:
-            case 'btn_band_80m':
+            case 'ham_band_160m':
+                self.sdr.set_frequency_hz(1800000)
+                self.sdr.set_mode("LSB")
+
+            case 'ham_band_80m':
                 self.sdr.set_frequency_hz(3500000)
                 self.sdr.set_mode("LSB")
 
-            case 'btn_band_40m':
+            case 'ham_band_40m':
                 self.sdr.set_frequency_hz(7000000)
                 self.sdr.set_mode("LSB")
 
-            case 'btn_band_20m':
+            case 'ham_band_30m':
+                self.sdr.set_frequency_hz(10100000)
+                self.sdr.set_mode("LSB")
+
+            case 'ham_band_20m':
                 self.sdr.set_frequency_hz(14000000)
                 self.sdr.set_mode("USB")
 
-            case 'btn_band_2m':
-                self.sdr.set_frequency_hz(144200000)
+            case 'ham_band_17m':
+                self.sdr.set_frequency_hz(18000000)
                 self.sdr.set_mode("USB")
 
+            case 'ham_band_15m':
+                self.sdr.set_frequency_hz(21000000)
+                self.sdr.set_mode("USB")
+
+            case 'ham_band_12m':
+                self.sdr.set_frequency_hz(24000000)
+                self.sdr.set_mode("USB")
+
+            case 'ham_band_10m':
+                self.sdr.set_frequency_hz(28000000)
+                self.sdr.set_mode("USB")
+
+    def action_quick_mode(self, widget_id):
+        if not self.sdr.is_connected: return
+
+        match widget_id:
+            case "modeLSB_Button":
+                self.sdr.set_mode("LSB")
+
+            case "modeUSB_Button":
+                self.sdr.set_mode("USB")
+
+            case "modeCWL_Button":
+                self.sdr.set_mode("CW")
+
+            case "modeCWU_Button":
+                self.sdr.set_mode("CW")
 
 
 
     def action_filter_widen(self):
         if not self.sdr.is_connected: return
-        current_bw = self.sdr.get_filter_width_hz()
-        new_bw = current_bw + 500 if current_bw < 20000 else current_bw + 5000
-        self.sdr.set_filter_width_hz(min(250000, new_bw))
+        self.sdr.widen()
 
     def action_filter_narrow(self):
+
         if not self.sdr.is_connected: return
-        current_bw = self.sdr.get_filter_width_hz()
-        new_bw = current_bw - 500 if current_bw <= 20000 else current_bw - 5000
-        self.sdr.set_filter_width_hz(max(50, new_bw))
+        self.sdr.narrow()
 
     def action_filter_reset(self):
         if not self.sdr.is_connected: return
@@ -428,12 +528,55 @@ class sdrDashboard(baseui.sdrDashboardUI):
         except ValueError:
             messagebox.showwarning("Warning", "Forced bandwidth window must be an integer.")
 
+    def setAccordionState(self, content_frame, thebutton, frameState):
+        parent_frame = content_frame.master
+        if frameState:
+            # content_frame.grid()
+            thebutton.config(image=self.btn_expand_icon,compound="left")
+
+            # Dynamically fetch the current row index
+            content_frame.hidden=False
+            # parent_frame.rowconfigure(row_num, weight=1)
+        else:
+            # CRITICAL: Get row index BEFORE hiding the frame
+            # row_num = content_frame.grid_info().get("row", 1)
+            content_frame.hidden=True
+            # content_frame.grid_remove()
+            thebutton.config(image=self.btn_collapse_icon, compound="left")
+            # Collapse the correct row index
+            # parent_frame.rowconfigure(row_num, weight=0, minsize=0, pad=0)
+
+
+
+    def toggleScan_CB(self):
+        if self.scanAccordionState:
+            self.scanAccordionState = False
+
+        else:
+            self.scanAccordionState = True
+        self.setAccordionState(self.scanAccordion_Frame,self.scanToggle_Button,self.scanAccordionState)
+
+    def toggleBands_CB(self):
+        if self.bandsAccordionState:
+            self.bandsAccordionState = False
+        else:
+            self.bandsAccordionState = True
+        self.setAccordionState(self.bandsAccordion_Frame, self.bandsToggle_Button, self.bandsAccordionState)
+
+    def toggleChannels_CB(self):
+        if self.channelsAccordionState:
+            self.channelsAccordionState = False
+        else:
+            self.channelsAccordionState = True
+        self.setAccordionState(self.channelsAccordion_Frame,self.channelsToggle_Button, self.channelsAccordionState)
+
 
 class SDRDashboardPopup:
     def __init__(self, parent_window):
         # 1. Create a dedicated popup window layer bound to the main app
         self.popup = tk.Toplevel(parent_window)
         self.popup.title("SDR++ Memory Matrix Console")
+        self.popup.geometry("575x800")
 
         # 2. Force modal focus (Stops user from clicking back to the main app until closed)
         self.popup.transient(parent_window)
