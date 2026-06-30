@@ -262,33 +262,43 @@ class SDRPlusPlusController:
 
     #
     def set_mode(self, mode_str: str, passband_hz: int = 0):
-        """Changes the mode cleanly. Always guarantees a valid trailing bandwidth configuration argument."""
+        """Changes the radio modulation mode via Rigctl and triggers the mode callback."""
         if not self.is_connected or not self.sock: return
 
+        # 1. Normalize the incoming string
         mode_str = mode_str.strip().upper()
-        if "WFM" in mode_str: mode_str = "WFM"
-        elif "FM" in mode_str: mode_str = "NFM"
-        elif "RAW" in mode_str: mode_str = "AM"
+        if "WFM" in mode_str:
+            mode_str = "WFM"
+        elif "FM" in mode_str:
+            mode_str = "NFM"
+        elif "RAW" in mode_str:
+            mode_str = "AM"
 
+        # 2. EVALUATE BEFORE ASSIGNMENT: Define change state tracker
+        mode_changed = (mode_str != getattr(self, 'current_mode', ''))
         self.current_mode = mode_str
 
-        # If a specific layout row click target is requested, use it
+        # 3. Reclaim live bandwidth state safely
         if passband_hz > 0:
             self.current_filter_width = passband_hz
         else:
-            # Otherwise, read our tracking cache variable. Because we populated it
-            # at the exact millisecond of connection, it will accurately be 3950!
             passband_hz = getattr(self, 'current_filter_width', 3950)
 
-        # Always send the full command to prevent SDR++ from falling back internally
+        # 4. Format and dispatch standard Hamlib payload
         command = f"M {mode_str} {passband_hz}\n"
         try:
             self.sock.setblocking(True)
             self.sock.sendall(command.encode('utf-8'))
             self.sock.recv(1024)  # Flush standard acknowledgement response ("RPRT 0\n")
+
+            # 5. EXECUTE CALLBACK: Notify the UI layer immediately on success
+            if mode_changed and hasattr(self, 'on_mode_change_primary') and self.on_mode_change_primary:
+                self.on_mode_change_primary(mode_str)
+            if mode_changed and hasattr(self, 'on_mode_change_secondary') and self.on_mode_change_secondary:
+                self.on_mode_change_secondary(mode_str)
+
         except socket.error:
             self._handle_unexpected_disconnect()
-
 
     def get_filter_width_hz(self) -> int:
         """Fetches the live active filter width tracking variable from the radio safely."""
@@ -495,6 +505,7 @@ class SDRPlusPlusController:
                 if freq_resp.isdigit() and int(freq_resp) != self.current_frequency:
                     self.current_frequency = int(freq_resp)
                     if self.on_frequency_change_primary: self.on_frequency_change_primary(self.current_frequency)
+                    if self.on_frequency_change_secondary: self.on_frequency_change_secondary(self.current_frequency)
 
                 # 2. Sync VFO Mode and Dynamic Bandwidth (Passive Read Only)
                 self.sock.sendall(b'm\n')
@@ -516,6 +527,7 @@ class SDRPlusPlusController:
                     if mapped_mode != self.current_mode:
                         self.current_mode = mapped_mode
                         if self.on_mode_change_primary: self.on_mode_change_primary(mapped_mode)
+                        if self.on_mode_change_secondary: self.on_mode_change_secondary(mapped_mode)
                         state_changed = True
 
                     if live_bandwidth is not None and live_bandwidth != self.current_filter_width:
