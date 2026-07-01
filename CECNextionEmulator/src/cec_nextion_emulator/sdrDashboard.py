@@ -111,7 +111,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 style="RedLED.TLabel",
                 takefocus=False)
             self.linkStatus_VAR.set('Disconnected')
-            self.reconnect_Button.state(['normal'])
+            self.reconnect_Button.configure(state='normal')
+            # self.reconnect_Button.state(['normal'])
 
 
 
