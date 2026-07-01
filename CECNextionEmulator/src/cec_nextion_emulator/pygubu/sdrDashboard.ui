@@ -209,6 +209,7 @@
                     <property name="font">TkFixedFont</property>
                     <property name="style">Heading4.TLabel</property>
                     <property name="text" translatable="yes">50%</property>
+                    <property name="width">6</property>
                     <layout manager="pack">
                       <property name="side">left</property>
                     </layout>
@@ -219,6 +220,7 @@
                     <property name="command" type="command" cbtype="simple">action_toggle_mute</property>
                     <property name="style">Button3Sunken.TButton</property>
                     <property name="text" translatable="yes">🔊 Mute Audio</property>
+                    <property name="width">12</property>
                     <layout manager="pack">
                       <property name="padx">10</property>
                       <property name="side">left</property>

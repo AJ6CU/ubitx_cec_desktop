@@ -135,11 +135,12 @@ class sdrDashboardUI(ttk.Frame):
         self.label_volume_val.configure(
             font="TkFixedFont",
             style="Heading4.TLabel",
-            text='50%')
+            text='50%',
+            width=6)
         self.label_volume_val.pack(side="left")
         self.button_mute_toggle = ttk.Button(frame5, name="button_mute_toggle")
         self.button_mute_toggle.configure(
-            style="Button3Sunken.TButton", text='🔊 Mute Audio')
+            style="Button3Sunken.TButton", text='🔊 Mute Audio', width=12)
         self.button_mute_toggle.pack(padx=10, side="left")
         self.button_mute_toggle.configure(command=self.action_toggle_mute)
         frame5.pack(anchor="center", expand=True, fill="x", pady=5, side="top")
