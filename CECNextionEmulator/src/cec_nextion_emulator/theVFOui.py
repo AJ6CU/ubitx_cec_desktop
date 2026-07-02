@@ -95,7 +95,7 @@ class theVFOUI(ttk.Frame):
         self.stop_Button_Tooltip.configure(
             padx=8,
             relief="raised",
-            text='Click this button to stop transmitting',
+            text='Click this button disables TX. You can use this to test CW sending.',
             wraplength=300)
         self.stop_Button.grid(column=1, padx="20 10", row=0, rowspan=2)
         self.stop_Button.configure(command=self.stop_CB)

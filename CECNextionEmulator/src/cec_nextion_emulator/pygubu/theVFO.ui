@@ -106,7 +106,7 @@
                   <object class="pygubu.widgets.Tooltip" id="stop_Button_Tooltip" named="True">
                     <property name="padx">8</property>
                     <property name="relief">raised</property>
-                    <property name="text" translatable="yes">Click this button to stop transmitting</property>
+                    <property name="text" translatable="yes">Click this button disables TX. You can use this to test CW sending.</property>
                     <property name="wraplength">300</property>
                   </object>
                 </child>
