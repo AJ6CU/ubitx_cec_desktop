@@ -91,11 +91,11 @@
               <object class="ttk.Button" id="stop_Button" named="True">
                 <property name="command" type="command" cbtype="simple">stop_CB</property>
                 <property name="state">normal</property>
-                <property name="style">RedButton2.TButton</property>
-                <property name="text" translatable="yes">
-STOP!
-</property>
-                <property name="width">6</property>
+                <property name="style">Button2b.TButton</property>
+                <property name="text" translatable="yes">Disable
+    TX</property>
+                <property name="textvariable">string:stop_Button_VAR</property>
+                <property name="width">8</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">20 10</property>

@@ -312,20 +312,27 @@ class theVFO(baseui.theVFOUI):
     #
     #   External routines to set states of Buttons
     #
-    def settoggleStopButtonState(self):
+    def toggleStopButtonState(self):
         if (self.stop_Button_On):
             self.stop_Button_On = False
             self.stop_Button.configure(style='Button2b.TButton', state="normal")
+            self.stop_Button_VAR.set("Disable\n    TX")
         else:
             self.stop_Button_On = True
             self.stop_Button.configure(style='RedButton2b.TButton', state="pressed")
+            self.stop_Button_VAR.set("     TX\nDisabled")
 
     def setRXButtonState(self):
         self.tx_Status_Light_Label.configure(state="disabled")
         self.rx_Status_Light_Label.configure(state="normal")
+
     def setTXButtonState(self):
-        self.tx_Status_Light_Label.configure(state="normal")
-        self.rx_Status_Light_Label.configure(state="disabled")
+        if self.stop_Button_On:
+            self.tx_Status_Light_Label.configure(state="disabled")
+            self.rx_Status_Light_Label.configure(state="normal")
+        else:
+            self.tx_Status_Light_Label.configure(state="normal")
+            self.rx_Status_Light_Label.configure(state="disabled")
     #
     #   External routine to enable/disable UX control
     #
@@ -453,9 +460,8 @@ class theVFO(baseui.theVFOUI):
 
     #   ****Start Callbacks****
     def stop_CB(self):
-        print("please implement the stop function")
-        if self.mainWindow.theSDR is not None:
-            self.mainWindow.theSDR.startSDR()
+        self.theRadio.Toggle_Stop()
+
 
     #
     #   When the tuning_Multiplier is clicked, it cycles through the digits in the VFO to allow them to be

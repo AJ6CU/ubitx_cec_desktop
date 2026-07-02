@@ -84,11 +84,13 @@ class theVFOUI(ttk.Frame):
         self.tx_Status_Light_Label.grid(column=0, pady=15, row=1)
         self.stop_Button = ttk.Button(
             self.rxTX_Status_Frame, name="stop_button")
+        self.stop_Button_VAR = tk.StringVar(value='Disable\n    TX')
         self.stop_Button.configure(
             state="normal",
-            style="RedButton2.TButton",
-            text='\nSTOP!\n',
-            width=6)
+            style="Button2b.TButton",
+            text='Disable\n    TX',
+            textvariable=self.stop_Button_VAR,
+            width=8)
         self.stop_Button_Tooltip = Tooltip(self.stop_Button)
         self.stop_Button_Tooltip.configure(
             padx=8,

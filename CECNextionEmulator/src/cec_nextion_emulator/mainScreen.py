@@ -550,8 +550,6 @@ class mainScreen(baseui.mainScreenUI):
     def speaker_CB(self):           # Inform Radio that a request was made to mute speaker
         self.theRadio.Toggle_Speaker()
 
-    def stop_CB(self):
-        self.theRadio.Toggle_Stop()
 
     def split_CB(self):
         self.theRadio.Toggle_Split()
