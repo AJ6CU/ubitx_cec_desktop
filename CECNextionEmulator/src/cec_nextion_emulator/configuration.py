@@ -24,6 +24,7 @@ class ConfigurationManager:
         self.lock = threading.Lock()  # Thread-safe wrapper preventing race conditions
         self.loadConfig()
 
+
     def loadConfig(self):
         """Loads configuration from disk, falling back to Python dictionary defaults if missing/corrupt."""
         if os.path.exists(self.configuration_file):
@@ -70,23 +71,6 @@ class ConfigurationManager:
         if configParameter in self.observers:
             for observerMethod in self.observers[configParameter]:
                 observerMethod(value)
-    #
-    #
-    # def get(self, key, fallback=None):
-    #     """
-    #     Safely fetches an item from the configuration memory array.
-    #     Returns the specified fallback if the requested key does not exist.
-    #     """
-    #     return self.config_data.get(key, fallback)
-    #
-    #
-    # def set(self, key, value):
-    #     """
-    #     Updates an app profile configuration parameter and immediately
-    #     commits the update to disk cleanly.
-    #     """
-    #     self.config_data[key] = value
-    #     self.saveConfig()  # Automatically triggers disk synchronization on value change
 
     def distributeConfigData(self):
         gv.NUMBER_DELIMITER = self.get_NUMBER_DELIMITER()
@@ -163,8 +147,6 @@ class ConfigurationManager:
     def set_MCU_Read_Wait_Period(self, value):
         self.config_data["MCU Read Wait Period"] = value
         self.saveConfig()
-
-        "PWR SWR"
 
     def get_PWR_SWR_Switch(self):
         if "PWR SWR" in self.config_data:
@@ -309,6 +291,38 @@ class ConfigurationManager:
         self.config_data["DSP"] = value
         self.saveConfig()
 
+    def get_SDR_Switch(self) -> bool:
+        """Fetches target system communication network socket connector port."""
+        return self.config_data.get("SDR", False)
+
+    def set_SDR_Switch(self, switch: bool):
+        """Sets target transceiver communications loop connector port and notifies observers."""
+        self.config_data["SDR"] = switch
+        self.saveConfig()
+        # self._notify_observers("Radio Port", port_val)
+
+    def get_SDR_Software(self) -> str:
+        """Fetches target system communication network socket connector port."""
+        return self.config_data.get("SDR Software", "sdr++")
+
+    def set_SDR_Software(self, sdr_software: str):
+        """Sets target transceiver communications loop connector port and notifies observers."""
+        self.config_data["SDR Software"] = sdr_software
+        self.saveConfig()
+        # self._notify_observers("Radio Port", port_val)
+
+    def get_SDR_Autostart(self) -> bool:
+        """Fetches target system communication network socket connector port."""
+        return self.config_data.get("SDR Autostart", True)
+
+
+    def set_SDR_Autostart(self, autostart: bool):
+        """Sets target transceiver communications loop connector port and notifies observers."""
+        self.config_data["SDR Autostart"] = autostart
+        self.saveConfig()
+        # self._notify_observers("Radio Port", port_val)
+
+
     def get_Logbook_Switch(self):
         if "Logbook Switch" in self.config_data:
             return self.config_data["Logbook Switch"]
@@ -404,7 +418,7 @@ class ConfigurationManager:
 
     def get_last_active_frequency(self) -> int:
         """Fetches the previous successful runtime operational base tracking frequency."""
-        return int(self.config_data.get("Last Active Frequency", 100100000))
+        return int(self.config_data.get("Last Active Frequency", 14032000))
 
     def set_last_active_frequency(self, freq_hz: int):
         """Saves current dial frequency parameter coordinates across sessions."""
@@ -413,8 +427,10 @@ class ConfigurationManager:
         self._notify_observers("Last Active Frequency", freq_hz)
 
     def get_scan_channels_registry(self) -> dict:
+        print("getting scan channels registry")
         """Extracts the entire multi-bank scanner registry stack."""
         data = self.config_data.get("Scan Channels Registry Queue", {})
+        print(data)
         return data if isinstance(data, dict) else {"DEFAULT SET": []}
 
     def set_scan_channels_registry(self, registry_dict: dict):
@@ -433,9 +449,25 @@ class ConfigurationManager:
         self.saveConfig()
         self._notify_observers("SDR Filter Width HZ", width_hz)
 
+    def get_sdr_cw_filter_default_hz(self):
+        return int(self.config_data.get("SDR CW Width HZ", 499))
+
+    def set_sdr_cw_filter_default_hz(self, width_hz: int):
+        """Commits software intermediate-frequency bandwidth limits to memory."""
+        self.config_data["SDR CW Width HZ"] = int(width_hz)
+        self.saveConfig()
+
+    def get_sdr_ssb_filter_default_hz(self):
+        return int(self.config_data.get("SDR SSB Width HZ", 2699))
+
+    def set_sdr_ssb_filter_default_hz(self, width_hz: int):
+        """Commits software intermediate-frequency bandwidth limits to memory."""
+        self.config_data["SDR SSB Width HZ"] = int(width_hz)
+        self.saveConfig()
+
     def get_sdr_current_mode(self) -> str:
         """Fetches current modulation footprint identifier selection tag."""
-        return str(self.config_data.get("SDR Current Mode", "WFM"))
+        return str(self.config_data.get("SDR Current Mode", "USB"))
 
     def set_sdr_current_mode(self, mode_str: str):
         """Updates internal modulation type selection mapping criteria profiles."""

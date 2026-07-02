@@ -577,11 +577,18 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if not self.sdr.is_connected: return
         self.sdr.narrow()
 
-    # def action_filter_reset(self):
-    #     if not self.sdr.is_connected: return
-    #     mode = self.sdr.current_mode
-    #     fallbacks = self.sdr.get_all_mode_fallbacks()
-    #     self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
+    def action_filter_reset(self):
+        print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
+        if not self.sdr.is_connected: return
+        mode = self.sdr.current_mode
+        if mode == "LSB" or mode == "USB":
+            self.sdr.set_filter_width_hz(gv.config.get_sdr_ssb_filter_default_hz())
+        elif mode == "CW" or mode == "CWU" or mode == "CWL":
+            self.sdr.set_filter_width_hz(gv.config.get_sdr_cw_filter_default_hz())
+        else:
+            print("filter reset, mode=", mode)
+            fallbacks = self.sdr.get_all_mode_fallbacks()
+            self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
 
     def setAccordionState(self, content_frame, thebutton, frameState):
         parent_frame = content_frame.master

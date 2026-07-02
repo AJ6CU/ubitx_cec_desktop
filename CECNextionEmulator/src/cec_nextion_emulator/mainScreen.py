@@ -996,7 +996,9 @@ class mainScreen(baseui.mainScreenUI):
             #   Stop SDR if it exists
             #
             if self.theSDR is not None:
+                self.theSDR.stop_scan()
                 self.theSDR.stopSDR()
+
 
             if gv.config.get_PWR_SWR_Switch() == "True":            # If PWR/SWR Switch is off display nothing
                 self.SWR_PWR_Frame.grid()

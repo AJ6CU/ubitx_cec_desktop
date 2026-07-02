@@ -136,10 +136,11 @@ class settingsSDRUI(ttk.Labelframe):
             column=0, padx="10 5", pady=5, row=0, sticky="w")
         self.sdrSoftware_Menubutton = ttk.Menubutton(
             self.sdrSoftwareSelection_Frame, name="sdrsoftware_menubutton")
+        self.SDR_Software_VAR = tk.StringVar()
         self.sdrSoftware_Menubutton.configure(
             style="Heading0.TMenubutton",
             takefocus=True,
-            textvariable=self.SDR_Enable_VAR,
+            textvariable=self.SDR_Software_VAR,
             width=5)
         self.sdrSoftware_Menu = tk.Menu(
             self.sdrSoftware_Menubutton,
@@ -151,24 +152,20 @@ class settingsSDRUI(ttk.Labelframe):
             font="{Arial} 24 {}",
             label='sdr++',
             state="normal")
-        self.sdrSoftware_Menu.add(
-            "command",
-            command=self.selectSDROther_CB,
-            font="{Arial} 24 {}",
-            label='Other',
-            state="normal")
         self.sdrSoftware_Menubutton.configure(menu=self.sdrSoftware_Menu)
         self.sdrSoftware_Menubutton.grid(column=1, padx="43 10", pady=5, row=0)
-        self.autostart_Checkbox = ttk.Checkbutton(
-            self.sdrSoftwareSelection_Frame, name="autostart_checkbox")
+        self.autostartSDR_Checkbox = ttk.Checkbutton(
+            self.sdrSoftwareSelection_Frame, name="autostartsdr_checkbox")
         self.autostartSDR_VAR = tk.StringVar()
-        self.autostart_Checkbox.configure(
+        self.autostartSDR_Checkbox.configure(
+            cursor="based_arrow_down",
             offvalue=False,
             onvalue=True,
             style="Checkbox1b.TCheckbutton",
             text='Autostart',
             variable=self.autostartSDR_VAR)
-        self.autostart_Checkbox.grid(column=2, padx="75 0", row=0)
+        self.autostartSDR_Checkbox.grid(column=2, padx="75 0", row=0)
+        self.autostartSDR_Checkbox.configure(command=self.autostartSDR_CB)
         self.sdrSoftwareSelection_Frame.grid(
             column=0, columnspan=2, padx=10, pady=10, row=1, sticky="ew")
         self.SDR_Frame.grid(column=0, columnspan=2, row=0, sticky="ew")
@@ -231,14 +228,14 @@ class settingsSDRUI(ttk.Labelframe):
             wraplength=300)
         self.ipAddress_Entry = ttk.Entry(
             self.address_Frame, name="ipaddress_entry")
-        self.PWR_Factor_VAR = tk.StringVar(value='127.0.0.1')
+        self.networkAddress_VAR = tk.StringVar(value='999.9.9.9')
         self.ipAddress_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
-            textvariable=self.PWR_Factor_VAR,
+            textvariable=self.networkAddress_VAR,
             width=8)
-        _text_ = '127.0.0.1'
+        _text_ = '999.9.9.9'
         self.ipAddress_Entry.delete("0", "end")
         self.ipAddress_Entry.insert("0", _text_)
         self.ipAddress_Entry.pack()
@@ -261,94 +258,148 @@ class settingsSDRUI(ttk.Labelframe):
             text='Check SDR++ Module Manager/Rigel Server entry. Typically 4532 or perhaps 4533.',
             wraplength=300)
         self.port_Entry = ttk.Entry(self.address_Frame, name="port_entry")
-        self.SWR_Factor_VAR = tk.StringVar(value='4532')
+        self.networkPort_VAR = tk.StringVar(value='4532')
         self.port_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
-            textvariable=self.SWR_Factor_VAR,
+            textvariable=self.networkPort_VAR,
             width=5)
         _text_ = '4532'
         self.port_Entry.delete("0", "end")
         self.port_Entry.insert("0", _text_)
         self.port_Entry.pack()
         self.address_Frame.grid(padx=200, pady=20, row=1)
-        self.test_Frame = ttk.Frame(self.SDR_Network_Frame, name="test_frame")
-        self.test_Frame.configure(height=200, style="Normal.TFrame", width=200)
-        self.test_Button = ttk.Button(self.test_Frame, name="test_button")
-        self.testButton_CB = tk.StringVar(value='Test SDR\n  Startup')
-        self.test_Button.configure(
-            compound="top",
-            style="Button1bARaised.TButton",
-            text='Test SDR\n  Startup',
-            textvariable=self.testButton_CB)
-        self.test_Button.grid(column=0, padx="100 20", row=0)
-        self.test_Button.configure(command=self.sdrTest_CB)
-        self.testMessage_Label = ttk.Label(
-            self.test_Frame, name="testmessage_label")
-        self.testMessage_VAR = tk.StringVar(value='Success!')
-        self.testMessage_Label.configure(
-            style="Heading2bi.TLabel",
-            text='Success!',
-            textvariable=self.testMessage_VAR)
-        self.testMessage_Label.grid(column=1, row=0)
-        self.test_Frame.grid(column=0, padx=30, pady=20, row=2)
         self.SDR_Network_Frame.grid(
             column=0,
             columnspan=2,
             pady="10 0",
             row=2,
             sticky="ew")
-        self.SDR_Options_Frame = ttk.Frame(frame1, name="sdr_options_frame")
-        self.SDR_Options_Frame.configure(
+        self.defaultBandwidth_Frame = ttk.Frame(
+            frame1, name="defaultbandwidth_frame")
+        self.defaultBandwidth_Frame.configure(
             height=200, style="NormalOutline.TFrame", width=200)
-        self.sdrOptionsHeading_Label = ttk.Frame(
-            self.SDR_Options_Frame, name="sdroptionsheading_label")
-        self.sdrOptionsHeading_Label.configure(
-            height=200, style="Normal.TFrame", width=200)
-        self.sdrOptions_Label = ttk.Label(
-            self.sdrOptionsHeading_Label,
-            name="sdroptions_label")
-        self.sdrOptions_Label.configure(
-            state="disabled",
-            style="Heading1b.TLabel",
-            text='SDR Options')
-        self.tooltip6 = Tooltip(self.sdrOptions_Label)
+        self.defaultBandwidth_Title_Label = ttk.Label(
+            self.defaultBandwidth_Frame, name="defaultbandwidth_title_label")
+        self.defaultBandwidth_Title_Label.configure(
+            state="disabled", style="Heading1b.TLabel", text='Default Bandwidth')
+        self.tooltip11 = Tooltip(self.defaultBandwidth_Title_Label)
+        self.tooltip11.configure(
+            padx=8,
+            relief="raised",
+            text='Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server',
+            wraplength=300)
+        self.defaultBandwidth_Title_Label.pack(
+            anchor="w", padx=10, pady=10, side="top")
+        self.tooltip6 = Tooltip(self.defaultBandwidth_Frame)
         self.tooltip6.configure(
             padx=8,
             relief="raised",
             text='Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server',
             wraplength=300)
-        self.sdrOptions_Label.pack(anchor="w", side="top")
-        self.button1 = ttk.Button(self.sdrOptionsHeading_Label, name="button1")
-        self.button1.configure(
+        self.cwBandwidth_Frame = ttk.Frame(
+            self.defaultBandwidth_Frame,
+            name="cwbandwidth_frame")
+        self.cwBandwidth_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.cwDefaultBandwidth_Label = ttk.Label(
+            self.cwBandwidth_Frame, name="cwdefaultbandwidth_label")
+        self.cwDefaultBandwidth_Label.configure(
+            state="disabled", style="Heading1b.TLabel", text='CW')
+        self.tooltip9 = Tooltip(self.cwDefaultBandwidth_Label)
+        self.tooltip9.configure(
+            padx=8,
+            relief="raised",
+            text='Sets the default bandwidth for CW on the SDR when you hit the Reset button',
+            wraplength=300)
+        self.cwDefaultBandwidth_Label.pack(padx=10, side="left")
+        self.cwDefault_Spinbox = ttk.Spinbox(
+            self.cwBandwidth_Frame, name="cwdefault_spinbox")
+        self.cwDefault_VAR = tk.StringVar(value='500')
+        self.cwDefault_Spinbox.configure(
+            font="{Arial} 24 {}",
+            from_=200,
+            increment=50,
+            justify="right",
+            style="Custom.TSpinbox",
+            textvariable=self.cwDefault_VAR,
+            to=500,
+            width=6)
+        _text_ = '500'
+        self.cwDefault_Spinbox.delete("0", "end")
+        self.cwDefault_Spinbox.insert("0", _text_)
+        self.cwDefault_Spinbox.pack(side="top")
+        self.cwDefault_Spinbox.configure(command=self.cwDefault_CB)
+        self.cwBandwidth_Frame.pack(
+            anchor="center", padx=40, pady="0 10", side="left")
+        self.ssbBandwidthFrame = ttk.Frame(
+            self.defaultBandwidth_Frame,
+            name="ssbbandwidthframe")
+        self.ssbBandwidthFrame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.ssb_DefaultBandwidth_Label = ttk.Label(
+            self.ssbBandwidthFrame, name="ssb_defaultbandwidth_label")
+        self.ssb_DefaultBandwidth_Label.configure(
+            state="disabled", style="Heading1b.TLabel", text='SSB')
+        self.tooltip10 = Tooltip(self.ssb_DefaultBandwidth_Label)
+        self.tooltip10.configure(
+            padx=8,
+            relief="raised",
+            text='Sets the default bandwidth for SSB on the SDR when you hit the Reset button',
+            wraplength=300)
+        self.ssb_DefaultBandwidth_Label.pack(padx=10, side="left")
+        self.ssbDefault_Spinbox = ttk.Spinbox(
+            self.ssbBandwidthFrame, name="ssbdefault_spinbox")
+        self.ssbDefault_VAR = tk.StringVar(value='2600')
+        self.ssbDefault_Spinbox.configure(
+            font="{Arial} 24 {}",
+            from_=2000,
+            increment=100,
+            justify="right",
+            style="Custom.TSpinbox",
+            textvariable=self.ssbDefault_VAR,
+            to=3200,
+            width=6)
+        _text_ = '2600'
+        self.ssbDefault_Spinbox.delete("0", "end")
+        self.ssbDefault_Spinbox.insert("0", _text_)
+        self.ssbDefault_Spinbox.pack(side="top")
+        self.ssbDefault_Spinbox.configure(command=self.ssbDefault_CB)
+        self.ssbBandwidthFrame.pack(anchor="center", pady="0 20", side="left")
+        self.defaultBandwidth_Frame.grid(
+            column=0, columnspan=2, padx=0, pady=10, row=4, sticky="ew")
+        self.exportChannels_Frame = ttk.Frame(
+            frame1, name="exportchannels_frame")
+        self.exportChannels_Frame.configure(
+            height=200, style="NormalOutline.TFrame", width=200)
+        self.exportEEPROMChannels_Label = ttk.Label(
+            self.exportChannels_Frame, name="exporteepromchannels_label")
+        self.exportEEPROMChannels_Label.configure(
+            state="disabled",
+            style="Heading1b.TLabel",
+            text='Export EEPROM Channels')
+        self.tooltip5 = Tooltip(self.exportEEPROMChannels_Label)
+        self.tooltip5.configure(
+            padx=8,
+            relief="raised",
+            text='Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server',
+            wraplength=300)
+        self.exportEEPROMChannels_Label.pack(padx=10, pady=10, side="left")
+        self.exportEEPROMChannels_Button = ttk.Button(
+            self.exportChannels_Frame, name="exporteepromchannels_button")
+        self.testButton_CB = tk.StringVar(value='Export')
+        self.exportEEPROMChannels_Button.configure(
             compound="top",
             style="Button1bARaised.TButton",
-            text='Default Filter\nBandwidth',
-            width=11)
-        self.button1.pack(padx="30 0", pady=10, side="left")
-        self.button1.configure(command=self.sdrTest_CB)
-        self.button2 = ttk.Button(self.sdrOptionsHeading_Label, name="button2")
-        self.button2.configure(
-            compound="top",
-            style="Button1bARaised.TButton",
-            text='Channel and\nNote Files',
-            width=11)
-        self.button2.pack(padx="20 0", pady=10, side="left")
-        self.button2.configure(command=self.sdrTest_CB)
-        self.button3 = ttk.Button(self.sdrOptionsHeading_Label, name="button3")
-        self.button3.configure(
-            compound="top",
-            style="Button1bARaised.TButton",
-            text='Channel\nManager',
+            text='Export',
             textvariable=self.testButton_CB,
             width=11)
-        self.button3.pack(padx="20 0", pady=10, side="left")
-        self.button3.configure(command=self.sdrTest_CB)
-        self.sdrOptionsHeading_Label.grid(
-            column=0, columnspan=2, padx=10, pady=10, row=0, sticky="w")
-        self.SDR_Options_Frame.grid(
-            column=0, columnspan=2, pady=10, row=4, sticky="ew")
+        self.exportEEPROMChannels_Button.pack(pady=10, side="top")
+        self.exportEEPROMChannels_Button.configure(
+            command=self.exportEEPROMChannels_CB)
+        self.exportChannels_Frame.grid(
+            column=0, columnspan=2, pady=10, row=5, sticky="ew")
         frame1.pack(
             anchor="center",
             expand=True,
@@ -407,10 +458,16 @@ class settingsSDRUI(ttk.Labelframe):
     def selectSDRPlusPlus_CB(self):
         pass
 
-    def selectSDROther_CB(self):
+    def autostartSDR_CB(self):
         pass
 
-    def sdrTest_CB(self):
+    def cwDefault_CB(self):
+        pass
+
+    def ssbDefault_CB(self):
+        pass
+
+    def exportEEPROMChannels_CB(self):
         pass
 
     def apply_CB(self):

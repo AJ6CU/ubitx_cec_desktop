@@ -43,6 +43,12 @@ class SDRPlusPlusController:
 
         # Mutatable Fallback Dictionary Registry
         self.DEFAULT_FILTER_FALLBACKS = dict(self.FACTORY_DEFAULTS)
+        self.DEFAULT_FILTER_FALLBACKS["CW"] = gv.config.get_sdr_cw_filter_default_hz()
+        self.DEFAULT_FILTER_FALLBACKS["CW_L"] = gv.config.get_sdr_cw_filter_default_hz()
+        self.DEFAULT_FILTER_FALLBACKS["CW_U"] = gv.config.get_sdr_cw_filter_default_hz()
+
+        self.DEFAULT_FILTER_FALLBACKS["USB"] = gv.config.get_sdr_ssb_filter_default_hz()
+        self.DEFAULT_FILTER_FALLBACKS["LSB"] = gv.config.get_sdr_ssb_filter_default_hz()
 
         # Managed Scan Array targeting active subset pointer
         self.scan_channels: List[Dict[str, Union[int, str]]] = []
