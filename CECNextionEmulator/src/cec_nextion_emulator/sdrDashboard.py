@@ -39,6 +39,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
         # 
         # self.treeChannels = self.builder.get_object("treeChannels")
         # self.treeScrollbar = self.builder.get_object("treeScrollbar")
+        gv.config.register_observer("Radio IP", self.updateIPAddress )
+        gv.config.register_observer("Radio Port", self.updatePort)
 
         self.treeChannels["columns"] = ('label','frequency', 'mode', 'description')
         # self.treeChannels.config(show='headings')
@@ -69,7 +71,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.pre_mute_volume = gv.config.get_audio_gain_level()
 
         # Seed initialization field parameters
-        self.entry_scan_time.insert(0, str(gv.config.get_scan_station_time_ms()))
+        self.entry_scan_time.insert(0, str(gv.config.get_Scan_On_Station_Time()))
+        # self.entry_scan_time.insert(0, str(gv.config.get_scan_station_time_ms()))
         self.sdrIPAddress_VAR.set(str(gv.config.get_sdr_server_ip()))
         self.sdrPortNumber_VAR.set(str(gv.config.get_sdr_tcp_port()))
         self.volume_scale.set(self.pre_mute_volume)
@@ -93,7 +96,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.update_smeter_loop()
         self.sourceBank_Combobox.set("DEFAULT SET")
 
-        if self.sdr.connect():
+        if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
             self.linkStatus_Label.configure(
                 style="GreenLED.TLabel",
                 takefocus=False)
@@ -115,7 +118,11 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.pack(expand=tk.YES, fill=tk.BOTH)
         self.sdr.startSDR()
 
+    def updateIPAddress (self, newIPAddress):
+        self.sdrIPAddress_VAR.set(newIPAddress)
 
+    def updatePort(self, newPort):
+        self.sdrPortNumber_VAR.set(newPort)
 
 
 
@@ -131,7 +138,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
 
     def update_mode_telemetry(self, mode_str):
-        print("update_mode_telemetry", mode_str)
+        # print("update_mode_telemetry", mode_str)
         self.label_val_mode.config(text=str(mode_str).upper())
         if mode_str.lower() == 'cw':
             self.showModeButtonPressed("modeCWU_Button")
@@ -199,10 +206,20 @@ class sdrDashboard(baseui.sdrDashboardUI):
         gv.config.set_sdr_tcp_port(int(self.sdrPortNumber_VAR.get().strip()))
         # gv.config.set_sdr_server_ip(self.entry_radio_ip.get().strip())
         # gv.config.set_sdr_tcp_port(int(self.entry_radio_port.get().strip()))
-        if self.sdr.connect():
-            messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.")
+        if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
+            messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.", parent=self)
+            self.linkStatus_Label.configure(
+                style="GreenLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Connected')
+            self.reconnect_Button.state(['disabled'])
         else:
-            messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.")
+            messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.", parent=self)
+            self.linkStatus_Label.configure(
+                style="RedLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Disconnected')
+            self.reconnect_Button.configure(state='normal')
 
 
 
@@ -279,14 +296,15 @@ class sdrDashboard(baseui.sdrDashboardUI):
     def action_capture_live_vfo_to_channel(self):
         """Grabs current live frequency, mode, and filter bandwidth straight into active memory structures."""
         if not self.sdr.is_connected:
-            messagebox.showwarning("Offline", "Please connect to the SDR++ hardware rig first.")
+            messagebox.showwarning("Offline", "Please connect to the SDR++ hardware rig first.", parent=self)
             return
 
         label_text = self.newChannel_Label.get().strip()
         desc_text = self.customStationName_Entry.get().strip()
 
         if not label_text:
-            messagebox.showwarning("Missing Input", "Please supply a short Channel Label identifier (e.g., WX1).")
+            messagebox.showwarning("Missing Input", "Please supply a short Channel Label identifier (e.g., WX1).", parent=self)
+            return
             return
 
         # Fetch telemetry snapshot keys from active UI layer memory cache pools
@@ -304,7 +322,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
             self.refresh_listbox_view()
             messagebox.showinfo("Stored",
-                                f"Saved {label_text} at {(float(live_freq_hz) / 1000000):.3f} MHz to active bank.")
+                                f"Saved {label_text} at {(float(live_freq_hz) / 1000000):.3f} MHz to active bank.", parent=self)
 
     def action_filter_search_grid(self, event=None):
         """Real-time string matching lookup filtering grid rows instantly by label text or station descriptions."""
@@ -341,7 +359,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if not cleaned_name: return
 
         if cleaned_name in self.sdr.scan_sets_dict:
-            messagebox.showwarning("Conflict", f"A bank profile named '{cleaned_name}' already exists.")
+            messagebox.showwarning("Conflict", f"A bank profile named '{cleaned_name}' already exists.", parent=self)
             return
 
         self.sdr.scan_sets_dict[cleaned_name] = []
@@ -351,7 +369,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.refresh_listbox_view()
         self.sourceBank_Combobox.set(cleaned_name)
         self.targetBank_Combobox.set(cleaned_name)
-        messagebox.showinfo("Success", f"The new channel bank profile '{cleaned_name}' is active and ready.")
+        messagebox.showinfo("Success", f"The new channel bank profile '{cleaned_name}' is active and ready.", parent=self)
 
     def action_on_set_dropdown_change(self, event=None):
         selected_set = self.sourceBank_Combobox.get().strip()
@@ -363,12 +381,12 @@ class sdrDashboard(baseui.sdrDashboardUI):
         """Copies highlighted single row item instantly into target dropdown selector destination bank."""
         selected = self.treeChannels.selection()
         if not selected:
-            messagebox.showwarning("Selection Required", "Please click a channel row from the grid first.")
+            messagebox.showwarning("Selection Required", "Please click a channel row from the grid first.", parent=self)
             return
 
         target_bank = self.targetBank_Combobox.get().strip()
         if not target_bank or target_bank not in self.sdr.scan_sets_dict:
-            messagebox.showwarning("Invalid Target", "Please pick a valid Target Bank profile from the dropdown.")
+            messagebox.showwarning("Invalid Target", "Please pick a valid Target Bank profile from the dropdown.", parent=self)
             return
 
         lbl_target = self.treeChannels.item(selected, option="values")[0]
@@ -384,7 +402,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
                                                     c.get('label') != lbl_target]
             self.sdr.scan_sets_dict[target_bank].append(matched_ch)
             self.sdr._save_all_channels_to_json()
-            messagebox.showinfo("Linked", f"Successfully duplicated entry '{lbl_target}' into bank '{target_bank}'.")
+            messagebox.showinfo("Linked", f"Successfully duplicated entry '{lbl_target}' into bank '{target_bank}'.",
+                                    parent=self)
 
     def action_bulk_clone_source_to_target(self):
         """Deep-copies ALL channel rows from current source dropdown directly into target bank menu selection."""
@@ -392,18 +411,19 @@ class sdrDashboard(baseui.sdrDashboardUI):
         target_bank = self.targetBank_Combobox.get().strip()
 
         if not source_bank or source_bank not in self.sdr.scan_sets_dict:
-            messagebox.showwarning("Selection Required", "Please choose a valid Source Bank View to copy from.")
+            messagebox.showwarning("Selection Required", "Please choose a valid Source Bank View to copy from.", parent=self)
             return
         if not target_bank or target_bank not in self.sdr.scan_sets_dict:
-            messagebox.showwarning("Selection Required", "Please choose a valid Target Bank Copy to populate.")
+            messagebox.showwarning("Selection Required", "Please choose a valid Target Bank Copy to populate.", parent=self)
             return
         if source_bank == target_bank:
-            messagebox.showwarning("Identical Banks", "Source and Target banks are the same. Bulk clone skipped.")
+            messagebox.showwarning("Identical Banks", "Source and Target banks are the same. Bulk clone skipped.", parent=self)
             return
 
         confirm = messagebox.askyesno(
             "Confirm Bulk Bank Copy",
-            f"Are you sure you want to copy ALL channels from bank '{source_bank}' into bank '{target_bank}'?"
+            f"Are you sure you want to copy ALL channels from bank '{source_bank}' into bank '{target_bank}'?",
+            parent=self
         )
         if not confirm: return
 
@@ -421,7 +441,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.refresh_listbox_view()
         self.sourceBank_Combobox.set(target_bank)
         self.targetBank_Combobox.set(target_bank)
-        messagebox.showinfo("Success", f"Successfully cloned all channels from '{source_bank}' into '{target_bank}'!")
+        messagebox.showinfo("Success", f"Successfully cloned all channels from '{source_bank}' into '{target_bank}'!", parent=self)
 
     def action_delete_source_bank_profile(self):
         """Permanently erases whatever profile bank is active inside the SOURCE VIEW dropdown window."""
@@ -429,18 +449,19 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         if not source_bank:
             messagebox.showwarning("Selection Required",
-                                   "Please pick a bank from the 'Source Bank View' dropdown menu to delete.")
+                                   "Please pick a bank from the 'Source Bank View' dropdown menu to delete.", parent=self)
             return
         if source_bank in ["DEFAULT SET", "DEFAULT"]:
             messagebox.showwarning("Prohibited Action",
-                                   "The core 'DEFAULT SET' repository is permanent and cannot be erased.")
+                                   "The core 'DEFAULT SET' repository is permanent and cannot be erased.", parent=self)
             return
 
         confirm = messagebox.askyesno(
             "Confirm Source Bank Erasure",
             f"CRITICAL WARNING:\n\nYou are about to permanently delete the bank channel registry: '{source_bank}'\n"
             f"This will erase this bank and ALL channels currently visible inside your grid list!\n\n"
-            f"Are you absolutely sure you want to delete this SOURCE bank?"
+            f"Are you absolutely sure you want to delete this SOURCE bank?",
+            parent=self
         )
         if not confirm: return
 
@@ -454,7 +475,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.refresh_listbox_view()
         self.sourceBank_Combobox.set(fallback_set)
         self.targetBank_Combobox.set(fallback_set)
-        messagebox.showinfo("Success", f"The Source Bank repository '{source_bank}' has been successfully erased.")
+        messagebox.showinfo("Success", f"The Source Bank repository '{source_bank}' has been successfully erased.", parent=self)
 
     def action_start_scan(self):
         try:
@@ -462,7 +483,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
             gv.config.set_scan_station_time_ms(delay)
             self.sdr.start_memory_scan(delay)
         except ValueError:
-            messagebox.showwarning("Warning", "Invalid timing threshold configuration value.")
+            messagebox.showwarning("Warning", "Invalid timing threshold configuration value", parent=self)
 
     def stop_scan(self):
         self.sdr.stop_scan()
@@ -578,7 +599,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.sdr.narrow()
 
     def action_filter_reset(self):
-        print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
+        # print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
         if not self.sdr.is_connected: return
         mode = self.sdr.current_mode
         if mode == "LSB" or mode == "USB":
@@ -586,7 +607,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         elif mode == "CW" or mode == "CWU" or mode == "CWL":
             self.sdr.set_filter_width_hz(gv.config.get_sdr_cw_filter_default_hz())
         else:
-            print("filter reset, mode=", mode)
+            # print("filter reset, mode=", mode)
             fallbacks = self.sdr.get_all_mode_fallbacks()
             self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
 

@@ -104,10 +104,12 @@ class SDRPlusPlusController:
             # Start your normal loop
             self.is_running = True
             self._tkinter_tick_loop()
-            print(f"[+] Connected to SDR++. Synchronized Live Bandwidth: {self.current_filter_width} Hz")
+            # messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.")
+            # print(f"[+] Connected to SDR++. Synchronized Live Bandwidth: {self.current_filter_width} Hz")
             return True
         except Exception as e:
-            print(f"[-] Connection initialization failed: {e}")
+            # messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.")
+            # print(f"[-] Connection initialization failed: {e}")
             self.is_connected = False
             return False
 
@@ -368,7 +370,8 @@ class SDRPlusPlusController:
     def start_memory_scan(self, delay_ms: int = None):
         """Begins scan loop, utilizing config file for delay."""
         if not self.is_connected or not self.scan_channels: return
-        self.scan_delay_ms = int(delay_ms) if delay_ms is not None else gv.config.get_scan_station_time_ms()
+        self.scan_delay_ms = int(delay_ms) if delay_ms is not None else gv.config.get_scan_station_time()
+        # self.scan_delay_ms = int(delay_ms) if delay_ms is not None else gv.config.get_scan_station_time_ms()
         self.scan_idx = 0
         self.is_scanning = True
         self._tkinter_scan_tick()

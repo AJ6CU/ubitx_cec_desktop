@@ -1,15 +1,17 @@
 # Calibrated CEC Nextion Emulator Unified Configuration Data Profile Module
 
 default_config_data = {
+    "Audio Gain Volume Level": 50,
     "CW BFO": "",
     "CW Copy VFOA to VFOB on Split": "True",
-    "CW Delay Before TX": "500",
-    "CW Delay Returning to RX": "5000",
+    "CW Delay Before TX": "250",
+    "CW Delay Returning to RX": "2000",
     "CW Key Type": "STRAIGHT",
     "CW Speed": "10",
     "CW Tone": "600",
     "Callsign": "",
-    "DSP": "True",
+    "DSP": "False",
+    "Last Active Frequency": 14032000,
     "Logbook Backup Interval": "30",
     "Logbook Location": "~",
     "Logbook Name": "uBITX_Logbook",
@@ -22,6 +24,15 @@ default_config_data = {
     "NUMBER DELIMITER": ".",
     "PWR Factor": "1.00",
     "PWR SWR": "False",
+    "Radio IP": "127.0.0.1",
+    "Radio Port": "4532",
+    "SDR": "False",
+    "SDR Autostart": 1,
+    "SDR Current Mode": "USB",
+    "SDR CW Width HZ": 500,
+    "SDR SSB Width HZ": 2600,
+    "SDR Filter Width HZ": 2600,
+    "SDR Software": "sdr++",
     "SSB BFO": "",
     "SWR Factor": "1.00",
     "Scan Channels Registry Queue": {
@@ -189,8 +200,7 @@ default_config_data = {
             "None"
         ]
     ],
-    "SDR":"False",
-    "Serial Port": "/dev/cu.usbserial-A5069RR4",
+    "Serial Port": "",
     "TXOffset": "EEPROM",
     "VFO Touch Optimized": "True",
     "Virtual Keyboard Switch": "True"

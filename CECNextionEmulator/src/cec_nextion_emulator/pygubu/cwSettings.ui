@@ -43,6 +43,16 @@
               <property name="side">top</property>
             </layout>
             <child>
+              <object class="ttk.Label" id="label1">
+                <property name="style">Heading2bi.TLabel</property>
+                <property name="text" translatable="yes">Note: These values are stored in EEPROM and are the ones that are used. The configuration file values might differ depending on whether you have backed up these values to the configuration file using the Backup settings.</property>
+                <property name="wraplength">1100</property>
+                <layout manager="pack">
+                  <property name="padx">10</property>
+                </layout>
+              </object>
+            </child>
+            <child>
               <object class="ttk.Frame" id="General_CW_Settings_Frame" named="True">
                 <property name="height">200</property>
                 <property name="style">Normal.TFrame</property>

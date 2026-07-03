@@ -306,7 +306,7 @@ class channelsUI(ttk.Labelframe):
             wraplength=300)
         self.scan_Button.grid(column=2, columnspan=2, row=0)
         self.scan_Button.configure(command=self.scan_Channel_CB)
-        self.channelEdit_Frame.pack(expand=False, pady="5 15", side="top")
+        self.channelEdit_Frame.pack(expand=False, pady="5 10", side="top")
         self.channelEdit_Frame.grid_anchor("center")
         self.closingFrame = ttk.Frame(frame3, name="closingframe")
         self.closingFrame.configure(style="Normal.TFrame")
@@ -357,9 +357,42 @@ class channelsUI(ttk.Labelframe):
             wraplength=300)
         self.close_Button.grid(column=3, row=0)
         self.close_Button.configure(command=self.close_Channel_CB)
+        self.exportChannel_Button = ttk.Button(
+            self.closingFrame, name="exportchannel_button")
+        self.exportChannel_Button.configure(
+            style="Button2b.TButton",
+            text='Export Channels to Config')
+        self.tooltip1 = Tooltip(self.exportChannel_Button)
+        self.tooltip1.configure(
+            padx=8,
+            relief="raised",
+            text='This exports channels to the Configuration file so that they can be used by the SDR for scanning.',
+            wraplength=300)
+        self.exportChannel_Button.grid(
+            column=0, columnspan=2, pady="30 0", row=1, sticky="w")
+        self.exportChannel_Button.configure(command=self.exportAllChannels_CB)
+        self.bankName_Label = ttk.Label(
+            self.closingFrame, name="bankname_label")
+        self.bankName_Label.configure(
+            style="Heading2b.TLabel", text='Bank Name:')
+        self.tooltip2 = Tooltip(self.bankName_Label)
+        self.tooltip2.configure(
+            padx=8,
+            relief="raised",
+            text='The Channels will be stored in a Bank by this name',
+            wraplength=300)
+        self.bankName_Label.grid(column=2, pady="30 0", row=1)
+        self.bankNameEntry = ttk.Entry(self.closingFrame, name="banknameentry")
+        self.bankName_VAR = tk.StringVar()
+        self.bankNameEntry.configure(
+            font="{Arial} 24 {}",
+            style="Entry2b.TEntry",
+            textvariable=self.bankName_VAR,
+            width=10)
+        self.bankNameEntry.grid(column=3, pady="30 0", row=1)
         self.closingFrame.pack(pady="30 15", side="left")
         self.closingFrame.grid_anchor("center")
-        frame3.pack(padx="75 0", side="left")
+        frame3.pack(padx="40 0", side="left")
         self.scanSettings_Frame = ttk.Frame(frame1, name="scansettings_frame")
         self.scanSettings_Frame.configure(
             height=200, style="NormalOutline.TFrame", width=200)
@@ -456,7 +489,7 @@ class channelsUI(ttk.Labelframe):
             column=1, padx="15 5", pady="40 20", row=2, sticky="w")
         self.Time_On_Freq_Spinbox.configure(
             command=self.update_Time_On_Station_CB)
-        self.scanSettings_Frame.pack(padx=5, pady="5 10", side="right")
+        self.scanSettings_Frame.pack(padx=10, pady="5 10", side="right")
         frame1.pack(expand=True, fill="both", side="top")
         self.configure(
             height=600,
@@ -483,6 +516,9 @@ class channelsUI(ttk.Labelframe):
         pass
 
     def close_Channel_CB(self):
+        pass
+
+    def exportAllChannels_CB(self):
         pass
 
     def runScan_Selection_CB(self, itemid):

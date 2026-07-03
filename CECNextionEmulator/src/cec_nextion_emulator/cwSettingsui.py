@@ -60,6 +60,12 @@ class cwSettingsUI(ttk.Labelframe):
         # First object created
         on_first_object_cb(frame1)
 
+        label1 = ttk.Label(frame1)
+        label1.configure(
+            style="Heading2bi.TLabel",
+            text='Note: These values are stored in EEPROM and are the ones that are used. The configuration file values might differ depending on whether you have backed up these values to the configuration file using the Backup settings.',
+            wraplength=1100)
+        label1.pack(padx=10)
         self.General_CW_Settings_Frame = ttk.Frame(
             frame1, name="general_cw_settings_frame")
         self.General_CW_Settings_Frame.configure(

@@ -61,10 +61,10 @@ class settingsSDR(baseui.settingsSDRUI):
 
 
     def selectSDR_On_CB(self):
-        pass
+        self.SDR_Enable_VAR.set("True")
 
     def selectSDR_Off_CB(self):
-        pass
+        self.SDR_Enable_VAR.set("False")
 
     def selectSDRPlusPlus_CB(self):
         pass
@@ -82,10 +82,31 @@ class settingsSDR(baseui.settingsSDRUI):
         pass
 
     def apply_CB(self):
-        pass
+        if self.saveSDR_Switch != self.SDR_Enable_VAR.get():
+            gv.config.set_SDR_Switch(self.SDR_Enable_VAR.get())
+
+        if self.saveSDR_Software != self.SDR_Software_VAR.get():
+            gv.config.set_SDR_Software(self.SDR_Software_VAR.get())
+
+        if self.saveSDR_Autostart != self.autostartSDR_VAR.get():
+            gv.config.set_SDR_Autostart(self.autostartSDR_VAR.get())  ### need to add
+
+        if self.saveNetworkAddress != self.networkAddress_VAR.get():
+            gv.config.set_sdr_server_ip(self.networkAddress_VAR.get())
+
+        if self.saveNetworkPort != self.networkPort_VAR.get():
+            gv.config.set_sdr_tcp_port(int(self.networkPort_VAR.get()))
+
+        if self.saveCW_Bandwidth != self.cwDefault_VAR.get():
+            gv.config.set_sdr_cw_filter_default_hz(int(self.cwDefault_VAR.get()))
+
+        if self.saveSSB_Bandwidth != self.ssbDefault_VAR.get():
+            gv.config.set_sdr_ssb_filter_default_hz(int(self.ssbDefault_VAR.get()))
+
+        self.master.destroy()
 
     def cancel_CB(self):
-        pass
+        self.master.destroy()
 
 
 if __name__ == "__main__":

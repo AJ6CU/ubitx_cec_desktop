@@ -38,9 +38,9 @@ class ConfigurationManager:
             print(f"[+] Creating fresh configuration profile at: {self.configuration_file}")
             self.config_data = default_config_data.copy()
 
-            # Guarantee native fallback keys exist immediately on fresh profile creation
-            if "Radio IP" not in self.config_data: self.config_data["Radio IP"] = "127.0.0.1"
-            if "Radio Port" not in self.config_data: self.config_data["Radio Port"] = 4532
+            # # Guarantee native fallback keys exist immediately on fresh profile creation
+            # if "Radio IP" not in self.config_data: self.config_data["Radio IP"] = "127.0.0.1"
+            # if "Radio Port" not in self.config_data: self.config_data["Radio Port"] = 4532
 
             self.saveConfig()
 
@@ -78,29 +78,29 @@ class ConfigurationManager:
         self.register_observer("NUMBER DELIMITER", gv.updateNUMBER_DELIMITER)
 
 
-    def writeDefaults(self):
-        print("[+] Writing default values")
-        #
-        #   Use the defaults saved in defaultCECNextionEmulator.py
-        #
-        self.config_data = default_config_data
-        #
-        #   Make a guess on the serial port
-        #
-        if platform.system() == 'Windows':
-            serialPort = "com6"
-
-        elif platform.system() == 'Darwin':
-            serialPort = "/dev/cu.usbserial-00000000"
-
-        else:
-            serialPort = "/dev/tty/USB0"                     # for trixie+
-            # serialPort = "/dev/serial0"  # for trixie+
-            # serialPort = "/dev/ttyS0"                     # for bookbinder and below
-
-        self.config_data["Serial Port"] = serialPort
-
-        self.saveConfig()
+    # def writeDefaults(self):
+    #     print("[+] Writing default values")
+    #     #
+    #     #   Use the defaults saved in defaultCECNextionEmulator.py
+    #     #
+    #     self.config_data = default_config_data
+    #     #
+    #     #   Make a guess on the serial port
+    #     #
+    #     if platform.system() == 'Windows':
+    #         serialPort = "com6"
+    #
+    #     elif platform.system() == 'Darwin':
+    #         serialPort = "/dev/cu.usbserial-00000000"
+    #
+    #     else:
+    #         serialPort = "/dev/tty/USB0"                     # for trixie+
+    #         # serialPort = "/dev/serial0"  # for trixie+
+    #         # serialPort = "/dev/ttyS0"                     # for bookbinder and below
+    #
+    #     self.config_data["Serial Port"] = serialPort
+    #
+    #     self.saveConfig()
 
     def getValueOrDefault(self, configParameter):
         if configParameter in self.config_data:
@@ -111,14 +111,14 @@ class ConfigurationManager:
             return self.config_data[configParameter]
 
     def getRadioPort(self):
-        return self.config_data["Serial Port"]
+        return self.getValueOrDefault("Serial Port")
     def setRadioPort(self, port):
         self.config_data ["Serial Port"] = port
         self.saveConfig()
 
 
     def get_ScanSet_Settings(self, channel):
-        return self.config_data["Scan Set Settings"][channel][1]
+        return self.getValueOrDefault("Scan Set Settings")[channel][1]
 
     def set_ScanSet_Settings(self, channel, scanSet):
         self.config_data["Scan Set Settings"][channel][1] = scanSet
@@ -126,16 +126,24 @@ class ConfigurationManager:
 
 
     def get_Scan_On_Station_Time(self):
-        if self.config_data["Scan On Station Time"] < 1000:
-            return "1000"           #defaults to 1 second
-        return self.config_data["Scan On Station Time"]
+        return int(self.getValueOrDefault("Scan On Station Time"))
 
     def set_Scan_On_Station_Time(self, time):
         self.config_data["Scan On Station Time"] = time
         self.saveConfig()
 
+    # def get_scan_station_time_ms(self) -> int:
+    #     """Fetches memory tracking channel stepping loop duration delay window."""
+    #     return int(self.getValueOrDefault("Scan On Station Time"))
+
+    def set_scan_station_time_ms(self, milliseconds: int):
+        """Sets channel cycle loop timing threshold limits and notifies observers."""
+        self.config_data["Scan On Station Time"] = int(milliseconds)
+        self.saveConfig()
+        self._notify_observers("Scan On Station Time", milliseconds)
+
     def get_MCU_Command_Headroom(self):
-        return self.config_data["MCU Command Headroom"]
+        return self.getValueOrDefault("MCU Command Headroom")
 
     def set_MCU_Command_Headroom(self, value):
         self.config_data["MCU Command Headroom"] = value
@@ -143,7 +151,7 @@ class ConfigurationManager:
         self.saveConfig()
 
     def get_MCU_Update_Period(self):
-        return self.config_data["MCU Update Period"]
+        return self.getValueOrDefault("MCU Update Period")
 
     def set_MCU_Update_Period(self, value):
         self.config_data["MCU Update Period"] = value
@@ -151,19 +159,14 @@ class ConfigurationManager:
         self.saveConfig()
 
     def get_MCU_Read_Wait_Period(self):
-        return self.config_data["MCU Read Wait Period"]
+        return self.getValueOrDefault("MCU Read Wait Period")
 
     def set_MCU_Read_Wait_Period(self, value):
         self.config_data["MCU Read Wait Period"] = value
         self.saveConfig()
 
     def get_PWR_SWR_Switch(self):
-        if "PWR SWR" in self.config_data:
-            return self.config_data["PWR SWR"]
-        else:
-            self.config_data["PWR SWR"] = "False"
-            self.saveConfig()
-            return self.config_data["PWR SWR"]
+        return self.getValueOrDefault("PWR SWR")
 
     def set_PWR_SWR_Switch(self, value):
         self.config_data["PWR SWR"] = value
@@ -171,12 +174,7 @@ class ConfigurationManager:
 
 
     def get_SWR_Factor(self):
-        if "SWR Factor" in self.config_data:
-            return self.config_data["SWR Factor"]
-        else:
-            self.config_data["SWR Factor"] = "1.00"
-            self.saveConfig()
-            return self.config_data["SWR Factor"]
+        return self.getValueOrDefault("SWR Factor")
 
     def set_SWR_Factor(self, value):
         self.config_data["SWR Factor"] = value
@@ -185,12 +183,7 @@ class ConfigurationManager:
 
 
     def get_PWR_Factor(self):
-        if "PWR Factor" in self.config_data:
-            return self.config_data["PWR Factor"]
-        else:
-            self.config_data["PWR Factor"] = "1.00"
-            self.saveConfig()
-            return self.config_data["PWR Factor"]
+        return self.getValueOrDefault("PWR Factor")
 
     def set_PWR_Factor(self, value):
         self.config_data["PWR Factor"] = value
@@ -198,7 +191,7 @@ class ConfigurationManager:
 
 
     def get_NUMBER_DELIMITER(self):
-        return self.config_data["NUMBER DELIMITER"]
+        return self.getValueOrDefault("NUMBER DELIMITER")
 
     def set_NUMBER_DELIMITER(self, value):
         self.config_data["NUMBER DELIMITER"] = value
@@ -206,7 +199,7 @@ class ConfigurationManager:
         self.saveConfig()
 
     def get_VFO_Touch_Optimized(self):
-        return self.config_data["VFO Touch Optimized"]
+        return self.getValueOrDefault("VFO Touch Optimized")
 
     def set_VFO_Touch_Optimized(self, value):
         self.config_data["VFO Touch Optimized"] = value
@@ -215,20 +208,21 @@ class ConfigurationManager:
 
 
     def get_Master_Cal(self):
-        return self.config_data["Master Cal"]
+        return self.getValueOrDefault("Master Cal")
+
     def set_Master_Cal(self,value):
         self.config_data ["Master Cal"] = value
         self.saveConfig()
 
     def get_SSB_BFO(self):
-        return self.config_data["SSB BFO"]
+        return self.getValueOrDefault("SSB BFO")
 
     def set_SSB_BFO(self, value):
         self.config_data["SSB BFO"] = value
         self.saveConfig()
 
     def get_CW_BFO(self):
-        return self.config_data["CW BFO"]
+        return self.getValueOrDefault("CW BFO")
 
     def set_CW_BFO(self, value):
         self.config_data["CW BFO"] = value
@@ -236,7 +230,7 @@ class ConfigurationManager:
 
 
     def get_CW_Tone(self):
-        return self.config_data["CW Tone"]
+        return self.getValueOrDefault("CW Tone")
 
     def set_CW_Tone(self, value):
         self.config_data["CW Tone"] = value
@@ -251,12 +245,7 @@ class ConfigurationManager:
         self.saveConfig()
 
     def get_VFOA_Copy(self):
-        if "CW Copy VFOA to VFOB on Split" in self.config_data:
-            return self.config_data["CW Copy VFOA to VFOB on Split"]
-        else:
-            self.config_data["CW Copy VFOA to VFOB on Split"] = "True"
-            self.saveConfig()
-            return self.config_data["CW Copy VFOA to VFOB on Split"]
+        return self.getValueOrDefault("CW Copy VFOA to VFOB on Split")
 
     def set_VFOA_Copy(self, value):
         self.config_data["CW Copy VFOA to VFOB on Split"] = value
@@ -264,7 +253,7 @@ class ConfigurationManager:
 
 
     def get_Keytype(self):
-        return self.config_data["CW Key Type"]
+        return self.getValueOrDefault("CW Key Type")
 
     def set_Keytype(self, value):
         self.config_data["CW Key Type"] = value
@@ -272,7 +261,7 @@ class ConfigurationManager:
 
 
     def get_CW_Delay_Before_TX(self):
-        return self.config_data["CW Delay Before TX"]
+        return self.getValueOrDefault("CW Delay Before TX")
 
     def set_CW_Delay_Before_TX(self, value):
         self.config_data["CW Delay Before TX"] = value
@@ -280,21 +269,21 @@ class ConfigurationManager:
 
 
     def get_CW_Delay_Returning_to_RX(self):
-        return self.config_data["CW Delay Returning to RX"]
+        return self.getValueOrDefault("CW Delay Returning to RX")
 
     def set_CW_Delay_Returning_to_RX(self, value):
         self.config_data["CW Delay Returning to RX"] = value
         self.saveConfig()
 
     def get_Virtual_Keyboard_Switch(self):
-        return self.config_data["Virtual Keyboard Switch"]
+        return self.getValueOrDefault("Virtual Keyboard Switch")
 
     def set_Virtual_Keyboard_Switch(self, value):
         self.config_data["Virtual Keyboard Switch"] = value
         self.saveConfig()
 
     def get_DSP_Switch(self):
-        return self.config_data["DSP"]
+        return self.getValueOrDefault("DSP")
 
     def set_DSP_Switch(self, value):
         self.config_data["DSP"] = value
@@ -312,7 +301,7 @@ class ConfigurationManager:
 
     def get_SDR_Software(self) -> str:
         """Fetches target system communication network socket connector port."""
-        return self.config_data.get("SDR Software", "sdr++")
+        return self.getValueOrDefault("SDR Software")
 
     def set_SDR_Software(self, sdr_software: str):
         """Sets target transceiver communications loop connector port and notifies observers."""
@@ -322,7 +311,7 @@ class ConfigurationManager:
 
     def get_SDR_Autostart(self) -> bool:
         """Fetches target system communication network socket connector port."""
-        return self.config_data.get("SDR Autostart", True)
+        return self.getValueOrDefault("SDR Autostart")
 
 
     def set_SDR_Autostart(self, autostart: bool):
@@ -333,12 +322,7 @@ class ConfigurationManager:
 
 
     def get_Logbook_Switch(self):
-        if "Logbook Switch" in self.config_data:
-            return self.config_data["Logbook Switch"]
-        else:
-            self.config_data["Logbook Switch"] = "False"
-            self.saveConfig()
-            return self.config_data["Logbook Switch"]
+        return self.getValueOrDefault("Logbook Switch")
 
     def set_Logbook_Switch(self, value):
         self.config_data["Logbook Switch"] = value
@@ -346,24 +330,14 @@ class ConfigurationManager:
 
 
     def get_Logbook_Type(self):
-        if "Logbook Type" in self.config_data:
-            return self.config_data["Logbook Type"]
-        else:
-            self.config_data["Logbook Type"] = "ADI"
-            self.saveConfig()
-            return self.config_data["Logbook Type"]
+        return self.getValueOrDefault("Logbook Type")
 
     def set_Logbook_Type(self, value):
         self.config_data["Logbook Type"] = value
         self.saveConfig()
 
     def get_Logbook_Backup_Interval(self):
-        if "Logbook Backup Interval" in self.config_data:
-            return self.config_data["Logbook Backup Interval"]
-        else:
-            self.config_data["Logbook Backup Interval"] = "30"
-            self.saveConfig()
-            return self.config_data["Logbook Backup Interval"]
+        return self.getValueOrDefault("Logbook Backup Interval")
 
     def set_Logbook_Backup_Interval(self, value):
         self.config_data["Logbook Backup Interval"] = value
@@ -371,12 +345,7 @@ class ConfigurationManager:
 
 
     def get_Logbook_Location(self):
-        if "Logbook Location" in self.config_data:
-            return self.config_data["Logbook Location"]
-        else:
-            self.config_data["Logbook Location"] = os.path.expanduser("~")
-            self.saveConfig()
-            return self.config_data["Logbook Location"]
+        return self.getValueOrDefault("Logbook Location")
 
     def set_Logbook_Location(self, value):
         self.config_data["Logbook Location"] = value
@@ -384,12 +353,7 @@ class ConfigurationManager:
 
 
     def get_Logbook_Name(self):
-        if "Logbook Name" in self.config_data:
-            return self.config_data["Logbook Name"]
-        else:
-            self.config_data["Logbook Name"] = "Logbook"
-            self.saveConfig()
-            return self.config_data["Logbook Name"]
+        return self.getValueOrDefault("Logbook Name")
 
     def set_Logbook_Name(self, value):
         self.config_data["Logbook Name"] = value
@@ -397,7 +361,7 @@ class ConfigurationManager:
 
     def get_sdr_server_ip(self) -> str:
         """Fetches the target transceiver host network string address."""
-        return str(self.config_data.get("Radio IP", "127.0.0.1"))
+        return str(self.getValueOrDefault("Radio IP"))
 
     def set_sdr_server_ip(self, ip_str: str):
         """Sets target host network address and notifies observers."""
@@ -407,7 +371,7 @@ class ConfigurationManager:
 
     def get_sdr_tcp_port(self) -> int:
         """Fetches target system communication network socket connector port."""
-        return int(self.config_data.get("Radio Port", 4532))
+        return int(self.getValueOrDefault("Radio Port"))
 
     def set_sdr_tcp_port(self, port_val: int):
         """Sets target transceiver communications loop connector port and notifies observers."""
@@ -415,19 +379,9 @@ class ConfigurationManager:
         self.saveConfig()
         self._notify_observers("Radio Port", port_val)
 
-    def get_scan_station_time_ms(self) -> int:
-        """Fetches memory tracking channel stepping loop duration delay window."""
-        return int(self.config_data.get("Scan On Station Time", 5000))
-
-    def set_scan_station_time_ms(self, milliseconds: int):
-        """Sets channel cycle loop timing threshold limits and notifies observers."""
-        self.config_data["Scan On Station Time"] = int(milliseconds)
-        self.saveConfig()
-        self._notify_observers("Scan On Station Time", milliseconds)
-
     def get_last_active_frequency(self) -> int:
         """Fetches the previous successful runtime operational base tracking frequency."""
-        return int(self.config_data.get("Last Active Frequency", 14032000))
+        return int(self.getValueOrDefault("Last Active Frequency"))
 
     def set_last_active_frequency(self, freq_hz: int):
         """Saves current dial frequency parameter coordinates across sessions."""
@@ -436,11 +390,10 @@ class ConfigurationManager:
         self._notify_observers("Last Active Frequency", freq_hz)
 
     def get_scan_channels_registry(self) -> dict:
-        print("getting scan channels registry")
         """Extracts the entire multi-bank scanner registry stack."""
-        data = self.config_data.get("Scan Channels Registry Queue", {})
-        print(data)
+        data = self.getValueOrDefault("Scan Channels Registry Queue")
         return data if isinstance(data, dict) else {"DEFAULT SET": []}
+
 
     def set_scan_channels_registry(self, registry_dict: dict):
         """Updates and serializes all scanner channel banks to persistent storage."""
@@ -450,7 +403,7 @@ class ConfigurationManager:
 
     def get_sdr_filter_width_hz(self) -> int:
         """Pulls stored bandwidth configuration specifications."""
-        return int(self.config_data.get("SDR Filter Width HZ", 120000))
+        return int(self.getValueOrDefault("SDR Filter Width HZ"))
 
     def set_sdr_filter_width_hz(self, width_hz: int):
         """Commits software intermediate-frequency bandwidth limits to memory."""
@@ -459,7 +412,7 @@ class ConfigurationManager:
         self._notify_observers("SDR Filter Width HZ", width_hz)
 
     def get_sdr_cw_filter_default_hz(self):
-        return int(self.config_data.get("SDR CW Width HZ", 499))
+        return int(self.getValueOrDefault("SDR CW Width HZ"))
 
     def set_sdr_cw_filter_default_hz(self, width_hz: int):
         """Commits software intermediate-frequency bandwidth limits to memory."""
@@ -467,7 +420,7 @@ class ConfigurationManager:
         self.saveConfig()
 
     def get_sdr_ssb_filter_default_hz(self):
-        return int(self.config_data.get("SDR SSB Width HZ", 2699))
+        return int(self.getValueOrDefault("SDR SSB Width HZ"))
 
     def set_sdr_ssb_filter_default_hz(self, width_hz: int):
         """Commits software intermediate-frequency bandwidth limits to memory."""
@@ -476,7 +429,7 @@ class ConfigurationManager:
 
     def get_sdr_current_mode(self) -> str:
         """Fetches current modulation footprint identifier selection tag."""
-        return str(self.config_data.get("SDR Current Mode", "USB"))
+        return str(self.getValueOrDefault("SDR Current Mode"))
 
     def set_sdr_current_mode(self, mode_str: str):
         """Updates internal modulation type selection mapping criteria profiles."""
@@ -486,25 +439,10 @@ class ConfigurationManager:
 
     def get_audio_gain_level(self) -> int:
         """Pulls audio mixer output coefficient level bounds attributes."""
-        return int(self.config_data.get("Audio Gain Volume Level", 50))
+        return int(self.getValueOrDefault("Audio Gain Volume Level"))
 
     def set_audio_gain_level(self, gain_val: int):
         """Saves operational software volume level settings constraints."""
         self.config_data["Audio Gain Volume Level"] = int(gain_val)
         self.saveConfig()
         self._notify_observers("Audio Gain Volume Level", gain_val)
-
-    #
-    #   following is a template on how add new parameters to configuration file
-    #
-    # def get_Template(self):
-    #     if "Template" in self.config_data:
-    #         return self.config_data["Template"]
-    #     else:
-    #         self.config_data["Template"] = "newdefault"
-    #         self.saveConfig()
-    #         return self.config_data["Template"]
-    #
-    # def set_Template(self, value):
-    #     self.config_data["Template"] = value
-    #     self.saveConfig()

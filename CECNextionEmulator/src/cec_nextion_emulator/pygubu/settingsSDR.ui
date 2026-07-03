@@ -191,7 +191,6 @@
                     <child>
                       <object class="ttk.Checkbutton" id="autostartSDR_Checkbox" named="True">
                         <property name="command" type="command" cbtype="simple">autostartSDR_CB</property>
-                        <property name="cursor">based_arrow_down</property>
                         <property name="offvalue">False</property>
                         <property name="onvalue">True</property>
                         <property name="style">Checkbox1b.TCheckbutton</property>
@@ -487,54 +486,6 @@
                         </layout>
                       </object>
                     </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="ttk.Frame" id="exportChannels_Frame" named="True">
-                <property name="height">200</property>
-                <property name="style">NormalOutline.TFrame</property>
-                <property name="width">200</property>
-                <layout manager="grid">
-                  <property name="column">0</property>
-                  <property name="columnspan">2</property>
-                  <property name="pady">10</property>
-                  <property name="row">5</property>
-                  <property name="sticky">ew</property>
-                </layout>
-                <child>
-                  <object class="ttk.Label" id="exportEEPROMChannels_Label" named="True">
-                    <property name="state">disabled</property>
-                    <property name="style">Heading1b.TLabel</property>
-                    <property name="text" translatable="yes">Export EEPROM Channels</property>
-                    <layout manager="pack">
-                      <property name="padx">10</property>
-                      <property name="pady">10</property>
-                      <property name="side">left</property>
-                    </layout>
-                    <child>
-                      <object class="pygubu.widgets.Tooltip" id="tooltip5" named="True">
-                        <property name="padx">8</property>
-                        <property name="relief">raised</property>
-                        <property name="text" translatable="yes">Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server</property>
-                        <property name="wraplength">300</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Button" id="exportEEPROMChannels_Button" named="True">
-                    <property name="command" type="command" cbtype="simple">exportEEPROMChannels_CB</property>
-                    <property name="compound">top</property>
-                    <property name="style">Button1bARaised.TButton</property>
-                    <property name="text" translatable="yes">Export</property>
-                    <property name="textvariable">string:testButton_CB</property>
-                    <property name="width">11</property>
-                    <layout manager="pack">
-                      <property name="pady">10</property>
-                      <property name="side">top</property>
-                    </layout>
                   </object>
                 </child>
               </object>

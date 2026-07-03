@@ -158,7 +158,6 @@ class settingsSDRUI(ttk.Labelframe):
             self.sdrSoftwareSelection_Frame, name="autostartsdr_checkbox")
         self.autostartSDR_VAR = tk.StringVar()
         self.autostartSDR_Checkbox.configure(
-            cursor="based_arrow_down",
             offvalue=False,
             onvalue=True,
             style="Checkbox1b.TCheckbutton",
@@ -369,37 +368,6 @@ class settingsSDRUI(ttk.Labelframe):
         self.ssbBandwidthFrame.pack(anchor="center", pady="0 20", side="left")
         self.defaultBandwidth_Frame.grid(
             column=0, columnspan=2, padx=0, pady=10, row=4, sticky="ew")
-        self.exportChannels_Frame = ttk.Frame(
-            frame1, name="exportchannels_frame")
-        self.exportChannels_Frame.configure(
-            height=200, style="NormalOutline.TFrame", width=200)
-        self.exportEEPROMChannels_Label = ttk.Label(
-            self.exportChannels_Frame, name="exporteepromchannels_label")
-        self.exportEEPROMChannels_Label.configure(
-            state="disabled",
-            style="Heading1b.TLabel",
-            text='Export EEPROM Channels')
-        self.tooltip5 = Tooltip(self.exportEEPROMChannels_Label)
-        self.tooltip5.configure(
-            padx=8,
-            relief="raised",
-            text='Match the entries here to the SDR++ settings under the Module Manager for Rigctl Server',
-            wraplength=300)
-        self.exportEEPROMChannels_Label.pack(padx=10, pady=10, side="left")
-        self.exportEEPROMChannels_Button = ttk.Button(
-            self.exportChannels_Frame, name="exporteepromchannels_button")
-        self.testButton_CB = tk.StringVar(value='Export')
-        self.exportEEPROMChannels_Button.configure(
-            compound="top",
-            style="Button1bARaised.TButton",
-            text='Export',
-            textvariable=self.testButton_CB,
-            width=11)
-        self.exportEEPROMChannels_Button.pack(pady=10, side="top")
-        self.exportEEPROMChannels_Button.configure(
-            command=self.exportEEPROMChannels_CB)
-        self.exportChannels_Frame.grid(
-            column=0, columnspan=2, pady=10, row=5, sticky="ew")
         frame1.pack(
             anchor="center",
             expand=True,
@@ -465,9 +433,6 @@ class settingsSDRUI(ttk.Labelframe):
         pass
 
     def ssbDefault_CB(self):
-        pass
-
-    def exportEEPROMChannels_CB(self):
         pass
 
     def apply_CB(self):

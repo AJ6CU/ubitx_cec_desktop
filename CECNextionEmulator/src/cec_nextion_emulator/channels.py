@@ -364,6 +364,104 @@ class channels(baseui.channelsUI):
     def saveAllChannels_CB(self):
         for aChannel in range(len(self.channelList)):
             self.saveChannel(aChannel)
+    #
+    #   This is a set of routines to export the channels to the configuration file so they can be used by the sdr
+    #
+
+    #
+    #   This row just creates a row
+    #
+    def create_row_data(self,
+            bandwidth: int, freq_hz: int, label: str, mode: str, name: str
+    ) -> dict:
+        """Accepts parameters and constructs a validated row dictionary for a bank."""
+        # Ensure correct data types (integers for frequency/bandwidth, strings for labels)
+        return {
+            "bandwidth": int(bandwidth),
+            "freq_hz": int(freq_hz),
+            "label": str(label),
+            "mode": str(mode),
+            "name": str(name),
+        }
+
+    def create_new_bank(self, registry, bank_name):
+
+        # Modify the registry directly without assigning to a temporary variable
+        if bank_name in registry:
+            if(messagebox.askyesno("Warning", "Bank already exists!" +
+                                           "Do you want to append channels to the Bank?", parent=self)):
+                return True
+        else:
+            registry[bank_name] = []
+            return True
+        return False
+
+    def add_row_to_bank(self, registry, bank_name, row_data):
+        """Appends a new row to an existing bank."""
+        # Safety check to ensure the structure and bank exist
+        # queue = registry.get("Scan Channels Registry Queue", {})
+
+        if bank_name in registry:
+            registry[bank_name].append(row_data)
+            return True
+        return False
+
+    def exportAllChannels_CB(self):
+        theBankName = self.bankName_VAR.get()
+        if theBankName == "":
+            messagebox.showerror("Error", "Bank Name cannot be empty", parent=self)
+            return
+        registry = gv.config.get_scan_channels_registry()
+        if self.create_new_bank(registry,theBankName):
+            for channelNum in range(len(self.channelList)):
+                theFreq = int(channels.channelList[channelNum].Get_Freq())
+                #
+                #   If a channel has a zero frequency, then it is not valid. Skip it
+                #
+                if theFreq == 0:
+                    print("skipping channel:", channelNum)
+                    pass
+                else:
+                    theMode = self.channelList[channelNum].Get_Mode()
+                    #
+                    #   CEC has the concept of a Default Mode. We just map it to USB if >=10mhz
+                    #
+                    if theMode == "DFT":
+                        if theFreq >= 10000000:
+                            theMode = "USB"
+                        else:
+                            theMode = "LSB"
+
+                    #
+                    #   CEC Channels don't track bandwidth. So just make an assumption based on mode
+                    #
+
+                    if theMode == "USB" or theMode == "LSB":
+                        theBandwidth = 2600
+                    else:
+                        theBandwidth = 500
+
+                    #
+                    #   Finally clean up the labels and names
+                    #
+                    theLabel = "CH"+str(channelNum)
+                    theName = channels.channelList[channelNum].Get_Label()
+                    #
+                    #   Labels in CEC are 5 characters, but only first 9 channels can have labels
+                    #   So anything that is just blanks ot
+                    if theName == "" or theName.replace(" ","") == "" or theName == "*N/A*":
+                        theName = ""
+
+                    newRow = self.create_row_data(
+                        bandwidth=theBandwidth,
+                        freq_hz=theFreq,
+                        label=theLabel,
+                        mode=theMode,
+                        name=theName
+                    )
+                    print(newRow)
+                    self.add_row_to_bank(registry, theBankName, newRow)
+            gv.config.set_scan_channels_registry(registry)
 
 
 

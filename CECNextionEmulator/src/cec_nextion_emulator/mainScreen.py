@@ -220,9 +220,9 @@ class mainScreen(baseui.mainScreenUI):
 
         if gv.config.get_Logbook_Switch() == "False":               # Disable the Log QSO button on startup if log is disabled
             self.logQSO_Button.configure(state="disabled")
-
-        self.sdrplusplus_handle = self._launch_sdr_application()
-        print(type(self.sdrplusplus_handle))
+        if gv.config.get_SDR_Switch() == "True" and gv.config.get_SDR_Autostart() == "1":
+            self.sdrplusplus_handle = self._launch_sdr_application()
+        # print(type(self.sdrplusplus_handle))
 
 
 
@@ -1305,25 +1305,28 @@ class mainScreen(baseui.mainScreenUI):
         else:
             self.speaker_Button_On = True
             self.speaker_Button.configure(style='RedButton2b.TButton', state="pressed")
-            self.speaker_VAR.set("\nSDR\n")
-            self.theSDRWindow = launch_sdr_popup(self)
-            self.theSDR = self.theSDRWindow.get_app()
-            if self.theSDR.connect():
-                print("sdr connected")
-                self.theSDR.startSDR()
-                self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
-                self.theSDR.set_mode(self.primary_Mode_VAR.get().replace("CWL","CW").replace("CWU","CW"))
-                self.theSDR.on_frequency_change_primary = self.sdr_frequency_change_callback
-                self.theSDR.on_mode_change_primary = self.sdr_mode_change_callback
+            if  gv.config.get_SDR_Switch() == "True":
+                self.speaker_VAR.set("\nSDR\n")
+                self.theSDRWindow = launch_sdr_popup(self)
+                self.theSDR = self.theSDRWindow.get_app()
+                if self.theSDR.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
+                    # print("sdr connected")
+                    self.theSDR.startSDR()
+                    self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
+                    self.theSDR.set_mode(self.primary_Mode_VAR.get().replace("CWL","CW").replace("CWU","CW"))
+                    self.theSDR.on_frequency_change_primary = self.sdr_frequency_change_callback
+                    self.theSDR.on_mode_change_primary = self.sdr_mode_change_callback
 
+                else:
+                    messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.")
             else:
-                print("sdr not connected")
+                self.speaker_VAR.set("\nMUTE\n")
 
     def relaunch_SDRPanel_CB(self, event=None):
         if self.speaker_Button_On and self.speaker_VAR.get() == "\nSDR\n" and self.theSDRWindow is None:
             self.theSDRWindow = launch_sdr_popup(self)
-            if self.theSDR.connect():
-                print("sdr connected")
+            if self.theSDR.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
+                # print("sdr connected")
                 self.theSDR.startSDR()
                 self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
                 self.theSDR.set_mode(self.primary_Mode_VAR.get().replace("CWL","CW").replace("CWU","CW"))
@@ -1331,7 +1334,7 @@ class mainScreen(baseui.mainScreenUI):
                 self.theSDR.on_mode_change_primary = self.sdr_mode_change_callback
 
             else:
-                print("sdr not connected")
+                messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.")
 
 
 
