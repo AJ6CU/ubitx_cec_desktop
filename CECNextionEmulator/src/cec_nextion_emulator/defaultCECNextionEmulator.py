@@ -189,6 +189,7 @@ default_config_data = {
             "None"
         ]
     ],
+    "SDR":"False",
     "Serial Port": "/dev/cu.usbserial-A5069RR4",
     "TXOffset": "EEPROM",
     "VFO Touch Optimized": "True",

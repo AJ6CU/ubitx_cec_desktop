@@ -79,6 +79,7 @@ class ConfigurationManager:
 
 
     def writeDefaults(self):
+        print("[+] Writing default values")
         #
         #   Use the defaults saved in defaultCECNextionEmulator.py
         #
@@ -100,6 +101,14 @@ class ConfigurationManager:
         self.config_data["Serial Port"] = serialPort
 
         self.saveConfig()
+
+    def getValueOrDefault(self, configParameter):
+        if configParameter in self.config_data:
+            return self.config_data[configParameter]
+        else:
+            self.config_data[configParameter] = default_config_data[configParameter]
+            self.saveConfig()
+            return self.config_data[configParameter]
 
     def getRadioPort(self):
         return self.config_data["Serial Port"]
@@ -293,7 +302,7 @@ class ConfigurationManager:
 
     def get_SDR_Switch(self) -> bool:
         """Fetches target system communication network socket connector port."""
-        return self.config_data.get("SDR", False)
+        return self.getValueOrDefault("SDR")
 
     def set_SDR_Switch(self, switch: bool):
         """Sets target transceiver communications loop connector port and notifies observers."""
