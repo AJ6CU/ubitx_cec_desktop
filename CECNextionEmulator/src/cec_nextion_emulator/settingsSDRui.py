@@ -212,31 +212,28 @@ class settingsSDRUI(ttk.Labelframe):
             state="disabled",
             style="Heading1b.TLabel",
             text='Network address:')
-        self.ipAddress_Tooltip = Tooltip(self.ipAddress_Label)
-        self.ipAddress_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0',
-            wraplength=300)
-        self.ipAddress_Label.pack()
-        self.tooltip2 = Tooltip(self.address_Frame)
+        self.tooltip2 = Tooltip(self.ipAddress_Label)
         self.tooltip2.configure(
             padx=8,
             relief="raised",
-            text='Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0',
+            text='This is the internal loopback IP address of your machine. Unless you really know what you are doing, you should not change it. If you must, edit the .ini file in your home directory.',
             wraplength=300)
+        self.ipAddress_Label.pack()
         self.ipAddress_Entry = ttk.Entry(
             self.address_Frame, name="ipaddress_entry")
         self.networkAddress_VAR = tk.StringVar(value='999.9.9.9')
         self.ipAddress_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
+            state="disabled",
             takefocus=True,
             textvariable=self.networkAddress_VAR,
             width=8)
         _text_ = '999.9.9.9'
+        self.ipAddress_Entry["state"] = "normal"
         self.ipAddress_Entry.delete("0", "end")
         self.ipAddress_Entry.insert("0", _text_)
+        self.ipAddress_Entry["state"] = "disabled"
         self.ipAddress_Entry.pack()
         self.port_Label = ttk.Label(self.address_Frame, name="port_label")
         self.port_Label.configure(

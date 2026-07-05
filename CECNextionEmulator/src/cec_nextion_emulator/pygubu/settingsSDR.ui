@@ -280,27 +280,20 @@
                         <property name="text" translatable="yes">Network address:</property>
                         <layout manager="pack" />
                         <child>
-                          <object class="pygubu.widgets.Tooltip" id="ipAddress_Tooltip" named="True">
+                          <object class="pygubu.widgets.Tooltip" id="tooltip2" named="True">
                             <property name="padx">8</property>
                             <property name="relief">raised</property>
-                            <property name="text" translatable="yes">Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0</property>
+                            <property name="text" translatable="yes">This is the internal loopback IP address of your machine. Unless you really know what you are doing, you should not change it. If you must, edit the .ini file in your home directory.</property>
                             <property name="wraplength">300</property>
                           </object>
                         </child>
                       </object>
                     </child>
                     <child>
-                      <object class="pygubu.widgets.Tooltip" id="tooltip2" named="True">
-                        <property name="padx">8</property>
-                        <property name="relief">raised</property>
-                        <property name="text" translatable="yes">Try first 127.0.0.1, then the text localhost and last resort 0.0.0.0</property>
-                        <property name="wraplength">300</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="ttk.Entry" id="ipAddress_Entry" named="True">
                         <property name="font">{Arial} 24 {}</property>
                         <property name="justify">right</property>
+                        <property name="state">disabled</property>
                         <property name="takefocus">true</property>
                         <property name="text" translatable="yes">999.9.9.9</property>
                         <property name="textvariable">string:networkAddress_VAR</property>

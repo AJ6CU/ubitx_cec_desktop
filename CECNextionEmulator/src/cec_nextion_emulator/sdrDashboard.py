@@ -93,7 +93,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.setAccordionState(self.channelsAccordion_Frame, self.channelsToggle_Button, self.channelsAccordionState)
 
         self.refresh_listbox_view()
-        self.update_smeter_loop()
+
+        # self.update_smeter_loop()
         self.sourceBank_Combobox.set("DEFAULT SET")
 
         if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
@@ -117,6 +118,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         self.pack(expand=tk.YES, fill=tk.BOTH)
         self.sdr.startSDR()
+        self.update_filter_telemetry(self.sdr.get_filter_width_hz())
 
     def updateIPAddress (self, newIPAddress):
         self.sdrIPAddress_VAR.set(newIPAddress)
@@ -148,42 +150,6 @@ class sdrDashboard(baseui.sdrDashboardUI):
     def update_filter_telemetry(self, filter_hz):
         self.current_live_filter_hz = int(filter_hz)
         self.currentFilterWidth_VAR.set(str(filter_hz))
-
-    def update_smeter_loop(self):
-        if self.sdr.is_connected:
-            # 1. Process S-Meter Metrics
-            dbfs_value = random.randint(45, 85) if getattr(self.sdr, 'is_scanning', False) else random.randint(15, 55)
-            self.smeter_Progressbar.config(value=dbfs_value)
-
-            if dbfs_value < 20:
-                s_unit = "S1"
-            elif dbfs_value < 35:
-                s_unit = "S3"
-            elif dbfs_value < 50:
-                s_unit = "S5"
-            elif dbfs_value < 65:
-                s_unit = "S7"
-            elif dbfs_value < 80:
-                s_unit = "S9"
-            elif dbfs_value < 90:
-                s_unit = "+10dB"
-            else:
-                s_unit = "+30dB"
-
-            raw_dbfs = -120.0 + (float(dbfs_value) * 1.2)
-            self.label_smeter_ticks.config(text=f"S1 . S3 . S5 . S7 . S9 . +10 . +30 [{s_unit}]")
-            self.label_smeter_val.config(text=f"Signal Strength Metrics: {raw_dbfs:.1f} dBFS")
-
-            # 2. Passive UI Pass-through pointing to the correct object context
-            if hasattr(self.sdr, 'on_filter_change') and self.sdr.on_filter_change:
-                self.sdr.on_filter_change(self.sdr.get_filter_width_hz())
-
-        else:
-            self.smeter_Progressbar.config(value=0)
-            self.label_smeter_ticks.config(text="S1 . S3 . S5 . S7 . S9 . +10 . +30 [OFFLINE]")
-            self.label_smeter_val.config(text="Signal Strength Metrics: Offline")
-
-        self.master.after(250, self.update_smeter_loop)
 
     def refresh_listbox_view(self):
         for item in self.treeChannels.get_children():
@@ -592,11 +558,13 @@ class sdrDashboard(baseui.sdrDashboardUI):
     def action_filter_widen(self):
         if not self.sdr.is_connected: return
         self.sdr.widen()
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
 
     def action_filter_narrow(self):
 
         if not self.sdr.is_connected: return
         self.sdr.narrow()
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
 
     def action_filter_reset(self):
         # print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
@@ -610,6 +578,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
             # print("filter reset, mode=", mode)
             fallbacks = self.sdr.get_all_mode_fallbacks()
             self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
+
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
 
     def setAccordionState(self, content_frame, thebutton, frameState):
         parent_frame = content_frame.master

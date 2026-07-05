@@ -82,36 +82,6 @@ class sdrDashboardUI(ttk.Frame):
         self.label_val_mode.configure(style="Heading4.TLabel", text='UNKNOWN')
         self.label_val_mode.pack(side="left")
         frame7.pack(anchor="center", expand=True, fill="x", pady=5, side="top")
-        frame9 = ttk.Frame(self.liveTelemetry_Frame)
-        frame9.configure(height=200, style="Normal.TFrame", width=200)
-        label6 = ttk.Label(frame9)
-        label6.configure(
-            style="Heading4.TLabel",
-            text='Signal Strength (dBFS):')
-        label6.pack(anchor="center", padx="40 0", side="left")
-        frame8 = ttk.Frame(frame9)
-        frame8.configure(style="Normal.TFrame")
-        self.label_smeter_ticks = ttk.Label(frame8, name="label_smeter_ticks")
-        self.label_smeter_ticks.configure(
-            background="gray",
-            font="TkFixedFont",
-            foreground="white",
-            text='S1 . S3 . S5 . S7 . S9 . +10 . +30')
-        self.label_smeter_ticks.pack(anchor="w", side="top")
-        self.smeter_Progressbar = ttk.Progressbar(
-            frame8, name="smeter_progressbar")
-        self.smeter_Progressbar.configure(
-            length=210, maximum=100, mode="determinate")
-        self.smeter_Progressbar.pack(fill="x", pady=4, side="top")
-        self.label_smeter_val = ttk.Label(frame8, name="label_smeter_val")
-        self.label_smeter_val.configure(
-            background="gray",
-            font="TkFixedFont",
-            foreground="white",
-            text='-00.0 dBFS')
-        self.label_smeter_val.pack(anchor="w", pady=2, side="top")
-        frame8.pack(padx=10, side="left")
-        frame9.pack(expand=True, fill="x", pady=5)
         frame5 = ttk.Frame(self.liveTelemetry_Frame)
         frame5.configure(height=200, style="Normal.TFrame", width=200)
         lbl_volume_txt = ttk.Label(frame5)
