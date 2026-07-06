@@ -14,6 +14,9 @@ import pygubu
 import random
 
 import sdrDashboardui as baseui
+from entryFieldHandler import entryFieldHandler
+from VirtualNumericKeyboard import VirtualNumericKeyboard
+from VirtualKeyboard import VirtualKeyboard
 import globalvars as gv
 
 import os
@@ -59,6 +62,16 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.treeChannels.heading('mode', text='Mode', anchor='w')
         self.treeChannels.heading('description', text='Station Name', anchor='w')
 
+        #
+        #   Create an error handler for each entry field
+        #
+        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master)
+        self.newChannel_Object = entryFieldHandler(self, "newChannel", 15, VirtualKeyboard,self.master)
+        self.newStationDescription_Object = entryFieldHandler(self, "newStationDescription", 50, VirtualKeyboard, self.master)
+        self.newBankName_Object = entryFieldHandler(self, "newBankName", 15, VirtualKeyboard, self.master)
+        self.scanTime_Object = entryFieldHandler(self, "scanTime", 3, VirtualNumericKeyboard, self.master)
+
+
         # 5. Instantiate communications controller loop
         self.sdr = SDRPlusPlusController(self.master)
 
@@ -71,8 +84,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.pre_mute_volume = gv.config.get_audio_gain_level()
 
         # Seed initialization field parameters
-        self.entry_scan_time.insert(0, str(gv.config.get_Scan_On_Station_Time()))
-        # self.entry_scan_time.insert(0, str(gv.config.get_scan_station_time_ms()))
+        self.scanTime_Entry.insert(0, str(round(gv.config.get_Scan_On_Station_Time()/1000)))
         self.sdrIPAddress_VAR.set(str(gv.config.get_sdr_server_ip()))
         self.sdrPortNumber_VAR.set(str(gv.config.get_sdr_tcp_port()))
         self.volume_scale.set(self.pre_mute_volume)
@@ -265,8 +277,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
             messagebox.showwarning("Offline", "Please connect to the SDR++ hardware rig first.", parent=self)
             return
 
-        label_text = self.newChannel_Label.get().strip()
-        desc_text = self.customStationName_Entry.get().strip()
+        label_text = self.newChannel_Entry.get().strip()
+        desc_text = self.newStationDescription_Entry.get().strip()
 
         if not label_text:
             messagebox.showwarning("Missing Input", "Please supply a short Channel Label identifier (e.g., WX1).", parent=self)
@@ -283,8 +295,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
             self.sdr._save_channels_to_json()
 
             # Flush fields cleanly
-            self.newChannel_Label.delete(0, tk.END)
-            self.customStationName_Entry.delete(0, tk.END)
+            self.newChannel_Entry.delete(0, tk.END)
+            self.newStationDescription_Entry.delete(0, tk.END)
 
             self.refresh_listbox_view()
             messagebox.showinfo("Stored",
@@ -311,22 +323,29 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if not selected: return
         lbl_target = self.treeChannels.item(selected, 'values')[0]
         if self.sdr.delete_channel(lbl_target):
-            self.newChannel_Label.delete(0, tk.END)
+            self.newChannel_Entry.delete(0, tk.END)
             self.customStationName_Entry.delete(0, tk.END)
             self.refresh_listbox_view()
 
     def action_create_brand_new_bank(self):
-        """Pops open an input box to create a brand-new memory bank directory file."""
+        # adds new bank to organize channels
         from tkinter import simpledialog
-        new_bank_name = simpledialog.askstring("New Memory Bank", "Enter an identifier name for the new channel bank:")
+        # new_bank_name = simpledialog.askstring("New Memory Bank", "Enter an identifier name for the new channel bank:")
 
-        if not new_bank_name: return
-        cleaned_name = new_bank_name.strip().upper()
-        if not cleaned_name: return
-
-        if cleaned_name in self.sdr.scan_sets_dict:
-            messagebox.showwarning("Conflict", f"A bank profile named '{cleaned_name}' already exists.", parent=self)
+        if self.newBankName_VAR.get() == "":
+            messagebox.showwarning("Error - No Name", "Please enter a name for the new Bank", parent=self)
             return
+
+        cleaned_name = self.newBankName_VAR.get().strip().upper()
+
+        # if not cleaned_name:
+        #     messagebox.showwarning("Error - Bad Name", "Bank name must be something other than spaces", parent=self)
+        #     return
+        #
+        # if cleaned_name in self.sdr.scan_sets_dict:
+        #     messagebox.showwarning("Error - Conflict", f"A bank profile named '{cleaned_name}' already exists.", parent=self)
+        #     self.newBankName_VAR.set("")
+        #     return
 
         self.sdr.scan_sets_dict[cleaned_name] = []
         self.sdr.change_active_scan_set(cleaned_name)
@@ -423,7 +442,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
             return
 
         confirm = messagebox.askyesno(
-            "Confirm Source Bank Erasure",
+            "Confirm Source Bank Deletion",
             f"CRITICAL WARNING:\n\nYou are about to permanently delete the bank channel registry: '{source_bank}'\n"
             f"This will erase this bank and ALL channels currently visible inside your grid list!\n\n"
             f"Are you absolutely sure you want to delete this SOURCE bank?",
@@ -445,7 +464,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def action_start_scan(self):
         try:
-            delay = int(self.entry_scan_time.get().strip())
+            delay = int(self.scanTime_Entry.get().strip())*1000
             gv.config.set_scan_station_time_ms(delay)
             self.sdr.start_memory_scan(delay)
         except ValueError:
@@ -599,7 +618,121 @@ class sdrDashboard(baseui.sdrDashboardUI):
             # Collapse the correct row index
             # parent_frame.rowconfigure(row_num, weight=0, minsize=0, pad=0)
 
+    #
+    #   Validation Callbacks implicitly needed by the entryFieldHandler class
+    #
+    def channelLookup_validation(self):
+        if len(self.channelLookup_VAR.get()) > 15:
+            return False
+        else:
+            return True
 
+    def channelLookup_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Name",
+                            "Channel Names cannot exceeds 15 characters.\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def channelLookup_preProcessor(self):
+        return self.channelLookup_VAR.get().strip().upper()
+
+
+    def channelLookup_postProcessor(self):
+        return
+
+
+    def newChannel_validation(self):
+        # No much validation. Just needs to be 10 characters or less
+        if (len(self.newChannel_VAR.get()) > 15 or "\\" in self.newChannel_VAR.get() or '"' in self.newChannel_VAR.get()
+                or "'" in self.newChannel_VAR.get()):
+            return False
+        else:
+            return True
+
+
+    def newChannel_errorHandler(self):
+
+        messagebox.showinfo("Error - Invalid Name",
+                            "Channel Labels cannot exceeds 15 characters or have " +
+                            "backslashes or quotes.\n\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newChannel_preProcessor(self):
+        return self.newChannel_VAR.get().strip().upper()
+
+    def newChannel_postProcessor(self):
+        return
+
+
+    def newBankName_validation(self):
+        cleanedName = self.newBankName_VAR.get().strip().upper()
+        if len(cleanedName) > 15 or "\\" in cleanedName or cleanedName in self.sdr.scan_sets_dict or '"' in cleanedName or "'" in cleanedName:
+            return False
+        else:
+            return True
+
+    def newBankName_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Bank Name",
+                            "A Bank Name cannot exceed 15 characters or have backslashes\n" +
+                            "or quotes and not be a duplicate of an existing Bank Name\n\n"+
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newBankName_preProcessor(self):
+        return self.newBankName_VAR.get().strip().upper()
+
+
+    def newBankName_postProcessor(self):
+        return
+
+
+
+    def newStationDescription_validation(self):
+        if (len(self.newStationDescription_VAR.get()) > 50 or "\\" in self.newStationDescription_VAR.get()
+                or '"' in self.newStationDescription_VAR.get() or "'" in self.newStationDescription_VAR.get()):
+            return False
+        else:
+            return True
+        return True
+
+    def newStationDescription_errorHandler(self):
+
+        messagebox.showinfo("Error - Invalid Description",
+                            "A Station Description cannot exceed 50 characters\n" +
+                            "or have backslashes or quotes.\n\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newStationDescription_preProcessor(self):
+        return self.newStationDescription_VAR.get().strip().upper()
+
+    def newStationDescription_postProcessor(self):
+        return
+
+
+
+
+    def scanTime_validation(self):
+        if gv.validateNumber(self.scanTime_VAR.get(), 0,100):
+            return True
+        else:
+            return False
+
+
+    def scanTime_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Time",
+                            "Scan time must be 100 seconds or less\n\n" +
+                            " Input ignored, resetting to prior value", parent=self)
+
+
+    def scanTime_preProcessor(self):
+        return self.scanTime_VAR.get()
+
+
+    def scanTime_postProcessor(self):
+        return
+
+
+    #
+    #   End of Entry Field Validation
+    #
 
     def toggleScan_CB(self):
         if self.scanAccordionState:

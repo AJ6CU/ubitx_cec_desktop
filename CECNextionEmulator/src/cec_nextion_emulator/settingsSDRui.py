@@ -253,18 +253,19 @@ class settingsSDRUI(ttk.Labelframe):
             relief="raised",
             text='Check SDR++ Module Manager/Rigel Server entry. Typically 4532 or perhaps 4533.',
             wraplength=300)
-        self.port_Entry = ttk.Entry(self.address_Frame, name="port_entry")
+        self.networkPort_Entry = ttk.Entry(
+            self.address_Frame, name="networkport_entry")
         self.networkPort_VAR = tk.StringVar(value='4532')
-        self.port_Entry.configure(
+        self.networkPort_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
             textvariable=self.networkPort_VAR,
             width=5)
         _text_ = '4532'
-        self.port_Entry.delete("0", "end")
-        self.port_Entry.insert("0", _text_)
-        self.port_Entry.pack()
+        self.networkPort_Entry.delete("0", "end")
+        self.networkPort_Entry.insert("0", _text_)
+        self.networkPort_Entry.pack()
         self.address_Frame.grid(padx=200, pady=20, row=1)
         self.SDR_Network_Frame.grid(
             column=0,

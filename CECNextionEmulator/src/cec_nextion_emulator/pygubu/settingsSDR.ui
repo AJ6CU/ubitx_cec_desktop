@@ -328,7 +328,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="ttk.Entry" id="port_Entry" named="True">
+                      <object class="ttk.Entry" id="networkPort_Entry" named="True">
                         <property name="font">{Arial} 24 {}</property>
                         <property name="justify">right</property>
                         <property name="takefocus">true</property>

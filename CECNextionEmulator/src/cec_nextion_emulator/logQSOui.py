@@ -84,11 +84,8 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.callsign_VAR,
-            validate="focusout",
             width=12)
         self.callsign_Entry.pack()
-        self.callsign_Entry.bind(
-            "<FocusIn>", self.callsign_FocusIn_CB, add="+")
         self.callsign_Frame.grid(column=0, padx=10, pady="10 30", row=0)
         self.freq_Frame = ttk.Frame(self.logData_Frame, name="freq_frame")
         self.freq_Frame.configure(height=200, style="Normal.TFrame", width=200)
@@ -134,16 +131,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.frequency_VAR,
-            validate="focusout",
             width=7)
         _text_ = '14.032'
         self.frequency_Entry.delete("0", "end")
         self.frequency_Entry.insert("0", _text_)
         self.frequency_Entry.grid(column=1, row=1, sticky="n")
-        self.frequency_Entry.bind(
-            "<Button>", self.frequency_Entered_CB, add="+")
-        self.frequency_Entry.bind(
-            "<FocusIn>", self.frequency_FocusIn_CB, add="+")
         self.frequency_ext = ttk.Label(self.freq_Frame, name="frequency_ext")
         self.lowFreqDigits = tk.StringVar(value='.000')
         self.frequency_ext.configure(
@@ -280,10 +272,6 @@ class logQSOUI(ttk.Labelframe):
         self.utcDateYYYY_Entry.delete("0", "end")
         self.utcDateYYYY_Entry.insert("0", _text_)
         self.utcDateYYYY_Entry.grid(column=1, row=0)
-        self.utcDateYYYY_Entry.bind(
-            "<FocusIn>", self.utcDateYYYY_FocusIn_CB, add="+")
-        self.utcDateYYYY_Entry.bind(
-            "<FocusOut>", self.utcDateYYYY_Validate_CB, add="+")
         self.slash1_label = ttk.Label(self.utcDate_Frame, name="slash1_label")
         self.slash1_label.configure(style="Heading1b.TLabel", text='-')
         self.slash1_label.grid(column=2, row=0)
@@ -301,12 +289,6 @@ class logQSOUI(ttk.Labelframe):
         self.utcDateMM_Entry.delete("0", "end")
         self.utcDateMM_Entry.insert("0", _text_)
         self.utcDateMM_Entry.grid(column=3, row=0)
-        self.utcDateMM_Entry.bind(
-            "<FocusIn>", self.utcDateMM_FocusIn_CB, add="+")
-        self.utcDateMM_Entry.bind(
-            "<FocusOut>",
-            self.utcDateMM_Validate_CB,
-            add="+")
         self.slash2_Label = ttk.Label(self.utcDate_Frame, name="slash2_label")
         self.slash2_Label.configure(style="Heading1b.TLabel", text='-')
         self.slash2_Label.grid(column=4, row=0)
@@ -319,14 +301,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.utcDateDD_VAR,
-            validate="focusout",
             width=2)
         _text_ = '28'
         self.utcDateDD_Entry.delete("0", "end")
         self.utcDateDD_Entry.insert("0", _text_)
         self.utcDateDD_Entry.grid(column=5, row=0)
-        self.utcDateDD_Entry.bind(
-            "<FocusIn>", self.utcDateDD_FocusIn_CB, add="+")
         self.utcDate_Frame.grid(column=1, row=1, sticky="w")
         self.utcTime_Frame = ttk.Frame(
             self.timeDate_Frame, name="utctime_frame")
@@ -341,14 +320,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.utcTimeHH_VAR,
-            validate="focusout",
             width=2)
         _text_ = '23'
         self.utcTimeHH_Entry.delete("0", "end")
         self.utcTimeHH_Entry.insert("0", _text_)
         self.utcTimeHH_Entry.grid(column=1, row=0)
-        self.utcTimeHH_Entry.bind(
-            "<FocusIn>", self.utcTimeHH_FocusIn_CB, add="+")
         self.colon1_Label = ttk.Label(self.utcTime_Frame, name="colon1_label")
         self.colon1_Label.configure(style="Heading1b.TLabel", text=':')
         self.colon1_Label.grid(column=2, row=0)
@@ -361,14 +337,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.utcTimeMM_VAR,
-            validate="focusout",
             width=2)
         _text_ = '12'
         self.utcTimeMM_Entry.delete("0", "end")
         self.utcTimeMM_Entry.insert("0", _text_)
         self.utcTimeMM_Entry.grid(column=3, row=0)
-        self.utcTimeMM_Entry.bind(
-            "<FocusIn>", self.utcTimeMM_FocusIn_CB, add="+")
         self.utcTime_Frame.grid(column=2, padx=30, row=1, sticky="w")
         self.dateClue_Frame = ttk.Frame(
             self.timeDate_Frame, name="dateclue_frame")
@@ -458,13 +431,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.rstSend_VAR,
-            validate="focusout",
             width=8)
         _text_ = '599'
         self.rstSend_Entry.delete("0", "end")
         self.rstSend_Entry.insert("0", _text_)
         self.rstSend_Entry.grid(column=0, padx="0 20", row=1)
-        self.rstSend_Entry.bind("<FocusIn>", self.rstSend_FocusIn_CB, add="+")
         self.rstRcvd_Entry = ttk.Entry(
             self.signalReport_Frame, name="rstrcvd_entry")
         self.rstRcvd_VAR = tk.StringVar(value='599')
@@ -474,16 +445,11 @@ class logQSOUI(ttk.Labelframe):
             style="Entry2b.TEntry",
             takefocus=True,
             textvariable=self.rstRcvd_VAR,
-            validate="focusout",
             width=8)
         _text_ = '599'
         self.rstRcvd_Entry.delete("0", "end")
         self.rstRcvd_Entry.insert("0", _text_)
         self.rstRcvd_Entry.grid(column=1, row=1)
-        self.rstRcvd_Entry.bind(
-            "<FocusIn>",
-            self.rstReceived_FocusIn_CB,
-            add="+")
         self.signalReport_Frame.grid(column=0, padx=10, pady="0 30", row=11)
         self.logData_Frame.pack(padx=20, side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
@@ -529,43 +495,7 @@ class logQSOUI(ttk.Labelframe):
             width=200)
         # Layout for 'logQSO_Labelframe' skipped in custom widget template.
 
-    def callsign_FocusIn_CB(self, event=None):
-        pass
-
-    def frequency_Entered_CB(self, event=None):
-        pass
-
-    def frequency_FocusIn_CB(self, event=None):
-        pass
-
     def selectMode_CB(self, itemid):
-        pass
-
-    def utcDateYYYY_FocusIn_CB(self, event=None):
-        pass
-
-    def utcDateYYYY_Validate_CB(self, event=None):
-        pass
-
-    def utcDateMM_FocusIn_CB(self, event=None):
-        pass
-
-    def utcDateMM_Validate_CB(self, event=None):
-        pass
-
-    def utcDateDD_FocusIn_CB(self, event=None):
-        pass
-
-    def utcTimeHH_FocusIn_CB(self, event=None):
-        pass
-
-    def utcTimeMM_FocusIn_CB(self, event=None):
-        pass
-
-    def rstSend_FocusIn_CB(self, event=None):
-        pass
-
-    def rstReceived_FocusIn_CB(self, event=None):
         pass
 
     def logQSO_CB(self):

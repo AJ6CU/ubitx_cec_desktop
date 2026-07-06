@@ -410,12 +410,12 @@ class VirtualKeyboard(tk.Toplevel):
             if t == "\\":
                 warning = messagebox.showinfo("Warning", self.messageNoBackslash, parent=self)
                 return
-
-            if self.shift_status:
-                if t.isalpha():
-                    t=t.upper()
-                else:
-                    t = self.uppercase[t]
+            if t != " ":
+                if self.shift_status:
+                    if t.isalpha():
+                        t=t.upper()
+                    else:
+                        t = self.uppercase[t]
 
             first_half = self.localStrVar.get()[:self.currentPos].replace(gv.CURSOR,'')
             second_half = self.localStrVar.get()[self.currentPos+1:].replace(gv.CURSOR,'')

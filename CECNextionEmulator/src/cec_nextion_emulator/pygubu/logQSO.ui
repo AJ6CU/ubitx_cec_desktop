@@ -82,9 +82,7 @@
                     <property name="style">Entry2b.TEntry</property>
                     <property name="takefocus">true</property>
                     <property name="textvariable">string:callsign_VAR</property>
-                    <property name="validate">focusout</property>
                     <property name="width">12</property>
-                    <bind sequence="&lt;FocusIn&gt;" handler="callsign_FocusIn_CB" add="True" />
                     <layout manager="pack" />
                   </object>
                 </child>
@@ -171,10 +169,7 @@
                     <property name="takefocus">true</property>
                     <property name="text" translatable="yes">14.032</property>
                     <property name="textvariable">string:frequency_VAR</property>
-                    <property name="validate">focusout</property>
                     <property name="width">7</property>
-                    <bind sequence="&lt;Button&gt;" handler="frequency_Entered_CB" add="True" />
-                    <bind sequence="&lt;FocusIn&gt;" handler="frequency_FocusIn_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
                       <property name="row">1</property>
@@ -358,8 +353,6 @@
                         <property name="text" translatable="yes">2026</property>
                         <property name="textvariable">string:utcDateYYYY_VAR</property>
                         <property name="width">4</property>
-                        <bind sequence="&lt;FocusIn&gt;" handler="utcDateYYYY_FocusIn_CB" add="True" />
-                        <bind sequence="&lt;FocusOut&gt;" handler="utcDateYYYY_Validate_CB" add="True" />
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="row">0</property>
@@ -385,8 +378,6 @@
                         <property name="text" translatable="yes">12</property>
                         <property name="textvariable">string:utcDateMM_VAR</property>
                         <property name="width">2</property>
-                        <bind sequence="&lt;FocusIn&gt;" handler="utcDateMM_FocusIn_CB" add="True" />
-                        <bind sequence="&lt;FocusOut&gt;" handler="utcDateMM_Validate_CB" add="True" />
                         <layout manager="grid">
                           <property name="column">3</property>
                           <property name="row">0</property>
@@ -411,9 +402,7 @@
                         <property name="takefocus">true</property>
                         <property name="text" translatable="yes">28</property>
                         <property name="textvariable">string:utcDateDD_VAR</property>
-                        <property name="validate">focusout</property>
                         <property name="width">2</property>
-                        <bind sequence="&lt;FocusIn&gt;" handler="utcDateDD_FocusIn_CB" add="True" />
                         <layout manager="grid">
                           <property name="column">5</property>
                           <property name="row">0</property>
@@ -441,9 +430,7 @@
                         <property name="takefocus">true</property>
                         <property name="text" translatable="yes">23</property>
                         <property name="textvariable">string:utcTimeHH_VAR</property>
-                        <property name="validate">focusout</property>
                         <property name="width">2</property>
-                        <bind sequence="&lt;FocusIn&gt;" handler="utcTimeHH_FocusIn_CB" add="True" />
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="row">0</property>
@@ -468,9 +455,7 @@
                         <property name="takefocus">true</property>
                         <property name="text" translatable="yes">12</property>
                         <property name="textvariable">string:utcTimeMM_VAR</property>
-                        <property name="validate">focusout</property>
                         <property name="width">2</property>
-                        <bind sequence="&lt;FocusIn&gt;" handler="utcTimeMM_FocusIn_CB" add="True" />
                         <layout manager="grid">
                           <property name="column">3</property>
                           <property name="row">0</property>
@@ -661,9 +646,7 @@
                     <property name="takefocus">true</property>
                     <property name="text" translatable="yes">599</property>
                     <property name="textvariable">string:rstSend_VAR</property>
-                    <property name="validate">focusout</property>
                     <property name="width">8</property>
-                    <bind sequence="&lt;FocusIn&gt;" handler="rstSend_FocusIn_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">0 20</property>
@@ -679,9 +662,7 @@
                     <property name="takefocus">true</property>
                     <property name="text" translatable="yes">599</property>
                     <property name="textvariable">string:rstRcvd_VAR</property>
-                    <property name="validate">focusout</property>
                     <property name="width">8</property>
-                    <bind sequence="&lt;FocusIn&gt;" handler="rstReceived_FocusIn_CB" add="True" />
                     <layout manager="grid">
                       <property name="column">1</property>
                       <property name="row">1</property>

@@ -9,6 +9,12 @@ UI source file: settingsSDR.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import settingsSDRui as baseui
+from tkinter import messagebox
+
+from entryFieldHandler import entryFieldHandler
+from VirtualNumericKeyboard import VirtualNumericKeyboard
+from VirtualKeyboard import VirtualKeyboard
+
 import globalvars as gv
 
 
@@ -54,6 +60,8 @@ class settingsSDR(baseui.settingsSDRUI):
         self.cwDefault_VAR.set(self.saveCW_Bandwidth)
         self.ssbDefault_VAR.set(self.saveSSB_Bandwidth)
 
+        self.networkPort_Object = entryFieldHandler(self, "networkPort", 5, VirtualNumericKeyboard, self.popup)
+
 
 
         self.pack(expand=tk.YES, fill=tk.BOTH)
@@ -78,8 +86,26 @@ class settingsSDR(baseui.settingsSDRUI):
     def ssbDefault_CB(self):
         pass
 
-    def exportEEPROMChannels_CB(self):
-        pass
+    def networkPort_validation(self):
+        if gv.validateNumber(self.networkPort_VAR.get(), 0,65535):
+            return True
+        else:
+            return False
+
+
+    def networkPort_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Port",
+                            "Ports must be in range of 0 - 65,535\n\n" +
+                            " Input ignored, resetting to prior value", parent=self)
+
+
+    def networkPort_preProcessor(self):
+        return self.networkPort_VAR.get()
+
+
+    def networkPort_postProcessor(self):
+        return
+
 
     def apply_CB(self):
         if self.saveSDR_Switch != self.SDR_Enable_VAR.get():

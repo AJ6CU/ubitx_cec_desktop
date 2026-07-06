@@ -370,11 +370,11 @@ class logQSO(baseui.logQSOUI):
     #
 
     def utcTimeMM_validation(self):
-        return True
+        return self.is_valid_minutes(self.utcTimeMM_VAR.get())
 
     def utcTimeMM_errorHandler(self):
         messagebox.showinfo("Error - Illegal Time",
-                            "Entered hour is not in range 0-23. Resetting to prior value",
+                            "Entered minutes are not in range 0-59. Resetting to prior value",
                             parent=self)
 
     def utcTimeMM_preProcessor(self):

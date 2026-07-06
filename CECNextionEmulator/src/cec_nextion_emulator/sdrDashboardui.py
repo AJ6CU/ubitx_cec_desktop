@@ -91,7 +91,11 @@ class sdrDashboardUI(ttk.Frame):
         lbl_volume_txt.pack(padx="50 0", side="left")
         self.volume_scale = ttk.Scale(frame5, name="volume_scale")
         self.volume_scale.configure(
-            from_=0, length=150, orient="horizontal", to=100)
+            from_=0,
+            length=150,
+            orient="horizontal",
+            takefocus=False,
+            to=100)
         self.volume_scale.pack(padx=10, side="left")
         self.volume_scale.bind(
             "<B1-Motion>",
@@ -110,7 +114,10 @@ class sdrDashboardUI(ttk.Frame):
         self.label_volume_val.pack(side="left")
         self.button_mute_toggle = ttk.Button(frame5, name="button_mute_toggle")
         self.button_mute_toggle.configure(
-            style="Button3Sunken.TButton", text='🔊 Mute Audio', width=12)
+            style="Button3Sunken.TButton",
+            takefocus=False,
+            text='🔊 Mute Audio',
+            width=12)
         self.button_mute_toggle.pack(padx=10, side="left")
         self.button_mute_toggle.configure(command=self.action_toggle_mute)
         frame5.pack(anchor="center", expand=True, fill="x", pady=5, side="top")
@@ -348,6 +355,9 @@ class sdrDashboardUI(ttk.Frame):
         self.channelLookup_Entry = ttk.Entry(
             self.channelSearch_Labelframe,
             name="channellookup_entry")
+        self.channelLookup_VAR = tk.StringVar()
+        self.channelLookup_Entry.configure(
+            takefocus=False, textvariable=self.channelLookup_VAR)
         self.channelLookup_Entry.grid(
             column=0, padx=5, pady=5, row=0, sticky="ew")
         self.channelLookup_Entry.bind(
@@ -364,14 +374,16 @@ class sdrDashboardUI(ttk.Frame):
         self.addChanneltoBank_Button = ttk.Button(
             self.channelEdit_Labelframe, name="addchanneltobank_button")
         self.addChanneltoBank_Button.configure(
-            style="Button3Raised.TButton", text='Copy to\nSource')
+            style="Button3Raised.TButton",
+            takefocus=False,
+            text='Copy to\nSource')
         self.addChanneltoBank_Button.grid(column=0, padx=10, pady=10, row=0)
         self.addChanneltoBank_Button.configure(
             command=self.action_copy_row_to_target_bank)
         self.deleteChannel_Button = ttk.Button(
             self.channelEdit_Labelframe, name="deletechannel_button")
         self.deleteChannel_Button.configure(
-            style="Button3Raised.TButton", text='Erase')
+            style="Button3Raised.TButton", takefocus=False, text='Erase')
         self.deleteChannel_Button.grid(column=0, padx=10, pady=10, row=1)
         self.deleteChannel_Button.configure(command=self.action_del_ch)
         self.newChannelFromVFO_Labelframe = ttk.Labelframe(
@@ -389,27 +401,37 @@ class sdrDashboardUI(ttk.Frame):
             style="Heading4.TLabel", text='Label:')
         self.channelName_Label.grid(
             column=0, padx=10, pady=10, row=0, sticky="e")
-        self.newChannel_Label = ttk.Entry(
-            self.newVFOHeader_Frame, name="newchannel_label")
-        self.newChannel_Label.configure(width=10)
-        self.newChannel_Label.grid(column=1, pady=10, row=0, sticky="w")
+        self.newChannel_Entry = ttk.Entry(
+            self.newVFOHeader_Frame, name="newchannel_entry")
+        self.newChannel_VAR = tk.StringVar()
+        self.newChannel_Entry.configure(
+            placeholder="station name",
+            takefocus=False,
+            textvariable=self.newChannel_VAR,
+            width=10)
+        self.newChannel_Entry.grid(column=1, pady=10, row=0, sticky="w")
         self.channelStation_Label = ttk.Label(
             self.newVFOHeader_Frame, name="channelstation_label")
         self.channelStation_Label.configure(
             style="Heading4.TLabel", text='Desccription:')
         self.channelStation_Label.grid(
             column=0, padx=10, pady=10, row=1, sticky="e")
-        self.customStationName_Entry = ttk.Entry(
-            self.newVFOHeader_Frame, name="customstationname_entry")
-        self.customStationName_Entry.configure(width=15)
-        self.customStationName_Entry.grid(
+        self.newStationDescription_Entry = ttk.Entry(
+            self.newVFOHeader_Frame, name="newstationdescription_entry")
+        self.newStationDescription_VAR = tk.StringVar()
+        self.newStationDescription_Entry.configure(
+            placeholder="description",
+            takefocus=False,
+            textvariable=self.newStationDescription_VAR,
+            width=15)
+        self.newStationDescription_Entry.grid(
             column=1, padx="0 15", pady=10, row=1, sticky="w")
         self.newVFOHeader_Frame.pack()
         self.addNewChannel_Button = ttk.Button(
             self.newChannelFromVFO_Labelframe,
             name="addnewchannel_button")
         self.addNewChannel_Button.configure(
-            style="Button3Raised.TButton", text='Save')
+            style="Button3Raised.TButton", takefocus=False, text='Save')
         self.addNewChannel_Button.pack(pady=10)
         self.addNewChannel_Button.configure(
             command=self.action_capture_live_vfo_to_channel)
@@ -421,39 +443,6 @@ class sdrDashboardUI(ttk.Frame):
         self.bankRouting_Labelframe.configure(
             style="Normal.TLabelframe",
             text='Channel Bank Management')
-        self.channelControl_Frame = ttk.Frame(
-            self.bankRouting_Labelframe,
-            name="channelcontrol_frame")
-        self.channelControl_Frame.configure(
-            height=200, style="Normal.TFrame", width=200)
-        self.bankCloneButton = ttk.Button(
-            self.channelControl_Frame, name="bankclonebutton")
-        self.bankCloneButton.configure(
-            style="Button3Raised.TButton", text='Clone')
-        self.bankCloneButton.grid(column=0, padx=15, pady=10, row=1)
-        self.bankCloneButton.configure(
-            command=self.action_bulk_clone_source_to_target)
-        self.bankDelete_Button = ttk.Button(
-            self.channelControl_Frame, name="bankdelete_button")
-        self.bankDelete_Button.configure(
-            style="Button3Raised.TButton", text='Delete')
-        self.bankDelete_Button.grid(column=0, padx=10, pady=10, row=2)
-        self.bankDelete_Button.configure(
-            command=self.action_delete_source_bank_profile)
-        self.newChannelBank_Button = ttk.Button(
-            self.channelControl_Frame, name="newchannelbank_button")
-        self.newChannelBank_Button.configure(
-            style="Button3Raised.TButton", text='New')
-        self.newChannelBank_Button.grid(column=0, padx=15, pady=10, row=0)
-        self.newChannelBank_Button.configure(
-            command=self.action_create_brand_new_bank)
-        self.channelControl_Frame.grid(
-            column=1,
-            columnspan=3,
-            padx=40,
-            pady=10,
-            row=0,
-            sticky="ew")
         self.sourceTargetLabelframe = ttk.Labelframe(
             self.bankRouting_Labelframe, name="sourcetargetlabelframe")
         self.sourceTargetLabelframe.configure(
@@ -466,6 +455,7 @@ class sdrDashboardUI(ttk.Frame):
         lbl_src_bank.pack(pady="15 0")
         self.sourceBank_Combobox = ttk.Combobox(
             self.sourceTargetLabelframe, name="sourcebank_combobox")
+        self.sourceBank_Combobox.configure(takefocus=False)
         self.sourceBank_Combobox.pack(padx=10)
         self.sourceBank_Combobox.bind(
             "<<ComboboxSelected>>",
@@ -476,8 +466,55 @@ class sdrDashboardUI(ttk.Frame):
         lbl_tgt_bank.pack(pady="15 0")
         self.targetBank_Combobox = ttk.Combobox(
             self.sourceTargetLabelframe, name="targetbank_combobox")
+        self.targetBank_Combobox.configure(takefocus=False)
         self.targetBank_Combobox.pack(padx=10, pady="0 10")
         self.sourceTargetLabelframe.grid(column=0, row=0)
+        self.channelControl_Frame = ttk.Frame(
+            self.bankRouting_Labelframe,
+            name="channelcontrol_frame")
+        self.channelControl_Frame.configure(
+            height=200, style="Normal.TFrame", width=200)
+        self.newChannelBank_Button = ttk.Button(
+            self.channelControl_Frame, name="newchannelbank_button")
+        self.newChannelBank_Button.configure(
+            style="Button3Raised.TButton", takefocus=False, text='New')
+        self.newChannelBank_Button.grid(column=0, padx=15, pady=10, row=0)
+        self.newChannelBank_Button.configure(
+            command=self.action_create_brand_new_bank)
+        self.newBankName_Entry = ttk.Entry(
+            self.channelControl_Frame, name="newbankname_entry")
+        self.newBankName_VAR = tk.StringVar()
+        self.newBankName_Entry.configure(
+            placeholder="new bank name",
+            takefocus=False,
+            textvariable=self.newBankName_VAR,
+            width=11)
+        self.newBankName_Entry.grid(column=1, pady=10, row=0, sticky="w")
+        self.bankCloneButton = ttk.Button(
+            self.channelControl_Frame, name="bankclonebutton")
+        self.bankCloneButton.configure(
+            style="Button3Raised.TButton",
+            takefocus=False,
+            text='Clone')
+        self.bankCloneButton.grid(column=0, padx=15, pady=10, row=1)
+        self.bankCloneButton.configure(
+            command=self.action_bulk_clone_source_to_target)
+        self.bankDelete_Button = ttk.Button(
+            self.channelControl_Frame, name="bankdelete_button")
+        self.bankDelete_Button.configure(
+            style="Button3Raised.TButton",
+            takefocus=False,
+            text='Delete')
+        self.bankDelete_Button.grid(column=0, padx=10, pady=10, row=2)
+        self.bankDelete_Button.configure(
+            command=self.action_delete_source_bank_profile)
+        self.channelControl_Frame.grid(
+            column=1,
+            columnspan=3,
+            padx=40,
+            pady=10,
+            row=0,
+            sticky="ew")
         self.bankRouting_Labelframe.pack(anchor="w", padx=10, pady="20 10")
         self.channelsAccordion_Frame.grid(row=1)
         self.channels_all.pack(
@@ -511,13 +548,17 @@ class sdrDashboardUI(ttk.Frame):
         lbl_delay = ttk.Label(self.scanParameters_Labelframe)
         lbl_delay.configure(
             style="Heading4.TLabel",
-            text='Scan Delay Period (ms):')
+            text='Scan Delay Period (seconds):')
         lbl_delay.grid(column=0, padx=5, pady=10, row=0)
-        self.entry_scan_time = ttk.Entry(
+        self.scanTime_Entry = ttk.Entry(
             self.scanParameters_Labelframe,
-            name="entry_scan_time")
-        self.entry_scan_time.configure(width=6)
-        self.entry_scan_time.grid(column=1, padx=5, pady=10, row=0, sticky="w")
+            name="scantime_entry")
+        self.scanTime_VAR = tk.StringVar()
+        self.scanTime_Entry.configure(
+            takefocus=False,
+            textvariable=self.scanTime_VAR,
+            width=6)
+        self.scanTime_Entry.grid(column=1, padx=5, pady=10, row=0, sticky="w")
         self.scanBankSelect_Label = ttk.Label(
             self.scanParameters_Labelframe,
             name="scanbankselect_label")
@@ -527,6 +568,7 @@ class sdrDashboardUI(ttk.Frame):
             column=0, padx=5, pady=2, row=1, sticky="w")
         self.scanBankSelect_Combobox = ttk.Combobox(
             self.scanParameters_Labelframe, name="scanbankselect_combobox")
+        self.scanBankSelect_Combobox.configure(takefocus=False)
         self.scanBankSelect_Combobox.grid(
             column=1, padx=5, pady=2, row=1, sticky="w")
         self.scanBankSelect_Combobox.bind(
@@ -543,6 +585,7 @@ class sdrDashboardUI(ttk.Frame):
             name="scanstart_button")
         self.scanStart_Button.configure(
             style="Button3Raised.TButton",
+            takefocus=False,
             text='▶ Start Scan ')
         self.scanStart_Button.grid(column=0, padx=5, pady=5, row=0)
         self.scanStart_Button.configure(command=self.action_start_scan)
@@ -551,6 +594,7 @@ class sdrDashboardUI(ttk.Frame):
             name="scanstop_button")
         self.scanStop_Button.configure(
             style="Button3Raised.TButton",
+            takefocus=False,
             text='⏹ Stop Scan')
         self.scanStop_Button.grid(column=1, padx=5, pady=5, row=0)
         self.scanStop_Button.configure(command=self.stop_scan)
@@ -605,7 +649,9 @@ class sdrDashboardUI(ttk.Frame):
             self.connectionStatus_Frame,
             name="reconnect_button")
         self.reconnect_Button.configure(
-            style="Button3Raised.TButton", text='Reconnect')
+            style="Button3Raised.TButton",
+            takefocus=False,
+            text='Reconnect')
         self.reconnect_Button.grid(column=2, columnspan=2, pady=5, row=2)
         self.reconnect_Button.configure(command=self.action_connect)
         self.sdrIPAddress_Label = ttk.Label(
@@ -674,16 +720,16 @@ class sdrDashboardUI(ttk.Frame):
     def action_capture_live_vfo_to_channel(self):
         pass
 
-    def action_bulk_clone_source_to_target(self):
-        pass
-
-    def action_delete_source_bank_profile(self):
+    def action_on_set_dropdown_change(self, event=None):
         pass
 
     def action_create_brand_new_bank(self):
         pass
 
-    def action_on_set_dropdown_change(self, event=None):
+    def action_bulk_clone_source_to_target(self):
+        pass
+
+    def action_delete_source_bank_profile(self):
         pass
 
     def toggleScan_CB(self):

@@ -126,6 +126,7 @@
                     <property name="from_">0</property>
                     <property name="length">150</property>
                     <property name="orient">horizontal</property>
+                    <property name="takefocus">false</property>
                     <property name="to">100</property>
                     <bind sequence="&lt;B1-Motion&gt;" handler="action_on_volume_slider_move" add="True" />
                     <bind sequence="&lt;ButtonRelease-1&gt;" handler="action_on_volume_slider_move" add="True" />
@@ -150,6 +151,7 @@
                   <object class="ttk.Button" id="button_mute_toggle" named="True">
                     <property name="command" type="command" cbtype="simple">action_toggle_mute</property>
                     <property name="style">Button3Sunken.TButton</property>
+                    <property name="takefocus">false</property>
                     <property name="text" translatable="yes">🔊 Mute Audio</property>
                     <property name="width">12</property>
                     <layout manager="pack">
@@ -602,6 +604,8 @@
                             </layout>
                             <child>
                               <object class="ttk.Entry" id="channelLookup_Entry" named="True">
+                                <property name="takefocus">false</property>
+                                <property name="textvariable">string:channelLookup_VAR</property>
                                 <bind sequence="&lt;KeyRelease&gt;" handler="action_filter_search_grid" add="True" />
                                 <layout manager="grid">
                                   <property name="column">0</property>
@@ -631,6 +635,7 @@
                           <object class="ttk.Button" id="addChanneltoBank_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_copy_row_to_target_bank</property>
                             <property name="style">Button3Raised.TButton</property>
+                            <property name="takefocus">false</property>
                             <property name="text" translatable="yes">Copy to
 Source</property>
                             <layout manager="grid">
@@ -645,6 +650,7 @@ Source</property>
                           <object class="ttk.Button" id="deleteChannel_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_del_ch</property>
                             <property name="style">Button3Raised.TButton</property>
+                            <property name="takefocus">false</property>
                             <property name="text" translatable="yes">Erase</property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -688,7 +694,10 @@ Source</property>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="ttk.Entry" id="newChannel_Label" named="True">
+                                  <object class="ttk.Entry" id="newChannel_Entry" named="True">
+                                    <property name="placeholder">station name</property>
+                                    <property name="takefocus">false</property>
+                                    <property name="textvariable">string:newChannel_VAR</property>
                                     <property name="width">10</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -712,7 +721,10 @@ Source</property>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="ttk.Entry" id="customStationName_Entry" named="True">
+                                  <object class="ttk.Entry" id="newStationDescription_Entry" named="True">
+                                    <property name="placeholder">description</property>
+                                    <property name="takefocus">false</property>
+                                    <property name="textvariable">string:newStationDescription_VAR</property>
                                     <property name="width">15</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -729,6 +741,7 @@ Source</property>
                               <object class="ttk.Button" id="addNewChannel_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_capture_live_vfo_to_channel</property>
                                 <property name="style">Button3Raised.TButton</property>
+                                <property name="takefocus">false</property>
                                 <property name="text" translatable="yes">Save</property>
                                 <layout manager="pack">
                                   <property name="pady">10</property>
@@ -748,60 +761,6 @@ Source</property>
                           <property name="padx">10</property>
                           <property name="pady">20 10</property>
                         </layout>
-                        <child>
-                          <object class="ttk.Frame" id="channelControl_Frame" named="True">
-                            <property name="height">200</property>
-                            <property name="style">Normal.TFrame</property>
-                            <property name="width">200</property>
-                            <layout manager="grid">
-                              <property name="column">1</property>
-                              <property name="columnspan">3</property>
-                              <property name="padx">40</property>
-                              <property name="pady">10</property>
-                              <property name="row">0</property>
-                              <property name="sticky">ew</property>
-                            </layout>
-                            <child>
-                              <object class="ttk.Button" id="bankCloneButton" named="True">
-                                <property name="command" type="command" cbtype="simple">action_bulk_clone_source_to_target</property>
-                                <property name="style">Button3Raised.TButton</property>
-                                <property name="text" translatable="yes">Clone</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="padx">15</property>
-                                  <property name="pady">10</property>
-                                  <property name="row">1</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Button" id="bankDelete_Button" named="True">
-                                <property name="command" type="command" cbtype="simple">action_delete_source_bank_profile</property>
-                                <property name="style">Button3Raised.TButton</property>
-                                <property name="text" translatable="yes">Delete</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="padx">10</property>
-                                  <property name="pady">10</property>
-                                  <property name="row">2</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Button" id="newChannelBank_Button" named="True">
-                                <property name="command" type="command" cbtype="simple">action_create_brand_new_bank</property>
-                                <property name="style">Button3Raised.TButton</property>
-                                <property name="text" translatable="yes">New</property>
-                                <layout manager="grid">
-                                  <property name="column">0</property>
-                                  <property name="padx">15</property>
-                                  <property name="pady">10</property>
-                                  <property name="row">0</property>
-                                </layout>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
                         <child>
                           <object class="ttk.Labelframe" id="sourceTargetLabelframe" named="True">
                             <property name="height">200</property>
@@ -823,6 +782,7 @@ Source</property>
                             </child>
                             <child>
                               <object class="ttk.Combobox" id="sourceBank_Combobox" named="True">
+                                <property name="takefocus">false</property>
                                 <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="action_on_set_dropdown_change" add="True" />
                                 <layout manager="pack">
                                   <property name="padx">10</property>
@@ -840,9 +800,81 @@ Source</property>
                             </child>
                             <child>
                               <object class="ttk.Combobox" id="targetBank_Combobox" named="True">
+                                <property name="takefocus">false</property>
                                 <layout manager="pack">
                                   <property name="padx">10</property>
                                   <property name="pady">0 10</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Frame" id="channelControl_Frame" named="True">
+                            <property name="height">200</property>
+                            <property name="style">Normal.TFrame</property>
+                            <property name="width">200</property>
+                            <layout manager="grid">
+                              <property name="column">1</property>
+                              <property name="columnspan">3</property>
+                              <property name="padx">40</property>
+                              <property name="pady">10</property>
+                              <property name="row">0</property>
+                              <property name="sticky">ew</property>
+                            </layout>
+                            <child>
+                              <object class="ttk.Button" id="newChannelBank_Button" named="True">
+                                <property name="command" type="command" cbtype="simple">action_create_brand_new_bank</property>
+                                <property name="style">Button3Raised.TButton</property>
+                                <property name="takefocus">false</property>
+                                <property name="text" translatable="yes">New</property>
+                                <layout manager="grid">
+                                  <property name="column">0</property>
+                                  <property name="padx">15</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Entry" id="newBankName_Entry" named="True">
+                                <property name="placeholder">new bank name</property>
+                                <property name="takefocus">false</property>
+                                <property name="textvariable">string:newBankName_VAR</property>
+                                <property name="width">11</property>
+                                <layout manager="grid">
+                                  <property name="column">1</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">0</property>
+                                  <property name="sticky">w</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Button" id="bankCloneButton" named="True">
+                                <property name="command" type="command" cbtype="simple">action_bulk_clone_source_to_target</property>
+                                <property name="style">Button3Raised.TButton</property>
+                                <property name="takefocus">false</property>
+                                <property name="text" translatable="yes">Clone</property>
+                                <layout manager="grid">
+                                  <property name="column">0</property>
+                                  <property name="padx">15</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Button" id="bankDelete_Button" named="True">
+                                <property name="command" type="command" cbtype="simple">action_delete_source_bank_profile</property>
+                                <property name="style">Button3Raised.TButton</property>
+                                <property name="takefocus">false</property>
+                                <property name="text" translatable="yes">Delete</property>
+                                <layout manager="grid">
+                                  <property name="column">0</property>
+                                  <property name="padx">10</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">2</property>
                                 </layout>
                               </object>
                             </child>
@@ -906,7 +938,7 @@ Source</property>
                         <child>
                           <object class="ttk.Label" id="lbl_delay">
                             <property name="style">Heading4.TLabel</property>
-                            <property name="text" translatable="yes">Scan Delay Period (ms):</property>
+                            <property name="text" translatable="yes">Scan Delay Period (seconds):</property>
                             <layout manager="grid">
                               <property name="column">0</property>
                               <property name="padx">5</property>
@@ -916,7 +948,9 @@ Source</property>
                           </object>
                         </child>
                         <child>
-                          <object class="ttk.Entry" id="entry_scan_time" named="True">
+                          <object class="ttk.Entry" id="scanTime_Entry" named="True">
+                            <property name="takefocus">false</property>
+                            <property name="textvariable">string:scanTime_VAR</property>
                             <property name="width">6</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -942,6 +976,7 @@ Source</property>
                         </child>
                         <child>
                           <object class="ttk.Combobox" id="scanBankSelect_Combobox" named="True">
+                            <property name="takefocus">false</property>
                             <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="action_on_set_dropdown_change" add="True" />
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -967,6 +1002,7 @@ Source</property>
                           <object class="ttk.Button" id="scanStart_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_start_scan</property>
                             <property name="style">Button3Raised.TButton</property>
+                            <property name="takefocus">false</property>
                             <property name="text" translatable="yes">▶ Start Scan </property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -980,6 +1016,7 @@ Source</property>
                           <object class="ttk.Button" id="scanStop_Button" named="True">
                             <property name="command" type="command" cbtype="simple">stop_scan</property>
                             <property name="style">Button3Raised.TButton</property>
+                            <property name="takefocus">false</property>
                             <property name="text" translatable="yes">⏹ Stop Scan</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -1060,6 +1097,7 @@ Source</property>
               <object class="ttk.Button" id="reconnect_Button" named="True">
                 <property name="command" type="command" cbtype="simple">action_connect</property>
                 <property name="style">Button3Raised.TButton</property>
+                <property name="takefocus">false</property>
                 <property name="text" translatable="yes">Reconnect</property>
                 <layout manager="grid">
                   <property name="column">2</property>
