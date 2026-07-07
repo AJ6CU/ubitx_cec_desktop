@@ -60,7 +60,7 @@
                 </layout>
                 <child>
                   <object class="ttk.Label" id="label1">
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">Active VFO Frequency:</property>
                     <layout manager="pack">
                       <property name="padx">42 10</property>
@@ -70,9 +70,9 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="label_val_freq" named="True">
-                    <property name="font">TkFixedFont</property>
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">000.0000 MHz</property>
+                    <property name="width">13</property>
                     <layout manager="pack">
                       <property name="side">left</property>
                     </layout>
@@ -80,7 +80,7 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="label4">
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">Mode:</property>
                     <layout manager="pack">
                       <property name="padx">40 10</property>
@@ -90,7 +90,7 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="label_val_mode" named="True">
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">UNKNOWN</property>
                     <layout manager="pack">
                       <property name="side">left</property>
@@ -113,12 +113,20 @@
                 </layout>
                 <child>
                   <object class="ttk.Label" id="lbl_volume_txt">
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">Audio Volume (0-100):</property>
                     <layout manager="pack">
                       <property name="padx">50 0</property>
                       <property name="side">left</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="tooltip1" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Controls system volume</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -131,6 +139,7 @@
                     <bind sequence="&lt;B1-Motion&gt;" handler="action_on_volume_slider_move" add="True" />
                     <bind sequence="&lt;ButtonRelease-1&gt;" handler="action_on_volume_slider_move" add="True" />
                     <layout manager="pack">
+                      <property name="ipady">5</property>
                       <property name="padx">10</property>
                       <property name="side">left</property>
                     </layout>
@@ -139,7 +148,7 @@
                 <child>
                   <object class="ttk.Label" id="label_volume_val" named="True">
                     <property name="font">TkFixedFont</property>
-                    <property name="style">Heading4.TLabel</property>
+                    <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">50%</property>
                     <property name="width">6</property>
                     <layout manager="pack">
@@ -150,14 +159,23 @@
                 <child>
                   <object class="ttk.Button" id="button_mute_toggle" named="True">
                     <property name="command" type="command" cbtype="simple">action_toggle_mute</property>
-                    <property name="style">Button3Sunken.TButton</property>
+                    <property name="style">Button3Raised.TButton</property>
                     <property name="takefocus">false</property>
                     <property name="text" translatable="yes">🔊 Mute Audio</property>
-                    <property name="width">12</property>
+                    <property name="width">15</property>
                     <layout manager="pack">
+                      <property name="ipady">5</property>
                       <property name="padx">10</property>
                       <property name="side">left</property>
                     </layout>
+                    <child>
+                      <object class="pygubu.widgets.Tooltip" id="tooltip3" named="True">
+                        <property name="padx">8</property>
+                        <property name="relief">raised</property>
+                        <property name="text" translatable="yes">Mute/Unmute System Volume</property>
+                        <property name="wraplength">300</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -238,8 +256,9 @@
                             <property name="text" translatable="yes">160M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -251,8 +270,9 @@
                             <property name="text" translatable="yes">80M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -264,8 +284,9 @@
                             <property name="text" translatable="yes">40M</property>
                             <layout manager="grid">
                               <property name="column">2</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -277,8 +298,9 @@
                             <property name="text" translatable="yes">30M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">1</property>
                             </layout>
                           </object>
@@ -290,8 +312,9 @@
                             <property name="text" translatable="yes">20M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">1</property>
                             </layout>
                           </object>
@@ -303,8 +326,9 @@
                             <property name="text" translatable="yes">17M</property>
                             <layout manager="grid">
                               <property name="column">2</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">1</property>
                             </layout>
                           </object>
@@ -316,8 +340,9 @@
                             <property name="text" translatable="yes">15M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">2</property>
                             </layout>
                           </object>
@@ -329,8 +354,9 @@
                             <property name="text" translatable="yes">12M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">2</property>
                             </layout>
                           </object>
@@ -342,10 +368,19 @@
                             <property name="text" translatable="yes">10m</property>
                             <layout manager="grid">
                               <property name="column">2</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">2</property>
                             </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="tooltip2" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Shortcut buttons to common HAM bands</property>
+                            <property name="wraplength">300</property>
                           </object>
                         </child>
                       </object>
@@ -369,8 +404,9 @@
                             <property name="text" translatable="yes">LSB</property>
                             <layout manager="grid">
                               <property name="column">0</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -382,8 +418,9 @@
                             <property name="text" translatable="yes">USB</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -395,8 +432,9 @@
                             <property name="text" translatable="yes">CWL</property>
                             <layout manager="grid">
                               <property name="column">2</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
                           </object>
@@ -408,10 +446,19 @@
                             <property name="text" translatable="yes">CWU</property>
                             <layout manager="grid">
                               <property name="column">3</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="tooltip4" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Selects the mode for RX.CWL and CWU are mapped to CW on SDR++. </property>
+                            <property name="wraplength">300</property>
                           </object>
                         </child>
                       </object>
@@ -444,10 +491,19 @@
                                 <property name="style">Button3Raised.TButton</property>
                                 <property name="text" translatable="yes">Widen</property>
                                 <layout manager="pack">
-                                  <property name="padx">5</property>
-                                  <property name="pady">5</property>
+                                  <property name="ipady">5</property>
+                                  <property name="padx">10</property>
+                                  <property name="pady">10</property>
                                   <property name="side">left</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip5" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Widens the bandwidth filter. 50 for CW and 500 for LSB/USB.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
@@ -456,10 +512,19 @@
                                 <property name="style">Button3Raised.TButton</property>
                                 <property name="text" translatable="yes">Narrow</property>
                                 <layout manager="pack">
-                                  <property name="padx">5</property>
-                                  <property name="pady">5</property>
+                                  <property name="ipady">5</property>
+                                  <property name="padx">10</property>
+                                  <property name="pady">10</property>
                                   <property name="side">left</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip6" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Narrows the bandwidth filter. 50 for CW and 500 for LSB/USB.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
@@ -468,10 +533,19 @@
                                 <property name="style">Button3Raised.TButton</property>
                                 <property name="text" translatable="yes">Reset</property>
                                 <layout manager="pack">
-                                  <property name="padx">5</property>
-                                  <property name="pady">5</property>
+                                  <property name="ipady">5</property>
+                                  <property name="padx">10</property>
+                                  <property name="pady">10</property>
                                   <property name="side">left</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip7" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Resets filter to default for the mode. Can be tuned in the SDR Settings control panel.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
@@ -483,6 +557,14 @@
                                   <property name="pady">5</property>
                                   <property name="side">left</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip8" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">The current filter width reported by sdr++.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
@@ -604,16 +686,26 @@
                             </layout>
                             <child>
                               <object class="ttk.Entry" id="channelLookup_Entry" named="True">
+                                <property name="style">Entry3b.TEntry</property>
                                 <property name="takefocus">false</property>
                                 <property name="textvariable">string:channelLookup_VAR</property>
                                 <bind sequence="&lt;KeyRelease&gt;" handler="action_filter_search_grid" add="True" />
                                 <layout manager="grid">
                                   <property name="column">0</property>
+                                  <property name="ipady">5</property>
                                   <property name="padx">5</property>
                                   <property name="pady">5</property>
                                   <property name="row">0</property>
                                   <property name="sticky">ew</property>
                                 </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip9" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Type in a few characters to find a channel in the current Bank.</property>
+                                <property name="wraplength">300</property>
                               </object>
                             </child>
                           </object>
@@ -637,13 +729,23 @@
                             <property name="style">Button3Raised.TButton</property>
                             <property name="takefocus">false</property>
                             <property name="text" translatable="yes">Copy to
-Source</property>
+Target
+Bank</property>
                             <layout manager="grid">
                               <property name="column">0</property>
+                              <property name="ipady">5</property>
                               <property name="padx">10</property>
                               <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip10" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Copies the selected Channel in list above to the Target Bank.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
@@ -651,20 +753,32 @@ Source</property>
                             <property name="command" type="command" cbtype="simple">action_del_ch</property>
                             <property name="style">Button3Raised.TButton</property>
                             <property name="takefocus">false</property>
-                            <property name="text" translatable="yes">Erase</property>
+                            <property name="text" translatable="yes">Erase
+Channel
+in Source
+Bank</property>
                             <layout manager="grid">
                               <property name="column">0</property>
+                              <property name="ipady">5</property>
                               <property name="padx">10</property>
                               <property name="pady">10</property>
                               <property name="row">1</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip11" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Erases the currently selected channel in the list above. Only erases in the selected Source Bank.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="ttk.Labelframe" id="newChannelFromVFO_Labelframe" named="True">
                             <property name="height">200</property>
                             <property name="style">Normal.TLabelframe</property>
-                            <property name="text" translatable="yes">Save VFO to Channel</property>
+                            <property name="text" translatable="yes">Save VFO to Channel and Target Bank</property>
                             <property name="width">200</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -682,7 +796,7 @@ Source</property>
                                 <layout manager="pack" />
                                 <child>
                                   <object class="ttk.Label" id="channelName_Label" named="True">
-                                    <property name="style">Heading4.TLabel</property>
+                                    <property name="style">Heading3b.TLabel</property>
                                     <property name="text" translatable="yes">Label:</property>
                                     <layout manager="grid">
                                       <property name="column">0</property>
@@ -691,16 +805,26 @@ Source</property>
                                       <property name="row">0</property>
                                       <property name="sticky">e</property>
                                     </layout>
+                                    <child>
+                                      <object class="pygubu.widgets.Tooltip" id="tooltip12" named="True">
+                                        <property name="padx">8</property>
+                                        <property name="relief">raised</property>
+                                        <property name="text" translatable="yes">Enter a short name for the channel being created based on the current VFO</property>
+                                        <property name="wraplength">300</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="ttk.Entry" id="newChannel_Entry" named="True">
                                     <property name="placeholder">station name</property>
+                                    <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
                                     <property name="textvariable">string:newChannel_VAR</property>
                                     <property name="width">10</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
+                                      <property name="ipady">5</property>
                                       <property name="pady">10</property>
                                       <property name="row">0</property>
                                       <property name="sticky">w</property>
@@ -709,7 +833,7 @@ Source</property>
                                 </child>
                                 <child>
                                   <object class="ttk.Label" id="channelStation_Label" named="True">
-                                    <property name="style">Heading4.TLabel</property>
+                                    <property name="style">Heading3b.TLabel</property>
                                     <property name="text" translatable="yes">Desccription:</property>
                                     <layout manager="grid">
                                       <property name="column">0</property>
@@ -718,16 +842,26 @@ Source</property>
                                       <property name="row">1</property>
                                       <property name="sticky">e</property>
                                     </layout>
+                                    <child>
+                                      <object class="pygubu.widgets.Tooltip" id="tooltip25" named="True">
+                                        <property name="padx">8</property>
+                                        <property name="relief">raised</property>
+                                        <property name="text" translatable="yes">Enter a longer more description name for the channel.</property>
+                                        <property name="wraplength">300</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="ttk.Entry" id="newStationDescription_Entry" named="True">
                                     <property name="placeholder">description</property>
+                                    <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
                                     <property name="textvariable">string:newStationDescription_VAR</property>
                                     <property name="width">15</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
+                                      <property name="ipady">5</property>
                                       <property name="padx">0 15</property>
                                       <property name="pady">10</property>
                                       <property name="row">1</property>
@@ -742,10 +876,21 @@ Source</property>
                                 <property name="command" type="command" cbtype="simple">action_capture_live_vfo_to_channel</property>
                                 <property name="style">Button3Raised.TButton</property>
                                 <property name="takefocus">false</property>
-                                <property name="text" translatable="yes">Save</property>
+                                <property name="text" translatable="yes">Save to
+Source
+Bank</property>
                                 <layout manager="pack">
+                                  <property name="ipady">5</property>
                                   <property name="pady">10</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip14" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Saves the current VFO and Mode to the Source Bank.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -773,37 +918,65 @@ Source</property>
                             </layout>
                             <child>
                               <object class="ttk.Label" id="lbl_src_bank">
-                                <property name="style">Heading4.TLabel</property>
+                                <property name="style">Heading3b.TLabel</property>
                                 <property name="text" translatable="yes">Source:</property>
-                                <layout manager="pack">
-                                  <property name="pady">15 0</property>
+                                <layout manager="grid">
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip15" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Selection of the Source bank. </property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="ttk.Combobox" id="sourceBank_Combobox" named="True">
-                                <property name="takefocus">false</property>
-                                <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="action_on_set_dropdown_change" add="True" />
-                                <layout manager="pack">
-                                  <property name="padx">10</property>
+                              <object class="ttk.OptionMenu" id="sourceBank" named="True">
+                                <property name="command" type="command" cbtype="simple">sourceBank_CB</property>
+                                <property name="value">select</property>
+                                <property name="values">select, test1, test2</property>
+                                <property name="variable">string:sourceBank_VAR</property>
+                                <layout manager="grid">
+                                  <property name="column">1</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">0</property>
+                                  <property name="sticky">w</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
                               <object class="ttk.Label" id="lbl_tgt_bank">
-                                <property name="style">Heading4.TLabel</property>
+                                <property name="style">Heading3b.TLabel</property>
                                 <property name="text" translatable="yes">Target:</property>
-                                <layout manager="pack">
-                                  <property name="pady">15 0</property>
+                                <layout manager="grid">
+                                  <property name="column">0</property>
+                                  <property name="row">1</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip16" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Selection of the Target bank. </property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="ttk.Combobox" id="targetBank_Combobox" named="True">
-                                <property name="takefocus">false</property>
-                                <layout manager="pack">
-                                  <property name="padx">10</property>
-                                  <property name="pady">0 10</property>
+                              <object class="ttk.OptionMenu" id="targetBank" named="True">
+                                <property name="command" type="command" cbtype="simple">targetBank_CB</property>
+                                <property name="value">selected</property>
+                                <property name="values">selected, test1, test2</property>
+                                <property name="variable">string:targetBank_VAR</property>
+                                <layout manager="grid">
+                                  <property name="column">1</property>
+                                  <property name="pady">10</property>
+                                  <property name="row">1</property>
+                                  <property name="sticky">w</property>
                                 </layout>
                               </object>
                             </child>
@@ -830,20 +1003,31 @@ Source</property>
                                 <property name="text" translatable="yes">New</property>
                                 <layout manager="grid">
                                   <property name="column">0</property>
+                                  <property name="ipady">5</property>
                                   <property name="padx">15</property>
                                   <property name="pady">10</property>
                                   <property name="row">0</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip17" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Creates a new bank by name you enter in the entry field to the right.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
                               <object class="ttk.Entry" id="newBankName_Entry" named="True">
                                 <property name="placeholder">new bank name</property>
+                                <property name="style">Entry3b.TEntry</property>
                                 <property name="takefocus">false</property>
                                 <property name="textvariable">string:newBankName_VAR</property>
                                 <property name="width">11</property>
                                 <layout manager="grid">
-                                  <property name="column">1</property>
+                                  <property name="column">2</property>
+                                  <property name="ipady">5</property>
                                   <property name="pady">10</property>
                                   <property name="row">0</property>
                                   <property name="sticky">w</property>
@@ -858,10 +1042,19 @@ Source</property>
                                 <property name="text" translatable="yes">Clone</property>
                                 <layout manager="grid">
                                   <property name="column">0</property>
+                                  <property name="ipady">5</property>
                                   <property name="padx">15</property>
                                   <property name="pady">10</property>
-                                  <property name="row">1</property>
+                                  <property name="row">2</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip18" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Adds the channels in the Source Bank to the Target Bank. Existing channels in Target Bank are preserved.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
@@ -869,13 +1062,24 @@ Source</property>
                                 <property name="command" type="command" cbtype="simple">action_delete_source_bank_profile</property>
                                 <property name="style">Button3Raised.TButton</property>
                                 <property name="takefocus">false</property>
-                                <property name="text" translatable="yes">Delete</property>
+                                <property name="text" translatable="yes">Delete
+Source
+Bank</property>
                                 <layout manager="grid">
                                   <property name="column">0</property>
+                                  <property name="ipady">5</property>
                                   <property name="padx">10</property>
                                   <property name="pady">10</property>
-                                  <property name="row">2</property>
+                                  <property name="row">3</property>
                                 </layout>
+                                <child>
+                                  <object class="pygubu.widgets.Tooltip" id="tooltip19" named="True">
+                                    <property name="padx">8</property>
+                                    <property name="relief">raised</property>
+                                    <property name="text" translatable="yes">Deletes the bank currently selected in the Source Bank selector.</property>
+                                    <property name="wraplength">300</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -937,24 +1141,37 @@ Source</property>
                         </layout>
                         <child>
                           <object class="ttk.Label" id="lbl_delay">
-                            <property name="style">Heading4.TLabel</property>
-                            <property name="text" translatable="yes">Scan Delay Period (seconds):</property>
+                            <property name="justify">right</property>
+                            <property name="style">Heading3b.TLabel</property>
+                            <property name="text" translatable="yes">Scan Delay Period:
+(seconds)
+</property>
                             <layout manager="grid">
                               <property name="column">0</property>
                               <property name="padx">5</property>
                               <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip20" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Specify the time that the radio will stay on a channel during a scan. This defaults to a saved value in the Channels Setting screen. Changing it here is for only this run and does not change the default.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="ttk.Entry" id="scanTime_Entry" named="True">
+                            <property name="style">Entry3b.TEntry</property>
                             <property name="takefocus">false</property>
                             <property name="textvariable">string:scanTime_VAR</property>
                             <property name="width">6</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
                               <property name="pady">10</property>
                               <property name="row">0</property>
                               <property name="sticky">w</property>
@@ -963,25 +1180,35 @@ Source</property>
                         </child>
                         <child>
                           <object class="ttk.Label" id="scanBankSelect_Label" named="True">
-                            <property name="style">Heading4.TLabel</property>
-                            <property name="text" translatable="yes">Source Bank:</property>
+                            <property name="justify">right</property>
+                            <property name="style">Heading3b.TLabel</property>
+                            <property name="text" translatable="yes">Bank to Scan:</property>
                             <layout manager="grid">
                               <property name="column">0</property>
                               <property name="padx">5</property>
                               <property name="pady">2</property>
                               <property name="row">1</property>
-                              <property name="sticky">w</property>
+                              <property name="sticky">e</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip21" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Select the bank to scan.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
-                          <object class="ttk.Combobox" id="scanBankSelect_Combobox" named="True">
-                            <property name="takefocus">false</property>
-                            <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="action_on_set_dropdown_change" add="True" />
+                          <object class="ttk.OptionMenu" id="scanBank" named="True">
+                            <property name="command" type="command" cbtype="simple">scanBank_CB</property>
+                            <property name="value">selected</property>
+                            <property name="values">selected, test1, test2</property>
+                            <property name="variable">string:scanBank_VAR</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">2</property>
+                              <property name="pady">10</property>
                               <property name="row">1</property>
                               <property name="sticky">w</property>
                             </layout>
@@ -1006,10 +1233,20 @@ Source</property>
                             <property name="text" translatable="yes">▶ Start Scan </property>
                             <layout manager="grid">
                               <property name="column">0</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipadx">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip22" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Starts the channel scan using the channels in the Se;ector above.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
@@ -1020,10 +1257,20 @@ Source</property>
                             <property name="text" translatable="yes">⏹ Stop Scan</property>
                             <layout manager="grid">
                               <property name="column">1</property>
-                              <property name="padx">5</property>
-                              <property name="pady">5</property>
+                              <property name="ipadx">5</property>
+                              <property name="ipady">5</property>
+                              <property name="padx">10</property>
+                              <property name="pady">10</property>
                               <property name="row">0</property>
                             </layout>
+                            <child>
+                              <object class="pygubu.widgets.Tooltip" id="tooltip23" named="True">
+                                <property name="padx">8</property>
+                                <property name="relief">raised</property>
+                                <property name="text" translatable="yes">Stops the scan. Stays on current channel.</property>
+                                <property name="wraplength">300</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -1047,7 +1294,7 @@ Source</property>
             </containerlayout>
             <child>
               <object class="ttk.Label" id="ipAddress_Label" named="True">
-                <property name="style">Heading4.TLabel</property>
+                <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">SDR IP Address:</property>
                 <layout manager="grid">
                   <property name="column">0</property>
@@ -1060,7 +1307,7 @@ Source</property>
             </child>
             <child>
               <object class="ttk.Label" id="portLabel" named="True">
-                <property name="style">Heading4.TLabel</property>
+                <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">TCP Socket Port:</property>
                 <layout manager="grid">
                   <property name="column">2</property>
@@ -1072,7 +1319,7 @@ Source</property>
             </child>
             <child>
               <object class="ttk.Label" id="sdrStatus_Label" named="True">
-                <property name="style">Heading4.TLabel</property>
+                <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">SDR Status:</property>
                 <layout manager="grid">
                   <property name="column">0</property>
@@ -1102,17 +1349,29 @@ Source</property>
                 <layout manager="grid">
                   <property name="column">2</property>
                   <property name="columnspan">2</property>
-                  <property name="pady">5</property>
+                  <property name="ipadx">5</property>
+                  <property name="ipady">5</property>
+                  <property name="padx">10</property>
+                  <property name="pady">10</property>
                   <property name="row">2</property>
                 </layout>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="tooltip24" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">If the SDR becomes disconnected. Try clicking this button to reconnect.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
               <object class="ttk.Label" id="sdrIPAddress_Label" named="True">
                 <property name="state">normal</property>
-                <property name="style">Heading4.TLabel</property>
+                <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">0.0.0.0	</property>
                 <property name="textvariable">string:sdrIPAddress_VAR</property>
+                <property name="width">11</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="row">0</property>
@@ -1122,9 +1381,10 @@ Source</property>
             </child>
             <child>
               <object class="ttk.Label" id="sdrPortNumber_Label" named="True">
-                <property name="style">Heading4.TLabel</property>
+                <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">8000</property>
                 <property name="textvariable">string:sdrPortNumber_VAR</property>
+                <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">3</property>
                   <property name="row">0</property>

@@ -142,14 +142,53 @@ def unformatFrequency(vfo, includeOffset=False, freqOffset=0):
 def formatCombobox( combobox, family="Arial", size="36", weight="bold"):
     # combobox.configure(font=font.Font(family=family, size=size, weight=weight))
     combobox.configure(font=("Arial",36))
-    #
-    #   The following is pure magic....  Found after hours of search. Basically the first command
-    #   discovers the handle to the ListBox that is hidden below the combobox
-    #   with this handle you can then set the drop down to the fonts used by the combobox.
-    #   grab (create a new one or get existing) popdown
-    # popdown = combobox.tk.eval('ttk::combobox::PopdownWindow %s' % combobox)
-    # #   configure popdown font
-    # combobox.tk.call('%s.f.l' % popdown, 'co        self.popup.geometry(gv.POPUP_WINDOW_OFFSET)nfigure', '-font', combobox['font'])
+
+
+def formatOptionMenu(theWidget, theFont, theWidth):
+    theWidget.configure(style="Heading1n.TMenubutton", width=theWidth)
+    dropdown_menu = theWidget.nametowidget(theWidget.cget("menu"))
+    dropdown_menu.config(font=theFont)
+
+
+import tkinter as tk
+
+
+def refresh_menu_by_name(parent, widget_name, new_list, selected_val=None):
+    """Updates an OptionMenu dynamically using getattr lookups.
+
+    Looks up the widget via:     getattr(parent, widget_name)
+    Looks up the StringVar via:  getattr(parent, widget_name + '_VAR')
+    Looks up the callback via:   getattr(parent, widget_name + '_cb')
+    """
+    var_name = f"{widget_name}_VAR"
+    callback_name = f"{widget_name}_CB"
+
+    # 1. Dynamically fetch the Tkinter objects and callback function using string names
+    menu_widget = getattr(parent, widget_name, None)
+    string_var = getattr(parent, var_name, None)
+    callback_func = getattr(parent, callback_name, None)
+
+    # Safety check: Ensure everything required exists on the parent
+    if not menu_widget or not string_var or not callback_func:
+        print(f"Error: Missing attribute(s) for '{widget_name}' on the parent.")
+        return
+
+    # 2. Clear out all the old menu options from the UI display
+    menu_widget['menu'].delete(0, 'end')
+
+    # 3. Rebuild the menu choices using the retrieved StringVar and callback
+    for choice in new_list:
+        menu_widget['menu'].add_command(
+            label=choice,
+            command=tk._setit(string_var, choice, callback_func)
+        )
+
+    # Determine which value to display
+    if selected_val in new_list:
+        string_var.set(selected_val)  # Set to the requested value
+    elif new_list:
+        string_var.set(new_list[0])  # Fallback to the first item if choice isn't in list
+
 
 def validateNumber(value, lowbound, highbound):
     if str(value) == "":

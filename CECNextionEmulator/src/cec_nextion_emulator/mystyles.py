@@ -18,8 +18,8 @@
 
 # import tkinter as tk
 import tkinter.ttk as ttk
-#import sv_ttk
 
+#import sv_ttk
 
 def setup_ttk_styles(master=None):
     
@@ -33,6 +33,7 @@ def setup_ttk_styles(master=None):
             'Heading1Fixed': ("TkFixedFont", 24, 'bold'),
             'Heading1A': ('Arial', 24, 'bold'),
             'Heading1b': ('Arial', 20, 'bold'),
+            'Heading1n': ('Arial', 20),
             'Heading1bi': ('Arial', 20, 'bold', 'italic'),
             'Heading2': ('Arial',18, 'bold' ),
             'Heading2b': ('Arial',14, 'bold' ),
@@ -46,6 +47,7 @@ def setup_ttk_styles(master=None):
             'Emphasis': ('Default',12, 'bold'),
             'Symbol1': ('Symbol',18, 'bold'),
             'Symbol3': ('Symbol',12, 'bold')}
+
 
     style.configure('Heading1Std.TLabel', font=fontList['Heading1Std'], background='gray', foreground='white')
     style.configure('Heading1.TLabel',font=fontList['Heading1'], background='gray', foreground='white')
@@ -109,6 +111,7 @@ def setup_ttk_styles(master=None):
     style.configure('Custom.Toolbutton', font=fontList['Heading3'], background='gray', foreground='black')
     style.configure('Heading0.TMenubutton', font=fontList['Heading1Std'], anchor='center')
     style.configure('Heading1b.TMenubutton', font=fontList['Heading1b'], anchor='center')
+    style.configure('Heading1n.TMenubutton', font=fontList['Heading1n'], anchor='center')
     style.configure('Heading2b.TMenubutton',font=fontList['Heading2b'])
     style.configure('Submenu.TMenuitem.Command',font=fontList['Heading2b'])
     style.configure('Checkbox1b.TCheckbutton', font=fontList['Heading1b'], background='gray', foreground='white')
@@ -121,6 +124,8 @@ def setup_ttk_styles(master=None):
 
     style.configure('TCombobox', font=fontList['Heading0'])
 
+    style.configure('OptionMenu1b.TOptionMenu', font=fontList['Heading1b'], anchor='center')
+
 
     style.configure('ComboBox1.TCombobox', font=fontList['Heading2b'], arrowsize=50, relief='raised')
     # style.configure('ComboBox1.TCombobox.Listbox', font=fontList['Heading1b'])
@@ -132,8 +137,10 @@ def setup_ttk_styles(master=None):
     style.configure('ComboBox4White.TCombobox',font=fontList['Heading4'],foreground='white')
     style.configure('Normal.TEntry',font=fontList['Normal'])
 
+
     style.configure('Entry1b.TEntry', font=fontList['Heading1'])
     style.configure('Entry2b.TEntry', font=fontList['Heading2'])
+    style.configure('Entry3b.TEntry', font=fontList['Heading3'])
     style.configure('Entry2bCopy.TEntry', font=fontList['Heading2'],highlightthickness=0, borderwidth=0, background='red', readonlybackground='red',bd=0)
     style.configure('NoBorder.TEntry',font=fontList['Normal'], highlightthickness=0, borderwidth=0, bd=0)
 

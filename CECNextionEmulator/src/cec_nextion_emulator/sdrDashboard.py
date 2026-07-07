@@ -106,8 +106,22 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         self.refresh_listbox_view()
 
-        # self.update_smeter_loop()
-        self.sourceBank_Combobox.set("DEFAULT SET")
+        # self.myoption.configure(style="Heading1b.TMenubutton", width=15)
+        # dropdown_menu = self.nametowidget(self.myoption.cget("menu"))
+        # dropdown_menu.config(font=("Arial", 24))
+        gv.formatOptionMenu(self.sourceBank ,("Arial", 20), 15 )
+        gv.formatOptionMenu(self.targetBank, ("Arial", 20), 15)
+        gv.formatOptionMenu(self.scanBank, ("Arial", 20), 15)
+
+
+
+
+        #
+        self.sourceBank_VAR.set("DEFAULT SET")
+        self.targetBank_VAR.set("DEFAULT SET")
+        self.scanBank_VAR.set("DEFAULT SET")
+
+
 
         if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
             self.linkStatus_Label.configure(
@@ -175,9 +189,12 @@ class sdrDashboard(baseui.sdrDashboardUI):
             self.treeChannels.insert('', tk.END, values=(lbl,f"{freq_mhz:.4f}", mode, desc))
 
         banks_list = list(self.sdr.scan_sets_dict.keys())
-        self.sourceBank_Combobox['values'] = banks_list
-        self.targetBank_Combobox['values'] = banks_list
-        self.scanBankSelect_Combobox['values'] = banks_list
+        # self.sourceBank_Combobox['values'] = banks_list
+        # self.targetBank_Combobox['values'] = banks_list
+        # self.scanBankSelect_Combobox['values'] = banks_list
+        gv.refresh_menu_by_name(self, 'sourceBank', banks_list, self.sourceBank_VAR.get())
+        gv.refresh_menu_by_name(self, 'targetBank', banks_list, self.targetBank_VAR.get())
+        gv.refresh_menu_by_name(self, 'scanBank', banks_list, self.scanBank_VAR.get())
 
     def action_connect(self):
         gv.config.set_sdr_server_ip(self.sdrIPAddress_VAR.get().strip())
@@ -300,7 +317,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
             self.refresh_listbox_view()
             messagebox.showinfo("Stored",
-                                f"Saved {label_text} at {(float(live_freq_hz) / 1000000):.3f} MHz to active bank.", parent=self)
+                                f"Saved {label_text} at {(float(live_freq_hz) / 1000000):.3f} MHz to Source bank.", parent=self)
 
     def action_filter_search_grid(self, event=None):
         """Real-time string matching lookup filtering grid rows instantly by label text or station descriptions."""
@@ -324,7 +341,6 @@ class sdrDashboard(baseui.sdrDashboardUI):
         lbl_target = self.treeChannels.item(selected, 'values')[0]
         if self.sdr.delete_channel(lbl_target):
             self.newChannel_Entry.delete(0, tk.END)
-            self.customStationName_Entry.delete(0, tk.END)
             self.refresh_listbox_view()
 
     def action_create_brand_new_bank(self):
@@ -352,12 +368,33 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.sdr._save_all_channels_to_json()
 
         self.refresh_listbox_view()
-        self.sourceBank_Combobox.set(cleaned_name)
-        self.targetBank_Combobox.set(cleaned_name)
+        # self.sourceBank_Combobox.set(cleaned_name)
+        self.sourceBank_VAR.set(cleaned_name)
+        self.targetBank_VAR.set(cleaned_name)
+        # self.targetBank_Combobox.set(cleaned_name)
         messagebox.showinfo("Success", f"The new channel bank profile '{cleaned_name}' is active and ready.", parent=self)
 
     def action_on_set_dropdown_change(self, event=None):
-        selected_set = self.sourceBank_Combobox.get().strip()
+        # selected_set = self.sourceBank_Combobox.get().strip()
+        # if selected_set:
+        #     self.sdr.change_active_scan_set(selected_set)
+        #     self.refresh_listbox_view()
+        pass
+
+    def sourceBank_CB(self, option):
+        selected_set = self.sourceBank_VAR.get().strip()
+        if selected_set:
+            self.sdr.change_active_scan_set(selected_set)
+            self.refresh_listbox_view()
+
+    def targetBank_CB(self, option):
+        selected_set = self.targetBank_VAR.get().strip()
+        if selected_set:
+            self.sdr.change_active_scan_set(selected_set)
+            self.refresh_listbox_view()
+
+    def scanBank_CB(self, option):
+        selected_set = self.scanBank_VAR.get().strip()
         if selected_set:
             self.sdr.change_active_scan_set(selected_set)
             self.refresh_listbox_view()
@@ -369,7 +406,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
             messagebox.showwarning("Selection Required", "Please click a channel row from the grid first.", parent=self)
             return
 
-        target_bank = self.targetBank_Combobox.get().strip()
+        target_bank = self.targetBank_VAR.get().strip()
+        # target_bank = self.targetBank_Combobox.get().strip()
         if not target_bank or target_bank not in self.sdr.scan_sets_dict:
             messagebox.showwarning("Invalid Target", "Please pick a valid Target Bank profile from the dropdown.", parent=self)
             return
@@ -392,8 +430,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def action_bulk_clone_source_to_target(self):
         """Deep-copies ALL channel rows from current source dropdown directly into target bank menu selection."""
-        source_bank = self.sourceBank_Combobox.get().strip()
-        target_bank = self.targetBank_Combobox.get().strip()
+        source_bank = self.sourceBank_VAR.get().strip()
+        target_bank = self.targetBank_VAR.get().strip()
+        # source_bank = self.sourceBank_Combobox.get().strip()
+        # target_bank = self.targetBank_Combobox.get().strip()
 
         if not source_bank or source_bank not in self.sdr.scan_sets_dict:
             messagebox.showwarning("Selection Required", "Please choose a valid Source Bank View to copy from.", parent=self)
@@ -424,13 +464,16 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.sdr._save_all_channels_to_json()
 
         self.refresh_listbox_view()
-        self.sourceBank_Combobox.set(target_bank)
-        self.targetBank_Combobox.set(target_bank)
+        self.sourceBank_VAR.set(target_bank)
+        self.targetBank_VAR.set(target_bank)
+        # self.sourceBank_Combobox.set(target_bank)
+        # self.targetBank_Combobox.set(target_bank)
         messagebox.showinfo("Success", f"Successfully cloned all channels from '{source_bank}' into '{target_bank}'!", parent=self)
 
     def action_delete_source_bank_profile(self):
         """Permanently erases whatever profile bank is active inside the SOURCE VIEW dropdown window."""
-        source_bank = self.sourceBank_Combobox.get().strip()
+        source_bank = self.sourceBank_VAR.get().strip()
+        # source_bank = self.sourceBank_Combobox.get().strip()
 
         if not source_bank:
             messagebox.showwarning("Selection Required",
@@ -458,14 +501,18 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.sdr._save_all_channels_to_json()
 
         self.refresh_listbox_view()
-        self.sourceBank_Combobox.set(fallback_set)
-        self.targetBank_Combobox.set(fallback_set)
+        self.sourceBank_VAR.set(fallback_set)
+        self.targetBank_VAR.set(fallback_set)
+        self.scanBank_VAR.set(source_bank)
+
+        # self.sourceBank_Combobox.set(fallback_set)
+        # self.targetBank_Combobox.set(fallback_set)
         messagebox.showinfo("Success", f"The Source Bank repository '{source_bank}' has been successfully erased.", parent=self)
 
     def action_start_scan(self):
         try:
             delay = int(self.scanTime_Entry.get().strip())*1000
-            gv.config.set_scan_station_time_ms(delay)
+            # gv.config.set_scan_station_time_ms(delay)
             self.sdr.start_memory_scan(delay)
         except ValueError:
             messagebox.showwarning("Warning", "Invalid timing threshold configuration value", parent=self)
@@ -762,7 +809,7 @@ class SDRDashboardPopup:
         # 1. Create a dedicated popup window layer bound to the main app
         self.popup = tk.Toplevel(parent_window)
         self.popup.title("SDR++ Memory Matrix Console")
-        self.popup.geometry("575x800")
+        self.popup.geometry("700x800")
 
         # 2. Force modal focus (Stops user from clicking back to the main app until closed)
         self.popup.transient(parent_window)

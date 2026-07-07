@@ -59,6 +59,7 @@ def startMainWindow(radioPortName, radioPortHandle):
 #
 root = tk.Tk()
 
+
 gv.config = ConfigurationManager(root)                    # Read in config data, if missing preload with defaults
                                                 # Root is passed to allow popup error messages
 
