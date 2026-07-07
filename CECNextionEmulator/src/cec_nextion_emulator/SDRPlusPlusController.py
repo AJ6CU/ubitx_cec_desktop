@@ -534,7 +534,16 @@ class SDRPlusPlusController:
 
                 if clean_lines and len(clean_lines) >= 1:
                     raw_mode = clean_lines[0].strip().upper()
-                    mapped_mode = "CW" if "CW" in raw_mode else ("LSB" if "LSB" in raw_mode else "USB")
+
+                    if "CW" in raw_mode:
+                        mapped_mode = "CW"
+                    elif "LSB" in raw_mode:
+                        mapped_mode = "LSB"
+                    elif "USB" in raw_mode:
+                        mapped_mode = "USB"
+                    else:
+                        mapped_mode = raw_mode
+                    # mapped_mode = "CW" if "CW" in raw_mode else ("LSB" if "LSB" in raw_mode else "USB")
 
                     # Parse dynamic live bandwidth from line 2 if available
                     live_bandwidth = None

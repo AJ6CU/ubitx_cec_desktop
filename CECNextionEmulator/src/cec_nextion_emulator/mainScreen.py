@@ -689,12 +689,20 @@ class mainScreen(baseui.mainScreenUI):
 
         if new_mode_string == "USB" or new_mode_string == "LSB":
                 intMode = EEPROM.Text_To_ModeNum[new_mode_string]
-        else:
+        elif "CW" in new_mode_string:
             if int(self.theVFO_Object.getIntPrimaryVFO()) >= 10000000:
                 intMode = EEPROM.Text_To_ModeNum["CWU"]
             else:
                 intMode = EEPROM.Text_To_ModeNum["CWL"]
+        else:
+            intMode = EEPROM.Text_To_ModeNum["USB"]
+            messagebox.showinfo("Warning Unsupported Mode",
+                                "Mode selected on your SDR software is not supported by uBITX\n\n"
+                                + "uBITX defaulting to USB. This means your two radios are out of synch.\n\n"
+                                + "Before going into TX, switch back to a mode supported by your uBITX", parent=self)
         self.theRadio.Set_Mode(intMode)
+
+
 
     def bandFilter_change_callback(self, new_mode_string):
         """

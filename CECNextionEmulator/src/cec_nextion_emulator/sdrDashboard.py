@@ -170,8 +170,14 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.label_val_mode.config(text=str(mode_str).upper())
         if mode_str.lower() == 'cw':
             self.showModeButtonPressed("modeCWU_Button")
+        elif mode_str.lower() == 'usb' or mode_str.lower() == 'lsb':
+            self.showModeButtonPressed("mode"+mode_str.upper()+"_Button")
         else:
-            self.showModeButtonPressed("mode"+mode_str+"_Button")
+            # messagebox.showinfo("Warning Unsupported Mode",
+            #                     "Mode selected on your SDR software is not supported by uBITX\n",
+            #                     + "uBITX defaulting to USB. This means your two radios are out of synch.\n"
+            #                     + "Before going into TX, switch back to a mode supported by your uBITX", parent=self)
+            self.showModeButtonPressed("mode"+"USB_Button")
 
     def update_filter_telemetry(self, filter_hz):
         self.current_live_filter_hz = int(filter_hz)
@@ -371,6 +377,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         # self.sourceBank_Combobox.set(cleaned_name)
         self.sourceBank_VAR.set(cleaned_name)
         self.targetBank_VAR.set(cleaned_name)
+        self.newBankName_VAR.set("")    # clear out new bank name after creating it
         # self.targetBank_Combobox.set(cleaned_name)
         messagebox.showinfo("Success", f"The new channel bank profile '{cleaned_name}' is active and ready.", parent=self)
 

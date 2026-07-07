@@ -559,16 +559,16 @@ class sdrDashboardUI(ttk.Frame):
             relief="raised",
             text='Selection of the Source bank. ',
             wraplength=300)
-        lbl_src_bank.grid(column=0, row=0)
-        self.sourceBank_VAR = tk.StringVar(value='select')
-        __values = ['select', ' test1', ' test2']
+        lbl_src_bank.grid(column=0, row=1)
+        self.sourceBank_VAR = tk.StringVar(value='selected')
+        __values = ['selected', ' test1', ' test2']
         self.sourceBank = ttk.OptionMenu(
             self.sourceTargetLabelframe,
             self.sourceBank_VAR,
-            "select",
+            "selected",
             *__values,
             command=self.sourceBank_CB)
-        self.sourceBank.grid(column=1, pady=10, row=0, sticky="w")
+        self.sourceBank.grid(column=1, pady=10, row=1, sticky="w")
         lbl_tgt_bank = ttk.Label(self.sourceTargetLabelframe)
         lbl_tgt_bank.configure(style="Heading3b.TLabel", text='Target:')
         self.tooltip16 = Tooltip(lbl_tgt_bank)
@@ -577,7 +577,7 @@ class sdrDashboardUI(ttk.Frame):
             relief="raised",
             text='Selection of the Target bank. ',
             wraplength=300)
-        lbl_tgt_bank.grid(column=0, row=1)
+        lbl_tgt_bank.grid(column=0, row=0)
         self.targetBank_VAR = tk.StringVar(value='selected')
         __values = ['selected', ' test1', ' test2']
         self.targetBank = ttk.OptionMenu(
@@ -586,7 +586,7 @@ class sdrDashboardUI(ttk.Frame):
             "selected",
             *__values,
             command=self.targetBank_CB)
-        self.targetBank.grid(column=1, pady=10, row=1, sticky="w")
+        self.targetBank.grid(column=1, pady=10, row=0, sticky="w")
         self.sourceTargetLabelframe.grid(column=0, row=0)
         self.channelControl_Frame = ttk.Frame(
             self.bankRouting_Labelframe,

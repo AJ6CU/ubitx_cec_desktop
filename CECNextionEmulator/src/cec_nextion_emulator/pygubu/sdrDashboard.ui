@@ -922,7 +922,7 @@ Bank</property>
                                 <property name="text" translatable="yes">Source:</property>
                                 <layout manager="grid">
                                   <property name="column">0</property>
-                                  <property name="row">0</property>
+                                  <property name="row">1</property>
                                 </layout>
                                 <child>
                                   <object class="pygubu.widgets.Tooltip" id="tooltip15" named="True">
@@ -937,13 +937,13 @@ Bank</property>
                             <child>
                               <object class="ttk.OptionMenu" id="sourceBank" named="True">
                                 <property name="command" type="command" cbtype="simple">sourceBank_CB</property>
-                                <property name="value">select</property>
-                                <property name="values">select, test1, test2</property>
+                                <property name="value">selected</property>
+                                <property name="values">selected, test1, test2</property>
                                 <property name="variable">string:sourceBank_VAR</property>
                                 <layout manager="grid">
                                   <property name="column">1</property>
                                   <property name="pady">10</property>
-                                  <property name="row">0</property>
+                                  <property name="row">1</property>
                                   <property name="sticky">w</property>
                                 </layout>
                               </object>
@@ -954,7 +954,7 @@ Bank</property>
                                 <property name="text" translatable="yes">Target:</property>
                                 <layout manager="grid">
                                   <property name="column">0</property>
-                                  <property name="row">1</property>
+                                  <property name="row">0</property>
                                 </layout>
                                 <child>
                                   <object class="pygubu.widgets.Tooltip" id="tooltip16" named="True">
@@ -975,7 +975,7 @@ Bank</property>
                                 <layout manager="grid">
                                   <property name="column">1</property>
                                   <property name="pady">10</property>
-                                  <property name="row">1</property>
+                                  <property name="row">0</property>
                                   <property name="sticky">w</property>
                                 </layout>
                               </object>
