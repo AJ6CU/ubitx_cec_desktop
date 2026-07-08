@@ -1,0 +1,3 @@
+short: The Visual Control of KD8CEC Firmware.
+Technical: A desktop application for KD8CEC-powered uBITX radios with SDR panadapter.
+Featured focus: A desktop application for KD8CEC uBITX radios with no hardware modification and includes a SDR based panadapter
