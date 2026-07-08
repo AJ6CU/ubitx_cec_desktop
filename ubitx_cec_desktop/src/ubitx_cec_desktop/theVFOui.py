@@ -84,20 +84,23 @@ class theVFOUI(ttk.Frame):
         self.tx_Status_Light_Label.grid(column=0, pady=15, row=1)
         self.stop_Button = ttk.Button(
             self.rxTX_Status_Frame, name="stop_button")
-        self.stop_Button_VAR = tk.StringVar(value='Disable\n    TX')
         self.stop_Button.configure(
             state="normal",
             style="Button2b.TButton",
-            text='Disable\n    TX',
-            textvariable=self.stop_Button_VAR,
-            width=8)
+            text='Disable TX',
+            width=11)
         self.stop_Button_Tooltip = Tooltip(self.stop_Button)
         self.stop_Button_Tooltip.configure(
             padx=8,
             relief="raised",
             text='Click this button disables TX. You can use this to test CW sending.',
             wraplength=300)
-        self.stop_Button.grid(column=1, padx="20 10", row=0, rowspan=2)
+        self.stop_Button.grid(
+            column=1,
+            ipady=20,
+            padx="20 10",
+            row=0,
+            rowspan=2)
         self.stop_Button.configure(command=self.stop_CB)
         separator2 = ttk.Separator(self.rxTX_Status_Frame)
         separator2.configure(orient="vertical")
@@ -110,13 +113,8 @@ class theVFOUI(ttk.Frame):
         self.VFO_Frame.configure(height=200, style="Normal.TFrame", width=200)
         self.digit7_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit7_primary_vfo_label")
-        self.digit7_primary_VFO_VAR = tk.StringVar(value='7')
         self.digit7_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='7',
-            textvariable=self.digit7_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='7', width=1)
         self.digit7_primary_VFO_Label.grid(column=0, row=0, sticky="e")
         self.digit7_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10mhz_CB, add="")
@@ -126,13 +124,8 @@ class theVFOUI(ttk.Frame):
         self.digit7_Highlight_Label.grid(column=0, row=1)
         self.digit6_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit6_primary_vfo_label")
-        self.digit6_primary_VFO_VAR = tk.StringVar(value='6')
         self.digit6_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='6',
-            textvariable=self.digit6_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='6', width=1)
         self.digit6_primary_VFO_Label.grid(column=1, row=0, sticky="e")
         self.digit6_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_1mhz_CB, add="")
@@ -142,12 +135,8 @@ class theVFOUI(ttk.Frame):
         self.digit6_Highlight_Label.grid(column=1, row=1)
         self.digit_delimiter_primary_VFO_1M_Label = ttk.Label(
             self.VFO_Frame, name="digit_delimiter_primary_vfo_1m_label")
-        self.digit_delimiter_primary_VFO_VAR = tk.StringVar(value='.')
         self.digit_delimiter_primary_VFO_1M_Label.configure(
-            style="VFO.TLabel",
-            text='.',
-            textvariable=self.digit_delimiter_primary_VFO_VAR,
-            width=0)
+            style="VFO.TLabel", text='.', width=0)
         self.digit_delimiter_primary_VFO_1M_Label.grid(
             column=2, row=0, sticky="e")
         self.digital_highlight_1M_Period = ttk.Label(
@@ -157,13 +146,8 @@ class theVFOUI(ttk.Frame):
         self.digital_highlight_1M_Period.grid(column=2, row=1)
         self.digit5_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit5_primary_vfo_label")
-        self.digit5_primary_VFO_VAR = tk.StringVar(value='5')
         self.digit5_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='5',
-            textvariable=self.digit5_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='5', width=1)
         self.digit5_primary_VFO_Label.grid(column=3, row=0, sticky="e")
         self.digit5_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_100khz_CB, add="")
@@ -173,13 +157,8 @@ class theVFOUI(ttk.Frame):
         self.digit5_Highlight_Label.grid(column=3, row=1)
         self.digit4_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit4_primary_vfo_label")
-        self.digit4_primary_VFO_VAR = tk.StringVar(value='4')
         self.digit4_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='4',
-            textvariable=self.digit4_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='4', width=1)
         self.digit4_primary_VFO_Label.grid(column=4, row=0, sticky="e")
         self.digit4_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10khz_CB, add="")
@@ -189,12 +168,8 @@ class theVFOUI(ttk.Frame):
         self.digit4_Highlight_Label.grid(column=4, row=1)
         self.digit3_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit3_primary_vfo_label")
-        self.digit3_primary_VFO_VAR = tk.StringVar(value='3')
         self.digit3_primary_VFO_Label.configure(
-            style="VFO.TLabel",
-            text='3',
-            textvariable=self.digit3_primary_VFO_VAR,
-            width=1)
+            style="VFO.TLabel", text='3', width=1)
         self.digit3_primary_VFO_Label.grid(column=5, row=0, sticky="e")
         self.digit3_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_1khz_CB, add="")
@@ -205,10 +180,7 @@ class theVFOUI(ttk.Frame):
         self.digit_delimiter_primary_VFO_1k_Label = ttk.Label(
             self.VFO_Frame, name="digit_delimiter_primary_vfo_1k_label")
         self.digit_delimiter_primary_VFO_1k_Label.configure(
-            style="VFO.TLabel",
-            text='.',
-            textvariable=self.digit_delimiter_primary_VFO_VAR,
-            width=0)
+            style="VFO.TLabel", text='.', width=0)
         self.digit_delimiter_primary_VFO_1k_Label.grid(
             column=6, row=0, sticky="e")
         self.digital_highlight1K_Period = ttk.Label(
@@ -218,13 +190,8 @@ class theVFOUI(ttk.Frame):
         self.digital_highlight1K_Period.grid(column=6, row=1)
         self.digit2_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit2_primary_vfo_label")
-        self.digit2_primary_VFO_VAR = tk.StringVar(value='2')
         self.digit2_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='2',
-            textvariable=self.digit2_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='2', width=1)
         self.digit2_primary_VFO_Label.grid(column=7, row=0, sticky="e")
         self.digit2_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_100hz_CB, add="")
@@ -234,13 +201,8 @@ class theVFOUI(ttk.Frame):
         self.digit2_Highlight_Label.grid(column=7, row=1)
         self.digit1_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit1_primary_vfo_label")
-        self.digit1_primary_VFO_VAR = tk.StringVar(value='1')
         self.digit1_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='1',
-            textvariable=self.digit1_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='1', width=1)
         self.digit1_primary_VFO_Label.grid(column=8, row=0, sticky="e")
         self.digit1_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10hz_CB, add="")
@@ -250,13 +212,8 @@ class theVFOUI(ttk.Frame):
         self.digit1_Highlight_Label.grid(column=8, row=1)
         self.digit0_primary_VFO_Label = ttk.Label(
             self.VFO_Frame, name="digit0_primary_vfo_label")
-        self.digit0_primary_VFO_VAR = tk.StringVar(value='0')
         self.digit0_primary_VFO_Label.configure(
-            anchor="e",
-            style="VFO.TLabel",
-            text='0',
-            textvariable=self.digit0_primary_VFO_VAR,
-            width=1)
+            anchor="e", style="VFO.TLabel", text='0', width=1)
         self.digit0_primary_VFO_Label.grid(column=9, row=0, sticky="e")
         self.digit0_Highlight_Label = ttk.Label(
             self.VFO_Frame, name="digit0_highlight_label")

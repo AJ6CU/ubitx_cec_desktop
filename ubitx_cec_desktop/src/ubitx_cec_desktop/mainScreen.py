@@ -1594,14 +1594,14 @@ class mainScreen(baseui.mainScreenUI):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
         if value == '':
             print("ck_UX_Set_CW_Key_Type error, buffer:", buffer)
-        self.key_type_value_VAR.set(gv.CW_KeyType[value])
+        self.key_type_value_Label['text'] = gv.CW_KeyType[value]
 
     #
     #   The "vs" command stores words/minute
     #
     def vs_UX_Set_CW_Speed(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.key_speed_value_VAR.set(str(int(1200/int(value))))
+        self.key_speed_value_Label['text'] = str(int(1200/int(value)))
 
 
     #
@@ -1609,7 +1609,7 @@ class mainScreen(baseui.mainScreenUI):
     #
     def vy_UX_Set_CW_Delay_Returning_to_RX(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.delay_returning_to_rx_value_VAR.set(str(int(value)*10))
+        self.delay_returning_to_rx_value_Label['text'] = str(int(value)*10)
 
 
 
@@ -1618,7 +1618,7 @@ class mainScreen(baseui.mainScreenUI):
     #
     def ve_UX_Set_CW_Delay_Starting_TX(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.delay_starting_tx_value_VAR.set(str(int(value)*2))
+        self.delay_starting_tx_value_Label['text'] = str(int(value)*2)
 
     #
     #   Returns active VFO, VFO-A=0, VFO-B=1

@@ -119,7 +119,8 @@ class theVFO(baseui.theVFOUI):
         self.setLEDTuningHighlight(self.currentDigitPos, True)    # turn on the virtual "LED" below the vfo digit
 
 
-        self.digit_delimiter_primary_VFO_VAR.set(gv.config.get_NUMBER_DELIMITER())
+        self.digit_delimiter_primary_VFO_1M_Label['text'] = gv.config.get_NUMBER_DELIMITER()
+        self.digit_delimiter_primary_VFO_1k_Label['text'] = self.digit_delimiter_primary_VFO_1M_Label['text']
 
         gv.config.register_observer("NUMBER DELIMITER", self.reformatVFO)
         # gv.config.register_observer("CW Tone", self.setCWTone)
@@ -316,11 +317,11 @@ class theVFO(baseui.theVFOUI):
         if (self.stop_Button_On):
             self.stop_Button_On = False
             self.stop_Button.configure(style='Button2b.TButton', state="normal")
-            self.stop_Button_VAR.set("Disable\n    TX")
+            self.stop_Button['text'] = "Disable TX"
         else:
             self.stop_Button_On = True
             self.stop_Button.configure(style='RedButton2b.TButton', state="pressed")
-            self.stop_Button_VAR.set("     TX\nDisabled")
+            self.stop_Button['text'] = "TX Disabled"
 
     def setRXButtonState(self):
         self.tx_Status_Light_Label.configure(state="disabled")
@@ -445,7 +446,8 @@ class theVFO(baseui.theVFOUI):
 
     def reformatVFO(self, value):
 
-            self.digit_delimiter_primary_VFO_VAR.set(value)
+            self.digit_delimiter_primary_VFO_1M_Label['text'] = value
+            self.digit_delimiter_primary_VFO_1k_Label['text'] = value
             if value == ",":
                 old_value = "."
             else:
@@ -454,7 +456,8 @@ class theVFO(baseui.theVFOUI):
             self.RX_VFO_VAR.set(self.RX_VFO_VAR.get().replace(old_value,value))
             self.secondary_VFO_Formatted_VAR.set(self.secondary_VFO_Formatted_VAR.get().replace(old_value,value))
 
-            self.digit_delimiter_primary_VFO_VAR.set(value)
+            self.digit_delimiter_primary_VFO_1M_Label['text'] = value
+            self.digit_delimiter_primary_VFO_1k_Label['text'] = value
             self.update_VFO_Display(int(self.PrimaryVFO), self.TXfreqOffset)
 
 
@@ -820,14 +823,14 @@ class theVFO(baseui.theVFOUI):
         paddedVFO = str(self.intDisplayedPrimaryVFO).rjust(8)
         self.strDisplayedPrimaryVFO = gv.formatFrequency(paddedVFO)
 
-        self.digit0_primary_VFO_VAR.set(paddedVFO[7])
-        self.digit1_primary_VFO_VAR.set(paddedVFO[6])
-        self.digit2_primary_VFO_VAR.set(paddedVFO[5])
-        self.digit3_primary_VFO_VAR.set(paddedVFO[4])
-        self.digit4_primary_VFO_VAR.set(paddedVFO[3])
-        self.digit5_primary_VFO_VAR.set(paddedVFO[2])
-        self.digit6_primary_VFO_VAR.set(paddedVFO[1])
-        self.digit7_primary_VFO_VAR.set(paddedVFO[0])
+        self.digit0_primary_VFO_Label['text'] = paddedVFO[7]
+        self.digit1_primary_VFO_Label['text'] = paddedVFO[6]
+        self.digit2_primary_VFO_Label['text'] = paddedVFO[5]
+        self.digit3_primary_VFO_Label['text'] = paddedVFO[4]
+        self.digit4_primary_VFO_Label['text'] = paddedVFO[3]
+        self.digit5_primary_VFO_Label['text'] = paddedVFO[2]
+        self.digit6_primary_VFO_Label['text'] = paddedVFO[1]
+        self.digit7_primary_VFO_Label['text'] = paddedVFO[0]
 
         if self.CW_VFOAUX_Offset_On:
             self.RX_VFO_VAR.set(gv.formatFrequency(vfo))     # Update RX freq reminder displayed if TX Freq displayed

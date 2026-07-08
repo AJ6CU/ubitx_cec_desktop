@@ -616,11 +616,8 @@ class mainScreenUI(ttk.Frame):
         self.key_type_Label.bind("<1>", self.cwSettings_CB, add="")
         self.key_type_value_Label = ttk.Label(
             self.cw_Info_Frame, name="key_type_value_label")
-        self.key_type_value_VAR = tk.StringVar(value='Straight')
         self.key_type_value_Label.configure(
-            style="Heading3b.TLabel",
-            text='Straight',
-            textvariable=self.key_type_value_VAR)
+            style="Heading3b.TLabel", text='Straight')
         self.key_type_value_Label.grid(column=1, row=2, sticky="w")
         self.key_type_value_Label.bind("<1>", self.cwSettings_CB, add="")
         self.key_speed_label = ttk.Label(
@@ -630,11 +627,8 @@ class mainScreenUI(ttk.Frame):
         self.key_speed_label.bind("<1>", self.cwSettings_CB, add="")
         self.key_speed_value_Label = ttk.Label(
             self.cw_Info_Frame, name="key_speed_value_label")
-        self.key_speed_value_VAR = tk.StringVar(value='1')
         self.key_speed_value_Label.configure(
-            style="Heading3b.TLabel",
-            text='1',
-            textvariable=self.key_speed_value_VAR)
+            style="Heading3b.TLabel", text='1')
         self.key_speed_value_Label.grid(column=1, row=3, sticky="w")
         self.key_speed_value_Label.bind("<1>", self.cwSettings_CB, add="")
         self.key_speed_units_Label = ttk.Label(
@@ -653,11 +647,8 @@ class mainScreenUI(ttk.Frame):
             "<1>", self.cwSettings_CB, add="")
         self.delay_returning_to_rx_value_Label = ttk.Label(
             self.cw_Info_Frame, name="delay_returning_to_rx_value_label")
-        self.delay_returning_to_rx_value_VAR = tk.StringVar(value='199')
         self.delay_returning_to_rx_value_Label.configure(
-            style="Heading3b.TLabel",
-            text='199',
-            textvariable=self.delay_returning_to_rx_value_VAR)
+            style="Heading3b.TLabel", text='199')
         self.delay_returning_to_rx_value_Label.grid(
             column=1, row=5, sticky="w")
         self.delay_returning_to_rx_value_Label.bind(
@@ -678,11 +669,8 @@ class mainScreenUI(ttk.Frame):
         self.delay_starting_tx_Label.bind("<1>", self.cwSettings_CB, add="")
         self.delay_starting_tx_value_Label = ttk.Label(
             self.cw_Info_Frame, name="delay_starting_tx_value_label")
-        self.delay_starting_tx_value_VAR = tk.StringVar(value='299')
         self.delay_starting_tx_value_Label.configure(
-            style="Heading3b.TLabel",
-            text='299',
-            textvariable=self.delay_starting_tx_value_VAR)
+            style="Heading3b.TLabel", text='299')
         self.delay_starting_tx_value_Label.grid(column=1, row=4, sticky="w")
         self.delay_starting_tx_value_Label.bind(
             "<1>", self.cwSettings_CB, add="")

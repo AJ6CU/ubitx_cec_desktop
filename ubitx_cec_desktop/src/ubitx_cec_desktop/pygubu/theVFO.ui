@@ -92,12 +92,11 @@
                 <property name="command" type="command" cbtype="simple">stop_CB</property>
                 <property name="state">normal</property>
                 <property name="style">Button2b.TButton</property>
-                <property name="text" translatable="yes">Disable
-    TX</property>
-                <property name="textvariable">string:stop_Button_VAR</property>
-                <property name="width">8</property>
+                <property name="text" translatable="yes">Disable TX</property>
+                <property name="width">11</property>
                 <layout manager="grid">
                   <property name="column">1</property>
+                  <property name="ipady">20</property>
                   <property name="padx">20 10</property>
                   <property name="row">0</property>
                   <property name="rowspan">2</property>
@@ -149,7 +148,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">7</property>
-                    <property name="textvariable">string:digit7_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10mhz_CB" add="" />
                     <layout manager="grid">
@@ -174,7 +172,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">6</property>
-                    <property name="textvariable">string:digit6_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_1mhz_CB" add="" />
                     <layout manager="grid">
@@ -198,7 +195,6 @@
                   <object class="ttk.Label" id="digit_delimiter_primary_VFO_1M_Label" named="True">
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">.</property>
-                    <property name="textvariable">string:digit_delimiter_primary_VFO_VAR</property>
                     <property name="width">0</property>
                     <layout manager="grid">
                       <property name="column">2</property>
@@ -222,7 +218,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">5</property>
-                    <property name="textvariable">string:digit5_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_100khz_CB" add="" />
                     <layout manager="grid">
@@ -247,7 +242,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">4</property>
-                    <property name="textvariable">string:digit4_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10khz_CB" add="" />
                     <layout manager="grid">
@@ -271,7 +265,6 @@
                   <object class="ttk.Label" id="digit3_primary_VFO_Label" named="True">
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">3</property>
-                    <property name="textvariable">string:digit3_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_1khz_CB" add="" />
                     <layout manager="grid">
@@ -295,7 +288,6 @@
                   <object class="ttk.Label" id="digit_delimiter_primary_VFO_1k_Label" named="True">
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">.</property>
-                    <property name="textvariable">string:digit_delimiter_primary_VFO_VAR</property>
                     <property name="width">0</property>
                     <layout manager="grid">
                       <property name="column">6</property>
@@ -320,7 +312,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">2</property>
-                    <property name="textvariable">string:digit2_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_100hz_CB" add="" />
                     <layout manager="grid">
@@ -345,7 +336,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">1</property>
-                    <property name="textvariable">string:digit1_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10hz_CB" add="" />
                     <layout manager="grid">
@@ -370,7 +360,6 @@
                     <property name="anchor">e</property>
                     <property name="style">VFO.TLabel</property>
                     <property name="text" translatable="yes">0</property>
-                    <property name="textvariable">string:digit0_primary_VFO_VAR</property>
                     <property name="width">1</property>
                     <layout manager="grid">
                       <property name="column">9</property>

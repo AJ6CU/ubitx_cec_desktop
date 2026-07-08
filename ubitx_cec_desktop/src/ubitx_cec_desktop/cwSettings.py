@@ -61,7 +61,7 @@ class cwSettings(baseui.cwSettingsUI):
     def initUX(self):
 
         self.loadCurrentCWSettings(self.mainWindow.tone_value_Label['text'],
-                                                       self.mainWindow.key_type_value_VAR.get(),
+                                                       self.mainWindow.key_type_value_Label['text'],
                                                        self.mainWindow.key_speed_value_VAR.get(),
                                                        self.mainWindow.delay_starting_tx_value_VAR.get(),
                                                        self.mainWindow.delay_returning_to_rx_value_VAR.get(),
@@ -110,7 +110,7 @@ class cwSettings(baseui.cwSettingsUI):
             self.CW_Sidetone_Spinbox.configure(values=gv.CW_Sidetone_Values + [tone])
         self.tone_value_VAR.set(tone)
 
-        self.key_type_value_VAR.set(keyType)
+        self.self.key_type_value_Label['text'] = keyType
 
         if keySpeed not in gv.CW_WPM_Values:
             self.CW_Speed_WPM_Spinbox.configure(values=gv.CW_WPM_Values + [keySpeed])

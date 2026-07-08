@@ -930,7 +930,6 @@ LOG QSO
                   <object class="ttk.Label" id="key_type_value_Label" named="True">
                     <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">Straight</property>
-                    <property name="textvariable">string:key_type_value_VAR</property>
                     <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -955,7 +954,6 @@ LOG QSO
                   <object class="ttk.Label" id="key_speed_value_Label" named="True">
                     <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">1</property>
-                    <property name="textvariable">string:key_speed_value_VAR</property>
                     <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -993,7 +991,6 @@ LOG QSO
                   <object class="ttk.Label" id="delay_returning_to_rx_value_Label" named="True">
                     <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">199</property>
-                    <property name="textvariable">string:delay_returning_to_rx_value_VAR</property>
                     <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -1030,7 +1027,6 @@ LOG QSO
                   <object class="ttk.Label" id="delay_starting_tx_value_Label" named="True">
                     <property name="style">Heading3b.TLabel</property>
                     <property name="text" translatable="yes">299</property>
-                    <property name="textvariable">string:delay_starting_tx_value_VAR</property>
                     <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
                     <layout manager="grid">
                       <property name="column">1</property>

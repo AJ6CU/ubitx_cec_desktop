@@ -205,7 +205,7 @@ class settingsBackup(baseui.settingsBackupUI):
 
     #       Current Key_type getters/setters
     def get_Current_CW_Keytype(self):
-        return self.mainWindow.key_type_value_VAR.get()
+        return self.mainWindow.key_type_value_Label['text']
 
     def set_Current_CW_Keytype(self, value):
         if gv.validateKeyInDict(gv.CW_KeyValue, value, "CW Keytype", self):
@@ -252,7 +252,7 @@ class settingsBackup(baseui.settingsBackupUI):
 
 
     def get_Current_CW_Speed(self):
-        return self.mainWindow.key_speed_value_VAR.get()
+        return self.mainWindow.key_speed_label['text']
 
     def set_Current_CW_Speed(self,value):
         if gv.validateNumber(value, gv.CW_SPEED_WPM_BOUNDS['LOW'], gv.CW_SPEED_WPM_BOUNDS['HIGH']):
@@ -282,7 +282,7 @@ class settingsBackup(baseui.settingsBackupUI):
 
     #       Current CW_Sidetone getters/setters
     def get_Current_CW_Tone(self):
-        return self.mainWindow.tone_value_VAR.get()
+        return self.mainWindow.tone_value_Label['text']
 
     def set_Current_CW_Tone(self, value):
         if gv.validateNumber(value, gv.CW_TONE_BOUNDS['LOW'], gv.CW_TONE_BOUNDS['HIGH']):
@@ -305,7 +305,7 @@ class settingsBackup(baseui.settingsBackupUI):
 
     #       Current Delay_Before_TX_Value getters/setters
     def get_Current_CW_Delay_Before_TX(self):
-        return self.mainWindow.delay_starting_tx_value_VAR.get()
+        return self.mainWindow.delay_starting_tx_value_Label['text']
 
     def set_Current_CW_Delay_Before_TX(self, value):
         if gv.validateNumber(value, gv.CW_START_TX_BOUNDS['LOW'], gv.CW_START_TX_BOUNDS['HIGH']):
@@ -327,7 +327,7 @@ class settingsBackup(baseui.settingsBackupUI):
 
     #       Current Delay_Returning_To_RX_Value getters/setters
     def get_Current_CW_Delay_Returning_To_RX(self):
-        return self.mainWindow.delay_returning_to_rx_value_VAR.get()
+        return self.mainWindow.delay_returning_to_rx_value_Label['text']
 
     def set_Current_CW_Delay_Returning_To_RX(self, value):
         if gv.validateNumber(value, gv.CW_DELAY_Return_RX_BOUNDS['LOW'], gv.CW_DELAY_Return_RX_BOUNDS['HIGH']):
