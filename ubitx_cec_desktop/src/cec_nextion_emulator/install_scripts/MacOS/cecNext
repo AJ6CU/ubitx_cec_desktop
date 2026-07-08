@@ -1,4 +1,0 @@
-#!/bin/zsh
-SCRIPT_DIR="$(dirname "$0")"
-source "${SCRIPT_DIR}/activate"
-python -m cec_nextion_emulator.CECNextionEmulator

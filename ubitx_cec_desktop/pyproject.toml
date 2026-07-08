@@ -106,7 +106,7 @@ dependencies = ["pyserial", "pygubu", "pathvalidate", "psutil"]
 # The following would provide a command line executable called `sample`
 # which executes the function `main` from this package when invoked.
 #[project.scripts]
-#cecnextion = "cec_nextion_emulator:CECNextionEmulator"
+#cecnextion = "ubitx_cec_desktop:CECNextionEmulator"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -118,6 +118,6 @@ where = ["src"]
 # If there are data files included in your packages that need to be
 # installed, specify them here.
 package-data = { "cec_nextion_emulator" = ["*.png"] }
-#package-data = { "cec_nextion_emulator" = ["src/images/*.png"] }
+#package-data = { "ubitx_cec_desktop" = ["src/images/*.png"] }
 #[tool.setuptools.package-data]
-#"cec_nextion_emulator"  = ["src/cec_nextion_emulator/images/*.png"]
+#"ubitx_cec_desktop"  = ["src/ubitx_cec_desktop/images/*.png"]

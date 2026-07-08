@@ -1,0 +1,4 @@
+#!/bin/zsh
+SCRIPT_DIR="$(dirname "$0")"
+source "${SCRIPT_DIR}/activate"
+python -m ubitx_cec_desktop.ubitx_cec_desktop

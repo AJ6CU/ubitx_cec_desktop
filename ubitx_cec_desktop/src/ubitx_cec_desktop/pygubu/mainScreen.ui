@@ -1,0 +1,1070 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">pi_Nextion_UX</setting>
+      <setting id="description">A Nextion GUI emulator for CEC</setting>
+      <setting id="module_name">mainScreen</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">main_window</setting>
+      <setting id="main_classname">mainScreen</setting>
+      <setting id="main_menu" />
+      <setting id="output_dir">..</setting>
+      <setting id="output_dir2">..</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">True</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file">../mystyles.py</setting>
+    </settings>
+    <customwidgets>
+      <customwidget path="../JogwheelCustom_UXbo.py" />
+      <customwidget path="../theVFObo.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="ttk.Frame" id="main_window" named="True">
+    <property name="borderwidth">5</property>
+    <property name="height">900</property>
+    <property name="style">Normal.TFrame</property>
+    <property name="width">875</property>
+    <layout manager="pack">
+      <property name="anchor">w</property>
+      <property name="expand">True</property>
+      <property name="fill">both</property>
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="menuBar_Frame" named="True">
+        <property name="borderwidth">5</property>
+        <property name="height">50</property>
+        <property name="style">Normal.TFrame</property>
+        <property name="width">1250</property>
+        <layout manager="pack">
+          <property name="anchor">n</property>
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="settings_Button" named="True">
+            <property name="command" type="command" cbtype="simple">settings_CB</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">SETTINGS</property>
+            <property name="width">12</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="ipady">20</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="settings_Button_Tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to bring up a menu of settings that allow you to tune this software.</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="vfo_Button" named="True">
+            <property name="command" type="command" cbtype="simple">vfo_CB</property>
+            <property name="state">normal</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">VFO</property>
+            <property name="width">12</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="ipady">20</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="vfo_Button_Tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to switch between VFO-A and VFO-B</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Menubutton" id="mode_select_Menubutton" named="True">
+            <property name="style">Heading2b.TMenubutton</property>
+            <property name="text" translatable="yes">Mode</property>
+            <property name="width">9</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="ipady">20</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="tk.Menu" id="menu1">
+                <property name="tearoff">false</property>
+                <child>
+                  <object class="tk.Menuitem.Command" id="mode_lsb_Command" named="True">
+                    <property name="command" type="command" cbtype="simple">mode_lsb_CB</property>
+                    <property name="font">{Arial} 24 {}</property>
+                    <property name="label" translatable="yes">LSB</property>
+                    <property name="state">normal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Menuitem.Command" id="mode_usb_Command" named="True">
+                    <property name="command" type="command" cbtype="simple">mode_usb_CB</property>
+                    <property name="font">{Arial} 24 {}</property>
+                    <property name="label" translatable="yes">USB</property>
+                    <property name="state">normal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Menuitem.Command" id="mode_cwl_Command" named="True">
+                    <property name="command" type="command" cbtype="simple">mode_cwl_CB</property>
+                    <property name="font">{Arial} 24 {}</property>
+                    <property name="label" translatable="yes">CWL</property>
+                    <property name="state">normal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Menuitem.Command" id="mode_cwu_Command" named="True">
+                    <property name="command" type="command" cbtype="simple">mode_cwu_CB</property>
+                    <property name="font">{Arial} 24 {}</property>
+                    <property name="label" translatable="yes">CWU</property>
+                    <property name="state">normal</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="band_up_Button" named="True">
+            <property name="command" type="command" cbtype="simple">band_up_CB</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">BAND UP</property>
+            <property name="width">12</property>
+            <layout manager="grid">
+              <property name="column">3</property>
+              <property name="ipady">20</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="band_up_Tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to move the VFO to the next higher band</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="band_down_Button" named="True">
+            <property name="command" type="command" cbtype="simple">band_down_CB</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">BAND DN</property>
+            <property name="width">12</property>
+            <layout manager="grid">
+              <property name="column">4</property>
+              <property name="ipady">20</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="band_down_tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to move the VFO to the next lower band</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="lock_Button" named="True">
+            <property name="command" type="command" cbtype="simple">lock_CB</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">LOCK</property>
+            <property name="width">12</property>
+            <layout manager="grid">
+              <property name="column">5</property>
+              <property name="padx">0 2</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="lock_Button_Tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to lock/unlock all the screen settings.</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="speaker_Button" named="True">
+            <property name="command" type="command" cbtype="simple">speaker_CB</property>
+            <property name="style">Button2b.TButton</property>
+            <property name="text" translatable="yes">SPEAKER</property>
+            <property name="width">12</property>
+            <bind sequence="&lt;Double-Button-1&gt;" handler="relaunch_SDRPanel_CB" add="" />
+            <layout manager="grid">
+              <property name="column">6</property>
+              <property name="ipady">20</property>
+              <property name="row">0</property>
+              <property name="sticky">ns</property>
+            </layout>
+            <child>
+              <object class="pygubu.widgets.Tooltip" id="speaker_Button_Tooltip" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to toggle between speaker output and SDR (if available otherwise Mute). Double clicking will reopen the SDR Dashboard.</property>
+                <property name="wraplength">300</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame2">
+        <property name="height">200</property>
+        <property name="relief">sunken</property>
+        <property name="style">Normal.TFrame</property>
+        <property name="width">1250</property>
+        <layout manager="pack">
+          <property name="anchor">n</property>
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="ipadx">5</property>
+          <property name="ipady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="col" id="0" name="weight">1</property>
+          <property type="col" id="1" name="weight">2</property>
+        </containerlayout>
+        <child>
+          <object class="projectcustom.theVFO" id="theVFO_Object" named="True">
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="pady">5 0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="control_Meter_Tuning_Frame" named="True">
+            <property name="borderwidth">0</property>
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5 0</property>
+              <property name="row">1</property>
+              <property name="sticky">nw</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="secondary_menu_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">5</property>
+                  <property name="row">0</property>
+                </layout>
+                <child>
+                  <object class="ttk.Frame" id="signal_Control_Frame" named="True">
+                    <property name="height">200</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">200</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="pady">10</property>
+                      <property name="row">0</property>
+                      <property name="sticky">n</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Button" id="channels_Button" named="True">
+                        <property name="command" type="command" cbtype="simple">channels_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+CHANNELS
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="channels_Button_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to bring up the Channels window where you can edit your favorite frequencies and scan sets of channels.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="cwDecode_Button" named="True">
+                        <property name="command" type="command" cbtype="with_wid">cwDecode_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+CW DECODE
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="cwDecode_Button_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to bring up a window that allows you to scan 240kHz and select an area to decode CW. This requires a second Nano.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="spectrumScan_Button" named="True">
+                        <property name="command" type="command" cbtype="with_wid">spectrumScan_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+SPECTRUM
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="spectrumScan_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to bring up a window that allows you to scan 240kHZ of the band and look at average and peak signal levels.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="bandScan_Button" named="True">
+                        <property name="command" type="command" cbtype="with_wid">bandScan_Button_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+BAND SCAN
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="bandScan_Button_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to bring up a window that allows you to scan up to three sepeate bands for signals. </property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="split_Button" named="True">
+                        <property name="command" type="command" cbtype="simple">split_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+SPLIT
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="split_Button_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to go into Split mode. RX will be VFO A and TX will be on VFO B.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="rit_Button" named="True">
+                        <property name="command" type="command" cbtype="simple">rit_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+RIT
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 10</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="rit_Button_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to go enable RIT. TX will remain as before entering RIT while the tuned frequency will be used for RX.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="logQSO_Button" named="True">
+                        <property name="command" type="command" cbtype="simple">logQSO_CB</property>
+                        <property name="style">Button2b.TButton</property>
+                        <property name="text" translatable="yes">
+LOG QSO
+</property>
+                        <property name="width">11</property>
+                        <layout manager="pack">
+                          <property name="anchor">nw</property>
+                          <property name="padx">0 20</property>
+                          <property name="side">left</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.widgets.Tooltip" id="log_QSO_Tooltip" named="True">
+                            <property name="padx">8</property>
+                            <property name="relief">raised</property>
+                            <property name="text" translatable="yes">Click to bring up a window to Log a QSO.</property>
+                            <property name="wraplength">300</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="sMeter_Frame" named="True">
+                <property name="height">70</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">525</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">20 0</property>
+                  <property name="row">1</property>
+                  <property name="sticky">w</property>
+                </layout>
+                <containerlayout manager="grid">
+                  <property name="propagate">false</property>
+                </containerlayout>
+                <child>
+                  <object class="ttk.Frame" id="meter_Frame" named="True">
+                    <property name="height">60</property>
+                    <property name="style">Normal.TFrame</property>
+                    <property name="width">425</property>
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <containerlayout manager="grid">
+                      <property name="propagate">false</property>
+                    </containerlayout>
+                    <child>
+                      <object class="ttk.Label" id="label7">
+                        <property name="style">Heading3b.TLabel</property>
+                        <property name="text" translatable="yes"> ...................5................7..............8..........9........</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="s_meter_Label" named="True">
+                        <property name="style">Heading2b.TLabel</property>
+                        <property name="text" translatable="yes">S/PO</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="padx">0 10</property>
+                          <property name="row">1</property>
+                          <property name="sticky">w</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Progressbar" id="s_meter_Progressbar" named="True">
+                        <property name="length">335</property>
+                        <property name="maximum">10</property>
+                        <property name="mode">determinate</property>
+                        <property name="orient">horizontal</property>
+                        <property name="style">Striped.Horizontal.TProgressbar</property>
+                        <property name="value">0</property>
+                        <property name="variable">string:s_meter_Progressbar_VAR</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="padx">5 0</property>
+                          <property name="row">1</property>
+                          <property name="sticky">w</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Frame" id="SWR_PWR_Frame" named="True">
+                    <property name="height">60</property>
+                    <property name="style">NormalOutline.TFrame</property>
+                    <property name="width">95</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">0</property>
+                      <property name="rowspan">2</property>
+                      <property name="sticky">se</property>
+                    </layout>
+                    <containerlayout manager="grid">
+                      <property name="propagate">false</property>
+                    </containerlayout>
+                    <child>
+                      <object class="ttk.Label" id="SWR_Label" named="True">
+                        <property name="style">Heading3b.TLabel</property>
+                        <property name="text" translatable="yes">SWR:</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="padx">5 0</property>
+                          <property name="pady">5</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="SWR_Value" named="True">
+                        <property name="anchor">e</property>
+                        <property name="style">Heading4b.TLabel</property>
+                        <property name="textvariable">string:SWR_Value_VAR</property>
+                        <property name="width">4</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="padx">0 5</property>
+                          <property name="row">0</property>
+                          <property name="sticky">e</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="PWR_Label" named="True">
+                        <property name="style">Heading3b.TLabel</property>
+                        <property name="text" translatable="yes">PWR:</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="padx">5 0</property>
+                          <property name="pady">0 5</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="PWR_Value" named="True">
+                        <property name="anchor">e</property>
+                        <property name="style">Heading4b.TLabel</property>
+                        <property name="textvariable">string:PWR_Value_VAR</property>
+                        <property name="width">4</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="padx">0 5</property>
+                          <property name="row">1</property>
+                          <property name="sticky">e</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="cwDecodeFrame" named="True">
+                <property name="height">100</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">400</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">10 0</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">2</property>
+                  <property name="sticky">nw</property>
+                </layout>
+                <child>
+                  <object class="tk.Text" id="decodedCWText" named="True">
+                    <property name="background">gray</property>
+                    <property name="borderwidth">2</property>
+                    <property name="font">{Courier New} 18 {}</property>
+                    <property name="foreground">white</property>
+                    <property name="height">3</property>
+                    <property name="highlightbackground">white</property>
+                    <property name="highlightcolor">white</property>
+                    <property name="highlightthickness">1</property>
+                    <property name="relief">flat</property>
+                    <property name="spacing1">2</property>
+                    <property name="spacing2">5</property>
+                    <property name="spacing3">2</property>
+                    <property name="state">normal</property>
+                    <property name="width">25</property>
+                    <property name="wrap">char</property>
+                    <layout manager="pack">
+                      <property name="expand">false</property>
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Canvas" id="spectrumCanvas" named="True">
+                    <property name="background">gray</property>
+                    <property name="height">100</property>
+                    <property name="highlightbackground">white</property>
+                    <property name="highlightcolor">white</property>
+                    <property name="highlightthickness">1</property>
+                    <property name="relief">flat</property>
+                    <property name="width">200</property>
+                    <layout manager="pack">
+                      <property name="anchor">sw</property>
+                      <property name="expand">false</property>
+                      <property name="padx">10 0</property>
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Labelframe" id="tuningArrow_Labelframe" named="True">
+                <property name="height">200</property>
+                <property name="style">Heading3.TLabelframe</property>
+                <property name="text" translatable="yes">Tuning</property>
+                <property name="width">200</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="columnspan">3</property>
+                  <property name="padx">650 0</property>
+                  <property name="pady">0</property>
+                  <property name="row">1</property>
+                  <property name="rowspan">3</property>
+                  <property name="sticky">sw</property>
+                </layout>
+                <child>
+                  <object class="tk.Canvas" id="downButton_Canvas" named="True">
+                    <property name="background">gray</property>
+                    <property name="borderwidth">0</property>
+                    <property name="height">140</property>
+                    <property name="highlightthickness">0</property>
+                    <property name="selectborderwidth">0</property>
+                    <property name="width">140</property>
+                    <bind sequence="&lt;ButtonPress&gt;" handler="downButtonPressed_CB" add="True" />
+                    <bind sequence="&lt;ButtonRelease&gt;" handler="downButtonReleased_CB" add="" />
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Canvas" id="upButton_Canvas" named="True">
+                    <property name="background">gray</property>
+                    <property name="borderwidth">0</property>
+                    <property name="height">140</property>
+                    <property name="highlightthickness">0</property>
+                    <property name="selectborderwidth">0</property>
+                    <property name="width">140</property>
+                    <bind sequence="&lt;ButtonPress&gt;" handler="upButtonPressed_CB" add="True" />
+                    <bind sequence="&lt;ButtonRelease&gt;" handler="upButtonReleased_CB" add="" />
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="tuning_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Click the up arrow to go up the current tuning factor. Down decreases the frequency by the tuning factor.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="ATT_IFS_Adjust_Frame" named="True">
+        <property name="style">Normal.TFrame</property>
+        <property name="width">1250</property>
+        <layout manager="pack">
+          <property name="anchor">w</property>
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">10 50</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="att_ifs_Frame" named="True">
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">400</property>
+            <layout manager="pack">
+              <property name="anchor">nw</property>
+              <property name="expand">false</property>
+              <property name="fill">x</property>
+              <property name="padx">10</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="ATT_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                  <property name="padx">30</property>
+                  <property name="side">left</property>
+                </layout>
+                <child>
+                  <object class="projectcustom.Jogwheel" id="ATT_Jogwheel" named="True">
+                    <property name="button_radius">25</property>
+                    <property name="command" type="command" cbtype="simple">updateATTValue_CB</property>
+                    <property name="divisions">10</property>
+                    <property name="end">255</property>
+                    <property name="radius">200</property>
+                    <property name="scroll_steps">10</property>
+                    <property name="start">0</property>
+                    <property name="state">disabled</property>
+                    <property name="touchOptimized">False</property>
+                    <property name="value">70</property>
+                    <bind sequence="&lt;ButtonPress&gt;" handler="ATT_Jogwheel_ButtonPressed_CB" add="True" />
+                    <bind sequence="&lt;ButtonRelease&gt;" handler="ATT_Jogwheel_ButtonReleased_CB" add="True" />
+                    <layout manager="pack">
+                      <property name="anchor">center</property>
+                      <property name="padx">20 0</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="ATT_Status_Label" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">ATT (OFF)</property>
+                    <property name="textvariable">string:ATT_Status_VAR</property>
+                    <layout manager="pack">
+                      <property name="anchor">center</property>
+                      <property name="side">bottom</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="ATT_Tooltip" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Click to enable ATT. Move the dial to adjust the ATT. Click in plac to disable ATT.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="IFS_Frame" named="True">
+                <property name="height">200</property>
+                <property name="style">Normal.TFrame</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
+                </layout>
+                <child>
+                  <object class="projectcustom.Jogwheel" id="IFS_Jogwheel" named="True">
+                    <property name="button_radius">25</property>
+                    <property name="command" type="command" cbtype="simple">updateIFSValue_CB</property>
+                    <property name="divisions">150</property>
+                    <property name="end">2000</property>
+                    <property name="radius">200</property>
+                    <property name="scroll_steps">150</property>
+                    <property name="start">-2000</property>
+                    <property name="state">disabled</property>
+                    <property name="touchOptimized">False</property>
+                    <property name="value">0</property>
+                    <bind sequence="&lt;ButtonPress&gt;" handler="IFS_Jogwheel_ButtonPressed_CB" add="True" />
+                    <bind sequence="&lt;ButtonRelease&gt;" handler="IFS_Jogwheel_ButtonReleased_CB" add="True" />
+                    <layout manager="pack">
+                      <property name="anchor">center</property>
+                      <property name="padx">20 0</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="IFS_Status_Label" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">IFS (OFF)</property>
+                    <property name="textvariable">string:IFS_Status_VAR</property>
+                    <layout manager="pack">
+                      <property name="anchor">center</property>
+                      <property name="side">bottom</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="IFS_Tooltip" named="True">
+                    <property name="justify">left</property>
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Click to enable IFS. Move the dial to adjust the IFS. Click in plac to disable IFS.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="cwInfoFrame" named="True">
+            <property name="height">200</property>
+            <property name="style">Normal.TFrame</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="padx">50 0</property>
+              <property name="pady">15 0</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="cw_Info_Frame" named="True">
+                <property name="borderwidth">5</property>
+                <property name="height">200</property>
+                <property name="style">NormalOutline.TFrame</property>
+                <property name="width">200</property>
+                <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                <layout manager="pack">
+                  <property name="anchor">nw</property>
+                  <property name="expand">false</property>
+                  <property name="fill">x</property>
+                  <property name="pady">0 10</property>
+                  <property name="side">top</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="cw_settings_title_Label" named="True">
+                    <property name="style">Heading2b.TLabel</property>
+                    <property name="text" translatable="yes">CW Settings</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="columnspan">3</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="tone_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Tone</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="tone_value_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">799</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">0 2</property>
+                      <property name="row">1</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="tone_units_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Hz</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="row">1</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="key_type_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Key</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="key_type_value_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Straight</property>
+                    <property name="textvariable">string:key_type_value_VAR</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="key_speed_label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Speed</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">3</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="key_speed_value_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">1</property>
+                    <property name="textvariable">string:key_speed_value_VAR</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">3</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="key_speed_units_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">wpm</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="row">3</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_returning_to_rx_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Delay-&gt;RX</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="padx">0 3</property>
+                      <property name="row">5</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_returning_to_rx_value_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">199</property>
+                    <property name="textvariable">string:delay_returning_to_rx_value_VAR</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">5</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_returning_to_rx_units_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">ms</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="row">5</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_starting_tx_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">Delay-&gt;TX</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">0</property>
+                      <property name="row">4</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_starting_tx_value_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">299</property>
+                    <property name="textvariable">string:delay_starting_tx_value_VAR</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="row">4</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="delay_starting_tx_units_Label" named="True">
+                    <property name="style">Heading3b.TLabel</property>
+                    <property name="text" translatable="yes">ms</property>
+                    <bind sequence="&lt;1&gt;" handler="cwSettings_CB" add="" />
+                    <layout manager="grid">
+                      <property name="column">2</property>
+                      <property name="row">4</property>
+                      <property name="sticky">w</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="pygubu.widgets.Tooltip" id="cw_Settings_Frame_Tooltips" named="True">
+                    <property name="justify">left</property>
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Current CW Settings. Click to go into the CW Settings Menu to edit them.</property>
+                    <property name="wraplength">300</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

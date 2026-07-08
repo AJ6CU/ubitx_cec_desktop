@@ -1,0 +1,849 @@
+#!/usr/bin/python3
+"""
+sdrDashboard
+
+A small window that pops up when a sdr is connected
+
+UI source file: sdrDashboard.ui
+"""
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import messagebox
+from pygubu.widgets.accordionframe import AccordionFrame
+import pygubu
+import random
+
+import sdrDashboardui as baseui
+from entryFieldHandler import entryFieldHandler
+from VirtualNumericKeyboard import VirtualNumericKeyboard
+from VirtualKeyboard import VirtualKeyboard
+import globalvars as gv
+
+import os
+from SDRPlusPlusController import SDRPlusPlusController
+
+
+#
+# Manual user code
+#
+
+class sdrDashboard(baseui.sdrDashboardUI):
+    def __init__(self, master=None, **kw):
+        self.master = master
+
+        super().__init__(master, **kw)
+
+        # Configure columns inside Python (Excluding obsolete filter column to save space)
+        # self.builder = pygubu.Builder()
+
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
+        # ui_absolute_path = os.path.join(script_dir, "pygubu", "sdrDashboard.ui")
+        # self.builder.add_from_file(ui_absolute_path)
+        # 
+        # self.treeChannels = self.builder.get_object("treeChannels")
+        # self.treeScrollbar = self.builder.get_object("treeScrollbar")
+        gv.config.register_observer("Radio IP", self.updateIPAddress )
+        gv.config.register_observer("Radio Port", self.updatePort)
+
+        self.treeChannels["columns"] = ('label','frequency', 'mode', 'description')
+        # self.treeChannels.config(show='headings')
+        self.treeChannels.config(yscrollcommand=self.treeScrollbar.set)
+        self.treeScrollbar.config(command=self.treeChannels.yview)
+
+        # Setup column widths and text headers
+        self.treeChannels.column('label', anchor='w')
+        self.treeChannels.column('label', width=90, minwidth=90, stretch=tk.YES)
+        self.treeChannels.column('frequency', width=75, minwidth=75, stretch=tk.YES)
+        self.treeChannels.column('mode', width=40, minwidth=40, stretch=tk.YES)
+        self.treeChannels.column('description', width=125, minwidth=100, stretch=tk.YES)
+
+        self.treeChannels.heading('label', text='Channel Label', anchor='w')
+        self.treeChannels.heading('frequency', text='Frequency (MHz)', anchor='w')
+        self.treeChannels.heading('mode', text='Mode', anchor='w')
+        self.treeChannels.heading('description', text='Station Name', anchor='w')
+
+        #
+        #   Create an error handler for each entry field
+        #
+        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master)
+        self.newChannel_Object = entryFieldHandler(self, "newChannel", 15, VirtualKeyboard,self.master)
+        self.newStationDescription_Object = entryFieldHandler(self, "newStationDescription", 50, VirtualKeyboard, self.master)
+        self.newBankName_Object = entryFieldHandler(self, "newBankName", 15, VirtualKeyboard, self.master)
+        self.scanTime_Object = entryFieldHandler(self, "scanTime", 3, VirtualNumericKeyboard, self.master)
+
+
+        # 5. Instantiate communications controller loop
+        self.sdr = SDRPlusPlusController(self.master)
+
+        # Telemetry & State variables
+        self.sdr.on_frequency_change_secondary = self.update_frequency_telemetry
+        self.sdr.on_mode_change_secondary = self.update_mode_telemetry
+        self.currentBand = None
+        self.sdr.on_filter_change = self.update_filter_telemetry
+        self.is_muted = False
+        self.pre_mute_volume = gv.config.get_audio_gain_level()
+
+        # Seed initialization field parameters
+        self.scanTime_Entry.insert(0, str(round(gv.config.get_Scan_On_Station_Time()/1000)))
+        self.sdrIPAddress_VAR.set(str(gv.config.get_sdr_server_ip()))
+        self.sdrPortNumber_VAR.set(str(gv.config.get_sdr_tcp_port()))
+        self.volume_scale.set(self.pre_mute_volume)
+        self.label_volume_val.config(text=f"{self.pre_mute_volume}%")
+
+        # Get persistent references to collapse and open buttons
+        self.btn_expand_icon = gv.get_image("expand_40x40.png", self)
+        self.btn_collapse_icon = gv.get_image("collapse_40x40.png", self)
+
+        # Set state for accordion panels
+        self.channelsAccordionState = False
+        self.bandsAccordionState = True
+        self.scanAccordionState = False
+
+
+        self.setAccordionState(self.bandsAccordion_Frame, self.bandsToggle_Button, self.bandsAccordionState)
+        self.setAccordionState(self.scanAccordion_Frame, self.scanToggle_Button, self.scanAccordionState)
+        self.setAccordionState(self.channelsAccordion_Frame, self.channelsToggle_Button, self.channelsAccordionState)
+
+        self.refresh_listbox_view()
+
+        # self.myoption.configure(style="Heading1b.TMenubutton", width=15)
+        # dropdown_menu = self.nametowidget(self.myoption.cget("menu"))
+        # dropdown_menu.config(font=("Arial", 24))
+        gv.formatOptionMenu(self.sourceBank ,("Arial", 20), 15 )
+        gv.formatOptionMenu(self.targetBank, ("Arial", 20), 15)
+        gv.formatOptionMenu(self.scanBank, ("Arial", 20), 15)
+
+
+
+
+        #
+        self.sourceBank_VAR.set("DEFAULT SET")
+        self.targetBank_VAR.set("DEFAULT SET")
+        self.scanBank_VAR.set("DEFAULT SET")
+
+
+
+        if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
+            self.linkStatus_Label.configure(
+                style="GreenLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Connected')
+            self.reconnect_Button.state(['disabled'])
+
+            # --- ADD THIS LINE TO FIRE TELEMETRY ON STARTUP ---
+            if hasattr(self.sdr, 'current_mode') and self.sdr.current_mode:
+                self.update_mode_telemetry(self.sdr.current_mode)
+            else:
+                self.update_mode_telemetry("USB")  # Safe hardware default if empty
+        else:
+            self.linkStatus_Label.configure(
+                style="RedLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Disconnected')
+            self.reconnect_Button.configure(state='normal')
+
+        self.pack(expand=tk.YES, fill=tk.BOTH)
+        self.sdr.startSDR()
+        self.update_filter_telemetry(self.sdr.get_filter_width_hz())
+
+    def updateIPAddress (self, newIPAddress):
+        self.sdrIPAddress_VAR.set(newIPAddress)
+
+    def updatePort(self, newPort):
+        self.sdrPortNumber_VAR.set(newPort)
+
+
+
+    def update_frequency_telemetry(self, freq_hz):
+        self.current_live_vfo_hz = int(freq_hz)
+        self.label_val_freq.config(text=f"{(float(freq_hz) / 1000000):.4f} MHz")
+        band = self.findBand(freq_hz)
+        if band == None and self.currentBand == None:
+            return
+        elif band != self.currentBand:
+            self.showFreqButtonPressed(band)
+            self.currentBand = band
+
+
+    def update_mode_telemetry(self, mode_str):
+        # print("update_mode_telemetry", mode_str)
+        self.label_val_mode.config(text=str(mode_str).upper())
+        if mode_str.lower() == 'cw':
+            self.showModeButtonPressed("modeCWU_Button")
+        elif mode_str.lower() == 'usb' or mode_str.lower() == 'lsb':
+            self.showModeButtonPressed("mode"+mode_str.upper()+"_Button")
+        else:
+            # messagebox.showinfo("Warning Unsupported Mode",
+            #                     "Mode selected on your SDR software is not supported by uBITX\n",
+            #                     + "uBITX defaulting to USB. This means your two radios are out of synch.\n"
+            #                     + "Before going into TX, switch back to a mode supported by your uBITX", parent=self)
+            self.showModeButtonPressed("mode"+"USB_Button")
+
+    def update_filter_telemetry(self, filter_hz):
+        self.current_live_filter_hz = int(filter_hz)
+        self.currentFilterWidth_VAR.set(str(filter_hz))
+
+    def refresh_listbox_view(self):
+        for item in self.treeChannels.get_children():
+            self.treeChannels.delete(item)
+
+        for ch in self.sdr.scan_channels:
+            freq_mhz = ch.get("freq_hz", 0) / 1000000
+            lbl = ch.get("label", "UNKN")
+            mode = ch.get("mode", "USB")
+            desc = ch.get("name", "No Station Name")
+            self.treeChannels.insert('', tk.END, values=(lbl,f"{freq_mhz:.4f}", mode, desc))
+
+        banks_list = list(self.sdr.scan_sets_dict.keys())
+        # self.sourceBank_Combobox['values'] = banks_list
+        # self.targetBank_Combobox['values'] = banks_list
+        # self.scanBankSelect_Combobox['values'] = banks_list
+        gv.refresh_menu_by_name(self, 'sourceBank', banks_list, self.sourceBank_VAR.get())
+        gv.refresh_menu_by_name(self, 'targetBank', banks_list, self.targetBank_VAR.get())
+        gv.refresh_menu_by_name(self, 'scanBank', banks_list, self.scanBank_VAR.get())
+
+    def action_connect(self):
+        gv.config.set_sdr_server_ip(self.sdrIPAddress_VAR.get().strip())
+        gv.config.set_sdr_tcp_port(int(self.sdrPortNumber_VAR.get().strip()))
+        # gv.config.set_sdr_server_ip(self.entry_radio_ip.get().strip())
+        # gv.config.set_sdr_tcp_port(int(self.entry_radio_port.get().strip()))
+        if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
+            messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.", parent=self)
+            self.linkStatus_Label.configure(
+                style="GreenLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Connected')
+            self.reconnect_Button.state(['disabled'])
+        else:
+            messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.", parent=self)
+            self.linkStatus_Label.configure(
+                style="RedLED.TLabel",
+                takefocus=False)
+            self.linkStatus_VAR.set('Disconnected')
+            self.reconnect_Button.configure(state='normal')
+
+
+
+    def action_on_volume_slider_move(self, event=None):
+        try:
+            current_pos = self.volume_scale.get()
+            target_percentage = int(current_pos)
+            self.label_volume_val.config(text=f"{target_percentage}%")
+            gv.config.set_audio_gain_level(target_percentage)
+            if self.sdr.is_connected and not getattr(self, 'is_muted', False):
+                self.sdr.set_volume(float(target_percentage) / 100.0)
+        except Exception:
+            pass
+
+    def action_toggle_mute(self):
+        if not self.sdr.is_connected: return
+        slider = self.volume_scale
+        if not self.is_muted:
+            self.pre_mute_volume = slider.get()
+            if self.sdr.mute():
+                self.is_muted = True
+                slider.set(0)
+                slider.config(state="disabled")
+                self.label_volume_val.config(text="MUTED")
+                self.button_mute_toggle.config(text="🔇 Unmute Audio")
+        else:
+            slider.config(state="normal")
+            restore_vol_float = float(self.pre_mute_volume) / 100.0
+            if self.sdr.unmute(restore_volume=restore_vol_float):
+                self.is_muted = False
+                slider.set(self.pre_mute_volume)
+                self.label_volume_val.config(text=f"{int(float(self.pre_mute_volume))}%")
+                self.button_mute_toggle.config(text="🔊 Mute Audio")
+
+    def action_on_channel_row_click(self, event):
+        """Dispatched when a user clicks a channel row within the memory grid."""
+        if not self.sdr.is_connected:
+            return
+
+        selected_item = self.treeChannels.selection()
+        if not selected_item:
+            return
+
+        row_values = self.treeChannels.item(selected_item, 'values')
+
+        # Ensure the row contains all necessary parameters (Label, Freq, Mode, Desc)
+        if row_values and len(row_values) >= 3:
+            try:
+                # 1. Unpack data fields and convert strings safely to native numeric types
+                label_target = str(row_values[0]).strip()
+                freq_mhz_str = str(row_values[1]).strip()
+                mode_str = str(row_values[2]).strip().upper()
+
+                # Convert MHz string directly back to Hz integer
+                freq_hz = int(float(freq_mhz_str) * 1000000)
+
+                # 2. Match the unique channel label against the scan database to grab its saved bandwidth
+                saved_bw = 0  # Pass 0 to tell the updated set_mode to look up the current active bandwidth
+                for ch in self.sdr.scan_channels:
+                    if ch.get('label') == label_target:
+                        # Extract saved filter configuration if it exists, otherwise default to 0 (passive tracking)
+                        saved_bw = int(ch.get('filter_width_hz', 0))
+                        break
+
+                # 3. Apply the targets sequentially over the network link
+                self.sdr.set_frequency_hz(freq_hz)
+
+                # Use a Tkinter delayed wrapper to let the frequency lock clear before updating mode/bandwidth
+                self.master.after(50, lambda: self.sdr.set_mode(mode_str, passband_hz=saved_bw))
+
+            except (ValueError, IndexError) as e:
+                print(f"[-] Grid selection data conversion error: {e}")
+
+    def action_capture_live_vfo_to_channel(self):
+        """Grabs current live frequency, mode, and filter bandwidth straight into active memory structures."""
+        if not self.sdr.is_connected:
+            messagebox.showwarning("Offline", "Please connect to the SDR++ hardware rig first.", parent=self)
+            return
+
+        label_text = self.newChannel_Entry.get().strip()
+        desc_text = self.newStationDescription_Entry.get().strip()
+
+        if not label_text:
+            messagebox.showwarning("Missing Input", "Please supply a short Channel Label identifier (e.g., WX1).", parent=self)
+            return
+            return
+
+        # Fetch telemetry snapshot keys from active UI layer memory cache pools
+        live_freq_hz = getattr(self, 'current_live_vfo_hz', gv.config.get_last_active_frequency())
+        live_mode = self.sdr.current_mode
+        live_filter_hz = getattr(self, 'current_live_filter_hz', gv.config.get_sdr_filter_width_hz())
+        station_name = desc_text if desc_text else "No Station Name"
+
+        if self.sdr.add_channel(label_text, live_freq_hz, live_mode, live_filter_hz, station_name):
+            self.sdr._save_channels_to_json()
+
+            # Flush fields cleanly
+            self.newChannel_Entry.delete(0, tk.END)
+            self.newStationDescription_Entry.delete(0, tk.END)
+
+            self.refresh_listbox_view()
+            messagebox.showinfo("Stored",
+                                f"Saved {label_text} at {(float(live_freq_hz) / 1000000):.3f} MHz to Source bank.", parent=self)
+
+    def action_filter_search_grid(self, event=None):
+        """Real-time string matching lookup filtering grid rows instantly by label text or station descriptions."""
+        search_query = self.channelLookup_Entry.get().strip().lower()
+
+        for item in self.treeChannels.get_children():
+            self.treeChannels.delete(item)
+
+        for ch in self.sdr.scan_channels:
+            lbl = ch.get("label", "UNKN")
+            desc = ch.get("description", "No Station Name")
+            freq_mhz = ch.get("freq_hz", 0) / 1000000
+            mode = ch.get("mode", "WFM")
+
+            if search_query in lbl.lower() or search_query in desc.lower():
+                self.treeChannels.insert('', tk.END, values=(lbl,f"{freq_mhz:.4f}", mode, desc))
+
+    def action_del_ch(self):
+        selected = self.treeChannels.selection()
+        if not selected: return
+        lbl_target = self.treeChannels.item(selected, 'values')[0]
+        if self.sdr.delete_channel(lbl_target):
+            self.newChannel_Entry.delete(0, tk.END)
+            self.refresh_listbox_view()
+
+    def action_create_brand_new_bank(self):
+        # adds new bank to organize channels
+        from tkinter import simpledialog
+        # new_bank_name = simpledialog.askstring("New Memory Bank", "Enter an identifier name for the new channel bank:")
+
+        if self.newBankName_VAR.get() == "":
+            messagebox.showwarning("Error - No Name", "Please enter a name for the new Bank", parent=self)
+            return
+
+        cleaned_name = self.newBankName_VAR.get().strip().upper()
+
+        # if not cleaned_name:
+        #     messagebox.showwarning("Error - Bad Name", "Bank name must be something other than spaces", parent=self)
+        #     return
+        #
+        # if cleaned_name in self.sdr.scan_sets_dict:
+        #     messagebox.showwarning("Error - Conflict", f"A bank profile named '{cleaned_name}' already exists.", parent=self)
+        #     self.newBankName_VAR.set("")
+        #     return
+
+        self.sdr.scan_sets_dict[cleaned_name] = []
+        self.sdr.change_active_scan_set(cleaned_name)
+        self.sdr._save_all_channels_to_json()
+
+        self.refresh_listbox_view()
+        # self.sourceBank_Combobox.set(cleaned_name)
+        self.sourceBank_VAR.set(cleaned_name)
+        self.targetBank_VAR.set(cleaned_name)
+        self.newBankName_VAR.set("")    # clear out new bank name after creating it
+        # self.targetBank_Combobox.set(cleaned_name)
+        messagebox.showinfo("Success", f"The new channel bank profile '{cleaned_name}' is active and ready.", parent=self)
+
+    def action_on_set_dropdown_change(self, event=None):
+        # selected_set = self.sourceBank_Combobox.get().strip()
+        # if selected_set:
+        #     self.sdr.change_active_scan_set(selected_set)
+        #     self.refresh_listbox_view()
+        pass
+
+    def sourceBank_CB(self, option):
+        selected_set = self.sourceBank_VAR.get().strip()
+        if selected_set:
+            self.sdr.change_active_scan_set(selected_set)
+            self.refresh_listbox_view()
+
+    def targetBank_CB(self, option):
+        selected_set = self.targetBank_VAR.get().strip()
+        if selected_set:
+            self.sdr.change_active_scan_set(selected_set)
+            self.refresh_listbox_view()
+
+    def scanBank_CB(self, option):
+        selected_set = self.scanBank_VAR.get().strip()
+        if selected_set:
+            self.sdr.change_active_scan_set(selected_set)
+            self.refresh_listbox_view()
+
+    def action_copy_row_to_target_bank(self):
+        """Copies highlighted single row item instantly into target dropdown selector destination bank."""
+        selected = self.treeChannels.selection()
+        if not selected:
+            messagebox.showwarning("Selection Required", "Please click a channel row from the grid first.", parent=self)
+            return
+
+        target_bank = self.targetBank_VAR.get().strip()
+        # target_bank = self.targetBank_Combobox.get().strip()
+        if not target_bank or target_bank not in self.sdr.scan_sets_dict:
+            messagebox.showwarning("Invalid Target", "Please pick a valid Target Bank profile from the dropdown.", parent=self)
+            return
+
+        lbl_target = self.treeChannels.item(selected, option="values")[0]
+
+        matched_ch = None
+        for ch in self.sdr.scan_channels:
+            if ch.get('label') == lbl_target:
+                matched_ch = ch.copy()
+                break
+
+        if matched_ch:
+            self.sdr.scan_sets_dict[target_bank] = [c for c in self.sdr.scan_sets_dict[target_bank] if
+                                                    c.get('label') != lbl_target]
+            self.sdr.scan_sets_dict[target_bank].append(matched_ch)
+            self.sdr._save_all_channels_to_json()
+            messagebox.showinfo("Linked", f"Successfully duplicated entry '{lbl_target}' into bank '{target_bank}'.",
+                                    parent=self)
+
+    def action_bulk_clone_source_to_target(self):
+        """Deep-copies ALL channel rows from current source dropdown directly into target bank menu selection."""
+        source_bank = self.sourceBank_VAR.get().strip()
+        target_bank = self.targetBank_VAR.get().strip()
+        # source_bank = self.sourceBank_Combobox.get().strip()
+        # target_bank = self.targetBank_Combobox.get().strip()
+
+        if not source_bank or source_bank not in self.sdr.scan_sets_dict:
+            messagebox.showwarning("Selection Required", "Please choose a valid Source Bank View to copy from.", parent=self)
+            return
+        if not target_bank or target_bank not in self.sdr.scan_sets_dict:
+            messagebox.showwarning("Selection Required", "Please choose a valid Target Bank Copy to populate.", parent=self)
+            return
+        if source_bank == target_bank:
+            messagebox.showwarning("Identical Banks", "Source and Target banks are the same. Bulk clone skipped.", parent=self)
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Bulk Bank Copy",
+            f"Are you sure you want to copy ALL channels from bank '{source_bank}' into bank '{target_bank}'?",
+            parent=self
+        )
+        if not confirm: return
+
+        source_list = self.sdr.scan_sets_dict[source_bank]
+        target_list = self.sdr.scan_sets_dict[target_bank]
+
+        merged_dict = {ch.get('label'): ch.copy() for ch in target_list}
+        for ch in source_list:
+            merged_dict[ch.get('label')] = ch.copy()
+
+        self.sdr.scan_sets_dict[target_bank] = list(merged_dict.values())
+        self.sdr.change_active_scan_set(target_bank)
+        self.sdr._save_all_channels_to_json()
+
+        self.refresh_listbox_view()
+        self.sourceBank_VAR.set(target_bank)
+        self.targetBank_VAR.set(target_bank)
+        # self.sourceBank_Combobox.set(target_bank)
+        # self.targetBank_Combobox.set(target_bank)
+        messagebox.showinfo("Success", f"Successfully cloned all channels from '{source_bank}' into '{target_bank}'!", parent=self)
+
+    def action_delete_source_bank_profile(self):
+        """Permanently erases whatever profile bank is active inside the SOURCE VIEW dropdown window."""
+        source_bank = self.sourceBank_VAR.get().strip()
+        # source_bank = self.sourceBank_Combobox.get().strip()
+
+        if not source_bank:
+            messagebox.showwarning("Selection Required",
+                                   "Please pick a bank from the 'Source Bank View' dropdown menu to delete.", parent=self)
+            return
+        if source_bank in ["DEFAULT SET", "DEFAULT"]:
+            messagebox.showwarning("Prohibited Action",
+                                   "The core 'DEFAULT SET' repository is permanent and cannot be erased.", parent=self)
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Source Bank Deletion",
+            f"CRITICAL WARNING:\n\nYou are about to permanently delete the bank channel registry: '{source_bank}'\n"
+            f"This will erase this bank and ALL channels currently visible inside your grid list!\n\n"
+            f"Are you absolutely sure you want to delete this SOURCE bank?",
+            parent=self
+        )
+        if not confirm: return
+
+        if source_bank in self.sdr.scan_sets_dict:
+            del self.sdr.scan_sets_dict[source_bank]
+
+        fallback_set = "DEFAULT SET"
+        self.sdr.change_active_scan_set(fallback_set)
+        self.sdr._save_all_channels_to_json()
+
+        self.refresh_listbox_view()
+        self.sourceBank_VAR.set(fallback_set)
+        self.targetBank_VAR.set(fallback_set)
+        self.scanBank_VAR.set(source_bank)
+
+        # self.sourceBank_Combobox.set(fallback_set)
+        # self.targetBank_Combobox.set(fallback_set)
+        messagebox.showinfo("Success", f"The Source Bank repository '{source_bank}' has been successfully erased.", parent=self)
+
+    def action_start_scan(self):
+        try:
+            delay = int(self.scanTime_Entry.get().strip())*1000
+            # gv.config.set_scan_station_time_ms(delay)
+            self.sdr.start_memory_scan(delay)
+        except ValueError:
+            messagebox.showwarning("Warning", "Invalid timing threshold configuration value", parent=self)
+
+    def stop_scan(self):
+        self.sdr.stop_scan()
+
+    def findBand(self,freq):
+        for key in gv.bandStart:
+            if gv.bandStart[key] <= freq <= gv.bandEnd[key]:
+                return key
+        return None
+
+
+    def showFreqButtonPressed(self, widget_id):
+        #
+        #   Unpress all the buttons
+        #
+        self.Band160m.configure(style='Button3Raised.TButton')
+        self.Band80m.configure(style='Button3Raised.TButton')
+        self.Band40m.configure(style='Button3Raised.TButton')
+        self.Band30m.configure(style='Button3Raised.TButton')
+        self.Band20m.configure(style='Button3Raised.TButton')
+        self.Band17m.configure(style='Button3Raised.TButton')
+        self.Band15m.configure(style='Button3Raised.TButton')
+        self.Band12m.configure(style='Button3Raised.TButton')
+        self.Band10m.configure(style='Button3Raised.TButton')
+        #
+        #   Show button pressed
+        #
+        if widget_id != None:
+            getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+
+    def action_quick_band(self, widget_id):
+        if not self.sdr.is_connected: return
+
+        self.showFreqButtonPressed(widget_id)
+
+        match widget_id:
+            case 'Band160m':
+                self.sdr.set_frequency_hz(1800000)
+                self.sdr.set_mode("LSB")
+
+            case 'Band80m':
+                self.sdr.set_frequency_hz(3500000)
+                self.sdr.set_mode("LSB")
+
+            case 'Band40m':
+                self.sdr.set_frequency_hz(7000000)
+                self.sdr.set_mode("LSB")
+
+            case 'Band30m':
+                self.sdr.set_frequency_hz(10100000)
+                self.sdr.set_mode("LSB")
+
+            case 'Band20m':
+                self.sdr.set_frequency_hz(14000000)
+                self.sdr.set_mode("USB")
+
+            case 'Band17m':
+                self.sdr.set_frequency_hz(18000000)
+                self.sdr.set_mode("USB")
+
+            case 'Band15m':
+                self.sdr.set_frequency_hz(21000000)
+                self.sdr.set_mode("USB")
+
+            case 'Band12m':
+                self.sdr.set_frequency_hz(24000000)
+                self.sdr.set_mode("USB")
+
+            case 'Band10m':
+                self.sdr.set_frequency_hz(28000000)
+                self.sdr.set_mode("USB")
+    def showModeButtonPressed(self, widget_id):
+        #
+        #   Unpress all the buttons
+        #
+        self.modeLSB_Button.configure(style='Button3Raised.TButton')
+        self.modeUSB_Button.configure(style='Button3Raised.TButton')
+        self.modeCWL_Button.configure(style='Button3Raised.TButton')
+        self.modeCWU_Button.configure(style='Button3Raised.TButton')
+        #
+        #   Show button pressed
+        #
+        getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+
+    def action_quick_mode(self, widget_id):
+        if not self.sdr.is_connected: return
+
+        self.showModeButtonPressed(widget_id)
+
+        getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+
+        match widget_id:
+            case "modeLSB_Button":
+                self.sdr.set_mode("LSB")
+
+            case "modeUSB_Button":
+                self.sdr.set_mode("USB")
+
+            case "modeCWL_Button":
+                self.sdr.set_mode("CW")
+
+            case "modeCWU_Button":
+                self.sdr.set_mode("CW")
+
+
+    def action_filter_widen(self):
+        if not self.sdr.is_connected: return
+        self.sdr.widen()
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+
+    def action_filter_narrow(self):
+
+        if not self.sdr.is_connected: return
+        self.sdr.narrow()
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+
+    def action_filter_reset(self):
+        # print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
+        if not self.sdr.is_connected: return
+        mode = self.sdr.current_mode
+        if mode == "LSB" or mode == "USB":
+            self.sdr.set_filter_width_hz(gv.config.get_sdr_ssb_filter_default_hz())
+        elif mode == "CW" or mode == "CWU" or mode == "CWL":
+            self.sdr.set_filter_width_hz(gv.config.get_sdr_cw_filter_default_hz())
+        else:
+            # print("filter reset, mode=", mode)
+            fallbacks = self.sdr.get_all_mode_fallbacks()
+            self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
+
+        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+
+    def setAccordionState(self, content_frame, thebutton, frameState):
+        parent_frame = content_frame.master
+        if frameState:
+            # content_frame.grid()
+            thebutton.config(image=self.btn_expand_icon,compound="left")
+
+            # Dynamically fetch the current row index
+            content_frame.hidden=False
+            # parent_frame.rowconfigure(row_num, weight=1)
+        else:
+            # CRITICAL: Get row index BEFORE hiding the frame
+            # row_num = content_frame.grid_info().get("row", 1)
+            content_frame.hidden=True
+            # content_frame.grid_remove()
+            thebutton.config(image=self.btn_collapse_icon, compound="left")
+            # Collapse the correct row index
+            # parent_frame.rowconfigure(row_num, weight=0, minsize=0, pad=0)
+
+    #
+    #   Validation Callbacks implicitly needed by the entryFieldHandler class
+    #
+    def channelLookup_validation(self):
+        if len(self.channelLookup_VAR.get()) > 15:
+            return False
+        else:
+            return True
+
+    def channelLookup_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Name",
+                            "Channel Names cannot exceeds 15 characters.\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def channelLookup_preProcessor(self):
+        return self.channelLookup_VAR.get().strip().upper()
+
+
+    def channelLookup_postProcessor(self):
+        return
+
+
+    def newChannel_validation(self):
+        # No much validation. Just needs to be 10 characters or less
+        if (len(self.newChannel_VAR.get()) > 15 or "\\" in self.newChannel_VAR.get() or '"' in self.newChannel_VAR.get()
+                or "'" in self.newChannel_VAR.get()):
+            return False
+        else:
+            return True
+
+
+    def newChannel_errorHandler(self):
+
+        messagebox.showinfo("Error - Invalid Name",
+                            "Channel Labels cannot exceeds 15 characters or have " +
+                            "backslashes or quotes.\n\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newChannel_preProcessor(self):
+        return self.newChannel_VAR.get().strip().upper()
+
+    def newChannel_postProcessor(self):
+        return
+
+
+    def newBankName_validation(self):
+        cleanedName = self.newBankName_VAR.get().strip().upper()
+        if len(cleanedName) > 15 or "\\" in cleanedName or cleanedName in self.sdr.scan_sets_dict or '"' in cleanedName or "'" in cleanedName:
+            return False
+        else:
+            return True
+
+    def newBankName_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Bank Name",
+                            "A Bank Name cannot exceed 15 characters or have backslashes\n" +
+                            "or quotes and not be a duplicate of an existing Bank Name\n\n"+
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newBankName_preProcessor(self):
+        return self.newBankName_VAR.get().strip().upper()
+
+
+    def newBankName_postProcessor(self):
+        return
+
+
+
+    def newStationDescription_validation(self):
+        if (len(self.newStationDescription_VAR.get()) > 50 or "\\" in self.newStationDescription_VAR.get()
+                or '"' in self.newStationDescription_VAR.get() or "'" in self.newStationDescription_VAR.get()):
+            return False
+        else:
+            return True
+        return True
+
+    def newStationDescription_errorHandler(self):
+
+        messagebox.showinfo("Error - Invalid Description",
+                            "A Station Description cannot exceed 50 characters\n" +
+                            "or have backslashes or quotes.\n\n" +
+                            "Input ignored, resetting to prior value", parent=self)
+
+    def newStationDescription_preProcessor(self):
+        return self.newStationDescription_VAR.get().strip().upper()
+
+    def newStationDescription_postProcessor(self):
+        return
+
+
+
+
+    def scanTime_validation(self):
+        if gv.validateNumber(self.scanTime_VAR.get(), 0,100):
+            return True
+        else:
+            return False
+
+
+    def scanTime_errorHandler(self):
+        messagebox.showinfo("Error - Invalid Time",
+                            "Scan time must be 100 seconds or less\n\n" +
+                            " Input ignored, resetting to prior value", parent=self)
+
+
+    def scanTime_preProcessor(self):
+        return self.scanTime_VAR.get()
+
+
+    def scanTime_postProcessor(self):
+        return
+
+
+    #
+    #   End of Entry Field Validation
+    #
+
+    def toggleScan_CB(self):
+        if self.scanAccordionState:
+            self.scanAccordionState = False
+
+        else:
+            self.scanAccordionState = True
+        self.setAccordionState(self.scanAccordion_Frame,self.scanToggle_Button,self.scanAccordionState)
+
+    def toggleBands_CB(self):
+        if self.bandsAccordionState:
+            self.bandsAccordionState = False
+        else:
+            self.bandsAccordionState = True
+        self.setAccordionState(self.bandsAccordion_Frame, self.bandsToggle_Button, self.bandsAccordionState)
+
+    def toggleChannels_CB(self):
+        if self.channelsAccordionState:
+            self.channelsAccordionState = False
+        else:
+            self.channelsAccordionState = True
+        self.setAccordionState(self.channelsAccordion_Frame,self.channelsToggle_Button, self.channelsAccordionState)
+
+
+class SDRDashboardPopup:
+    def __init__(self, parent_window):
+        # 1. Create a dedicated popup window layer bound to the main app
+        self.popup = tk.Toplevel(parent_window)
+        self.popup.title("SDR++ Memory Matrix Console")
+        self.popup.geometry("700x800")
+
+        # 2. Force modal focus (Stops user from clicking back to the main app until closed)
+        self.popup.transient(parent_window)
+        # self.popup.grab_set()
+
+        # 3. Instantiate your UI application frame right inside this popup window container
+        self.app = sdrDashboard(self.popup)
+
+        # 4. Clean up background hooks instantly if the user closes the popup window
+        self.popup.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def get_app(self):
+        """Returns the memory handle pointer to the core dashboard application."""
+        return self.app.sdr
+
+    def on_close(self):
+        """Ensures scanning timer engines freeze quietly when the window disappears."""
+        try:
+            self.app.sdr.stop_scan()  # Halt active backgrounds
+            self.app.sdr.disconnect()
+        except Exception:
+            pass
+        self.popup.destroy()  # Close window container safely
+
+
+def launch_sdr_popup(parent):
+
+    """The master trigger hook called by your primary application driver."""
+    return SDRDashboardPopup(parent)
+
