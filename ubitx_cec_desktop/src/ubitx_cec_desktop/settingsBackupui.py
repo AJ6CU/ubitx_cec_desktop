@@ -145,12 +145,8 @@ class settingsBackupUI(ttk.Labelframe):
         frame2.grid(column=0, columnspan=5, row=1, sticky="ew")
         self.Master_Cal = ttk.Button(
             self.backupSettings_Frame, name="master_cal")
-        self.Master_Cal_VAR = tk.StringVar(value='No')
         self.Master_Cal.configure(
-            style="Button2Raised.TButton",
-            text='No',
-            textvariable=self.Master_Cal_VAR,
-            width=5)
+            style="Button2Raised.TButton", text='No', width=5)
         self.Master_Cal.grid(column=0, pady=15, row=3)
         def Master_Cal_cmd_(): self.selectSetting_CB("Master_Cal")
 
@@ -162,47 +158,27 @@ class settingsBackupUI(ttk.Labelframe):
         self.Master_Cal_Heading_Label.grid(column=1, padx=5, pady=5, row=3)
         self.EEPROM_Factory_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_master_cal_label")
-        self.EEPROM_Factory_Master_Cal_VAR = tk.StringVar(value='label3')
         self.EEPROM_Factory_Master_Cal_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label3',
-            textvariable=self.EEPROM_Factory_Master_Cal_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Factory_Master_Cal_Label.grid(
             column=2, padx="0 5", pady=5, row=3, sticky="e")
         self.EEPROM_Current_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_master_cal_label")
-        self.EEPROM_Current_Master_Cal_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_Master_Cal_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_Master_Cal_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_Master_Cal_Label.grid(
             column=3, padx="0 5", pady=5, row=3, sticky="e")
         self.ConfigFile_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_master_cal_label")
-        self.ConfigFile_Master_Cal_VAR = tk.StringVar(value='label4')
         self.ConfigFile_Master_Cal_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFile_Master_Cal_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_Master_Cal_Label.grid(
             column=4, padx="0 5", pady=5, row=3, sticky="e")
         self.SSB_BFO = ttk.Button(self.backupSettings_Frame, name="ssb_bfo")
-        self.SSB_BFO_VAR = tk.StringVar(value='No')
         self.SSB_BFO.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.SSB_BFO_VAR,
             width=5)
         self.SSB_BFO.grid(column=0, pady="0 15", row=4)
         def SSB_BFO_cmd_(): self.selectSetting_CB("SSB_BFO")
@@ -215,47 +191,27 @@ class settingsBackupUI(ttk.Labelframe):
         self.SSB_BFO_Heading_Label.grid(column=1, padx=5, pady="0 5", row=4)
         self.EEPROM_Factory_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_ssb_bfo_label")
-        self.EEPROM_Factory_SSB_BFO_VAR = tk.StringVar(value='label3')
         self.EEPROM_Factory_SSB_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label3',
-            textvariable=self.EEPROM_Factory_SSB_BFO_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Factory_SSB_BFO_Label.grid(
             column=2, padx="0 5", pady="0 5", row=4, sticky="e")
         self.EEPROM_Current_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_ssb_bfo_label")
-        self.EEPROM_Current_SSB_BFO_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_SSB_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_SSB_BFO_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_SSB_BFO_Label.grid(
             column=3, padx="0 5", pady="0 5", row=4, sticky="e")
         self.ConfigFile_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_ssb_bfo_label")
-        self.ConfigFile_SSB_BFO_VAR = tk.StringVar(value='label4')
         self.ConfigFile_SSB_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFile_SSB_BFO_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_SSB_BFO_Label.grid(
             column=4, padx="0 5", pady="0 5", row=4, sticky="e")
         self.CW_BFO = ttk.Button(self.backupSettings_Frame, name="cw_bfo")
-        self.CW_BFO_VAR = tk.StringVar(value='No')
         self.CW_BFO.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.CW_BFO_VAR,
             width=5)
         self.CW_BFO.grid(column=0, pady="0 15", row=5)
         def CW_BFO_cmd_(): self.selectSetting_CB("CW_BFO")
@@ -278,36 +234,20 @@ class settingsBackupUI(ttk.Labelframe):
             column=2, padx="0 5", pady="0 5", row=5, sticky="e")
         self.EEPROM_Current_CW_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_bfo_label")
-        self.EEPROM_Current_CW_BFO_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_CW_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_BFO_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_BFO_Label.grid(
             column=3, padx="0 5", pady="0 5", row=5, sticky="e")
         self.ConfigFIle_CW_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_bfo_label")
-        self.ConfigFIle_CW_BFO_VAR = tk.StringVar(value='label4')
         self.ConfigFIle_CW_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFIle_CW_BFO_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFIle_CW_BFO_Label.grid(
             column=4, padx="0 5", pady="0 5", row=5, sticky="e")
         self.CW_Keytype = ttk.Button(
             self.backupSettings_Frame, name="cw_keytype")
-        self.CW_Keytype_VAR = tk.StringVar(value='No')
         self.CW_Keytype.configure(
-            style="Button2Raised.TButton",
-            text='No',
-            textvariable=self.CW_Keytype_VAR,
-            width=5)
+            style="Button2Raised.TButton", text='No', width=5)
         self.CW_Keytype.grid(column=0, pady="0 15", row=6)
         def CW_Keytype_cmd_(): self.selectSetting_CB("CW_Keytype")
 
@@ -325,35 +265,21 @@ class settingsBackupUI(ttk.Labelframe):
             column=2, padx="0 5", pady="0 5", row=6, sticky="e")
         self.EEPROM_Current_CW_Keytype_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_keytype_label")
-        self.EEPROM_Current_CW_Keytype_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_CW_Keytype_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_Keytype_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_Keytype_Label.grid(
             column=3, padx="0 5", pady="0 5", row=6, sticky="e")
         self.ConfigFile_CW_Keytype_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_keytype_label")
-        self.ConfigFile_CW_Keytype_VAR = tk.StringVar(value='label4')
         self.ConfigFile_CW_Keytype_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFile_CW_Keytype_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_CW_Keytype_Label.grid(
             column=4, padx="0 5", pady="0 5", row=6, sticky="e")
         self.CW_Speed = ttk.Button(self.backupSettings_Frame, name="cw_speed")
-        self.CW_Speed_VAR = tk.StringVar(value='No')
         self.CW_Speed.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.CW_Speed_VAR,
             width=5)
         self.CW_Speed.grid(column=0, pady="0 15", row=7)
         def CW_Speed_cmd_(): self.selectSetting_CB("CW_Speed")
@@ -366,47 +292,28 @@ class settingsBackupUI(ttk.Labelframe):
         self.CW_Speed_Heading_Label.grid(column=1, padx=5, pady="0 5", row=7)
         self.EEPROM_Factory_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_speed_label")
-        self.EEPROM_Factory_CW_Speed_VAR = tk.StringVar(value='label6')
         self.EEPROM_Factory_CW_Speed_Label.configure(
-            anchor="e",
-            style="Heading1Std.TLabel",
-            text='label6',
-            textvariable=self.EEPROM_Factory_CW_Speed_VAR,
-            width=10)
+            anchor="e", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Factory_CW_Speed_Label.grid(
             column=2, padx="0 5", pady="0 5", row=7, sticky="e")
         self.EEPROM_Current_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_speed_label")
-        self.EEPROM_Current_CW_Speed_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_CW_Speed_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_Speed_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_Speed_Label.grid(
             column=3, padx="0 5", pady="0 5", row=7, sticky="e")
         self.ConfigFile_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_speed_label")
-        self.ConfigFIle_CW_Speed_VAR = tk.StringVar(value='label4')
         self.ConfigFile_CW_Speed_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFIle_CW_Speed_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_CW_Speed_Label.grid(
             column=4, padx="0 5", pady="0 5", row=7, sticky="e")
         self.CW_Sidetone = ttk.Button(
             self.backupSettings_Frame, name="cw_sidetone")
-        self.CW_Sidetone_VAR = tk.StringVar(value='No')
         self.CW_Sidetone.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.CW_Sidetone_VAR,
             width=5)
         self.CW_Sidetone.grid(column=0, pady="0 15", row=8)
         def CW_Sidetone_cmd_(): self.selectSetting_CB("CW_Sidetone")
@@ -420,48 +327,28 @@ class settingsBackupUI(ttk.Labelframe):
             column=1, padx=5, pady="0 5", row=8)
         self.EEPROM_Factory_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_sidetone_label")
-        self.EEPROM_Factory_CW_Sidetone_VAR = tk.StringVar(value='label10')
         self.EEPROM_Factory_CW_Sidetone_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label10',
-            textvariable=self.EEPROM_Factory_CW_Sidetone_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Factory_CW_Sidetone_Label.grid(
             column=2, padx="0 5", pady="0 5", row=8, sticky="e")
         self.EEPROM_Current_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_sidetone_label")
-        self.EEPROM_Current_CW_Sidetone_VAR = tk.StringVar(value='label4')
         self.EEPROM_Current_CW_Sidetone_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_Sidetone_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_Sidetone_Label.grid(
             column=3, padx="0 5", pady="0 5", row=8, sticky="e")
         self.ConfigFile_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_sidetone_label")
-        self.ConfigFile_CW_Sidetone_VAR = tk.StringVar(value='label4')
         self.ConfigFile_CW_Sidetone_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFile_CW_Sidetone_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_CW_Sidetone_Label.grid(
             column=4, padx="0 5", pady="0 5", row=8, sticky="e")
         self.CW_Delay_Before_TX = ttk.Button(
             self.backupSettings_Frame, name="cw_delay_before_tx")
-        self.CW_Delay_Before_TX_VAR = tk.StringVar(value='No')
         self.CW_Delay_Before_TX.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.CW_Delay_Before_TX_VAR,
             width=5)
         self.CW_Delay_Before_TX.grid(column=0, pady="0 15", row=9)
         def CW_Delay_Before_TX_cmd_(): self.selectSetting_CB("CW_Delay_Before_TX")
@@ -481,37 +368,22 @@ class settingsBackupUI(ttk.Labelframe):
             column=2, padx="0 5", pady="0 5", row=9, sticky="e")
         self.EEPROM_Current_CW_Delay_Before_TX = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_delay_before_tx")
-        self.EEPROM_Current_CW_Delay_Before_TX_VAR = tk.StringVar(
-            value='label4')
         self.EEPROM_Current_CW_Delay_Before_TX.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_Delay_Before_TX_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_Delay_Before_TX.grid(
             column=3, padx="0 5", pady="0 5", row=9, sticky="e")
         self.ConfigFile_CW_Delay_Before_TX_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_delay_before_tx_label")
-        self.ConfigFile_CW_Delay_Before_TX_VAR = tk.StringVar(value='label4')
         self.ConfigFile_CW_Delay_Before_TX_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFile_CW_Delay_Before_TX_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFile_CW_Delay_Before_TX_Label.grid(
             column=4, padx="0 5", pady="0 5", row=9, sticky="e")
         self.CW_Delay_Before_RX = ttk.Button(
             self.backupSettings_Frame, name="cw_delay_before_rx")
-        self.CW_Delay_Before_RX_VAR = tk.StringVar(value='No')
         self.CW_Delay_Before_RX.configure(
             cursor="arrow",
             style="Button2Raised.TButton",
             text='No',
-            textvariable=self.CW_Delay_Before_RX_VAR,
             width=5)
         self.CW_Delay_Before_RX.grid(column=0, pady="0 15", row=10)
         def CW_Delay_Before_RX_cmd_(): self.selectSetting_CB("CW_Delay_Before_RX")
@@ -525,41 +397,20 @@ class settingsBackupUI(ttk.Labelframe):
             column=1, padx=5, pady="0 5", row=10)
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_delay_returning_to_rx_label")
-        self.EEPROM_Factory_CW_Delay_Returning_To_RX_VAR = tk.StringVar(
-            value='N/A')
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='N/A',
-            textvariable=self.EEPROM_Factory_CW_Delay_Returning_To_RX_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", text='N/A', width=10)
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label.grid(
             column=2, padx="0 5", pady="0 5", row=10, sticky="e")
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_delay_returning_to_rx_label")
-        self.EEPROM_Current_CW_Delay_Returning_To_RX_Label_VAR = tk.StringVar(
-            value='label4')
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.EEPROM_Current_CW_Delay_Returning_To_RX_Label_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label.grid(
             column=3, padx="0 5", pady="0 5", row=10, sticky="e")
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_delay_returning_to_rx_label")
-        self.ConfigFIle_CW_Delay_Returning_To_RX_VAR = tk.StringVar(
-            value='label4')
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='label4',
-            textvariable=self.ConfigFIle_CW_Delay_Returning_To_RX_VAR,
-            width=10)
+            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label.grid(
             column=4, padx="0 5", pady="0 5", row=10, sticky="e")
         frame3 = ttk.Frame(self.backupSettings_Frame)
@@ -571,11 +422,9 @@ class settingsBackupUI(ttk.Labelframe):
         frame5 = ttk.Frame(self.backupSettings_Frame)
         frame5.configure(height=200, style="Normal.TFrame", width=200)
         self.select_All = ttk.Button(frame5, name="select_all")
-        self.select_All_VAR = tk.StringVar(value='Select All')
         self.select_All.configure(
             style="Button2Raised.TButton",
             text='Select All',
-            textvariable=self.select_All_VAR,
             width=10)
         self.sleectAll_Button_Label = Tooltip(self.select_All)
         self.sleectAll_Button_Label.configure(
@@ -612,12 +461,8 @@ class settingsBackupUI(ttk.Labelframe):
         self.to_Label.grid(column=4, padx="40 0", row=0)
         self.from_Menubutton = ttk.Menubutton(
             self.action_Frame, name="from_menubutton")
-        self.from_Source_VAR = tk.StringVar(value='Select')
         self.from_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            text='Select',
-            textvariable=self.from_Source_VAR,
-            width=10)
+            style="Heading0.TMenubutton", text='Select', width=10)
         self.from_Menu = tk.Menu(self.from_Menubutton, name="from_menu")
         self.from_Menu.configure(tearoff=False)
         self.from_Menu.add(
@@ -647,12 +492,8 @@ class settingsBackupUI(ttk.Labelframe):
             sticky="w")
         self.to_Menubutton = ttk.Menubutton(
             self.action_Frame, name="to_menubutton")
-        self.to_Source_VAR = tk.StringVar(value='Select')
         self.to_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            text='Select',
-            textvariable=self.to_Source_VAR,
-            width=10)
+            style="Heading0.TMenubutton", text='Select', width=10)
         self.to_Menu = tk.Menu(self.to_Menubutton, name="to_menu")
         self.to_Menu.configure(tearoff=False)
         self.to_Menu.add(
@@ -745,3 +586,9 @@ class settingsBackupUI(ttk.Labelframe):
     def cancel_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsBackupUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

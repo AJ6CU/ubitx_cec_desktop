@@ -55,7 +55,6 @@ DOWNARROWBUTTONDISABLED = "arrow_down_normal_disabled.png"
 CURSOR = "\u2581"
 
 BAUD = 57600     #9600
-NUMBER_DELIMITER = ""               # Loaded with value from configuration file
 
 MASTER_CAL_BOUNDS = {'LOW': -500000, 'HIGH': 500000}
 BFO_CAL_BOUNDS = {'LOW': 11048000, 'HIGH': 12010000}
@@ -120,20 +119,19 @@ bandEnd =   {"Band160m":2000000,"Band80m":4000000,"Band40m":7300000,"Band30m":10
 #####################################################################################
 
 def formatVFO(VFO):
-    global NUMBER_DELIMITER
+    number_delimiter = config.get_NUMBER_DELIMITER()
     reversed_VFO = VFO[::-1]  # Reverse the string
     new_string_parts = []
     for i, char in enumerate(reversed_VFO):
         new_string_parts.append(char)
         # Insert the character after every 'n' characters, except at the very end
         if (i + 1) % 3 == 0 and (i + 1) != len(reversed_VFO):
-            new_string_parts.append(NUMBER_DELIMITER)
+            new_string_parts.append(number_delimiter)
 
     return "".join(new_string_parts[::-1])  # Join parts and reverse back
 
 def updateNUMBER_DELIMITER(value):
-    global NUMBER_DELIMITER
-    NUMBER_DELIMITER = value
+    config.set_NUMBER_DELIMITER(value)
 
 
 def formatFrequency(frequency, freqOffset=0):
@@ -158,7 +156,27 @@ def formatOptionMenu(theWidget, theFont, theWidth):
     dropdown_menu.config(font=theFont)
 
 
+
+
 import tkinter as tk
+
+import tkinter as tk
+
+
+def make_widget_variable(instance, name, widget, var_name_format="{name}_VAR"):
+    """Links a Tkinter variable to a widget and assigns it to an instance with a custom variable name."""
+    # 1. Create the variable
+    var = tk.StringVar(master=widget)
+
+    # 2. Configure the widget to use it
+    widget.configure(textvariable=var)
+
+    # 3. Format the dynamic variable name string
+    final_var_name = var_name_format.format(name=name)
+
+    # 4. Assign it to the instance
+    setattr(instance, final_var_name, var)
+    return var
 
 
 def refresh_menu_by_name(parent, widget_name, new_list, selected_val=None):

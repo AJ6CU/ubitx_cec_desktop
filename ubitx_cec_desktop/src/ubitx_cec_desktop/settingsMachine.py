@@ -23,6 +23,19 @@ class settingsMachine(baseui.settingsMachineUI):
         self.popup = tk.Toplevel(self.master)
 
         super().__init__(self.popup, **kw)
+        #
+        #   Define VARs
+        #
+
+        gv.make_widget_variable(self, "DSP_Enable", self.DSP_Enable_Menubutton)
+        gv.make_widget_variable(self, "PWR_SWR_Enable", self.PWR_SWR_Menubutton)
+
+        gv.make_widget_variable(self, "PWR_Factor", self.PWR_Factor_Entry)
+        gv.make_widget_variable(self, "SWR_Factor", self.SWR_Factor_Entry)
+
+        gv.make_widget_variable(self, "MCU_Command_Headroom", self.MCU_Command_Headroom_Spinbox)
+        gv.make_widget_variable(self, "MCU_Update_Period", self.MCU_Update_Period_Spinbox)
+        gv.make_widget_variable(self, "MCU_Read_Wait_Period", self.MCU_Read_Wait_Period_Spinbox)
 
         self.MCU_Command_Headroom_Spinbox.configure(values=gv.MCU_Headroom_Values)
         self.MCU_Update_Period_Spinbox.configure(values=gv.Frequency_To_Run_UX_loop)

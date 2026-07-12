@@ -69,7 +69,6 @@
             <child>
               <object class="ttk.Menubutton" id="LogbookSwitch_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:LogbookSwitch_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -125,7 +124,6 @@
             <child>
               <object class="ttk.Menubutton" id="LogbookType_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:LogbookType_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -184,7 +182,6 @@
                 <property name="font">{Arial} 36 {}</property>
                 <property name="justify">right</property>
                 <property name="style">Custom.TSpinbox</property>
-                <property name="textvariable">string:Backup_Interval_VAR</property>
                 <property name="values">0 5 10 15 30 60 120</property>
                 <property name="width">3</property>
                 <layout manager="grid">
@@ -204,7 +201,6 @@
                 <property name="text" translatable="yes">Select
 Logbook
 Location</property>
-                <property name="textvariable">string:LogbookDirectoryLocation_VAR</property>
                 <property name="type">directory</property>
                 <bind sequence="&lt;&lt;PathChooserPathChanged&gt;&gt;" handler="newLogbookLocation_CB" add="True" />
                 <layout manager="grid">
@@ -284,7 +280,6 @@ Location</property>
                 <property name="justify">left</property>
                 <property name="readonlybackground">gray</property>
                 <property name="state">normal</property>
-                <property name="textvariable">string:LogbookName_VAR</property>
                 <property name="validate">focusout</property>
                 <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">Logbook_Name_Validation_CB</property>
                 <property name="width">40</property>

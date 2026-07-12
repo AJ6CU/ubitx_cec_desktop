@@ -16,7 +16,7 @@ default_config_data = {
     "Logbook Location": "~",
     "Logbook Name": "uBITX_Logbook",
     "Logbook Switch": "False",
-    "Logbook Type": "ADI",
+    "Logbook Type": "adi",
     "MCU Command Headroom": 0.09,
     "MCU Read Wait Period": 0.04,
     "MCU Update Period": 250,

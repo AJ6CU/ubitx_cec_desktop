@@ -79,11 +79,8 @@ class settingsGeneralUI(ttk.Labelframe):
             column=0, padx=10, pady=10, row=0, sticky="e")
         self.Number_Delimiter_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="number_delimiter_menubutton")
-        self.NUMBER_DELIMITER_VAR = tk.StringVar()
         self.Number_Delimiter_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.NUMBER_DELIMITER_VAR,
-            width=2)
+            style="Heading0.TMenubutton", width=2)
         self.Number_Delimiter_Menu = tk.Menu(
             self.Number_Delimiter_Menubutton,
             name="number_delimiter_menu")
@@ -106,11 +103,8 @@ class settingsGeneralUI(ttk.Labelframe):
             column=1, padx="15 5", pady=10, row=0, sticky="w")
         self.Virtual_Keyboard_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="virtual_keyboard_menubutton")
-        self.Virtual_Keyboard_VAR = tk.StringVar()
         self.Virtual_Keyboard_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.Virtual_Keyboard_VAR,
-            width=5)
+            style="Heading0.TMenubutton", width=5)
         self.Virtual_Keyboard_Menu = tk.Menu(
             self.Virtual_Keyboard_Menubutton,
             name="virtual_keyboard_menu")
@@ -162,11 +156,8 @@ class settingsGeneralUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=2, sticky="e")
         self.VFO_Touch_Optimized_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="vfo_touch_optimized_menubutton")
-        self.VFO_Touch_Optimized_VAR = tk.StringVar()
         self.VFO_Touch_Optimized_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.VFO_Touch_Optimized_VAR,
-            width=5)
+            style="Heading0.TMenubutton", width=5)
         self.VFO_Touch_Optimized_Menu = tk.Menu(
             self.VFO_Touch_Optimized_Menubutton,
             name="vfo_touch_optimized_menu")
@@ -204,13 +195,11 @@ class settingsGeneralUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=3, sticky="e")
         self.Time_On_Freq_Spinbox = ttk.Spinbox(
             self.general_Settings_Frame, name="time_on_freq_spinbox")
-        self.Time_On_Freq_VAR = tk.StringVar()
         self.Time_On_Freq_Spinbox.configure(
             font="{Arial} 36 {}",
             from_=1,
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.Time_On_Freq_VAR,
             to=20,
             width=2)
         self.Time_On_Freq_Spinbox.grid(
@@ -272,3 +261,9 @@ class settingsGeneralUI(ttk.Labelframe):
     def cancel_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsGeneralUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

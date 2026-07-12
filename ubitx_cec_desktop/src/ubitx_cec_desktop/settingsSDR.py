@@ -36,6 +36,7 @@ class settingsSDR(baseui.settingsSDRUI):
         #
         self.saveSDR_Switch = gv.config.get_SDR_Switch()
         self.saveSDR_Software = gv.config.get_SDR_Software()
+        print("from config", gv.config.get_SDR_Autostart(), type(gv.config.get_SDR_Autostart()))
         self.saveSDR_Autostart = gv.config.get_SDR_Autostart()   ### need to add
         self.saveNetworkAddress = str(gv.config.get_sdr_server_ip())
         self.saveNetworkPort = str(gv.config.get_sdr_tcp_port())
@@ -51,6 +52,25 @@ class settingsSDR(baseui.settingsSDRUI):
         self.popup.wait_visibility()  # required on Linux
         self.popup.grab_set()
         self.popup.transient(self.mainWindow)
+        #
+        #   Assign Text Vars
+        #
+        gv.make_widget_variable(self, "SDR_Enable", self.SDR_Enable_Menubutton)
+        gv.make_widget_variable(self, "SDR_Software", self.sdrSoftware_Menubutton)
+
+        gv.make_widget_variable(self, "networkAddress", self.ipAddress_Entry)
+        gv.make_widget_variable(self, "networkPort", self.networkPort_Entry)
+
+        gv.make_widget_variable(self, "cwDefault", self.cwDefault_Spinbox)
+        gv.make_widget_variable(self, "ssbDefault", self.ssbDefault_Spinbox)
+#
+        #
+        # Have to handle this manually because it is a "variable" and not "textvariable"
+        #
+        self.autostartSDR_VAR = tk.StringVar(master=self.autostartSDR_Checkbox)
+        self.autostartSDR_Checkbox.configure(variable=self.autostartSDR_VAR)
+
+
 
         self.SDR_Enable_VAR.set(self.saveSDR_Switch)
         self.SDR_Software_VAR.set(self.saveSDR_Software)
@@ -113,7 +133,7 @@ class settingsSDR(baseui.settingsSDRUI):
 
         if self.saveSDR_Software != self.SDR_Software_VAR.get():
             gv.config.set_SDR_Software(self.SDR_Software_VAR.get())
-
+        print(self.saveSDR_Autostart,self.autostartSDR_VAR.get())
         if self.saveSDR_Autostart != self.autostartSDR_VAR.get():
             gv.config.set_SDR_Autostart(self.autostartSDR_VAR.get())  ### need to add
 

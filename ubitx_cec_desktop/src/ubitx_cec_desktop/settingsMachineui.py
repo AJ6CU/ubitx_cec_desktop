@@ -81,12 +81,8 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx=5, pady="5 0", row=0, sticky="w")
         self.DSP_Enable_Menubutton = ttk.Menubutton(
             self.DSP_Frame, name="dsp_enable_menubutton")
-        self.DSP_Enable_VAR = tk.StringVar()
         self.DSP_Enable_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            takefocus=True,
-            textvariable=self.DSP_Enable_VAR,
-            width=5)
+            style="Heading0.TMenubutton", takefocus=True, width=5)
         self.DSP_Enable_Menu = tk.Menu(
             self.DSP_Enable_Menubutton,
             name="dsp_enable_menu")
@@ -141,12 +137,8 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx=5, pady="10 0", row=0, sticky="w")
         self.PWR_SWR_Menubutton = ttk.Menubutton(
             self.PWR_SWR_Frame, name="pwr_swr_menubutton")
-        self.PWR_SWR_Enable_VAR = tk.StringVar()
         self.PWR_SWR_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            takefocus=True,
-            textvariable=self.PWR_SWR_Enable_VAR,
-            width=5)
+            style="Heading0.TMenubutton", takefocus=True, width=5)
         self.PWR_SWR_Menu = tk.Menu(
             self.PWR_SWR_Menubutton,
             name="pwr_swr_menu")
@@ -186,16 +178,11 @@ class settingsMachineUI(ttk.Labelframe):
             sticky="w")
         self.PWR_Factor_Entry = ttk.Entry(
             self.PWR_SWR_Frame, name="pwr_factor_entry")
-        self.PWR_Factor_VAR = tk.StringVar(value='0.0')
         self.PWR_Factor_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
-            textvariable=self.PWR_Factor_VAR,
             width=5)
-        _text_ = '0.0'
-        self.PWR_Factor_Entry.delete("0", "end")
-        self.PWR_Factor_Entry.insert("0", _text_)
         self.PWR_Factor_Entry.grid(
             column=1, padx=10, pady="10 0", row=1, sticky="e")
         self.SWR_Factor_Label = ttk.Label(
@@ -214,16 +201,11 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx="20 5", pady=10, row=2, sticky="w")
         self.SWR_Factor_Entry = ttk.Entry(
             self.PWR_SWR_Frame, name="swr_factor_entry")
-        self.SWR_Factor_VAR = tk.StringVar(value='0.0')
         self.SWR_Factor_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
-            textvariable=self.SWR_Factor_VAR,
             width=5)
-        _text_ = '0.0'
-        self.SWR_Factor_Entry.delete("0", "end")
-        self.SWR_Factor_Entry.insert("0", _text_)
         self.SWR_Factor_Entry.grid(
             column=1, padx=10, pady=10, row=2, sticky="e")
         self.PWR_SWR_Frame.grid(
@@ -251,14 +233,12 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx=5, pady="10 0", row=0, sticky="w")
         self.MCU_Command_Headroom_Spinbox = ttk.Spinbox(
             self.Timing_Frame, name="mcu_command_headroom_spinbox")
-        self.MCU_Command_Headroom_VAR = tk.StringVar()
         self.MCU_Command_Headroom_Spinbox.configure(
             font="{Arial} 36 {}",
             from_=1,
             justify="right",
             style="Custom.TSpinbox",
             takefocus=True,
-            textvariable=self.MCU_Command_Headroom_VAR,
             to=20,
             width=4)
         self.MCU_Command_Headroom_Spinbox.grid(
@@ -278,14 +258,12 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx=5, pady="15 0", row=2, sticky="w")
         self.MCU_Update_Period_Spinbox = ttk.Spinbox(
             self.Timing_Frame, name="mcu_update_period_spinbox")
-        self.MCU_Update_Period_VAR = tk.StringVar()
         self.MCU_Update_Period_Spinbox.configure(
             font="{Arial} 36 {}",
             from_=1,
             justify="right",
             style="Custom.TSpinbox",
             takefocus=True,
-            textvariable=self.MCU_Update_Period_VAR,
             to=20,
             width=4)
         self.MCU_Update_Period_Spinbox.grid(
@@ -306,14 +284,12 @@ class settingsMachineUI(ttk.Labelframe):
             column=0, padx=5, pady="15 10", row=3, sticky="w")
         self.MCU_Read_Wait_Period_Spinbox = ttk.Spinbox(
             self.Timing_Frame, name="mcu_read_wait_period_spinbox")
-        self.MCU_Read_Wait_Period_VAR = tk.StringVar()
         self.MCU_Read_Wait_Period_Spinbox.configure(
             font="{Arial} 36 {}",
             from_=1,
             justify="right",
             style="Custom.TSpinbox",
             takefocus=True,
-            textvariable=self.MCU_Read_Wait_Period_VAR,
             to=20,
             width=4)
         self.MCU_Read_Wait_Period_Spinbox.grid(
@@ -390,3 +366,9 @@ class settingsMachineUI(ttk.Labelframe):
     def cancel_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsMachineUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

@@ -506,6 +506,7 @@ class piRadio:
 
 
     def Set_CW_BFO(self, cal):
+        print("setting the CW BFO in the radio")
 
         #
         #   Now have to write it to EEPROM as this is not one of the values that are automatically saved to EEPROM

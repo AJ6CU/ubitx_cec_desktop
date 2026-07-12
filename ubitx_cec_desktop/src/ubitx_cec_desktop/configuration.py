@@ -72,11 +72,11 @@ class ConfigurationManager:
         if configParameter in self.observers:
             for observerMethod in self.observers[configParameter]:
                 observerMethod(value)
-
-    def distributeConfigData(self):
-        gv.NUMBER_DELIMITER = self.get_NUMBER_DELIMITER()
-        # print("delimiter number is ", gv.NUMBER_DELIMITER)
-        self.register_observer("NUMBER DELIMITER", gv.updateNUMBER_DELIMITER)
+    #
+    # def distributeConfigData(self):
+    #     gv.NUMBER_DELIMITER = self.get_NUMBER_DELIMITER()
+    #     print("delimiter number is in distri", gv.NUMBER_DELIMITER)
+    #     self.register_observer("NUMBER DELIMITER", gv.updateNUMBER_DELIMITER)
 
     def getValueOrDefault(self, configParameter):
         if configParameter in self.config_data:

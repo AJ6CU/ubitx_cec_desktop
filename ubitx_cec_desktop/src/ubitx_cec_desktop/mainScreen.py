@@ -200,7 +200,6 @@ class mainScreen(baseui.mainScreenUI):
         self.portHandle = portHandle
 
     def initUX(self):
-        print("initUX")
         self.master.deiconify()         # now that we are ready for the main window, can deiconify it.
                                         # this was necessary to avoid a small blank window from appearing at startup
         self.theVFO_Object.initVFO(self.theRadio)

@@ -25,16 +25,18 @@ class settingsGeneral(baseui.settingsGeneralUI):
         self.popup = tk.Toplevel(self.master)
 
         super().__init__(self.popup, **kw)
-        #
-        #   Make sure that a close by the Window manager goes to the same close callback
-        #
         self.popup.protocol("WM_DELETE_WINDOW", self.cancel_CB)
-#
-        #
-        #   Magic code to get a handle on the current font of the default item and propagate it to the list...
-        #
 
+        # Attach stingvar to Menubuttons and Spinbox
+        # --------------------------------
+        gv.make_widget_variable(self, "NUMBER_DELIMITER", self.Number_Delimiter_Menubutton)
 
+        gv.make_widget_variable(self, "Virtual_Keyboard", self.Virtual_Keyboard_Menubutton)
+
+        gv.make_widget_variable(self, "VFO_Touch_Optimized", self.VFO_Touch_Optimized_Menubutton)
+
+        gv.make_widget_variable(self, "Time_On_Freq", self.Time_On_Freq_Spinbox)
+        # --------------------------------
 
         self.saveNUMBER_DELIMITER = gv.config.get_NUMBER_DELIMITER()
         self.NUMBER_DELIMITER_VAR.set(self.saveNUMBER_DELIMITER)
@@ -67,6 +69,7 @@ class settingsGeneral(baseui.settingsGeneralUI):
 
     def selectCommaDelimiter_CB(self):
         self.NUMBER_DELIMITER_VAR.set(',')
+
 
     def selectPeriodDelimiter_CB(self):
         self.NUMBER_DELIMITER_VAR.set('.')

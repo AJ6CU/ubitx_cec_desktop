@@ -41,6 +41,12 @@ class settingsLogbook(baseui.settingsLogbookUI):
     def initUX(self):
         self.popup.title("Logbook Settings")
 
+        gv.make_widget_variable(self, "LogbookSwitch", self.LogbookSwitch_Menubutton)
+        gv.make_widget_variable(self, "LogbookType", self.LogbookType_Menubutton)
+        gv.make_widget_variable(self, "Backup_Interval", self.backupInterval_Spinbox)
+
+        gv.make_widget_variable(self, "LogbookName", self.LogbookName_Entry)
+
         self.LogbookSwitch_VAR.set(gv.config.get_Logbook_Switch())
         self.LogbookSwitchSave = gv.config.get_Logbook_Switch()
 
@@ -135,7 +141,7 @@ class settingsLogbook(baseui.settingsLogbookUI):
             newName = True
 
         if self.Backup_Interval_VAR.get() != self.Backup_Interval_Save:
-            gv.config.set_Logbook_BackupInterval(self.Backup_Interval_VAR.get())
+            gv.config.set_Logbook_Backup_Interval(self.Backup_Interval_VAR.get())
             newBackup_Interval = True
 
         if (gv.config.get_Logbook_Switch() == "False"):
@@ -155,7 +161,7 @@ class settingsLogbook(baseui.settingsLogbookUI):
                 if newName:
                     self.mainWindow.QSOLogger_Object.set_filename(theLogbook)
                 if newBackup_Interval:
-                    self.mainWindow.QSOLogger_Object.set_backup_interval(int(gv.config.get_Logbook_BackupInterval()))
+                    self.mainWindow.QSOLogger_Object.set_backup_interval(int(gv.config.get_Logbook_Backup_Interval()))
 
         self.popup.destroy()
 

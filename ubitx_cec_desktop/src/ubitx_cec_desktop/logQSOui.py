@@ -78,12 +78,10 @@ class logQSOUI(ttk.Labelframe):
         self.callsign_Label.pack(pady="0 5")
         self.callsign_Entry = ttk.Entry(
             self.callsign_Frame, name="callsign_entry")
-        self.callsign_VAR = tk.StringVar()
         self.callsign_Entry.configure(
             font="{Arial} 20 {}",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.callsign_VAR,
             width=12)
         self.callsign_Entry.pack()
         self.callsign_Frame.grid(column=0, padx=10, pady="10 30", row=0)
@@ -124,17 +122,12 @@ class logQSOUI(ttk.Labelframe):
         self.imputedBand_Label.grid(column=0, padx="0 15", row=1, sticky="n")
         self.frequency_Entry = ttk.Entry(
             self.freq_Frame, name="frequency_entry")
-        self.frequency_VAR = tk.StringVar(value='14.032')
         self.frequency_Entry.configure(
             font="{Arial} 20 {}",
             justify="right",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.frequency_VAR,
             width=7)
-        _text_ = '14.032'
-        self.frequency_Entry.delete("0", "end")
-        self.frequency_Entry.insert("0", _text_)
         self.frequency_Entry.grid(column=1, row=1, sticky="n")
         self.frequency_ext = ttk.Label(self.freq_Frame, name="frequency_ext")
         self.lowFreqDigits = tk.StringVar(value='.000')
@@ -151,12 +144,8 @@ class logQSOUI(ttk.Labelframe):
             sticky="n")
         self.mode_Menubutton = ttk.Menubutton(
             self.freq_Frame, name="mode_menubutton")
-        self.commType_VAR = tk.StringVar()
         self.mode_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            takefocus=True,
-            textvariable=self.commType_VAR,
-            width=6)
+            style="Heading0.TMenubutton", takefocus=True, width=6)
         self.mode_Menu = tk.Menu(self.mode_Menubutton, name="mode_menu")
         self.mode_Menu.configure(tearoff=False)
         def SSB_cmd(itemid="SSB"): self.selectMode_CB(itemid)
@@ -260,51 +249,36 @@ class logQSOUI(ttk.Labelframe):
             height=200, style="Normal.TFrame", width=200)
         self.utcDateYYYY_Entry = ttk.Entry(
             self.utcDate_Frame, name="utcdateyyyy_entry")
-        self.utcDateYYYY_VAR = tk.StringVar(value='2026')
         self.utcDateYYYY_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.utcDateYYYY_VAR,
             width=4)
-        _text_ = '2026'
-        self.utcDateYYYY_Entry.delete("0", "end")
-        self.utcDateYYYY_Entry.insert("0", _text_)
         self.utcDateYYYY_Entry.grid(column=1, row=0)
         self.slash1_label = ttk.Label(self.utcDate_Frame, name="slash1_label")
         self.slash1_label.configure(style="Heading1b.TLabel", text='-')
         self.slash1_label.grid(column=2, row=0)
         self.utcDateMM_Entry = ttk.Entry(
             self.utcDate_Frame, name="utcdatemm_entry")
-        self.utcDateMM_VAR = tk.StringVar(value='12')
         self.utcDateMM_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.utcDateMM_VAR,
             width=2)
-        _text_ = '12'
-        self.utcDateMM_Entry.delete("0", "end")
-        self.utcDateMM_Entry.insert("0", _text_)
         self.utcDateMM_Entry.grid(column=3, row=0)
         self.slash2_Label = ttk.Label(self.utcDate_Frame, name="slash2_label")
         self.slash2_Label.configure(style="Heading1b.TLabel", text='-')
         self.slash2_Label.grid(column=4, row=0)
         self.utcDateDD_Entry = ttk.Entry(
             self.utcDate_Frame, name="utcdatedd_entry")
-        self.utcDateDD_VAR = tk.StringVar(value='28')
         self.utcDateDD_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.utcDateDD_VAR,
             width=2)
-        _text_ = '28'
-        self.utcDateDD_Entry.delete("0", "end")
-        self.utcDateDD_Entry.insert("0", _text_)
         self.utcDateDD_Entry.grid(column=5, row=0)
         self.utcDate_Frame.grid(column=1, row=1, sticky="w")
         self.utcTime_Frame = ttk.Frame(
@@ -313,34 +287,24 @@ class logQSOUI(ttk.Labelframe):
             height=200, style="Normal.TFrame", width=200)
         self.utcTimeHH_Entry = ttk.Entry(
             self.utcTime_Frame, name="utctimehh_entry")
-        self.utcTimeHH_VAR = tk.StringVar(value='23')
         self.utcTimeHH_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.utcTimeHH_VAR,
             width=2)
-        _text_ = '23'
-        self.utcTimeHH_Entry.delete("0", "end")
-        self.utcTimeHH_Entry.insert("0", _text_)
         self.utcTimeHH_Entry.grid(column=1, row=0)
         self.colon1_Label = ttk.Label(self.utcTime_Frame, name="colon1_label")
         self.colon1_Label.configure(style="Heading1b.TLabel", text=':')
         self.colon1_Label.grid(column=2, row=0)
         self.utcTimeMM_Entry = ttk.Entry(
             self.utcTime_Frame, name="utctimemm_entry")
-        self.utcTimeMM_VAR = tk.StringVar(value='12')
         self.utcTimeMM_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.utcTimeMM_VAR,
             width=2)
-        _text_ = '12'
-        self.utcTimeMM_Entry.delete("0", "end")
-        self.utcTimeMM_Entry.insert("0", _text_)
         self.utcTimeMM_Entry.grid(column=3, row=0)
         self.utcTime_Frame.grid(column=2, padx=30, row=1, sticky="w")
         self.dateClue_Frame = ttk.Frame(
@@ -424,13 +388,11 @@ class logQSOUI(ttk.Labelframe):
         self.rstRcvd_Label.grid(column=1, pady="0 5", row=0)
         self.rstSend_Entry = ttk.Entry(
             self.signalReport_Frame, name="rstsend_entry")
-        self.rstSend_VAR = tk.StringVar(value='599')
         self.rstSend_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.rstSend_VAR,
             width=8)
         _text_ = '599'
         self.rstSend_Entry.delete("0", "end")
@@ -438,17 +400,12 @@ class logQSOUI(ttk.Labelframe):
         self.rstSend_Entry.grid(column=0, padx="0 20", row=1)
         self.rstRcvd_Entry = ttk.Entry(
             self.signalReport_Frame, name="rstrcvd_entry")
-        self.rstRcvd_VAR = tk.StringVar(value='599')
         self.rstRcvd_Entry.configure(
             font="{Arial} 20 {}",
             justify="center",
             style="Entry2b.TEntry",
             takefocus=True,
-            textvariable=self.rstRcvd_VAR,
             width=8)
-        _text_ = '599'
-        self.rstRcvd_Entry.delete("0", "end")
-        self.rstRcvd_Entry.insert("0", _text_)
         self.rstRcvd_Entry.grid(column=1, row=1)
         self.signalReport_Frame.grid(column=0, padx=10, pady="0 30", row=11)
         self.logData_Frame.pack(padx=20, side="top")
@@ -456,12 +413,10 @@ class logQSOUI(ttk.Labelframe):
         self.closingFrame.configure(style="Normal.TFrame")
         self.logQSO_Button = ttk.Button(
             self.closingFrame, name="logqso_button")
-        self.startStopSpectrum_VAR = tk.StringVar(value='Log')
         self.logQSO_Button.configure(
             style="Button2b.TButton",
             takefocus=True,
             text='Log',
-            textvariable=self.startStopSpectrum_VAR,
             width=10)
         self.log_Button_Tooltip = Tooltip(self.logQSO_Button)
         self.log_Button_Tooltip.configure(
@@ -505,3 +460,8 @@ class logQSOUI(ttk.Labelframe):
         pass
 
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = logQSOUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

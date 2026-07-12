@@ -25,20 +25,34 @@ class cwSettings(baseui.cwSettingsUI):
 
         super().__init__(self.popup,  **kw)
 
+
+
         #
         #   Magic code to get a handle on the current font of the default item and propagate it to the list...
         #
 
 
+        # Attach stingvars to spinbox and menubuttons
+        # ----------------------------
+        gv.make_widget_variable(self, "key_type_value", self.CW_Key_Type_Menubutton)
 
+        gv.make_widget_variable(self, "tone_value", self.CW_Sidetone_Spinbox)
 
+        gv.make_widget_variable(self, "key_speed_value", self.CW_Speed_WPM_Spinbox)
 
+        gv.make_widget_variable(self, "CopyVFOonSplit", self.CopyVFOonSplit_Menubutton)
 
+        gv.make_widget_variable(self, "delay_starting_tx_value", self.CW_Start_TX_Spinbox)
+
+        gv.make_widget_variable(self, "delay_returning_to_rx_value", self.CW_Delay_Returning_RX_Spinbox)
+
+        gv.make_widget_variable(self, "CW_Display_TXFreq", self.CW_Freq_Display_Menubutton)
 
         self.CW_Sidetone_Spinbox.configure(values=gv.CW_Sidetone_Values)
         self.CW_Speed_WPM_Spinbox.configure(values=gv.CW_WPM_Values)
         self.CW_Start_TX_Spinbox.configure(values=gv.Start_TX_Values)
         self.CW_Delay_Returning_RX_Spinbox.configure(values=gv.Delay_Return_RX_Values)
+        # ----------------------------
 
 
 
@@ -65,7 +79,8 @@ class cwSettings(baseui.cwSettingsUI):
                                                        self.mainWindow.key_speed_value_Label['text'],
                                                        self.mainWindow.delay_starting_tx_value_Label['text'],
                                                        self.mainWindow.delay_returning_to_rx_value_Label['text'],
-                                                       self.mainWindow.cwTX_OffsetFlag
+                                                       self.mainWindow.cwTX_OffsetFlag,
+                                                        gv.config.get_VFOA_Copy()
                                                        )
 
         self.popup.title("CW Settings")
@@ -82,7 +97,7 @@ class cwSettings(baseui.cwSettingsUI):
 
 
 
-    def loadCurrentCWSettings(self,tone,keyType,keySpeed,delayToTX,delayToRX, offset_Freq_Flag):
+    def loadCurrentCWSettings(self,tone,keyType,keySpeed,delayToTX,delayToRX, offset_Freq_Flag, copy_VFO_Flag):
         #
         #   Save originals for dirty testing later
         #
@@ -92,6 +107,7 @@ class cwSettings(baseui.cwSettingsUI):
         self.delay_starting_tx = delayToTX
         self.delay_returning_to_rx = delayToRX
         self.offset_Freq_Flag = offset_Freq_Flag
+        self.orig_copy_VFOA_Flag = copy_VFO_Flag
         #
         #   Stuff values into stringvars of the UX
         #
@@ -105,7 +121,6 @@ class cwSettings(baseui.cwSettingsUI):
         #   is not a "normal" value provided by the Combobox. We deal with this situation by just
         #   temporarily adding the value to the comboobox and then selecting it
         #
-        print("tone:",tone)
         if tone not in gv.CW_Sidetone_Values:
             self.CW_Sidetone_Spinbox.configure(values=gv.CW_Sidetone_Values + [tone])
         self.tone_value_VAR.set(tone)
@@ -132,7 +147,6 @@ class cwSettings(baseui.cwSettingsUI):
 
         self.orig_copy_VFOA_Flag = gv.config.get_VFOA_Copy()
         self.CopyVFOonSplit_VAR.set(self.orig_copy_VFOA_Flag)
-
 
     def dirty_DisplayCWSettings (self):
         reboot_required = False
@@ -166,7 +180,7 @@ class cwSettings(baseui.cwSettingsUI):
             (self.mainWindow.theVFO_Object.set_CW_OffsetforTX("ON"))
 
         if self.orig_copy_VFOA_Flag != self.CopyVFOonSplit_VAR.get():
-            gv.config.set_VFOA_Copy(self.copy_VFOA_Flag)
+            gv.config.set_VFOA_Copy(self.CopyVFOonSplit_VAR.get())
 
 
 
@@ -178,7 +192,7 @@ class cwSettings(baseui.cwSettingsUI):
                 sleep (1.5)              # sleep a little so that the change to settings are processed before reboot
                 self.mainWindow.theRadio.rebootRadio()
             else:
-                print('told us to wait')
+                pass
 
     def selectCWStraightKey_CB(self):
         self.key_type_value_VAR.set("STRAIGHT")

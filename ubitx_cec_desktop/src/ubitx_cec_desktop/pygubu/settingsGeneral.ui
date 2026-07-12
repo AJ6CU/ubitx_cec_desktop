@@ -70,7 +70,6 @@
             <child>
               <object class="ttk.Menubutton" id="Number_Delimiter_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:NUMBER_DELIMITER_VAR</property>
                 <property name="width">2</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -105,7 +104,6 @@
             <child>
               <object class="ttk.Menubutton" id="Virtual_Keyboard_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:Virtual_Keyboard_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -184,7 +182,6 @@
             <child>
               <object class="ttk.Menubutton" id="VFO_Touch_Optimized_Menubutton" named="True">
                 <property name="style">Heading0.TMenubutton</property>
-                <property name="textvariable">string:VFO_Touch_Optimized_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -245,7 +242,6 @@ during Scan</property>
                 <property name="from_">1</property>
                 <property name="justify">right</property>
                 <property name="style">Custom.TSpinbox</property>
-                <property name="textvariable">string:Time_On_Freq_VAR</property>
                 <property name="to">20</property>
                 <property name="width">2</property>
                 <layout manager="grid">

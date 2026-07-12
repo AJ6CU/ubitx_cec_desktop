@@ -42,6 +42,24 @@ class logQSO(baseui.logQSOUI):
 
     def initUX(self):
         #
+        #       Assign strvars to entry fields
+        #
+        gv.make_widget_variable(self, "callsign", self.callsign_Entry)
+        gv.make_widget_variable(self, "frequency", self.frequency_Entry)
+        gv.make_widget_variable(self, "utcDateYYYY", self.utcDateYYYY_Entry)
+        gv.make_widget_variable(self, "utcDateMM", self.utcDateMM_Entry)
+        gv.make_widget_variable(self, "utcDateDD", self.utcDateDD_Entry)
+        gv.make_widget_variable(self, "utcTimeHH", self.utcTimeHH_Entry)
+        gv.make_widget_variable(self, "utcTimeMM", self.utcTimeMM_Entry)
+        gv.make_widget_variable(self, "rstSend", self.rstSend_Entry)
+        gv.make_widget_variable(self, "rstRcvd", self.rstRcvd_Entry)
+
+        gv.make_widget_variable(self, "commType", self.mode_Menubutton)
+
+
+
+
+        #
         #   Make sure a log exists
         #
 
@@ -71,10 +89,16 @@ class logQSO(baseui.logQSOUI):
         self.utcTimeMM_VAR.set(datetime.now(UTC).strftime("%M"))
 
 
-        if self.mainWindow.primary_Mode_VAR.get() == "CWL" or self.mainWindow.primary_Mode_VAR.get() == "CWU":
+        if self.mainWindow.mode_select_Menubutton['text'] == "CWL" or self.mainWindow.mode_select_Menubutton['text'] == "CWU":
             self.commType_VAR.set("CW")
         else:
             self.commType_VAR.set("SSB")
+
+        #
+        #   Default RST Send/Rec to 599
+        #
+        self.rstRcvd_VAR.set("599")
+        self.rstSend_VAR.set("599")
         #
         #   Create a handler for each entry field
         #
@@ -178,7 +202,7 @@ class logQSO(baseui.logQSOUI):
         freq = float(self.frequency_VAR.get())/1000
         self.frequency_VAR.set(f"{freq:.3f}")
         self.bandName_VAR.set(self._calculate_band_from_freq(self.frequency_VAR.get()))
-        self.frequency_VAR.set(self.frequency_VAR.get().replace(".", gv.NUMBER_DELIMITER))
+        self.frequency_VAR.set(self.frequency_VAR.get().replace(".", gv.config.get_NUMBER_DELIMITER()))
 
     #
     #   Frequency utilities

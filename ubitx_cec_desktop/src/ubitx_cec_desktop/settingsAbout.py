@@ -46,10 +46,11 @@ class settingsAbout(baseui.settingsAboutUI):
         self.popup.grab_set()
         self.popup.transient(self.mainWindow)
 
-        self.versionID_VAR.set(gv.APPVERSION)
-        self.releaseDate_VAR.set(gv.APPDATE)
-        self.configurationFileLocation_VAR.set(os.path.expanduser(os.path.join("~", ".CECNextionEmulator.ini")))
-        self.logFileLocation_VAR.set(os.path.expanduser(os.path.join("~", ".CECNextionEmulator.log")))
+        self.versionID_Label['text'] = gv.APPVERSION
+        self.releaseDate_Label['text'] = gv.APPDATE
+        self.configurationFileLocation_Label['text'] = os.path.expanduser(os.path.join("~", ".ubitx_cec_desktop.ini"))
+        self.logFileLocation_Label['text'] = os.path.expanduser(os.path.join(gv.config.get_Logbook_Location(),
+                                                                             gv.config.get_Logbook_Name()))
 
 
         self.pack(expand=tk.YES, fill=tk.BOTH)

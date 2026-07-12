@@ -84,12 +84,8 @@ class settingsSDRUI(ttk.Labelframe):
         self.SDR_Enable_Label.pack(padx="10 5", side="left")
         self.SDR_Enable_Menubutton = ttk.Menubutton(
             self.enableSDR_Frame, name="sdr_enable_menubutton")
-        self.SDR_Enable_VAR = tk.StringVar()
         self.SDR_Enable_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            takefocus=True,
-            textvariable=self.SDR_Enable_VAR,
-            width=5)
+            style="Heading0.TMenubutton", takefocus=True, width=5)
         self.SDR_Enable_Menu = tk.Menu(
             self.SDR_Enable_Menubutton,
             name="sdr_enable_menu")
@@ -156,13 +152,11 @@ class settingsSDRUI(ttk.Labelframe):
         self.sdrSoftware_Menubutton.grid(column=1, padx="43 10", pady=5, row=0)
         self.autostartSDR_Checkbox = ttk.Checkbutton(
             self.sdrSoftwareSelection_Frame, name="autostartsdr_checkbox")
-        self.autostartSDR_VAR = tk.StringVar()
         self.autostartSDR_Checkbox.configure(
             offvalue=False,
             onvalue=True,
             style="Checkbox1b.TCheckbutton",
-            text='Autostart',
-            variable=self.autostartSDR_VAR)
+            text='Autostart')
         self.autostartSDR_Checkbox.grid(column=2, padx="75 0", row=0)
         self.autostartSDR_Checkbox.configure(command=self.autostartSDR_CB)
         self.sdrSoftwareSelection_Frame.grid(
@@ -221,19 +215,12 @@ class settingsSDRUI(ttk.Labelframe):
         self.ipAddress_Label.pack()
         self.ipAddress_Entry = ttk.Entry(
             self.address_Frame, name="ipaddress_entry")
-        self.networkAddress_VAR = tk.StringVar(value='999.9.9.9')
         self.ipAddress_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             state="disabled",
             takefocus=True,
-            textvariable=self.networkAddress_VAR,
             width=8)
-        _text_ = '999.9.9.9'
-        self.ipAddress_Entry["state"] = "normal"
-        self.ipAddress_Entry.delete("0", "end")
-        self.ipAddress_Entry.insert("0", _text_)
-        self.ipAddress_Entry["state"] = "disabled"
         self.ipAddress_Entry.pack()
         self.port_Label = ttk.Label(self.address_Frame, name="port_label")
         self.port_Label.configure(
@@ -255,16 +242,11 @@ class settingsSDRUI(ttk.Labelframe):
             wraplength=300)
         self.networkPort_Entry = ttk.Entry(
             self.address_Frame, name="networkport_entry")
-        self.networkPort_VAR = tk.StringVar(value='4532')
         self.networkPort_Entry.configure(
             font="{Arial} 24 {}",
             justify="right",
             takefocus=True,
-            textvariable=self.networkPort_VAR,
             width=5)
-        _text_ = '4532'
-        self.networkPort_Entry.delete("0", "end")
-        self.networkPort_Entry.insert("0", _text_)
         self.networkPort_Entry.pack()
         self.address_Frame.grid(padx=200, pady=20, row=1)
         self.SDR_Network_Frame.grid(
@@ -313,19 +295,14 @@ class settingsSDRUI(ttk.Labelframe):
         self.cwDefaultBandwidth_Label.pack(padx=10, side="left")
         self.cwDefault_Spinbox = ttk.Spinbox(
             self.cwBandwidth_Frame, name="cwdefault_spinbox")
-        self.cwDefault_VAR = tk.StringVar(value='500')
         self.cwDefault_Spinbox.configure(
             font="{Arial} 24 {}",
             from_=200,
             increment=50,
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.cwDefault_VAR,
             to=500,
             width=6)
-        _text_ = '500'
-        self.cwDefault_Spinbox.delete("0", "end")
-        self.cwDefault_Spinbox.insert("0", _text_)
         self.cwDefault_Spinbox.pack(side="top")
         self.cwDefault_Spinbox.configure(command=self.cwDefault_CB)
         self.cwBandwidth_Frame.pack(
@@ -348,19 +325,14 @@ class settingsSDRUI(ttk.Labelframe):
         self.ssb_DefaultBandwidth_Label.pack(padx=10, side="left")
         self.ssbDefault_Spinbox = ttk.Spinbox(
             self.ssbBandwidthFrame, name="ssbdefault_spinbox")
-        self.ssbDefault_VAR = tk.StringVar(value='2600')
         self.ssbDefault_Spinbox.configure(
             font="{Arial} 24 {}",
             from_=2000,
             increment=100,
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.ssbDefault_VAR,
             to=3200,
             width=6)
-        _text_ = '2600'
-        self.ssbDefault_Spinbox.delete("0", "end")
-        self.ssbDefault_Spinbox.insert("0", _text_)
         self.ssbDefault_Spinbox.pack(side="top")
         self.ssbDefault_Spinbox.configure(command=self.ssbDefault_CB)
         self.ssbBandwidthFrame.pack(anchor="center", pady="0 20", side="left")
@@ -439,3 +411,9 @@ class settingsSDRUI(ttk.Labelframe):
     def cancel_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsSDRUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

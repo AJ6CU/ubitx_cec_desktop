@@ -95,7 +95,6 @@
                       <object class="ttk.Menubutton" id="SDR_Enable_Menubutton" named="True">
                         <property name="style">Heading0.TMenubutton</property>
                         <property name="takefocus">true</property>
-                        <property name="textvariable">string:SDR_Enable_VAR</property>
                         <property name="width">5</property>
                         <layout manager="pack">
                           <property name="padx">70 0</property>
@@ -295,8 +294,6 @@
                         <property name="justify">right</property>
                         <property name="state">disabled</property>
                         <property name="takefocus">true</property>
-                        <property name="text" translatable="yes">999.9.9.9</property>
-                        <property name="textvariable">string:networkAddress_VAR</property>
                         <property name="width">8</property>
                         <layout manager="pack" />
                       </object>
@@ -332,8 +329,6 @@
                         <property name="font">{Arial} 24 {}</property>
                         <property name="justify">right</property>
                         <property name="takefocus">true</property>
-                        <property name="text" translatable="yes">4532</property>
-                        <property name="textvariable">string:networkPort_VAR</property>
                         <property name="width">5</property>
                         <layout manager="pack" />
                       </object>
@@ -422,8 +417,6 @@
                         <property name="increment">50</property>
                         <property name="justify">right</property>
                         <property name="style">Custom.TSpinbox</property>
-                        <property name="text" translatable="yes">500</property>
-                        <property name="textvariable">string:cwDefault_VAR</property>
                         <property name="to">500</property>
                         <property name="width">6</property>
                         <layout manager="pack">
@@ -470,8 +463,6 @@
                         <property name="increment">100</property>
                         <property name="justify">right</property>
                         <property name="style">Custom.TSpinbox</property>
-                        <property name="text" translatable="yes">2600</property>
-                        <property name="textvariable">string:ssbDefault_VAR</property>
                         <property name="to">3200</property>
                         <property name="width">6</property>
                         <layout manager="pack">

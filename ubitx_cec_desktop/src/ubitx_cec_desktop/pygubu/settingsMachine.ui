@@ -85,7 +85,6 @@
                   <object class="ttk.Menubutton" id="DSP_Enable_Menubutton" named="True">
                     <property name="style">Heading0.TMenubutton</property>
                     <property name="takefocus">true</property>
-                    <property name="textvariable">string:DSP_Enable_VAR</property>
                     <property name="width">5</property>
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -171,7 +170,6 @@
                   <object class="ttk.Menubutton" id="PWR_SWR_Menubutton" named="True">
                     <property name="style">Heading0.TMenubutton</property>
                     <property name="takefocus">true</property>
-                    <property name="textvariable">string:PWR_SWR_Enable_VAR</property>
                     <property name="width">5</property>
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -231,8 +229,6 @@
                     <property name="font">{Arial} 24 {}</property>
                     <property name="justify">right</property>
                     <property name="takefocus">true</property>
-                    <property name="text" translatable="yes">0.0</property>
-                    <property name="textvariable">string:PWR_Factor_VAR</property>
                     <property name="width">5</property>
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -272,8 +268,6 @@
                     <property name="font">{Arial} 24 {}</property>
                     <property name="justify">right</property>
                     <property name="takefocus">true</property>
-                    <property name="text" translatable="yes">0.0</property>
-                    <property name="textvariable">string:SWR_Factor_VAR</property>
                     <property name="width">5</property>
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -328,7 +322,6 @@ Radio (ms):</property>
                     <property name="justify">right</property>
                     <property name="style">Custom.TSpinbox</property>
                     <property name="takefocus">true</property>
-                    <property name="textvariable">string:MCU_Command_Headroom_VAR</property>
                     <property name="to">20</property>
                     <property name="width">4</property>
                     <layout manager="grid">
@@ -369,7 +362,6 @@ UX changes (ms):</property>
                     <property name="justify">right</property>
                     <property name="style">Custom.TSpinbox</property>
                     <property name="takefocus">true</property>
-                    <property name="textvariable">string:MCU_Update_Period_VAR</property>
                     <property name="to">20</property>
                     <property name="width">4</property>
                     <layout manager="grid">
@@ -411,7 +403,6 @@ MCU/DPS (ms):</property>
                     <property name="justify">right</property>
                     <property name="style">Custom.TSpinbox</property>
                     <property name="takefocus">true</property>
-                    <property name="textvariable">string:MCU_Read_Wait_Period_VAR</property>
                     <property name="to">20</property>
                     <property name="width">4</property>
                     <layout manager="grid">

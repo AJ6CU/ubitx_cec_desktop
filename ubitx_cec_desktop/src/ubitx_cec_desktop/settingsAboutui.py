@@ -72,12 +72,8 @@ class settingsAboutUI(ttk.Labelframe):
         self.versionID_Label = ttk.Label(
             self.general_Settings_Frame,
             name="versionid_label")
-        self.versionID_VAR = tk.StringVar(value='2.0')
         self.versionID_Label.configure(
-            justify="right",
-            style="Heading1b.TLabel",
-            text='2.0',
-            textvariable=self.versionID_VAR)
+            justify="right", style="Heading1b.TLabel")
         self.versionID_Label.grid(
             column=1, padx=10, pady=10, row=0, sticky="w")
         self.date_Label = ttk.Label(
@@ -91,12 +87,8 @@ class settingsAboutUI(ttk.Labelframe):
         self.releaseDate_Label = ttk.Label(
             self.general_Settings_Frame,
             name="releasedate_label")
-        self.releaseDate_VAR = tk.StringVar(value='January 1, 1957')
         self.releaseDate_Label.configure(
-            justify="right",
-            style="Heading1b.TLabel",
-            text='January 1, 1957',
-            textvariable=self.releaseDate_VAR)
+            justify="right", style="Heading1b.TLabel")
         self.releaseDate_Label.grid(
             column=1, padx=10, pady="0 10", row=1, sticky="w")
         self.author_Label = ttk.Label(
@@ -151,26 +143,11 @@ class settingsAboutUI(ttk.Labelframe):
             text='Configuration FIle:')
         self.configurationFile_Label.grid(
             column=0, padx=10, pady="0 10", row=4, sticky="e")
-        self.configurationFileLocation_Entry = tk.Entry(
-            self.general_Settings_Frame, name="configurationfilelocation_entry")
-        self.configurationFileLocation_VAR = tk.StringVar(
-            value='>>>location<<<')
-        self.configurationFileLocation_Entry.configure(
-            background="gray",
-            borderwidth=0,
-            font="{Arial} 14 {bold}",
-            foreground="white",
-            highlightbackground="gray",
-            readonlybackground="gray",
-            state="readonly",
-            textvariable=self.configurationFileLocation_VAR,
-            width=50)
-        _text_ = '>>>location<<<'
-        self.configurationFileLocation_Entry["state"] = "normal"
-        self.configurationFileLocation_Entry.delete("0", "end")
-        self.configurationFileLocation_Entry.insert("0", _text_)
-        self.configurationFileLocation_Entry["state"] = "readonly"
-        self.configurationFileLocation_Entry.grid(
+        self.configurationFileLocation_Label = ttk.Label(
+            self.general_Settings_Frame, name="configurationfilelocation_label")
+        self.configurationFileLocation_Label.configure(
+            style="Heading2b.TLabel")
+        self.configurationFileLocation_Label.grid(
             column=1, padx=10, pady="0 10", row=4, sticky="w")
         self.logFile_Label = ttk.Label(
             self.general_Settings_Frame,
@@ -185,26 +162,11 @@ class settingsAboutUI(ttk.Labelframe):
             pady="0 10",
             row=5,
             sticky="e")
-        self.logFileLocation_Entry = tk.Entry(
+        self.logFileLocation_Label = ttk.Label(
             self.general_Settings_Frame,
-            name="logfilelocation_entry")
-        self.logFileLocation_VAR = tk.StringVar(value='>>>location<<<')
-        self.logFileLocation_Entry.configure(
-            background="gray",
-            borderwidth=0,
-            font="{Arial} 14 {bold}",
-            foreground="white",
-            highlightbackground="gray",
-            readonlybackground="gray",
-            state="readonly",
-            textvariable=self.logFileLocation_VAR,
-            width=50)
-        _text_ = '>>>location<<<'
-        self.logFileLocation_Entry["state"] = "normal"
-        self.logFileLocation_Entry.delete("0", "end")
-        self.logFileLocation_Entry.insert("0", _text_)
-        self.logFileLocation_Entry["state"] = "readonly"
-        self.logFileLocation_Entry.grid(
+            name="logfilelocation_label")
+        self.logFileLocation_Label.configure(style="Heading2b.TLabel")
+        self.logFileLocation_Label.grid(
             column=1, padx=10, pady="0 10", row=5, sticky="w")
         self.license_Label = ttk.Label(
             self.general_Settings_Frame,
@@ -260,3 +222,10 @@ class settingsAboutUI(ttk.Labelframe):
 
     def close_CB(self):
         pass
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsAboutUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

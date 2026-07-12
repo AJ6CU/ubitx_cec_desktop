@@ -80,11 +80,8 @@ class settingsLogbookUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=1, sticky="e")
         self.LogbookSwitch_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbookswitch_menubutton")
-        self.LogbookSwitch_VAR = tk.StringVar()
         self.LogbookSwitch_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.LogbookSwitch_VAR,
-            width=5)
+            style="Heading0.TMenubutton", width=5)
         self.LogbookSwitch_Menu = tk.Menu(
             self.LogbookSwitch_Menubutton,
             name="logbookswitch_menu")
@@ -120,11 +117,8 @@ class settingsLogbookUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=2, sticky="e")
         self.LogbookType_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbooktype_menubutton")
-        self.LogbookType_VAR = tk.StringVar()
         self.LogbookType_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.LogbookType_VAR,
-            width=5)
+            style="Heading0.TMenubutton", width=5)
         self.LogbookType_Menu = tk.Menu(
             self.LogbookType_Menubutton,
             name="logbooktype_menu")
@@ -161,26 +155,21 @@ class settingsLogbookUI(ttk.Labelframe):
             column=0, padx=10, pady="40 20", row=3, sticky="e")
         self.backupInterval_Spinbox = ttk.Spinbox(
             self.general_Settings_Frame, name="backupinterval_spinbox")
-        self.Backup_Interval_VAR = tk.StringVar()
         self.backupInterval_Spinbox.configure(
             font="{Arial} 36 {}",
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.Backup_Interval_VAR,
             values="0 5 10 15 30 60 120",
             width=3)
         self.backupInterval_Spinbox.grid(
             column=1, padx="20 0", pady="40 0", row=3, sticky="w")
         self.LogbookFileSelectorButton = PathChooserButton(
             self.general_Settings_Frame, name="logbookfileselectorbutton")
-        self.LogbookDirectoryLocation_VAR = tk.StringVar(
-            value='Select\nLogbook\nLocation')
         self.LogbookFileSelectorButton.configure(
             initialdir="~",
             mustexist=True,
             style="Button2Sunken.TButton",
             text='Select\nLogbook\nLocation',
-            textvariable=self.LogbookDirectoryLocation_VAR,
             type="directory")
         self.LogbookFileSelector_Tooltip = Tooltip(
             self.LogbookFileSelectorButton)
@@ -231,7 +220,6 @@ class settingsLogbookUI(ttk.Labelframe):
         self.LogbookName_Entry = tk.Entry(
             self.general_Settings_Frame,
             name="logbookname_entry")
-        self.LogbookName_VAR = tk.StringVar()
         self.LogbookName_Entry.configure(
             background="white",
             borderwidth=0,
@@ -244,7 +232,6 @@ class settingsLogbookUI(ttk.Labelframe):
             justify="left",
             readonlybackground="gray",
             state="normal",
-            textvariable=self.LogbookName_VAR,
             validate="focusout",
             width=40)
         self.LogbookName_Entry.grid(
@@ -327,3 +314,8 @@ class settingsLogbookUI(ttk.Labelframe):
         pass
 
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsLogbookUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

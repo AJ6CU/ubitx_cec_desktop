@@ -84,11 +84,8 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_KEY_TYPE_LABEL.grid(column=0, pady="40 0", row=0, sticky="e")
         self.CW_Key_Type_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="cw_key_type_menubutton")
-        self.key_type_value_VAR = tk.StringVar()
         self.CW_Key_Type_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.key_type_value_VAR,
-            width=9)
+            style="Heading0.TMenubutton", width=9)
         self.CW_Key_Type_Menu = tk.Menu(
             self.CW_Key_Type_Menubutton,
             name="cw_key_type_menu")
@@ -130,12 +127,10 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_Start_TX_Spinbox = ttk.Spinbox(
             self.General_CW_Settings_Frame,
             name="cw_start_tx_spinbox")
-        self.delay_starting_tx_value_VAR = tk.StringVar()
         self.CW_Start_TX_Spinbox.configure(
             font="{Arial} 36 {}",
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.delay_starting_tx_value_VAR,
             width=5)
         self.CW_Start_TX_Spinbox.grid(
             column=4, padx="20 0", pady="40 0", row=0, sticky="w")
@@ -154,12 +149,10 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_Sidetone_Spinbox = ttk.Spinbox(
             self.General_CW_Settings_Frame,
             name="cw_sidetone_spinbox")
-        self.tone_value_VAR = tk.StringVar()
         self.CW_Sidetone_Spinbox.configure(
             font="{Arial} 36 {}",
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.tone_value_VAR,
             width=3)
         self.CW_Sidetone_Spinbox.grid(
             column=1, padx="20 0", pady="40 0", row=2, sticky="w")
@@ -191,12 +184,10 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_Speed_WPM_Spinbox = ttk.Spinbox(
             self.General_CW_Settings_Frame,
             name="cw_speed_wpm_spinbox")
-        self.key_speed_value_VAR = tk.StringVar()
         self.CW_Speed_WPM_Spinbox.configure(
             font="{Arial} 36 {}",
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.key_speed_value_VAR,
             width=3)
         self.CW_Speed_WPM_Spinbox.grid(
             column=1, padx="20 0", pady="40 0", row=3, sticky="w")
@@ -228,22 +219,14 @@ class cwSettingsUI(ttk.Labelframe):
         self.text4.grid(column=2, columnspan=5, padx="70 0", pady=20, row=4)
         self.CW_Delay_Returning_RX_Spinbox = ttk.Spinbox(
             self.General_CW_Settings_Frame, name="cw_delay_returning_rx_spinbox")
-        self.delay_returning_to_rx_value_VAR = tk.StringVar()
         self.CW_Delay_Returning_RX_Spinbox.configure(
-            font="{Arial} 36 {}",
-            justify="right",
-            style="Custom.TSpinbox",
-            textvariable=self.delay_returning_to_rx_value_VAR,
-            width=5)
+            font="{Arial} 36 {}", justify="right", style="Custom.TSpinbox", width=5)
         self.CW_Delay_Returning_RX_Spinbox.grid(
             column=4, padx="20 0", pady="40 0", row=2, sticky="w")
         self.CW_Freq_Display_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="cw_freq_display_menubutton")
-        self.CW_Display_TXFreq_VAR = tk.StringVar()
         self.CW_Freq_Display_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.CW_Display_TXFreq_VAR,
-            width=3)
+            style="Heading0.TMenubutton", width=3)
         self.CW_Freq_Display_Menu = tk.Menu(
             self.CW_Freq_Display_Menubutton,
             name="cw_freq_display_menu")
@@ -280,11 +263,8 @@ class cwSettingsUI(ttk.Labelframe):
             column=0, pady="40 0", row=4, sticky="e")
         self.CopyVFOonSplit_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="copyvfoonsplit_menubutton")
-        self.CopyVFOonSplit_VAR = tk.StringVar()
         self.CopyVFOonSplit_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.CopyVFOonSplit_VAR,
-            width=5)
+            style="Heading0.TMenubutton", width=5)
         self.CopyVFOonSplit_Menu = tk.Menu(
             self.CopyVFOonSplit_Menubutton,
             name="copyvfoonsplit_menu")
@@ -370,3 +350,8 @@ class cwSettingsUI(ttk.Labelframe):
         pass
 
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = cwSettingsUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()
