@@ -201,6 +201,8 @@ class mainScreen(baseui.mainScreenUI):
 
     def initUX(self):
         print("initUX")
+        self.master.deiconify()         # now that we are ready for the main window, can deiconify it.
+                                        # this was necessary to avoid a small blank window from appearing at startup
         self.theVFO_Object.initVFO(self.theRadio)
 
         self.place(x=0, y=0)  # place the mainWindow on the screen

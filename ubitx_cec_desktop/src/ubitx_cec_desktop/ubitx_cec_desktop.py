@@ -58,6 +58,7 @@ def startMainWindow(radioPortName, radioPortHandle):
 #   Main program and loop
 #
 root = tk.Tk()
+root.withdraw()         # this prevents a small blank window from appearing
 
 
 gv.config = ConfigurationManager(root)                    # Read in config data, if missing preload with defaults
