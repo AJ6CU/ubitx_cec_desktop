@@ -96,6 +96,11 @@ class theVFO(baseui.theVFOUI):
         self.RITmode = False                        # Saves whether RIT is on or off
         self.SPLITmode = False                      # Saves whether SPLIT mode is on or off
 
+        #
+        #   Set some of the strgvars
+        #
+        gv.make_widget_variable(self, "tuning_Preset_Label", self.tuning_Preset_Menubutton)
+
 
 
     #
@@ -105,6 +110,7 @@ class theVFO(baseui.theVFOUI):
     def initVFO(self, radio):
 
         self.theRadio = radio
+
 
 
         #
@@ -158,7 +164,7 @@ class theVFO(baseui.theVFOUI):
 
         #   Now set the text on the multiplier button to reflect the new rate
         #
-        self.tuning_Multiplier_VAR.set("Tuning Factor\nx" + multiplier_string)
+        self.tuning_Multiplier_Button['text'] = "Tuning Factor\nx" + multiplier_string
 
     #
     #*********Routines that manage the virtual LED's below the digits of the VFO
@@ -304,10 +310,10 @@ class theVFO(baseui.theVFOUI):
         self.mainWindow = mainWindow
 
     def setFirmwareVersion(self, firmwareVersion):
-        self.firmwareVersion_VAR.set(firmwareVersion)
+        self.firmwareVersion_Label['text'] = firmwareVersion
 
     def setCallsign(self, callsign):
-        self.callSign_VAR.set(callsign)
+        self.callSign_Label['text'] = callsign
 
 
     #
@@ -352,6 +358,7 @@ class theVFO(baseui.theVFOUI):
 
     def setPrimaryVFO(self, value):
         self.PrimaryVFO = int(value)
+        print("Primary VFO set to {}".format(self.PrimaryVFO))
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
     def setSecondaryVFO(self, value):
@@ -366,7 +373,7 @@ class theVFO(baseui.theVFOUI):
 
     def toggleVFO(self):
 
-        saveSecondary_VFO = self.secondary_VFO
+        saveSecondary_VFO = gv.unformatFrequency(self.secondary_VFO_Label['text'])
         saveSecondary_Mode = self.secondary_Mode_Label['text']
 
         self.secondary_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO)
@@ -445,9 +452,9 @@ class theVFO(baseui.theVFOUI):
 
 
     def reformatVFO(self, value):
-
-            self.digit_delimiter_primary_VFO_1M_Label['text'] = value
-            self.digit_delimiter_primary_VFO_1k_Label['text'] = value
+            #
+            # self.digit_delimiter_primary_VFO_1M_Label['text'] = value
+            # self.digit_delimiter_primary_VFO_1k_Label['text'] = value
             if value == ",":
                 old_value = "."
             else:
@@ -458,6 +465,7 @@ class theVFO(baseui.theVFOUI):
 
             self.digit_delimiter_primary_VFO_1M_Label['text'] = value
             self.digit_delimiter_primary_VFO_1k_Label['text'] = value
+            print("reformatVFO calling update display", self.RX_Freq_VFO_Label['text'], self.secondary_VFO_Label['text'] )
             self.update_VFO_Display(int(self.PrimaryVFO), self.TXfreqOffset)
 
 
@@ -577,6 +585,7 @@ class theVFO(baseui.theVFOUI):
         #   With offsets now correct, we can update the VFO display
         #
         # if not self.RITmode:
+        print("in set_CW_OffsetforTX callign update display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
         # self.updateVFO_Info("CW", switch)
@@ -595,6 +604,7 @@ class theVFO(baseui.theVFOUI):
                     sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset)
 
                     # self._saveFreqOffset(True)
+                    print("in _CW calling update display")
 
                     self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
                 else:
@@ -634,7 +644,7 @@ class theVFO(baseui.theVFOUI):
                     self.RITmode = True  # RIT is being turned on
                     self._RIT_ManageLabels(switch)
 
-                    sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.intDisplayedPrimaryVFO)
+                    self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.intDisplayedPrimaryVFO)
 
                 else:
                     self.RITmode = False
@@ -688,6 +698,7 @@ class theVFO(baseui.theVFOUI):
                 self._RIT_ManageLabels(switch)
                 if self.TXfreqOffset != 0:
                     self._CW_ManageLabels("ON")
+        print("in _RIT callign update display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
 
@@ -701,14 +712,19 @@ class theVFO(baseui.theVFOUI):
                 self.RX_Freq_Label['text'] = "RIT TX Freq:"
             self.RX_VFO_Visability(True)
         else:
-            self.Tx_Freq_Alert_Label['text'] = "        "
+            if self.SPLITmode:
+                self.Tx_Freq_Alert_Label['text'] = "SPLT RX"
+            else:
+                self.Tx_Freq_Alert_Label['text'] = "        "
             self.RX_VFO_Visability(False)  # Turn off the RX frequency window
 
 
 
 
     def _SPLIT(self, switch):
+        print("entering _SPLIT")
         if self.TXfreqOffset != 0 or self.RITmode:
+            print("complex split")
             if self.RITmode:  # In RIT turning on/off SPLIT
                 if switch == "ON":
                     print("Error, Split being turned on and RIT still active")
@@ -750,6 +766,7 @@ class theVFO(baseui.theVFOUI):
                     self._RIT_ManageLabels("ON")
 
         else:  # Simple SPlIT mode on and off
+            print("simple slit")
             if switch == "ON":
                 self.SPLITmode = True
 
@@ -760,6 +777,8 @@ class theVFO(baseui.theVFOUI):
                 if gv.config.get_VFOA_Copy() == "True":       # user wants to automatically copy VFOA to VFOB on split
                     f1 = self.intDisplayedPrimaryVFO
                     f2 = self.PrimaryVFO
+
+                    print("copying a to b, f1,f2", f1, f2)
 
                     m = Text_To_ModeNum[self.mainWindow.mode_select_Menubutton['text']]
                     self.theRadio.Toggle_VFO()
@@ -774,13 +793,14 @@ class theVFO(baseui.theVFOUI):
 
 
             else:  # Exiting Split mode, must unwind
+                print("exiting split mode")
                 self.SPLITmode = False  # Saves whether SPLIT mode is on or off
                 self._SPLIT_ManageLabels(switch)
                 self.CW_VFOA_Offset_On = True
                 self.CW_VFOAUX_Offset_On = True
                 if self.TXfreqOffset != 0:
                     self._CW_ManageLabels("ON")
-
+        print("in _split, calling update_VFO Display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
 
@@ -821,6 +841,8 @@ class theVFO(baseui.theVFOUI):
 
 
         paddedVFO = str(self.intDisplayedPrimaryVFO).rjust(8)
+        print("in updated_VFO display, in first then string", self.intDisplayedPrimaryVFO, type(self.intDisplayedPrimaryVFO),
+                paddedVFO, type(paddedVFO))
         self.strDisplayedPrimaryVFO = gv.formatFrequency(paddedVFO)
 
         self.digit0_primary_VFO_Label['text'] = paddedVFO[7]

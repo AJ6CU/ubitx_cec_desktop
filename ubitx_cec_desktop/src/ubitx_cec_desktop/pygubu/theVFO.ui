@@ -490,7 +490,6 @@
               <object class="ttk.Label" id="split_TX_Label" named="True">
                 <property name="style">Heading2bi.TLabel</property>
                 <property name="text" translatable="yes">       </property>
-                <property name="textvariable">string:split_TX_VAR</property>
                 <property name="width">8</property>
                 <layout manager="pack">
                   <property name="anchor">w</property>
@@ -543,10 +542,9 @@
               <property name="side">left</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="label5">
+              <object class="ttk.Label" id="callSign_Label" named="True">
                 <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">AJ6CUxyz</property>
-                <property name="textvariable">string:callSign_VAR</property>
                 <property name="width">10</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>
@@ -556,10 +554,9 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="label6">
+              <object class="ttk.Label" id="firmwareVersion_Label" named="True">
                 <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">V2.0 RCLxyz</property>
-                <property name="textvariable">string:firmwareVersion_VAR</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>
                   <property name="side">left</property>
@@ -588,7 +585,6 @@
               <object class="ttk.Menubutton" id="tuning_Preset_Menubutton" named="True">
                 <property name="style">Heading2b.TMenubutton</property>
                 <property name="text" translatable="yes">0</property>
-                <property name="textvariable">string:tuning_Preset_Label_VAR</property>
                 <property name="width">6</property>
                 <layout manager="pack">
                   <property name="side">left</property>
@@ -639,9 +635,6 @@
               <object class="ttk.Button" id="tuning_Multiplier_Button" named="True">
                 <property name="command" type="command" cbtype="simple">tuning_Multiplier_Button_CB</property>
                 <property name="style">Button2b.TButton</property>
-                <property name="text" translatable="yes">Dial Tuning
-x 100mhz</property>
-                <property name="textvariable">string:tuning_Multiplier_VAR</property>
                 <layout manager="pack">
                   <property name="anchor">e</property>
                   <property name="expand">true</property>

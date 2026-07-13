@@ -296,39 +296,30 @@ class theVFOUI(ttk.Frame):
         self.callsign_Frame = ttk.Frame(self.vfoB_Frame, name="callsign_frame")
         self.callsign_Frame.configure(
             height=200, style="Normal.TFrame", width=200)
-        label5 = ttk.Label(self.callsign_Frame)
-        self.callSign_VAR = tk.StringVar(value='AJ6CUxyz')
-        label5.configure(
-            style="Heading2b.TLabel",
-            text='AJ6CUxyz',
-            textvariable=self.callSign_VAR,
-            width=10)
-        label5.pack(anchor="center", padx="0 10", side="left")
-        label6 = ttk.Label(self.callsign_Frame)
-        self.firmwareVersion_VAR = tk.StringVar(value='V2.0 RCLxyz')
-        label6.configure(
-            style="Heading2b.TLabel",
-            text='V2.0 RCLxyz',
-            textvariable=self.firmwareVersion_VAR)
-        self.release_Tooltip = Tooltip(label6)
+        self.callSign_Label = ttk.Label(
+            self.callsign_Frame, name="callsign_label")
+        self.callSign_Label.configure(
+            style="Heading2b.TLabel", text='AJ6CUxyz', width=10)
+        self.callSign_Label.pack(anchor="center", padx="0 10", side="left")
+        self.firmwareVersion_Label = ttk.Label(
+            self.callsign_Frame, name="firmwareversion_label")
+        self.firmwareVersion_Label.configure(
+            style="Heading2b.TLabel", text='V2.0 RCLxyz')
+        self.release_Tooltip = Tooltip(self.firmwareVersion_Label)
         self.release_Tooltip.configure(
             padx=8,
             relief="raised",
             text='Version of the MCU Firmware.',
             wraplength=300)
-        label6.pack(anchor="center", side="left")
+        self.firmwareVersion_Label.pack(anchor="center", side="left")
         self.callsign_Frame.pack(padx="20 0", side="left")
         self.tuning_Step_Frame = ttk.Frame(
             self.vfoB_Frame, name="tuning_step_frame")
         self.tuning_Step_Frame.configure(style="Normal.TFrame", width=200)
         self.tuning_Preset_Menubutton = ttk.Menubutton(
             self.tuning_Step_Frame, name="tuning_preset_menubutton")
-        self.tuning_Preset_Label_VAR = tk.StringVar(value='0')
         self.tuning_Preset_Menubutton.configure(
-            style="Heading2b.TMenubutton",
-            text='0',
-            textvariable=self.tuning_Preset_Label_VAR,
-            width=6)
+            style="Heading2b.TMenubutton", text='0', width=6)
         self.tuning_Preset_Menu = tk.Menu(
             self.tuning_Preset_Menubutton,
             name="tuning_preset_menu")
@@ -362,12 +353,7 @@ class theVFOUI(ttk.Frame):
         self.tuning_Preset_Menubutton.pack(side="left")
         self.tuning_Multiplier_Button = ttk.Button(
             self.tuning_Step_Frame, name="tuning_multiplier_button")
-        self.tuning_Multiplier_VAR = tk.StringVar(
-            value='Dial Tuning\nx 100mhz')
-        self.tuning_Multiplier_Button.configure(
-            style="Button2b.TButton",
-            text='Dial Tuning\nx 100mhz',
-            textvariable=self.tuning_Multiplier_VAR)
+        self.tuning_Multiplier_Button.configure(style="Button2b.TButton")
         self.current_Tuning_Rate_Tooltip = Tooltip(
             self.tuning_Multiplier_Button)
         self.current_Tuning_Rate_Tooltip.configure(
