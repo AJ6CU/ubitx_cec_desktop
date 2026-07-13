@@ -107,7 +107,6 @@ class frequencySpectrumUI(tk.Toplevel):
             height=140, style="Normal.TFrame", width=200)
         self.frequencyTuning_Scale = tk.Scale(
             self.freqTuneFrame, name="frequencytuning_scale")
-        self.frequencyTuning_VAR = tk.StringVar()
         self.frequencyTuning_Scale.configure(
             from_=0,
             length=500,
@@ -117,7 +116,6 @@ class frequencySpectrumUI(tk.Toplevel):
             showvalue=False,
             sliderlength=50,
             to=119,
-            variable=self.frequencyTuning_VAR,
             width=30)
         self.frequencyTuning_Scale.grid(
             column=0, padx="10 0", row=0, sticky="ew")
@@ -134,21 +132,15 @@ class frequencySpectrumUI(tk.Toplevel):
             height=40, style="Normal.TFrame", width=200)
         self.startFrequency_Label = ttk.Label(
             self.frequencyRange_Frame, name="startfrequency_label")
-        self.startFrequency_VAR = tk.StringVar(value='0')
         self.startFrequency_Label.configure(
-            foreground="black",
-            style="Heading2b.TLabel",
-            text='0',
-            textvariable=self.startFrequency_VAR)
+            foreground="black", style="Heading2b.TLabel", text='0')
         self.startFrequency_Label.pack(side="left")
         self.endFrequency_Label = ttk.Label(
             self.frequencyRange_Frame, name="endfrequency_label")
-        self.stopFrequency_VAR = tk.StringVar(value='120000')
         self.endFrequency_Label.configure(
             foreground="black",
             style="Heading2b.TLabel",
-            text='120000',
-            textvariable=self.stopFrequency_VAR)
+            text='120000')
         self.endFrequency_Label.pack(side="right")
         self.frequencyRange_Frame.grid(column=0, row=1, sticky="ew")
         self.frequency_tooltip = Tooltip(self.freqTuneFrame)
@@ -203,11 +195,8 @@ class frequencySpectrumUI(tk.Toplevel):
         self.repeat_Label.grid(column=1, row=0)
         self.bandwidth_Menubutton = ttk.Menubutton(
             self.bandwidthControlFrame, name="bandwidth_menubutton")
-        self.bandwidthSelected_VAR = tk.StringVar()
         self.bandwidth_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.bandwidthSelected_VAR,
-            width=8)
+            style="Heading0.TMenubutton", width=8)
         self.bandwidth_Menu = tk.Menu(
             self.bandwidth_Menubutton,
             name="bandwidth_menu")
@@ -246,11 +235,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.bandwidth_Menubutton.grid(padx="0 20", row=1, sticky="w")
         self.repeat_Menubutton = ttk.Menubutton(
             self.bandwidthControlFrame, name="repeat_menubutton")
-        self.repeat_VAR = tk.StringVar()
-        self.repeat_Menubutton.configure(
-            style="Heading0.TMenubutton",
-            textvariable=self.repeat_VAR,
-            width=3)
+        self.repeat_Menubutton.configure(style="Heading0.TMenubutton", width=3)
         self.repeat_Menu = tk.Menu(self.repeat_Menubutton, name="repeat_menu")
         self.repeat_Menu.configure(tearoff=False)
         self.repeat_Menu.add(
@@ -310,21 +295,13 @@ class frequencySpectrumUI(tk.Toplevel):
         self.remaining_Label.grid(column=1, pady="20 0", row=2)
         self.calculatedSampleSize_Label = ttk.Label(
             self.bandwidthControlFrame, name="calculatedsamplesize_label")
-        self.calculatedSampleSize_VAR = tk.StringVar(value='1000')
         self.calculatedSampleSize_Label.configure(
-            anchor="e",
-            style="Heading2b.TLabel",
-            text='1000',
-            textvariable=self.calculatedSampleSize_VAR)
+            anchor="e", style="Heading2b.TLabel", text='1000', width=5)
         self.calculatedSampleSize_Label.grid(column=0, row=3)
         self.remainingCount_Label = ttk.Label(
             self.bandwidthControlFrame, name="remainingcount_label")
-        self.remainingCount_VAR = tk.StringVar(value='10')
         self.remainingCount_Label.configure(
-            anchor="e",
-            style="Heading2b.TLabel",
-            text='10',
-            textvariable=self.remainingCount_VAR)
+            anchor="e", style="Heading2b.TLabel", text='10', width=3)
         self.remainingCount_Label.grid(column=1, row=3)
         self.bandwidthControlFrame.pack(
             anchor="nw", expand=True, fill="x", side="top")
@@ -350,11 +327,8 @@ class frequencySpectrumUI(tk.Toplevel):
         self.freqLabel.pack(side="left")
         self.currentFrequency_Label = ttk.Label(
             self.currentFreqFrame, name="currentfrequency_label")
-        self.currentFrequency_VAR = tk.StringVar(value='0')
         self.currentFrequency_Label.configure(
-            style="Heading1b.TLabel",
-            text='0',
-            textvariable=self.currentFrequency_VAR)
+            style="Heading1b.TLabel", text='0')
         self.currentFrequency_Label.pack(padx=10, side="left")
         self.currentFreqFrame.pack(pady="100 0", side="left")
         self.controlFrame.grid(
@@ -370,12 +344,8 @@ class frequencySpectrumUI(tk.Toplevel):
         self.closingFrame.configure(style="Normal.TFrame")
         self.startStop_Button = ttk.Button(
             self.closingFrame, name="startstop_button")
-        self.startStopSpectrum_VAR = tk.StringVar(value='Scan')
         self.startStop_Button.configure(
-            style="Button2b.TButton",
-            text='Scan',
-            textvariable=self.startStopSpectrum_VAR,
-            width=10)
+            style="Button2b.TButton", text='Scan', width=10)
         self.startStop_Tooltip = Tooltip(self.startStop_Button)
         self.startStop_Tooltip.configure(
             padx=8,
@@ -398,12 +368,8 @@ class frequencySpectrumUI(tk.Toplevel):
         self.recenter_Button.configure(command=self.recenter_CB)
         self.applyClose_Button = ttk.Button(
             self.closingFrame, name="applyclose_button")
-        self.closeApply_Button_VAR = tk.StringVar(value='Close')
         self.applyClose_Button.configure(
-            style="Button2b.TButton",
-            text='Close',
-            textvariable=self.closeApply_Button_VAR,
-            width=10)
+            style="Button2b.TButton", text='Close', width=10)
         self.applyClose_Tooltip = Tooltip(self.applyClose_Button)
         self.applyClose_Tooltip.configure(
             padx=8,
@@ -496,3 +462,8 @@ class frequencySpectrumUI(tk.Toplevel):
     def cancel_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = frequencySpectrumUI(root)
+    root.mainloop()

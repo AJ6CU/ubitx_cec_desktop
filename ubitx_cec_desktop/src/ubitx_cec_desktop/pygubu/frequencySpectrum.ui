@@ -139,7 +139,6 @@
                     <property name="showvalue">false</property>
                     <property name="sliderlength">50</property>
                     <property name="to">119</property>
-                    <property name="variable">string:frequencyTuning_VAR</property>
                     <property name="width">30</property>
                     <bind sequence="&lt;ButtonPress-1&gt;" handler="frequencyTuningPress_CB" add="True" />
                     <bind sequence="&lt;ButtonRelease-1&gt;" handler="frequencyTuningRelease_CB" add="True" />
@@ -166,7 +165,6 @@
                         <property name="foreground">black</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">0</property>
-                        <property name="textvariable">string:startFrequency_VAR</property>
                         <layout manager="pack">
                           <property name="side">left</property>
                         </layout>
@@ -177,7 +175,6 @@
                         <property name="foreground">black</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">120000</property>
-                        <property name="textvariable">string:stopFrequency_VAR</property>
                         <layout manager="pack">
                           <property name="side">right</property>
                         </layout>
@@ -276,7 +273,6 @@
                     <child>
                       <object class="ttk.Menubutton" id="bandwidth_Menubutton" named="True">
                         <property name="style">Heading0.TMenubutton</property>
-                        <property name="textvariable">string:bandwidthSelected_VAR</property>
                         <property name="width">8</property>
                         <layout manager="grid">
                           <property name="padx">0 20</property>
@@ -333,7 +329,6 @@
                     <child>
                       <object class="ttk.Menubutton" id="repeat_Menubutton" named="True">
                         <property name="style">Heading0.TMenubutton</property>
-                        <property name="textvariable">string:repeat_VAR</property>
                         <property name="width">3</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -424,7 +419,7 @@
                         <property name="anchor">e</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">1000</property>
-                        <property name="textvariable">string:calculatedSampleSize_VAR</property>
+                        <property name="width">5</property>
                         <layout manager="grid">
                           <property name="column">0</property>
                           <property name="row">3</property>
@@ -436,7 +431,7 @@
                         <property name="anchor">e</property>
                         <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">10</property>
-                        <property name="textvariable">string:remainingCount_VAR</property>
+                        <property name="width">3</property>
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="row">3</property>
@@ -477,7 +472,6 @@
                   <object class="ttk.Label" id="currentFrequency_Label" named="True">
                     <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">0</property>
-                    <property name="textvariable">string:currentFrequency_VAR</property>
                     <layout manager="pack">
                       <property name="padx">10</property>
                       <property name="side">left</property>
@@ -506,7 +500,6 @@
                 <property name="command" type="command" cbtype="simple">startSpectrum_CB</property>
                 <property name="style">Button2b.TButton</property>
                 <property name="text" translatable="yes">Scan</property>
-                <property name="textvariable">string:startStopSpectrum_VAR</property>
                 <property name="width">10</property>
                 <layout manager="grid">
                   <property name="padx">0 15</property>
@@ -548,7 +541,6 @@
                 <property name="command" type="command" cbtype="simple">applyClose_CB</property>
                 <property name="style">Button2b.TButton</property>
                 <property name="text" translatable="yes">Close</property>
-                <property name="textvariable">string:closeApply_Button_VAR</property>
                 <property name="width">10</property>
                 <layout manager="grid">
                   <property name="column">2</property>

@@ -1469,7 +1469,6 @@ class mainScreen(baseui.mainScreenUI):
     #
     def vc_UX_Set_Primary_VFO_Frequency(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        print("updating set frequency to ", value)
         self.theVFO_Object.setPrimaryVFO(value)
 
         if self.theSDR != None:
@@ -1516,15 +1515,12 @@ class mainScreen(baseui.mainScreenUI):
             return  # ignore the VFO A command during scanning as it can be out of order
 
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        print("in vfo-A updating vfo frequency to ", value)
 
         # if (self.vfo_VAR.get()== self.VFO_A):       #update displayed frequency
         if (self.vfo_Button['text'] == self.VFO_A):  # update displayed frequency
-            print("updated vfoa")
             self.theVFO_Object.setPrimaryVFO(value)         #MJH dont we need to update vfoa and vfob directly
 
         else:
-            print("updated vfob")
             self.theVFO_Object.setSecondaryVFO(value)
 
 
@@ -1562,14 +1558,10 @@ class mainScreen(baseui.mainScreenUI):
 
         value = self.extractValue(buffer, 10, len(buffer) - 3)
 
-        print("in vfo-B updating vfo frequency to ", value)
-
 
         if (self.vfo_Button['text'] == self.VFO_B):       #update displayed frequency
-            print("vb_UX_Set_VFO_B_Frequency", value)
             self.theVFO_Object.setPrimaryVFO(value)
         else:
-            print("vb_UX_Set_VFO_A_Frequency", value)
             self.theVFO_Object.setSecondaryVFO(value)       #need formatted here too
 
     #

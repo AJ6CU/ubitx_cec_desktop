@@ -358,7 +358,6 @@ class theVFO(baseui.theVFOUI):
 
     def setPrimaryVFO(self, value):
         self.PrimaryVFO = int(value)
-        print("Primary VFO set to {}".format(self.PrimaryVFO))
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
     def setSecondaryVFO(self, value):
@@ -465,7 +464,6 @@ class theVFO(baseui.theVFOUI):
 
             self.digit_delimiter_primary_VFO_1M_Label['text'] = value
             self.digit_delimiter_primary_VFO_1k_Label['text'] = value
-            print("reformatVFO calling update display", self.RX_Freq_VFO_Label['text'], self.secondary_VFO_Label['text'] )
             self.update_VFO_Display(int(self.PrimaryVFO), self.TXfreqOffset)
 
 
@@ -585,7 +583,6 @@ class theVFO(baseui.theVFOUI):
         #   With offsets now correct, we can update the VFO display
         #
         # if not self.RITmode:
-        print("in set_CW_OffsetforTX callign update display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
         # self.updateVFO_Info("CW", switch)
@@ -603,8 +600,6 @@ class theVFO(baseui.theVFOUI):
 
                     sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset)
 
-                    # self._saveFreqOffset(True)
-                    print("in _CW calling update display")
 
                     self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
                 else:
@@ -698,7 +693,6 @@ class theVFO(baseui.theVFOUI):
                 self._RIT_ManageLabels(switch)
                 if self.TXfreqOffset != 0:
                     self._CW_ManageLabels("ON")
-        print("in _RIT callign update display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
 
@@ -722,9 +716,7 @@ class theVFO(baseui.theVFOUI):
 
 
     def _SPLIT(self, switch):
-        print("entering _SPLIT")
         if self.TXfreqOffset != 0 or self.RITmode:
-            print("complex split")
             if self.RITmode:  # In RIT turning on/off SPLIT
                 if switch == "ON":
                     print("Error, Split being turned on and RIT still active")
@@ -766,7 +758,6 @@ class theVFO(baseui.theVFOUI):
                     self._RIT_ManageLabels("ON")
 
         else:  # Simple SPlIT mode on and off
-            print("simple slit")
             if switch == "ON":
                 self.SPLITmode = True
 
@@ -778,7 +769,6 @@ class theVFO(baseui.theVFOUI):
                     f1 = self.intDisplayedPrimaryVFO
                     f2 = self.PrimaryVFO
 
-                    print("copying a to b, f1,f2", f1, f2)
 
                     m = Text_To_ModeNum[self.mainWindow.mode_select_Menubutton['text']]
                     self.theRadio.Toggle_VFO()
@@ -793,14 +783,12 @@ class theVFO(baseui.theVFOUI):
 
 
             else:  # Exiting Split mode, must unwind
-                print("exiting split mode")
                 self.SPLITmode = False  # Saves whether SPLIT mode is on or off
                 self._SPLIT_ManageLabels(switch)
                 self.CW_VFOA_Offset_On = True
                 self.CW_VFOAUX_Offset_On = True
                 if self.TXfreqOffset != 0:
                     self._CW_ManageLabels("ON")
-        print("in _split, calling update_VFO Display")
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
 
@@ -841,8 +829,7 @@ class theVFO(baseui.theVFOUI):
 
 
         paddedVFO = str(self.intDisplayedPrimaryVFO).rjust(8)
-        print("in updated_VFO display, in first then string", self.intDisplayedPrimaryVFO, type(self.intDisplayedPrimaryVFO),
-                paddedVFO, type(paddedVFO))
+
         self.strDisplayedPrimaryVFO = gv.formatFrequency(paddedVFO)
 
         self.digit0_primary_VFO_Label['text'] = paddedVFO[7]

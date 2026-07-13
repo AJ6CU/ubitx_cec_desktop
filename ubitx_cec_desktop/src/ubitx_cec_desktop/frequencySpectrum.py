@@ -11,6 +11,7 @@ import frequencySpectrumui as baseui
 
 from barPlotter import barPlotter
 import globalvars as gv
+import tkinter as tk
 
 
 
@@ -89,6 +90,12 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.grab_set()
         self.transient(self.master)
 
+        gv.make_widget_variable(self, "bandwidthSelected", self.bandwidth_Menubutton)
+        gv.make_widget_variable(self, "repeat", self.repeat_Menubutton)
+
+        self.frequencyTuning_VAR = tk.StringVar(master = self.frequencyTuning_Scale)
+        self.frequencyTuning_Scale.configure(variable=self.frequencyTuning_VAR)
+
         self.repeat_VAR.set('10')                       # defaults to run the scan 10 times
 
         # Update bandwidth to use selected delimiter
@@ -99,14 +106,14 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.bandwidthSelected_VAR.set(self.bandwidthValues['240k'])
 
         self.frequencyTuning_VAR.set(60)                                                # Set scrollbar to middle
-        self.currentFrequency_VAR.set(gv.formatVFO(str((self.lastCenterFrequency)) ) )  # Set frequency
+        self.currentFrequency_Label['text'] = gv.formatVFO(str((self.lastCenterFrequency)) )  # Set frequency
         #
         #   Create two plotter objects. Top one is for average signal strength. Bottom is for Peak signal strength
         #
         self.plotterAvg = barPlotter(self, self.frequencyPlotCanvas, self.MaxADCCount, self.FREQ_Y_MAX)
         self.plotterPeak = barPlotter(self, self.waterfall_Canvas, self.MaxADCCount, self.FREQ_Y_MAX, barColor="red")
 
-        self.remainingCount_VAR.set(self.repeat_VAR.get())              # Set remaining count to current count
+        self.remainingCount_Label['text'] = self.repeat_VAR.get()             # Set remaining count to current count
         self.updateScanParameters()                                     # Can now format Frequency graphs
 
         self.checkForFrequencyChange()              # kick off process that will check on frequency change by knob
@@ -134,17 +141,17 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         # print(self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
         self.bandwidth = int(self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
-        self.calculatedSampleSize_VAR.set(int(self.bandwidth / self.MaxADCCount) )
+        self.calculatedSampleSize_Label['text'] = int(self.bandwidth / self.MaxADCCount)
 
-        self.startFrequency=gv.roundToNearest((self.centerFrequency - self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
-        self.startFrequency_VAR.set(gv.formatVFO(str(self.startFrequency)))
+        self.startFrequency=gv.roundToNearest((self.centerFrequency - self.bandwidth/2),int(self.calculatedSampleSize_Label['text']))
+        self.startFrequency_Label['text'] = gv.formatVFO(str(self.startFrequency))
 
-        self.stopFrequency = gv.roundToNearest((self.centerFrequency - int(self.calculatedSampleSize_VAR.get()) + self.bandwidth/2),int(self.calculatedSampleSize_VAR.get()))
-        self.stopFrequency_VAR.set(gv.formatVFO(str(self.stopFrequency)))
+        self.stopFrequency = gv.roundToNearest((self.centerFrequency - int(self.calculatedSampleSize_Label['text']) + self.bandwidth/2),int(self.calculatedSampleSize_Label['text']))
+        self.endFrequency_Label['text'] = gv.formatVFO(str(self.stopFrequency))
 
-        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get()), 0, self.MaxADCCount, round(int(self.calculatedSampleSize_VAR.get())/20))
+        self.mainWindow.theRadio.updateFrequencySpectrumOptions(int(self.repeat_VAR.get()), 0, self.MaxADCCount, round(int(self.calculatedSampleSize_Label['text'])/20))
 
-        # print("finished updating scan parameters", round(int(self.calculatedSampleSize_VAR.get())/20))
+        # print("finished updating scan parameters", round(int(self.calculatedSampleSize_Label['text'])/20))
 
 
     def updatePeak(self,buffer):
@@ -156,7 +163,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
     def updateAverage(self,buffer):
         byteBuffer =bytearray.fromhex(buffer)
-        valueCount = 1+int(self.repeat_VAR.get()) - int(self.remainingCount_VAR.get())
+        valueCount = 1+int(self.repeat_VAR.get()) - int(self.remainingCount_Label['text'])
 
         for x, y in enumerate(byteBuffer):
 
@@ -177,10 +184,10 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.updatePeak(buffer)             # Process buffer to look for a higher peak
 
 
-        self.remainingCount_VAR.set(str(int(self.remainingCount_VAR.get()) - 1))        # reduce the count remaining
+        self.remainingCount_Label['text'] = str(int(self.remainingCount_Label['text']) - 1)        # reduce the count remaining
 
 
-        if int(self.remainingCount_VAR.get())==0:               #   if zero remaining, then we can plot average and peak
+        if int(self.remainingCount_Label['text'])==0:               #   if zero remaining, then we can plot average and peak
 
             self.plotterPeak.process_Data(self.peakBuffer)
             self.plotterAvg.process_Data(self.averageBuffer)
@@ -214,9 +221,9 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         barPos = self.calculateBarPosition()
 
-        self.centerFrequency =  self.startFrequency + (int(self.calculatedSampleSize_VAR.get())*barPos)
+        self.centerFrequency =  self.startFrequency + (int(self.calculatedSampleSize_Label['text'])*barPos)
 
-        self.currentFrequency_VAR.set(gv.formatVFO(str(self.centerFrequency)))
+        self.currentFrequency_Label['text'] = gv.formatVFO(str(self.centerFrequency))
     #
     #   This called when value changes on scale
     #   TODO needs to avoid mutiple executiong of updateCurrentFrequency and updateTuningLine - probably a performance
@@ -250,31 +257,31 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         #   Changing the "repeat" count results in the update of number of scans remaining
         #
-        self.remainingCount_VAR.set(self.repeat_VAR.get())
+        self.remainingCount_Label['text'] = self.repeat_VAR.get()
 
     def select_Repeat_1x_CB(self):
         self.repeat_VAR.set('1')
-        self.remainingCount_VAR.set('1')
+        self.remainingCount_Label['text'] = '1'
 
     def select_Repeat_5x_CB(self):
         self.repeat_VAR.set('5')
-        self.remainingCount_VAR.set('5')
+        self.remainingCount_Label['text'] = '5'
 
     def select_Repeat_10x_CB(self):
         self.repeat_VAR.set('10')
-        self.remainingCount_VAR.set('10')
+        self.remainingCount_Label['text'] = '10'
 
     def select_Repeat_15x_CB(self):
         self.repeat_VAR.set('15')
-        self.remainingCount_VAR.set('15')
+        self.remainingCount_Label['text'] = '15'
 
     def select_Repeat_20x_CB(self):
         self.repeat_VAR.set('20')
-        self.remainingCount_VAR.set('20')
+        self.remainingCount_Label['text'] = '20'
 
     def select_Repeat_50x_CB(self):
         self.repeat_VAR.set('50')
-        self.remainingCount_VAR.set('50')
+        self.remainingCount_Label['text'] = '50'
 
 
     #
@@ -311,7 +318,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
 
         self.lastCenterFrequency = self.centerFrequency
-        self.centerFrequency = int(gv.unformatFrequency(self.currentFrequency_VAR.get()))
+        self.centerFrequency = int(gv.unformatFrequency(self.currentFrequency_Label['text']))
         self.mainWindow.theRadio.Set_New_Frequency(self.centerFrequency)
         self.frequencyTuning_VAR.set(60)
         self.updateScanParameters()
@@ -351,9 +358,9 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.frequencyTuning_Scale.configure(state=status)
 
         if self.spectrumScanning:
-            self.startStopSpectrum_VAR.set("Running")
+            self.startStop_Button['text'] = "Running"
         else:
-            self.startStopSpectrum_VAR.set("Scan")
+            self.startStop_Button['text'] = "Scan"
 
 
 
@@ -367,7 +374,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
         self.spectrumScanning = True
 
-        self.remainingCount_VAR.set(int(self.repeat_VAR.get()))
+        self.remainingCount_Label['text'] = int(self.repeat_VAR.get())
         self.parameterStatus("disabled")
         self.runSpectrumScan()
 
@@ -416,14 +423,14 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
     #
 
     def checkForFrequencyChange(self):
-        if (self.mainWindow.theVFO_Object.getIntPrimaryVFO() != int(gv.unformatFrequency(self.currentFrequency_VAR.get()))) and (self.frequencyScrolling == False):
+        if (self.mainWindow.theVFO_Object.getIntPrimaryVFO() != int(gv.unformatFrequency(self.currentFrequency_Label['text']))) and (self.frequencyScrolling == False):
             self.lastCenterFrequency = self.centerFrequency
             self.centerFrequency = self.mainWindow.theVFO_Object.getIntPrimaryVFO()
-            self.currentFrequency_VAR.set(gv.formatVFO(str(self.centerFrequency)))
+            self.currentFrequency_Label['text'] = gv.formatVFO(str(self.centerFrequency))
             #
             # Calculate new tuning bar position
             #
-            barPos = int((self.centerFrequency - self.startFrequency)/int(self.calculatedSampleSize_VAR.get()))
+            barPos = int((self.centerFrequency - self.startFrequency)/int(self.calculatedSampleSize_Label['text']))
             self.frequencyTuning_VAR.set(barPos)
             self.updateTuningLine()
 
