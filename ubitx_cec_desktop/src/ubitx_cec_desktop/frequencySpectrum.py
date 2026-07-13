@@ -139,7 +139,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         #
         #   When the bandwidth is changed, this routine is called to re-establish the scanning
         #
-        # print(self.bandwidthSelected_VAR.get(),self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
+
         self.bandwidth = int(self.bandwidthSelected_VAR.get().replace(",","").replace(".",""))
         self.calculatedSampleSize_Label['text'] = int(self.bandwidth / self.MaxADCCount)
 
@@ -336,6 +336,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
         self.reinitializeValues()       # set peak and average values back to zero
         self.plotterAvg.clearCanvas()   # clear the canvases
         self.plotterPeak.clearCanvas()
+        self.updateScanParameters()
         self.mainWindow.theRadio.startFrequencySpectrumScan(self.startFrequency, int(self.repeat_VAR.get()))
 
 
@@ -374,7 +375,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
         self.spectrumScanning = True
 
-        self.remainingCount_Label['text'] = int(self.repeat_VAR.get())
+        self.remainingCount_Label['text'] = self.repeat_VAR.get()
         self.parameterStatus("disabled")
         self.runSpectrumScan()
 
