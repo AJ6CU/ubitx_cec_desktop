@@ -395,7 +395,6 @@
                     <property name="style">Heading2bi.TLabel</property>
                     <property name="text" translatable="yes">       
         </property>
-                    <property name="textvariable">string:Tx_Freq_Alert_VAR</property>
                     <property name="width">8</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
@@ -442,8 +441,7 @@
                 <property name="anchor">e</property>
                 <property name="style">Heading2bi.TLabel</property>
                 <property name="text" translatable="yes">RX Freq:</property>
-                <property name="textvariable">string:RX_Freq_VAR</property>
-                <property name="width">13</property>
+                <property name="width">15</property>
                 <layout manager="pack">
                   <property name="side">left</property>
                 </layout>
@@ -453,7 +451,6 @@
               <object class="ttk.Label" id="RX_Freq_VFO_Label" named="True">
                 <property name="style">Heading2bi.TLabel</property>
                 <property name="text" translatable="yes">99.999.999</property>
-                <property name="textvariable">string:RX_VFO_VAR</property>
                 <property name="width">11</property>
                 <layout manager="pack">
                   <property name="padx">10 0</property>
@@ -490,7 +487,7 @@
               <property name="side">left</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="split_TX_Labrl" named="True">
+              <object class="ttk.Label" id="split_TX_Label" named="True">
                 <property name="style">Heading2bi.TLabel</property>
                 <property name="text" translatable="yes">       </property>
                 <property name="textvariable">string:split_TX_VAR</property>
@@ -507,7 +504,6 @@
               <object class="ttk.Label" id="secondary_VFO_Label" named="True">
                 <property name="style">Heading1Fixed.TLabel</property>
                 <property name="text" translatable="yes">99.999.999</property>
-                <property name="textvariable">string:secondary_VFO_Formatted_VAR</property>
                 <property name="width">10</property>
                 <layout manager="pack">
                   <property name="anchor">nw</property>
@@ -528,7 +524,6 @@
               <object class="ttk.Label" id="secondary_Mode_Label" named="True">
                 <property name="style">Heading1.TLabel</property>
                 <property name="text" translatable="yes">CWL</property>
-                <property name="textvariable">string:secondary_Mode_VAR</property>
                 <layout manager="pack">
                   <property name="anchor">ne</property>
                   <property name="padx">5 0</property>

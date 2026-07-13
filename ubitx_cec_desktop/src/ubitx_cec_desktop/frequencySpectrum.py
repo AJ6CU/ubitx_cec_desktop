@@ -93,7 +93,7 @@ class frequencySpectrum(baseui.frequencySpectrumUI):
 
         # Update bandwidth to use selected delimiter
         for key, value in self.bandwidthValues.items():
-            self.bandwidthValues[key] = value.replace(',', gv.NUMBER_DELIMITER)
+            self.bandwidthValues[key] = value.replace(',', gv.config.get_NUMBER_DELIMITER())
             self.bandwidth_Menu.entryconfigure(value, label=self.bandwidthValues[key])
 
         self.bandwidthSelected_VAR.set(self.bandwidthValues['240k'])

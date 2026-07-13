@@ -356,10 +356,10 @@ class theVFO(baseui.theVFOUI):
 
     def setSecondaryVFO(self, value):
         self.SecondaryVFO = int(value)
-        self.secondary_VFO_Formatted_VAR.set(gv.formatFrequency(self.SecondaryVFO, self.TXfreqOffset))
+        self.secondary_VFO_Label['text'] = gv.formatFrequency(self.SecondaryVFO, self.TXfreqOffset)
 
     def setSecondaryMode(self, mode):
-        self.secondary_Mode_VAR.set(mode)
+        self.secondary_Mode_Label['text'] = mode
 
     def getCurrentVFO_Tuning_Rate(self):
         return self.currentVFO_Tuning_Rate
@@ -367,10 +367,10 @@ class theVFO(baseui.theVFOUI):
     def toggleVFO(self):
 
         saveSecondary_VFO = self.secondary_VFO
-        saveSecondary_Mode = self.secondary_Mode_VAR.get()
+        saveSecondary_Mode = self.secondary_Mode_Label['text']
 
-        self.secondary_VFO_Formatted_VAR.set(gv.formatFrequency(self.PrimaryVFO))
-        self.secondary_Mode_VAR.set(self.mainWindow.mode_select_Menubutton['text'])
+        self.secondary_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO)
+        self.secondary_Mode_Label['text'] = self.mainWindow.mode_select_Menubutton['text']
 
         self.setPrimaryVFO(saveSecondary_VFO)
 
@@ -453,8 +453,8 @@ class theVFO(baseui.theVFOUI):
             else:
                 old_value = ","
 
-            self.RX_VFO_VAR.set(self.RX_VFO_VAR.get().replace(old_value,value))
-            self.secondary_VFO_Formatted_VAR.set(self.secondary_VFO_Formatted_VAR.get().replace(old_value,value))
+            self.RX_Freq_VFO_Label['text'] = self.RX_Freq_VFO_Label['text'].replace(old_value,value)
+            self.secondary_VFO_Label['text'] = self.secondary_VFO_Label['text'].replace(old_value,value)
 
             self.digit_delimiter_primary_VFO_1M_Label['text'] = value
             self.digit_delimiter_primary_VFO_1k_Label['text'] = value
@@ -592,7 +592,7 @@ class theVFO(baseui.theVFOUI):
                 if switch == "ON":
                     # Need to adjust the secondary info TX to reflect new offset
 
-                    self.RX_VFO_VAR.set(gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset))
+                    sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset)
 
                     # self._saveFreqOffset(True)
 
@@ -601,7 +601,7 @@ class theVFO(baseui.theVFOUI):
                     #
                     #   Need to update Secondary VFO field since offset has changed
                     #
-                    self.RX_VFO_VAR.set(gv.formatFrequency(self.intDisplayedPrimaryVFO))
+                    self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.intDisplayedPrimaryVFO)
 
             if self.SPLITmode:
                 # offset handled by copy option
@@ -615,15 +615,15 @@ class theVFO(baseui.theVFOUI):
 
     def _CW_ManageLabels(self,switch):
         if switch == "ON":
-            self.Tx_Freq_Alert_VAR.set("TX Freq:")
-            self.RX_Freq_VAR.set("RX Freq:")
+            self.Tx_Freq_Alert_Label['text'] = "TX Freq:"
+            self.RX_Freq_Label['text'] = "RX Freq:"
             self.RX_VFO_Visability(True)  # make the RX frequency frame visible
             #   Note:
             #   Dont need to set the secondary vfo info field because
             #   update_VFO_Display does that automatically except when RIT
             #   is on
         else:
-            self.Tx_Freq_Alert_VAR.set("       ")
+            self.Tx_Freq_Alert_Label['text'] = "       "
             self.RX_VFO_Visability(False)  # Turn off the RX frequency window
 
 
@@ -634,7 +634,7 @@ class theVFO(baseui.theVFOUI):
                     self.RITmode = True  # RIT is being turned on
                     self._RIT_ManageLabels(switch)
 
-                    self.RX_VFO_VAR.set(gv.formatFrequency(self.intDisplayedPrimaryVFO))
+                    sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.intDisplayedPrimaryVFO)
 
                 else:
                     self.RITmode = False
@@ -650,7 +650,7 @@ class theVFO(baseui.theVFOUI):
                     #   The current VFO is the TX frequency (VFO+CW offset). Should put the TX (offset TX) in lower
                     #   right INFO area.
                     #
-                    self.RX_VFO_VAR.set(gv.formatFrequency(self.PrimaryVFO + self.TXfreqOffset))
+                    self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO + self.TXfreqOffset)
 
                     #
                     #   Need to turn CW offset off since we dont want RIT RX on main VFO offset
@@ -677,7 +677,7 @@ class theVFO(baseui.theVFOUI):
                 #   already in SPLIT. In both cases, the frequency displayed in the lower right
                 #   Is the same as the VFO. So just assign it now
                 #
-                self.RX_VFO_VAR.set(gv.formatFrequency(self.intDisplayedPrimaryVFO))
+                self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.intDisplayedPrimaryVFO)
                 self._RIT_ManageLabels(switch)
 
 
@@ -694,14 +694,14 @@ class theVFO(baseui.theVFOUI):
 
     def _RIT_ManageLabels(self, switch):
         if switch == "ON":
-            self.Tx_Freq_Alert_VAR.set("RIT\nRX Freq:")  # Set label to left of main VFO
+            self.Tx_Freq_Alert_Label['text'] = "RIT\nRX Freq:"  # Set label to left of main VFO
             if self.SPLITmode:
-                self.RX_Freq_VAR.set("RIT Base RX Freq:")
+                self.RX_Freq_Label['text'] = "RIT Base RX Freq:"
             else:
-                self.RX_Freq_VAR.set("RIT TX Freq:")
+                self.RX_Freq_Label['text'] = "RIT TX Freq:"
             self.RX_VFO_Visability(True)
         else:
-            self.Tx_Freq_Alert_VAR.set("        ")
+            self.Tx_Freq_Alert_Label['text'] = "        "
             self.RX_VFO_Visability(False)  # Turn off the RX frequency window
 
 
@@ -787,14 +787,14 @@ class theVFO(baseui.theVFOUI):
     def _SPLIT_ManageLabels(self, switch):
 
         if switch == "ON":                  #Going into Split mode
-            self.Tx_Freq_Alert_VAR.set("SPLT RX")
-            self.split_TX_VAR.set("SPLT TX")
+            self.Tx_Freq_Alert_Label['text'] = "SPLT RX"
+            self.split_TX_Label['text'] = "SPLT TX"
             self.RX_VFO_Visability(False)  # make the RX frequency frame visible
 
         #
         else:                               #Exiting Split mode, must unwind
-            self.Tx_Freq_Alert_VAR.set("       ")
-            self.split_TX_VAR.set("       ")
+            self.Tx_Freq_Alert_Label['text'] = "       "
+            self.split_TX_Label['text'] = "       "
             self.RX_VFO_Visability(False)  # Turn off the RX frequency window
 
 
@@ -833,7 +833,7 @@ class theVFO(baseui.theVFOUI):
         self.digit7_primary_VFO_Label['text'] = paddedVFO[0]
 
         if self.CW_VFOAUX_Offset_On:
-            self.RX_VFO_VAR.set(gv.formatFrequency(vfo))     # Update RX freq reminder displayed if TX Freq displayed
+            self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(vfo)   # Update RX freq reminder displayed if TX Freq displayed
 
 
     def setRITmode(self, RITswitch):

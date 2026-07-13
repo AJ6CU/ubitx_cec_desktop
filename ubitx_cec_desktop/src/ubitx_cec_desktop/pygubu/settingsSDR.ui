@@ -194,7 +194,6 @@
                         <property name="onvalue">True</property>
                         <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">Autostart</property>
-                        <property name="variable">string:autostartSDR_VAR</property>
                         <layout manager="grid">
                           <property name="column">2</property>
                           <property name="padx">75 0</property>

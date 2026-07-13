@@ -1576,7 +1576,7 @@ class mainScreen(baseui.mainScreenUI):
         if (self.vfo_Button['text'] == self.VFO_B):       #update displayed frequency
             self.mode_select_Menubutton['text'] = EEPROM.modeNum_To_TextDict[value]
         else:
-            self.theVFO_Object.secondary_Mode_VAR.set(EEPROM.modeNum_To_TextDict[value])
+            self.theVFO_Object.secondary_Mode_Label['text'] = EEPROM.modeNum_To_TextDict[value]
 
 
     #
