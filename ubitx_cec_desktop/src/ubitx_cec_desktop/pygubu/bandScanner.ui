@@ -113,7 +113,6 @@
                     <property name="showvalue">false</property>
                     <property name="sliderlength">50</property>
                     <property name="to">119</property>
-                    <property name="variable">string:frequencyTuning_VAR</property>
                     <property name="width">30</property>
                     <layout manager="pack">
                       <property name="anchor">w</property>
@@ -177,7 +176,6 @@
                     <child>
                       <object class="ttk.Label" id="band0Frequency_Label" named="True">
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="textvariable">string:band0Frequency_VAR</property>
                         <property name="width">10</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -219,7 +217,6 @@
                     <child>
                       <object class="ttk.Label" id="band1Frequency_Label" named="True">
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="textvariable">string:band1Frequency_VAR</property>
                         <property name="width">10</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -261,7 +258,6 @@
                     <child>
                       <object class="ttk.Label" id="band2Frequency_Label" named="True">
                         <property name="style">Heading2b.TLabel</property>
-                        <property name="textvariable">string:band2Frequency_VAR</property>
                         <property name="width">10</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -336,7 +332,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">160M</property>
-                        <property name="variable">string:Band160m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">0</property>
                           <property name="row">0</property>
@@ -350,7 +345,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">80M</property>
-                        <property name="variable">string:Band80m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">0</property>
                           <property name="pady">15 0</property>
@@ -366,7 +360,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">40M</property>
-                        <property name="variable">string:Band40m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">0</property>
                           <property name="pady">15 10</property>
@@ -382,7 +375,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">30M</property>
-                        <property name="variable">string:Band30m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="padx">10 0</property>
@@ -398,7 +390,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">20M</property>
-                        <property name="variable">string:Band20m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="padx">10 0</property>
@@ -415,7 +406,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">17M</property>
-                        <property name="variable">string:Band17m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">1</property>
                           <property name="padx">10 0</property>
@@ -432,7 +422,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">15M</property>
-                        <property name="variable">string:Band15m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">2</property>
                           <property name="padx">10 0</property>
@@ -448,7 +437,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">12M</property>
-                        <property name="variable">string:Band12m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">2</property>
                           <property name="padx">10 0</property>
@@ -465,7 +453,6 @@
                         <property name="onvalue">1</property>
                         <property name="style">Checkbox2b.TCheckbutton</property>
                         <property name="text" translatable="yes">10M</property>
-                        <property name="variable">string:Band10m_Checked_VAR</property>
                         <layout manager="grid">
                           <property name="column">2</property>
                           <property name="padx">10 0</property>
@@ -509,7 +496,6 @@
                 <property name="state">disabled</property>
                 <property name="style">Button2b.TButton</property>
                 <property name="text" translatable="yes">Scan</property>
-                <property name="textvariable">string:scan_Button_VAR</property>
                 <property name="width">10</property>
                 <layout manager="pack">
                   <property name="padx">0 20</property>

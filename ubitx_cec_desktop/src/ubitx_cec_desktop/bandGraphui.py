@@ -68,14 +68,12 @@ class bandGraphUI(ttk.Labelframe):
         self.bandPlot_Canvas.bind("<Configure>", self.resizeCanvas_CB, add="+")
         self.bandStart_Scale = ttk.Scale(
             self.bandGraph_Frame, name="bandstart_scale")
-        self.band0Start_VAR = tk.StringVar()
         self.bandStart_Scale.configure(
             from_=0,
             orient="horizontal",
             state="disabled",
             style="Custom.Horizontal.TScale",
-            to=119,
-            variable=self.band0Start_VAR)
+            to=119)
         self.bandScale_Tooltip = Tooltip(self.bandStart_Scale)
         self.bandScale_Tooltip.configure(
             padx=8,
@@ -88,17 +86,11 @@ class bandGraphUI(ttk.Labelframe):
         self.scan_Frame.configure(height=200, style="Normal.TFrame", width=200)
         self.scanningRange_Label = ttk.Label(
             self.scan_Frame, name="scanningrange_label")
-        self.scanningRange_VAR = tk.StringVar()
-        self.scanningRange_Label.configure(
-            style="Heading4b.TLabel",
-            textvariable=self.scanningRange_VAR)
+        self.scanningRange_Label.configure(style="Heading4b.TLabel")
         self.scanningRange_Label.pack(side="left")
         self.bandRange_Label = ttk.Label(
             self.scan_Frame, name="bandrange_label")
-        self.bandRange_VAR = tk.StringVar()
-        self.bandRange_Label.configure(
-            style="Heading4b.TLabel",
-            textvariable=self.bandRange_VAR)
+        self.bandRange_Label.configure(style="Heading4b.TLabel")
         self.bandRange_Label.pack(side="right")
         self.scan_Frame.pack(expand=True, fill="x", side="top")
         self.bandGraph_Frame.pack(expand=True, fill="x", side="top")
@@ -114,3 +106,10 @@ class bandGraphUI(ttk.Labelframe):
 
     def bandStart_CB(self, scale_value):
         pass
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = bandGraphUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

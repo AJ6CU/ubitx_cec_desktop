@@ -97,6 +97,45 @@ class bandScanner(baseui.bandScannerUI):
         self.transient(self.master)
 
 
+        #
+        # Have to handle this manually because it is a "variable" and not "textvariable"
+        #
+
+
+        self.Band160m_Checked_VAR = tk.StringVar(master = self.Band160m)
+        self.Band160m.configure(variable=self.Band160m_Checked_VAR)
+
+        self.Band80m_Checked_VAR = tk.StringVar(master = self.Band80m)
+        self.Band80m.configure(variable=self.Band80m_Checked_VAR)
+
+        self.Band40m_Checked_VAR = tk.StringVar(master = self.Band40m)
+        self.Band40m.configure(variable=self.Band40m_Checked_VAR)
+
+        self.Band30m_Checked_VAR = tk.StringVar(master = self.Band30m)
+        self.Band30m.configure(variable=self.Band30m_Checked_VAR)
+
+        self.Band20m_Checked_VAR = tk.StringVar(master = self.Band20m)
+        self.Band20m.configure(variable=self.Band20m_Checked_VAR)
+
+        self.Band17m_Checked_VAR = tk.StringVar(master = self.Band17m)
+        self.Band17m.configure(variable=self.Band17m_Checked_VAR)
+
+        self.Band15m_Checked_VAR = tk.StringVar(master = self.Band15m)
+        self.Band15m.configure(variable=self.Band15m_Checked_VAR)
+
+        self.Band12m_Checked_VAR = tk.StringVar(master = self.Band12m)
+        self.Band12m.configure(variable=self.Band12m_Checked_VAR)
+
+        self.Band10m_Checked_VAR = tk.StringVar(master = self.Band10m)
+        self.Band10m.configure(variable=self.Band10m_Checked_VAR)
+
+
+        #
+        # Have to handle this manually because it is a "variable" and not "textvariable"
+        #
+        self.frequencyTuning_VAR = tk.StringVar(master=self.frequencyTuning_Scale)
+        self.frequencyTuning_Scale.configure(variable=self.frequencyTuning_VAR)
+
 
         self.frequencyTuning_VAR.set(0)                                                # Set scrollbar to middle
 
@@ -155,11 +194,11 @@ class bandScanner(baseui.bandScannerUI):
     #
     def setFrequency(self, i):
         f = gv.formatVFO(str(self.targetGraph[i].getFrequency(int(self.frequencyTuning_VAR.get()))))
-        getattr(self, "band" + str(i) + "Frequency_VAR").set(str(f))
+        getattr(self, "band" + str(i) + "Frequency_Label")['text'] = str(f)
         self.targetGraph[i].drawHighLightBars()
 
     def getFrequency(self, i):
-        f = gv.unformatFrequency(getattr(self, "band" + i + "Frequency_VAR").get())
+        f = gv.unformatFrequency(getattr(self, "band" + i + "Frequency_Label")['text'])
         return int(f)
 
 
@@ -213,7 +252,7 @@ class bandScanner(baseui.bandScannerUI):
             if self.targetGraph[i].get_bandID() == bandID:
                 self.targetGraph[i].clearCanvas("All")
                 self.targetGraph[i].deactivate()
-                getattr(self, "band" + str(i) + "Frequency_VAR").set("")
+                getattr(self, "band" + str(i) + "Frequency_Label")['text'] = ""
                 # print("before removal scanlist=", self.scanlist)
                 self.scanlist.remove(i)         # remove this band from scanable channels
                 # print("after removal scanlist=", self.scanlist)
@@ -372,9 +411,9 @@ class bandScanner(baseui.bandScannerUI):
         self.frequencyTuning_Scale.configure(state=status)
 
         if self.spectrumScanning:
-            self.scan_Button_VAR.set("Running")
+            self.scan_Button['text'] = "Running"
         else:
-            self.scan_Button_VAR.set("Scan")
+            self.scan_Button['text'] = "Scan"
 
 
     def close_CB(self, widget_id="cancel_Button"):

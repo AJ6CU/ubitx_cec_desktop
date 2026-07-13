@@ -9,6 +9,7 @@ UI source file: bandGraph.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import bandGraphui as baseui
+import globalvars as gv
 
 
 #
@@ -19,6 +20,15 @@ class bandGraph(baseui.bandGraphUI):
     def __init__(self, master=None,  **kw):
 
         super().__init__(master, **kw)
+        #
+        # Have to handle this manually because it is a "variable" and not "textvariable"
+        #
+        self.band0Start_VAR = tk.StringVar(master=self.bandStart_Scale)
+        self.bandStart_Scale.configure(variable=self.band0Start_VAR)
+
+        gv.make_widget_variable(self, "scanningRange", self.scanningRange_Label)
+        gv.make_widget_variable(self, "bandRange", self.bandRange_Label)
+
         # print("allocating a band")
         # self.bandScannerWindow = bandScannerWindow
     #

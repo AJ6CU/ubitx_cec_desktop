@@ -63,7 +63,6 @@
             <property name="state">disabled</property>
             <property name="style">Custom.Horizontal.TScale</property>
             <property name="to">119</property>
-            <property name="variable">string:band0Start_VAR</property>
             <layout manager="pack">
               <property name="expand">true</property>
               <property name="fill">x</property>
@@ -92,7 +91,6 @@
             <child>
               <object class="ttk.Label" id="scanningRange_Label" named="True">
                 <property name="style">Heading4b.TLabel</property>
-                <property name="textvariable">string:scanningRange_VAR</property>
                 <layout manager="pack">
                   <property name="side">left</property>
                 </layout>
@@ -101,7 +99,6 @@
             <child>
               <object class="ttk.Label" id="bandRange_Label" named="True">
                 <property name="style">Heading4b.TLabel</property>
-                <property name="textvariable">string:bandRange_VAR</property>
                 <layout manager="pack">
                   <property name="side">right</property>
                 </layout>
