@@ -53,6 +53,11 @@ class cwDecoder(baseui.cwDecoderUI):
         self.transient(self.master)
 
         # gv.trimAndLocateWindow(self.master, 0, 0)
+        self.frequencyDecodeScale_VAR = tk.StringVar(master = self.frequencyDecodeScale)
+        self.frequencyDecodeScale.configure(variable=self.frequencyDecodeScale_VAR)
+
+        self.frequencyPlotcwToneScale_VAR = tk.StringVar(master = self.frequencyPlotcwToneScale)
+        self.frequencyPlotcwToneScale.configure(variable=self.frequencyPlotcwToneScale_VAR)
 
 
         #
@@ -60,13 +65,13 @@ class cwDecoder(baseui.cwDecoderUI):
         #
 
         self.frequencyDecodeScale_VAR.set(str(self.mainWindow.frequencyDecodeScale))
-        self.frequencySigValue_VAR.set(str(self.mainWindow.frequencyDecodeScale*10))            # 2*10
+        self.frequencySigValueLabel['text'] = str(self.mainWindow.frequencyDecodeScale*10)           # 2*10
 
         self.frequencyPlotcwToneScale_VAR.set(self.mainWindow.frequencyPlotcwToneScale)
-        self.frequencyPlotcwToneValue_VAR.set(str(self.mainWindow.frequencyPlotcwToneValue))
+        self.frequencyPlotcwToneValueLabel['text'] = str(self.mainWindow.frequencyPlotcwToneValue)
 
-        self.frequencyHighValue_VAR.set('0')        # Reset min/max on entry
-        self.frequencyLowValue_VAR.set(self.frequencySigValue_VAR.get())
+        self.frequencyHighValueLabel['text'] = '0'       # Reset min/max on entry
+        self.frequencyLowValueLabel['text'] = self.frequencySigValueLabel['text']
 
         self.FFTSIZE = 63   # Maximum number of times that the ADC can be read.
                             # Appears to be a bug in the DSP code. Suppose to be 64 elements (0-63) but only
@@ -83,6 +88,8 @@ class cwDecoder(baseui.cwDecoderUI):
             self.enable_Frequency_Spectrum_CB()  # Start with the frequency scan
         else:
             self.enable_CW_Decode_CB()
+
+
 
 
 
@@ -107,7 +114,7 @@ class cwDecoder(baseui.cwDecoderUI):
 
         self.setcwDecodeState("normal")
         self.setFrequencySpectrumState("disabled")
-        value = int(self.frequencyPlotcwToneValue_VAR.get()) - 300
+        value = int(self.frequencyPlotcwToneValueLabel['text']) - 300
 
         # following code is just to encode the tone setting and the fact that it is a CW
         value = value // 50
@@ -144,33 +151,14 @@ class cwDecoder(baseui.cwDecoderUI):
         # Request DSP data stored in EEPROM
         self.mainWindow.theRadio.Req_DSP_EEPROM_Settings()
 
-
-    # def process_DSP_EEPROM_Data(self, buffer):
-    #     byteList = int(buffer).to_bytes(4,'little')
-    #     # print("process_DSP_Data", byteList)
-    #
-    #     if int(buffer) < 0xffffff:          # only a 3 hex byte number
-    #
-    #         print("eeprom values returned")
-    #         print("decodescale*10=", byteList[0])
-    #         print("useDSPFlag=", byteList[1])
-    #
-    #         self.frequencyDecodeScale_VAR.set(byteList[0]/10)
-    #         self.frequencySigValue_VAR.set(byteList[0])
-    #
-    #         if byteList[1] == 1:
-    #             self.mainWindow.UseDSP =  "True"
-    #         else:
-    #             self.mainWindow.UseDSP = "False"
-
     #
     #   Data processors
     #
     def process_Spectrum_Data(self, buffer):
         # print("buffer size=", len(buffer))
         self.plotter.process_Data(buffer)
-        self.frequencyLowValue_VAR.set(str( self.plotter.get_CurrentMin()))
-        self.frequencyHighValue_VAR.set(str( self.plotter.get_CurrentMax()))
+        self.frequencyLowValueLabel['text'] = str( self.plotter.get_CurrentMin())
+        self.frequencyHighValueLabel['text'] = str( self.plotter.get_CurrentMax())
 
     #
     #   Update bars attached to a scroll bar that helps identify target frequency
@@ -201,11 +189,11 @@ class cwDecoder(baseui.cwDecoderUI):
 
     def frequencyDecodeScale_CB(self, scale_value):
         # print("scale_value:", scale_value, type(scale_value))
-        self.frequencySigValue_VAR.set(str(int(scale_value)*10))
+        self.frequencySigValueLabel['text'] = str(int(scale_value)*10)
         self.mainWindow.theRadio.Set_Signal_Value(scale_value)
 
     def frequencyPlotcwToneScale_CB(self, scale_value):
-        self.frequencyPlotcwToneValue_VAR.set(str(((int(scale_value)*50)+300)))
+        self.frequencyPlotcwToneValueLabel['text'] = str(((int(scale_value)*50)+300))
         self.updateTargetFreqBars()
 
     def resetMinMax_CB(self):

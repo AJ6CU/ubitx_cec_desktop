@@ -108,7 +108,7 @@
                             <property name="sliderlength">50</property>
                             <property name="state">normal</property>
                             <property name="to">45</property>
-                            <property name="variable">string:frequencyPlotcwToneScale_VAR</property>
+                            <property name="variable">string:testvariable</property>
                             <property name="width">30</property>
                             <layout manager="pack">
                               <property name="expand">true</property>
@@ -162,7 +162,6 @@
                                 <property name="sliderlength">50</property>
                                 <property name="state">normal</property>
                                 <property name="to">0</property>
-                                <property name="variable">string:frequencyDecodeScale_VAR</property>
                                 <property name="width">30</property>
                                 <layout manager="pack">
                                   <property name="anchor">n</property>
@@ -199,7 +198,6 @@
                                     <property name="justify">right</property>
                                     <property name="style">Heading2b.TLabel</property>
                                     <property name="text" translatable="yes">0</property>
-                                    <property name="textvariable">string:frequencyHighValue_VAR</property>
                                     <property name="width">4</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -226,7 +224,6 @@ THR</property>
                                     <property name="anchor">e</property>
                                     <property name="style">Heading2b.TLabel</property>
                                     <property name="text" translatable="yes">20</property>
-                                    <property name="textvariable">string:frequencySigValue_VAR</property>
                                     <property name="width">4</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -253,7 +250,6 @@ THR</property>
                                     <property name="anchor">e</property>
                                     <property name="style">Heading2b.TLabel</property>
                                     <property name="text" translatable="yes">0</property>
-                                    <property name="textvariable">string:frequencyLowValue_VAR</property>
                                     <property name="width">4</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -281,7 +277,7 @@ THR</property>
                               <object class="ttk.Label" id="frequencyPlotcwToneValueLabel" named="True">
                                 <property name="style">Heading2b.TLabel</property>
                                 <property name="text" translatable="yes">800</property>
-                                <property name="textvariable">string:frequencyPlotcwToneValue_VAR</property>
+                                <property name="width">5</property>
                                 <layout manager="pack">
                                   <property name="padx">5</property>
                                   <property name="side">left</property>
