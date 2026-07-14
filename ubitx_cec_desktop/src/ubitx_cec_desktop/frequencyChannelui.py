@@ -56,24 +56,16 @@ class frequencyChannelUI(ttk.Frame):
 
         self.channel_Number_Label = ttk.Label(
             self, name="channel_number_label")
-        self.channel_Number_VAR = tk.StringVar()
         self.channel_Number_Label.configure(
-            anchor="e",
-            style="Heading1bi.TLabel",
-            textvariable=self.channel_Number_VAR,
-            width=3)
+            anchor="e", style="Heading1bi.TLabel", width=3)
         # First object created
         on_first_object_cb(self.channel_Number_Label)
 
         self.channel_Number_Label.grid(column=0, padx="0 5", row=0, sticky="w")
         self.channel_Select_Button = ttk.Button(
             self, name="channel_select_button")
-        self.channel_Select_VAR = tk.StringVar(value='Select')
         self.channel_Select_Button.configure(
-            style="Button1bARaised.TButton",
-            text='Select',
-            textvariable=self.channel_Select_VAR,
-            width=8)
+            style="Button1bARaised.TButton", text='Select', width=8)
         self.channel_Select_Button.grid(column=1, padx="5 0", row=0)
         self.channel_Select_Button.configure(command=self.channel_Select_CB)
         self.channel_Name_Entry = ttk.Entry(self, name="channel_name_entry")
@@ -96,12 +88,10 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Name_Entry.bind(
             "<Button>", self.channel_Label_Entered_CB, add="+")
         self.freq_Entry = ttk.Entry(self, name="freq_entry")
-        self.channel_Freq_VAR = tk.StringVar()
         self.freq_Entry.configure(
             font="{Arial} 20 {bold}",
             justify="right",
             style="Entry1b.TEntry",
-            textvariable=self.channel_Freq_VAR,
             validate="focusout",
             width=10)
         self.freq_Entry.grid(column=3, ipady=2, padx="5 0", row=0, sticky="w")
@@ -120,12 +110,8 @@ class frequencyChannelUI(ttk.Frame):
         self.dirtyChannel_Label.configure(style="GreenLED.TLabel", width=2)
         self.dirtyChannel_Label.grid(column=7, padx="10 5", row=0)
         self.mode_Menubutton = ttk.Menubutton(self, name="mode_menubutton")
-        self.channel_Mode_VAR = tk.StringVar(value=' ')
         self.mode_Menubutton.configure(
-            style="Heading1b.TMenubutton",
-            text=' ',
-            textvariable=self.channel_Mode_VAR,
-            width=5)
+            style="Heading1b.TMenubutton", text=' ', width=5)
         self.mode_Menu = tk.Menu(self.mode_Menubutton, name="mode_menu")
         self.mode_Menu.configure(tearoff=False)
         def DFT_cmd(itemid="DFT"): self.Channel_Mode_Changed_CB(itemid)
@@ -166,12 +152,8 @@ class frequencyChannelUI(ttk.Frame):
         self.mode_Menubutton.grid(column=4, padx="5 0", row=0)
         self.show_Label_Menubutton = ttk.Menubutton(
             self, name="show_label_menubutton")
-        self.channel_ShowLabel_VAR = tk.StringVar(value=' ')
         self.show_Label_Menubutton.configure(
-            style="Heading1b.TMenubutton",
-            text=' ',
-            textvariable=self.channel_ShowLabel_VAR,
-            width=5)
+            style="Heading1b.TMenubutton", text=' ', width=5)
         self.show_Label_Menu = tk.Menu(
             self.show_Label_Menubutton,
             name="show_label_menu")
@@ -193,12 +175,8 @@ class frequencyChannelUI(ttk.Frame):
         self.show_Label_Menubutton.grid(column=5, padx="5 0", row=0)
         self.scan_Set_Menubutton = ttk.Menubutton(
             self, name="scan_set_menubutton")
-        self.channel_ScanSet_VAR = tk.StringVar(value=' ')
         self.scan_Set_Menubutton.configure(
-            style="Heading1b.TMenubutton",
-            text=' ',
-            textvariable=self.channel_ScanSet_VAR,
-            width=5)
+            style="Heading1b.TMenubutton", text=' ', width=5)
         self.scan_Set_Menu = tk.Menu(
             self.scan_Set_Menubutton,
             name="scan_set_menu")
@@ -277,3 +255,9 @@ class frequencyChannelUI(ttk.Frame):
     def Channel_ScanSet_Changed_CB(self, itemid):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = frequencyChannelUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

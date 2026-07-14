@@ -82,30 +82,19 @@ class channelsUI(ttk.Labelframe):
         self.current_Channel = ttk.Label(
             self.display_Current_VFO_Frame,
             name="current_channel")
-        self.current_Channel_VAR = tk.StringVar(value='Not Saved')
         self.current_Channel.configure(
-            style="Heading2bi.TLabel",
-            text='Not Saved',
-            textvariable=self.current_Channel_VAR,
-            width=10)
+            style="Heading2bi.TLabel", text='Not Saved', width=10)
         self.current_Channel.pack(padx="5 0", side="left")
         self.current_VFO_Label = ttk.Label(
             self.display_Current_VFO_Frame,
             name="current_vfo_label")
-        self.current_VFO_VAR = tk.StringVar(value='99.999.99')
         self.current_VFO_Label.configure(
-            style="Heading2b.TLabel",
-            text='99.999.99',
-            textvariable=self.current_VFO_VAR)
+            style="Heading2b.TLabel", text='99.999.99')
         self.current_VFO_Label.pack(padx="10 0", side="left")
         self.current_Mode_Label = ttk.Label(
             self.display_Current_VFO_Frame,
             name="current_mode_label")
-        self.current_Mode_VAR = tk.StringVar(value='CWL')
-        self.current_Mode_Label.configure(
-            style="Heading2b.TLabel",
-            text='CWL',
-            textvariable=self.current_Mode_VAR)
+        self.current_Mode_Label.configure(style="Heading2b.TLabel", text='CWL')
         self.current_Mode_Label.pack(expand=False, padx="10 10", side="left")
         self.display_Current_VFO_Frame.pack(expand=True, fill="x", side="top")
         frame2 = ttk.Frame(frame1)
@@ -292,11 +281,9 @@ class channelsUI(ttk.Labelframe):
         self.VFOToChannel_Button.configure(command=self.VFOToChannel_CB)
         self.scan_Button = ttk.Button(
             self.channelEdit_Frame, name="scan_button")
-        self.scan_Channel_ButtonText_VAR = tk.StringVar(value='Run Scan')
         self.scan_Button.configure(
             style="Button2b.TButton",
             text='Run Scan',
-            textvariable=self.scan_Channel_ButtonText_VAR,
             width=14)
         self.scan_Button_tooltip = Tooltip(self.scan_Button)
         self.scan_Button_tooltip.configure(
@@ -383,11 +370,9 @@ class channelsUI(ttk.Labelframe):
             wraplength=300)
         self.bankName_Label.grid(column=2, pady="30 0", row=1)
         self.bankNameEntry = ttk.Entry(self.closingFrame, name="banknameentry")
-        self.bankName_VAR = tk.StringVar()
         self.bankNameEntry.configure(
             font="{Arial} 24 {}",
             style="Entry2b.TEntry",
-            textvariable=self.bankName_VAR,
             width=10)
         self.bankNameEntry.grid(column=3, pady="30 0", row=1)
         self.closingFrame.pack(pady="30 15", side="left")
@@ -410,11 +395,8 @@ class channelsUI(ttk.Labelframe):
             column=0, padx=5, pady=15, row=1, sticky="e")
         self.scan_Select_Channel_Menubutton = ttk.Menubutton(
             self.scanSettings_Frame, name="scan_select_channel_menubutton")
-        self.scan_Select_Channel_VAR = tk.StringVar(value='Select')
         self.scan_Select_Channel_Menubutton.configure(
-            style="Heading1b.TMenubutton",
-            text='Select',
-            textvariable=self.scan_Select_Channel_VAR)
+            style="Heading1b.TMenubutton", text='Select')
         self.scan_Select_Channel_Menu = tk.Menu(
             self.scan_Select_Channel_Menubutton,
             name="scan_select_channel_menu")
@@ -476,13 +458,11 @@ class channelsUI(ttk.Labelframe):
             column=0, padx="5 0", pady="10 0", row=2, sticky="e")
         self.Time_On_Freq_Spinbox = ttk.Spinbox(
             self.scanSettings_Frame, name="time_on_freq_spinbox")
-        self.Time_On_Freq_VAR = tk.StringVar()
         self.Time_On_Freq_Spinbox.configure(
             font="{Arial} 36 {}",
             from_=1,
             justify="right",
             style="Custom.TSpinbox",
-            textvariable=self.Time_On_Freq_VAR,
             to=20,
             width=2)
         self.Time_On_Freq_Spinbox.grid(
@@ -527,3 +507,9 @@ class channelsUI(ttk.Labelframe):
     def update_Time_On_Station_CB(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = channelsUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

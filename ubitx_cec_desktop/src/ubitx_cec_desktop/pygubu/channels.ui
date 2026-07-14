@@ -81,7 +81,6 @@
                   <object class="ttk.Label" id="current_Channel" named="True">
                     <property name="style">Heading2bi.TLabel</property>
                     <property name="text" translatable="yes">Not Saved</property>
-                    <property name="textvariable">string:current_Channel_VAR</property>
                     <property name="width">10</property>
                     <layout manager="pack">
                       <property name="padx">5 0</property>
@@ -93,7 +92,6 @@
                   <object class="ttk.Label" id="current_VFO_Label" named="True">
                     <property name="style">Heading2b.TLabel</property>
                     <property name="text" translatable="yes">99.999.99</property>
-                    <property name="textvariable">string:current_VFO_VAR</property>
                     <layout manager="pack">
                       <property name="padx">10 0</property>
                       <property name="side">left</property>
@@ -104,7 +102,6 @@
                   <object class="ttk.Label" id="current_Mode_Label" named="True">
                     <property name="style">Heading2b.TLabel</property>
                     <property name="text" translatable="yes">CWL</property>
-                    <property name="textvariable">string:current_Mode_VAR</property>
                     <layout manager="pack">
                       <property name="expand">false</property>
                       <property name="padx">10 10</property>
@@ -541,7 +538,6 @@ Set</property>
                         <property name="command" type="command" cbtype="simple">scan_Channel_CB</property>
                         <property name="style">Button2b.TButton</property>
                         <property name="text" translatable="yes">Run Scan</property>
-                        <property name="textvariable">string:scan_Channel_ButtonText_VAR</property>
                         <property name="width">14</property>
                         <layout manager="grid">
                           <property name="column">2</property>
@@ -696,7 +692,6 @@ Set</property>
                       <object class="ttk.Entry" id="bankNameEntry" named="True">
                         <property name="font">{Arial} 24 {}</property>
                         <property name="style">Entry2b.TEntry</property>
-                        <property name="textvariable">string:bankName_VAR</property>
                         <property name="width">10</property>
                         <layout manager="grid">
                           <property name="column">3</property>
@@ -744,7 +739,6 @@ Set</property>
                   <object class="ttk.Menubutton" id="scan_Select_Channel_Menubutton" named="True">
                     <property name="style">Heading1b.TMenubutton</property>
                     <property name="text" translatable="yes">Select</property>
-                    <property name="textvariable">string:scan_Select_Channel_VAR</property>
                     <layout manager="grid">
                       <property name="column">1</property>
                       <property name="row">1</property>
@@ -819,7 +813,6 @@ Set</property>
                     <property name="from_">1</property>
                     <property name="justify">right</property>
                     <property name="style">Custom.TSpinbox</property>
-                    <property name="textvariable">string:Time_On_Freq_VAR</property>
                     <property name="to">20</property>
                     <property name="width">2</property>
                     <layout manager="grid">

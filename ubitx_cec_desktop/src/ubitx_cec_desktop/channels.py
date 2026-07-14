@@ -43,6 +43,12 @@ class channels(baseui.channelsUI):
         #
         self.popup.protocol("WM_DELETE_WINDOW", self.close_Channel_CB)
         #
+        #   Attach variables
+        #
+        gv.make_widget_variable(self, "scan_Select_Channel", self.scan_Select_Channel_Menubutton)
+        gv.make_widget_variable(self, "Time_On_Freq", self.Time_On_Freq_Spinbox)
+        gv.make_widget_variable(self, "bankName", self.bankNameEntry)
+        #
         #   Channels could have been created using any frequency. Need to use
         #   the smallest preset to avoid frequency being truncated. So capture it,
         #   reset it and late we will reset it.
@@ -137,17 +143,17 @@ class channels(baseui.channelsUI):
         for child in channels.channelList:
             child.channel_Freq_VAR.set(child.channel_Freq_VAR.get().replace(prior_delimiter,new_delimiter))
 
-        self.current_VFO_VAR.set(self.current_VFO_VAR.get().replace(prior_delimiter,new_delimiter))
+        self.current_VFO_Label['text'] = self.current_VFO_Label['text'].replace(prior_delimiter,new_delimiter)
 
     #
     #   The following are just external visible methods to set/change various values
     #
 
     def update_Current_Frequency(self, freq):
-        self.current_VFO_VAR.set(freq)
+        self.current_VFO_Label['text'] = freq
 
     def update_Current_Mode(self, mode):
-        self.current_Mode_VAR.set(mode)
+        self.current_Mode_Label['text'] = mode
 
 
     def scan_Select_Channel_Default(self):
@@ -199,7 +205,7 @@ class channels(baseui.channelsUI):
             EEPROM.Text_To_ModeNum[channels.channelList[self.channelSlotSelection].Get_Mode()])
         self.mainWindow.theRadio.Set_New_Frequency(channels.channelList[self.channelSlotSelection].Get_Freq())
         # self.mainWindow.theRadio.Set_Mode(EEPROM.Text_To_ModeNum[channels.channelList[self.channelSlotSelection].Get_Mode()])
-        self.current_Channel_VAR.set(channels.channelList[self.channelSlotSelection].Get_Label())
+        self.current_Channel['text'] = channels.channelList[self.channelSlotSelection].Get_Label()
 
     #
     # method called to write current VFO to channel
@@ -210,8 +216,8 @@ class channels(baseui.channelsUI):
             messagebox.showinfo("Information", "Must SELECT a channel first.",
                                 parent=self)
             return
-        channels.channelList[self.channelSlotSelection].Set_Freq(self.current_VFO_VAR.get())
-        channels.channelList[self.channelSlotSelection].Set_Mode(self.current_Mode_VAR.get())
+        channels.channelList[self.channelSlotSelection].Set_Freq(self.current_VFO_Label['text'])
+        channels.channelList[self.channelSlotSelection].Set_Mode(self.current_Mode_Label['text'])
         channels.channelList[self.channelSlotSelection].channel_Dirty()
 
     #
@@ -221,7 +227,7 @@ class channels(baseui.channelsUI):
 
     def startScan(self):
         self.scanRunning = True
-        self.scan_Channel_ButtonText_VAR.set("Stop Scan")
+        self.scan_Button['text'] =  "Stop Scan"
         self.scanIndex = 0
         self.scanList = []
 
@@ -259,7 +265,7 @@ class channels(baseui.channelsUI):
     #
     def stopScan(self):
         self.scanRunning = False
-        self.scan_Channel_ButtonText_VAR.set("Run Scan")
+        self.scan_Button['text'] = "Run Scan"
         if self.scanTimer != None:
             self.master.after_cancel(self.scanTimer)
             self.scanTimer = None
@@ -317,7 +323,7 @@ class channels(baseui.channelsUI):
         if self.channelSlotSelection != None:
             channels.channelList[self.channelSlotSelection].channel_Select_Button.configure(
                 style="Button1bARaised.TButton")
-            channels.channelList[self.channelSlotSelection].channel_Select_VAR.set("Select")  # unselect the prior one
+            channels.channelList[self.channelSlotSelection].channel_Select_Button['text'] = "Select"  # unselect the prior one
 
         if self.channelSlotSelection == slotNumber:         #Unselect if already selected
             self.channelSlotSelection = None
@@ -325,7 +331,7 @@ class channels(baseui.channelsUI):
             self.channelSlotSelection = slotNumber
             channels.channelList[self.channelSlotSelection].channel_Select_Button.configure(
                     style="Button1bAPressed.TButton")
-            channels.channelList[self.channelSlotSelection].channel_Select_VAR.set("Selected") # select the new one
+            channels.channelList[self.channelSlotSelection].channel_Select_Button['text'] = "Selected" # select the new one
     #
     #   Does the actual saving of a particular channel when a save is requested. A "save all"
     #   just calls this method repeatedly

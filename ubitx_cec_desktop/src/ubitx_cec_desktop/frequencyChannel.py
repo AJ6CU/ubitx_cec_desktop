@@ -25,6 +25,12 @@ class frequencyChannel(baseui.frequencyChannelUI):
         self.vNumericPad = None
         self.vKeyboard = None
 
+        gv.make_widget_variable(self, "channel_Label", self.channel_Name_Entry)
+        gv.make_widget_variable(self, "channel_Freq", self.freq_Entry)
+        gv.make_widget_variable(self, "channel_Mode", self.mode_Menubutton)
+        gv.make_widget_variable(self, "channel_ShowLabel", self.show_Label_Menubutton)
+        gv.make_widget_variable(self, "channel_ScanSet", self.scan_Set_Menubutton)
+
     def assignChannelNum(self, channelNum):
         self.myChannelNum = channelNum
 
@@ -37,13 +43,7 @@ class frequencyChannel(baseui.frequencyChannelUI):
     #   Set up labels for channels
     #
     def channel_Number_Default(self):
-        self.channel_Number_VAR.set(str(int(self.myChannelNum + 1)))
-        # if self.myChannelNum < 9:
-        #     self.channel_Number_VAR.set("Channel " + " "+str(int(self.myChannelNum+1)))
-        #     # self.channel_Number_VAR.set("Channel " + " "+str(int(self.myChannelNum+1)))
-        # else:
-        #     self.channel_Number_VAR.set("Channel " +str(int(self.myChannelNum+1)))
-        #     # self.channel_Number_VAR.set("Channel " +str(int(self.myChannelNum+1)))
+        self.channel_Number_Label['text'] = str(int(self.myChannelNum + 1))
 
     #
     #   Label get/set
