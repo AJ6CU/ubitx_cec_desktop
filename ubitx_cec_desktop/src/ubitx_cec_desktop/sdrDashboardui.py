@@ -403,11 +403,8 @@ class sdrDashboardUI(ttk.Frame):
         self.channelLookup_Entry = ttk.Entry(
             self.channelSearch_Labelframe,
             name="channellookup_entry")
-        self.channelLookup_VAR = tk.StringVar()
         self.channelLookup_Entry.configure(
-            style="Entry3b.TEntry",
-            takefocus=False,
-            textvariable=self.channelLookup_VAR)
+            style="Entry3b.TEntry", takefocus=False)
         self.channelLookup_Entry.grid(
             column=0, ipady=5, padx=5, pady=5, row=0, sticky="ew")
         self.channelLookup_Entry.bind(
@@ -484,12 +481,8 @@ class sdrDashboardUI(ttk.Frame):
             column=0, padx=10, pady=10, row=0, sticky="e")
         self.newChannel_Entry = ttk.Entry(
             self.newVFOHeader_Frame, name="newchannel_entry")
-        self.newChannel_VAR = tk.StringVar()
         self.newChannel_Entry.configure(
-            style="Entry3b.TEntry",
-            takefocus=False,
-            textvariable=self.newChannel_VAR,
-            width=10)
+            style="Entry3b.TEntry", takefocus=False, width=10)
         self.newChannel_Entry.grid(
             column=1, ipady=5, pady=10, row=0, sticky="w")
         self.channelStation_Label = ttk.Label(
@@ -506,12 +499,8 @@ class sdrDashboardUI(ttk.Frame):
             column=0, padx=10, pady=10, row=1, sticky="e")
         self.newStationDescription_Entry = ttk.Entry(
             self.newVFOHeader_Frame, name="newstationdescription_entry")
-        self.newStationDescription_VAR = tk.StringVar()
         self.newStationDescription_Entry.configure(
-            style="Entry3b.TEntry",
-            takefocus=False,
-            textvariable=self.newStationDescription_VAR,
-            width=15)
+            style="Entry3b.TEntry", takefocus=False, width=15)
         self.newStationDescription_Entry.grid(
             column=1, ipady=5, padx="0 15", pady=10, row=1, sticky="w")
         self.newVFOHeader_Frame.pack()

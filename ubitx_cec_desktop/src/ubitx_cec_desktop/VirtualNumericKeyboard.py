@@ -7,16 +7,17 @@ import globalvars as gv
 
 
 class VirtualNumericKeyboard(tk.Toplevel):
-    def __init__(self, master=None, fieldStrVar=None, postProcessor=None, maxDigits=None,  **kw):
+    def __init__(self, master=None, fieldStrVar=None, postProcessor=None, maxDigits=None, **kw):
         self.master = master
         self.fieldStrVar = fieldStrVar
         self.postProcessor = postProcessor
         # self.dirty_CB = dirtyCallback
         self.maxDigits = maxDigits
+
         # # self.formatVFOFlag = formatVFOFlag
         # self.formatCallback = formatCallback
         self.originalValue = self.fieldStrVar.get().replace(",","").replace(".","")
-        self.textField = StringVar()
+        self.textField = StringVar(master=self.master)
         self.textField.set(self.originalValue)
         # self.textField.set(self.originalValue)
 

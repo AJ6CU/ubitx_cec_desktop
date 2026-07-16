@@ -687,7 +687,6 @@
                               <object class="ttk.Entry" id="channelLookup_Entry" named="True">
                                 <property name="style">Entry3b.TEntry</property>
                                 <property name="takefocus">false</property>
-                                <property name="textvariable">string:channelLookup_VAR</property>
                                 <bind sequence="&lt;KeyRelease&gt;" handler="action_filter_search_grid" add="True" />
                                 <layout manager="grid">
                                   <property name="column">0</property>
@@ -818,7 +817,6 @@ Bank</property>
                                   <object class="ttk.Entry" id="newChannel_Entry" named="True">
                                     <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
-                                    <property name="textvariable">string:newChannel_VAR</property>
                                     <property name="width">10</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>
@@ -854,7 +852,6 @@ Bank</property>
                                   <object class="ttk.Entry" id="newStationDescription_Entry" named="True">
                                     <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
-                                    <property name="textvariable">string:newStationDescription_VAR</property>
                                     <property name="width">15</property>
                                     <layout manager="grid">
                                       <property name="column">1</property>

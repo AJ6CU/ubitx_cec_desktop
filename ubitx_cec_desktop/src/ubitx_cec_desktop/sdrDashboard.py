@@ -51,6 +51,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
         gv.make_widget_variable(self, "newBankName", self.newBankName_Entry)
         gv.make_widget_variable(self, "scanTime", self.scanTime_Entry)
 
+        gv.make_widget_variable(self, "newChannel", self.newChannel_Entry)
+        gv.make_widget_variable(self, "channelLookup", self.channelLookup_Entry)
+        gv.make_widget_variable(self, "newStationDescription", self.newStationDescription_Entry)
+
         self.treeChannels["columns"] = ('label','frequency', 'mode', 'description')
         # self.treeChannels.config(show='headings')
         self.treeChannels.config(yscrollcommand=self.treeScrollbar.set)
@@ -71,7 +75,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         #
         #   Create an error handler for each entry field
         #
-        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master)
+        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master, self.action_filter_search_grid)
         self.newChannel_Object = entryFieldHandler(self, "newChannel", 15, VirtualKeyboard,self.master)
         self.newStationDescription_Object = entryFieldHandler(self, "newStationDescription", 50, VirtualKeyboard, self.master)
         self.newBankName_Object = entryFieldHandler(self, "newBankName", 15, VirtualKeyboard, self.master)
@@ -685,6 +689,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if len(self.channelLookup_VAR.get()) > 15:
             return False
         else:
+            self.action_filter_search_grid()
             return True
 
     def channelLookup_errorHandler(self):

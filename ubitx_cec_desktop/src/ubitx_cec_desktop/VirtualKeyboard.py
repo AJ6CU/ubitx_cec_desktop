@@ -15,7 +15,7 @@ class VirtualKeyboard(tk.Toplevel):
     def __init__(self, master=None, fieldStrVar=None, postProcessor=None, maxChars=None,  **kw):
         self.master = master
         self.fieldStrVar = fieldStrVar
-        self.localStrVar = StringVar()      # we work with this local value and then write it back into the original on "enter" key
+        self.localStrVar = StringVar(master=self.master)    # we work with this local value and then write it back into the original on "enter" key
         self.postProcessor = postProcessor
         self.maxChars = maxChars
 
