@@ -19,6 +19,8 @@ class VirtualKeyboard(tk.Toplevel):
         self.postProcessor = postProcessor
         self.maxChars = maxChars
 
+        print("vkb", self.fieldStrVar.get())
+
         self.localStrVar.set(self.fieldStrVar.get().replace(" ",""))        # Labels are blank padded to 5 chars
         self.currentPos = len(self.localStrVar.get())
 

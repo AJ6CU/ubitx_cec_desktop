@@ -36,7 +36,7 @@ class settingsSDR(baseui.settingsSDRUI):
         #
         self.saveSDR_Switch = gv.config.get_SDR_Switch()
         self.saveSDR_Software = gv.config.get_SDR_Software()
-        print("from config", gv.config.get_SDR_Autostart(), type(gv.config.get_SDR_Autostart()))
+        # print("from config", gv.config.get_SDR_Autostart(), type(gv.config.get_SDR_Autostart()))
         self.saveSDR_Autostart = gv.config.get_SDR_Autostart()   ### need to add
         self.saveNetworkAddress = str(gv.config.get_sdr_server_ip())
         self.saveNetworkPort = str(gv.config.get_sdr_tcp_port())

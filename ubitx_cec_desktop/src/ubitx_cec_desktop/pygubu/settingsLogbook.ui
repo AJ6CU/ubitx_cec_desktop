@@ -280,10 +280,7 @@ Location</property>
                 <property name="justify">left</property>
                 <property name="readonlybackground">gray</property>
                 <property name="state">normal</property>
-                <property name="validate">focusout</property>
-                <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">Logbook_Name_Validation_CB</property>
                 <property name="width">40</property>
-                <bind sequence="&lt;Button&gt;" handler="Logbook_Name_Entered_CB" add="True" />
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>

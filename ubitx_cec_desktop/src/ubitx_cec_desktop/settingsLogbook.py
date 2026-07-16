@@ -12,6 +12,7 @@ import settingsLogbookui as baseui
 import globalvars as gv
 from QSOLogger import QSOLogger
 from tkinter import messagebox
+from entryFieldHandler import entryFieldHandler
 from VirtualKeyboard import VirtualKeyboard
 import os
 from pathvalidate import sanitize_filename, is_valid_filename
@@ -46,6 +47,10 @@ class settingsLogbook(baseui.settingsLogbookUI):
         gv.make_widget_variable(self, "Backup_Interval", self.backupInterval_Spinbox)
 
         gv.make_widget_variable(self, "LogbookName", self.LogbookName_Entry)
+
+        self.LogbookName_VAR.set("Mark")
+
+        self.LogbookName_Object = entryFieldHandler(self, "LogbookName", 40, VirtualKeyboard, self.popup)
 
         self.LogbookSwitch_VAR.set(gv.config.get_Logbook_Switch())
         self.LogbookSwitchSave = gv.config.get_Logbook_Switch()
@@ -178,27 +183,35 @@ class settingsLogbook(baseui.settingsLogbookUI):
     #   is used to delete bad characters and make a best quess
     #
 
-    def Logbook_Name_Entered_CB(self, event=None):
-        if gv.config.get_Virtual_Keyboard_Switch() == "True":
-            self.vKeyboard = VirtualKeyboard(self, self.LogbookName_VAR, self.LogbookName_Vkeyboard_Validate, 40)
+    # def Logbook_Name_Entered_CB(self, event=None):
+    #     if gv.config.get_Virtual_Keyboard_Switch() == "True":
+    #         self.vKeyboard = VirtualKeyboard(self, self.LogbookName_VAR, self.LogbookName_Vkeyboard_Validate, 40)
 
-    def Logbook_Name_Validation_CB(self, p_entry_value, v_condition):
-        if is_valid_filename(p_entry_value):
+    def LogbookName_validation(self):
+        if is_valid_filename(self.LogbookName_VAR.get()):
+            print("valid filename")
             return True
         else:
+            print("invalid filename")
             return False
 
-    def Logbook_Name_Invalid_CB(self, p_entry_value):
-        self.validFname = sanitize_filename(p_entry_value)
+    def LogbookName_errorHandler(self):
+        self.validFname = sanitize_filename(self.LogbookName_VAR.get())
 
         self.LogbookName_Entry.delete(0, "end")
         self.LogbookName_Entry.insert(0, self.validFname)
-        messagebox.showinfo("Error Illegal Filename", p_entry_value + "\n\nis not a legal filename.\n\n" +
-                            self.validFname + "\n\nis the closest legal name and will be used.", parent=self)
+        messagebox.showinfo("Error Illegal Filename", self.LogbookName_VAR.get() + "\n\nis not a legal filename.\n\n" +
+                            " Input ignored, resetting to prior value", parent=self)
 
-    def LogbookName_Vkeyboard_Validate(self):
-        if is_valid_filename(self.LogbookName_VAR.get()) == False:
-            self.Logbook_Name_Invalid_CB(self.LogbookName_VAR.get())
+    # def LogbookName_Vkeyboard_Validate(self):
+    #     if is_valid_filename(self.LogbookName_VAR.get()) == False:
+    #         self.Logbook_Name_Invalid_CB(self.LogbookName_VAR.get())
+
+    def LogbookName_preProcessor (self):
+        return self.LogbookName_VAR.get()
+
+    def LogbookName_postProcessor (self):
+        return
 
 
     def cancel_CB(self):

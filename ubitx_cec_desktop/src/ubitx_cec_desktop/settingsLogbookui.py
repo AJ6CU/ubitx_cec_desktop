@@ -232,7 +232,6 @@ class settingsLogbookUI(ttk.Labelframe):
             justify="left",
             readonlybackground="gray",
             state="normal",
-            validate="focusout",
             width=40)
         self.LogbookName_Entry.grid(
             column=1,
@@ -241,15 +240,10 @@ class settingsLogbookUI(ttk.Labelframe):
             row=5,
             rowspan=1,
             sticky="w")
-        _validatecmd = (self.LogbookName_Entry.register(
-            self.Logbook_Name_Validation_CB), "%P", "%V")
-        self.LogbookName_Entry.configure(validatecommand=_validatecmd)
         _validatecmd = (
             self.LogbookName_Entry.register(
                 self.Logbook_Name_Invalid_CB), "%P")
         self.LogbookName_Entry.configure(invalidcommand=_validatecmd)
-        self.LogbookName_Entry.bind(
-            "<Button>", self.Logbook_Name_Entered_CB, add="+")
         self.general_Settings_Frame.pack(padx=10, pady=10, side="top")
         self.closingFrame = ttk.Frame(self, name="closingframe")
         self.closingFrame.configure(
@@ -298,13 +292,7 @@ class settingsLogbookUI(ttk.Labelframe):
     def newLogbookLocation_CB(self, event=None):
         pass
 
-    def Logbook_Name_Validation_CB(self, p_entry_value, v_condition):
-        pass
-
     def Logbook_Name_Invalid_CB(self, p_entry_value):
-        pass
-
-    def Logbook_Name_Entered_CB(self, event=None):
         pass
 
     def apply_CB(self):

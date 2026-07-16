@@ -6,13 +6,12 @@ import tkinter.ttk as ttk
 import globalvars as gv
 
 class entryFieldHandler:
-    def __init__(self, parent, widget_name, fieldWidth, vkeyboard, nextWidget=None, perKeyCallback = None,  **kw):
+    def __init__(self, parent, widget_name, fieldWidth, vkeyboard, nextWidget=None,  **kw):
         self.parent = parent
         self.widget_name = widget_name
         self.fieldWidth = fieldWidth
         self.vkeyboard = vkeyboard
         self.nextWidget = nextWidget
-        self.perKeyCallback = perKeyCallback
 
         #
         #   Inferred/required methods
