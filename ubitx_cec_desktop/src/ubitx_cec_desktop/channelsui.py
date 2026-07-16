@@ -98,7 +98,7 @@ class channelsUI(ttk.Labelframe):
         self.current_Mode_Label.pack(expand=False, padx="10 10", side="left")
         self.display_Current_VFO_Frame.pack(expand=True, fill="x", side="top")
         frame2 = ttk.Frame(frame1)
-        frame2.configure(height=800, style="Normal.TFrame")
+        frame2.configure(height=600, style="Normal.TFrame")
         self.header_Line_Frame = ttk.Frame(frame2, name="header_line_frame")
         self.header_Line_Frame.configure(
             height=24, style="Normal.TFrame", width=450)
@@ -297,53 +297,6 @@ class channelsUI(ttk.Labelframe):
         self.channelEdit_Frame.grid_anchor("center")
         self.closingFrame = ttk.Frame(frame3, name="closingframe")
         self.closingFrame.configure(style="Normal.TFrame")
-        self.saveChannel_Button = ttk.Button(
-            self.closingFrame, name="savechannel_button")
-        self.saveChannel_Button.configure(
-            state="normal",
-            style="Button2b.TButton",
-            text='Save Channel')
-        self.save_Button_Tooltip = Tooltip(self.saveChannel_Button)
-        self.save_Button_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='The contents of the selected channels will be saved. ',
-            wraplength=300)
-        self.saveChannel_Button.grid(column=0, padx="0 15", row=0)
-        self.saveChannel_Button.configure(command=self.saveChannel_CB)
-        self.saveAllChannels_Button = ttk.Button(
-            self.closingFrame, name="saveallchannels_button")
-        self.saveAllChannels_Button.configure(
-            state="normal", style="Button2b.TButton", text='Save All')
-        self.saveAll_Button_Tooltip = Tooltip(self.saveAllChannels_Button)
-        self.saveAll_Button_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='All of the channels that have been saved will be saved.',
-            wraplength=300)
-        self.saveAllChannels_Button.grid(column=1, padx="0 15", row=0)
-        self.saveAllChannels_Button.configure(command=self.saveAllChannels_CB)
-        self.refresh_Button = ttk.Button(
-            self.closingFrame, name="refresh_button")
-        self.refresh_Button.configure(style="Button2b.TButton", text='Refresh')
-        self.refresh_Tooltip = Tooltip(self.refresh_Button)
-        self.refresh_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='The contents of the channels will be re-read from EEPROM. Any changes will be lost.',
-            wraplength=300)
-        self.refresh_Button.grid(column=2, padx="0 15", row=0)
-        self.refresh_Button.configure(command=self.refresh_Channel_CB)
-        self.close_Button = ttk.Button(self.closingFrame, name="close_button")
-        self.close_Button.configure(style="Button2b.TButton", text='Close')
-        self.closeButton_Tooltip = Tooltip(self.close_Button)
-        self.closeButton_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='Closes the window. Current changes are saved for this session until radio is power cycled.',
-            wraplength=300)
-        self.close_Button.grid(column=3, row=0)
-        self.close_Button.configure(command=self.close_Channel_CB)
         self.exportChannel_Button = ttk.Button(
             self.closingFrame, name="exportchannel_button")
         self.exportChannel_Button.configure(
@@ -356,7 +309,7 @@ class channelsUI(ttk.Labelframe):
             text='This exports channels to the Configuration file so that they can be used by the SDR for scanning.',
             wraplength=300)
         self.exportChannel_Button.grid(
-            column=0, columnspan=2, pady="30 0", row=1, sticky="w")
+            column=0, columnspan=2, row=0, sticky="w")
         self.exportChannel_Button.configure(command=self.exportAllChannels_CB)
         self.bankName_Label = ttk.Label(
             self.closingFrame, name="bankname_label")
@@ -368,14 +321,61 @@ class channelsUI(ttk.Labelframe):
             relief="raised",
             text='The Channels will be stored in a Bank by this name',
             wraplength=300)
-        self.bankName_Label.grid(column=2, pady="30 0", row=1)
+        self.bankName_Label.grid(column=2, row=0)
         self.bankNameEntry = ttk.Entry(self.closingFrame, name="banknameentry")
         self.bankNameEntry.configure(
             font="{Arial} 24 {}",
             style="Entry2b.TEntry",
             width=10)
-        self.bankNameEntry.grid(column=3, pady="30 0", row=1)
-        self.closingFrame.pack(pady="30 15", side="left")
+        self.bankNameEntry.grid(column=3, row=0)
+        self.saveChannel_Button = ttk.Button(
+            self.closingFrame, name="savechannel_button")
+        self.saveChannel_Button.configure(
+            state="normal",
+            style="Button2b.TButton",
+            text='Save Channel')
+        self.save_Button_Tooltip = Tooltip(self.saveChannel_Button)
+        self.save_Button_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='The contents of the selected channels will be saved. ',
+            wraplength=300)
+        self.saveChannel_Button.grid(column=0, padx="0 15", pady=20, row=1)
+        self.saveChannel_Button.configure(command=self.saveChannel_CB)
+        self.saveAllChannels_Button = ttk.Button(
+            self.closingFrame, name="saveallchannels_button")
+        self.saveAllChannels_Button.configure(
+            state="normal", style="Button2b.TButton", text='Save All')
+        self.saveAll_Button_Tooltip = Tooltip(self.saveAllChannels_Button)
+        self.saveAll_Button_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='All of the channels that have been saved will be saved.',
+            wraplength=300)
+        self.saveAllChannels_Button.grid(column=1, padx="0 15", pady=20, row=1)
+        self.saveAllChannels_Button.configure(command=self.saveAllChannels_CB)
+        self.refresh_Button = ttk.Button(
+            self.closingFrame, name="refresh_button")
+        self.refresh_Button.configure(style="Button2b.TButton", text='Refresh')
+        self.refresh_Tooltip = Tooltip(self.refresh_Button)
+        self.refresh_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='The contents of the channels will be re-read from EEPROM. Any changes will be lost.',
+            wraplength=300)
+        self.refresh_Button.grid(column=2, padx="0 15", pady=20, row=1)
+        self.refresh_Button.configure(command=self.refresh_Channel_CB)
+        self.close_Button = ttk.Button(self.closingFrame, name="close_button")
+        self.close_Button.configure(style="Button2b.TButton", text='Close')
+        self.closeButton_Tooltip = Tooltip(self.close_Button)
+        self.closeButton_Tooltip.configure(
+            padx=8,
+            relief="raised",
+            text='Closes the window. Current changes are saved for this session until radio is power cycled.',
+            wraplength=300)
+        self.close_Button.grid(column=3, pady=20, row=1)
+        self.close_Button.configure(command=self.close_Channel_CB)
+        self.closingFrame.pack(pady=10, side="left")
         self.closingFrame.grid_anchor("center")
         frame3.pack(padx="40 0", side="left")
         self.scanSettings_Frame = ttk.Frame(frame1, name="scansettings_frame")
@@ -486,6 +486,9 @@ class channelsUI(ttk.Labelframe):
     def scan_Channel_CB(self):
         pass
 
+    def exportAllChannels_CB(self):
+        pass
+
     def saveChannel_CB(self):
         pass
 
@@ -496,9 +499,6 @@ class channelsUI(ttk.Labelframe):
         pass
 
     def close_Channel_CB(self):
-        pass
-
-    def exportAllChannels_CB(self):
         pass
 
     def runScan_Selection_CB(self, itemid):

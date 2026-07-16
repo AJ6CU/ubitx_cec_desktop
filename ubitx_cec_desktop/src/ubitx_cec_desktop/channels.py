@@ -125,7 +125,7 @@ class channels(baseui.channelsUI):
 
         self.popup.wait_visibility()  # required on Linux
 
-        self.popup.transient(self.mainWindow)
+        # self.popup.transient(self.mainWindow)
 
         self.pack(expand=tk.YES, fill=tk.BOTH)
 
