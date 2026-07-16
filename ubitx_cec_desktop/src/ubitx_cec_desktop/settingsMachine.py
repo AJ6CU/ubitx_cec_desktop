@@ -4,9 +4,7 @@ import tkinter.ttk as ttk
 import settingsMachineui as baseui
 from configuration import ConfigurationManager
 import globalvars as gv
-from VirtualNumericKeyboard import VirtualNumericKeyboard
-from tkinter import messagebox
-from entryFieldHandler import entryFieldHandler
+
 
 
 #
@@ -30,8 +28,8 @@ class settingsMachine(baseui.settingsMachineUI):
         gv.make_widget_variable(self, "DSP_Enable", self.DSP_Enable_Menubutton)
         gv.make_widget_variable(self, "PWR_SWR_Enable", self.PWR_SWR_Menubutton)
 
-        gv.make_widget_variable(self, "PWR_Factor", self.PWR_Factor_Entry)
-        gv.make_widget_variable(self, "SWR_Factor", self.SWR_Factor_Entry)
+        gv.make_widget_variable(self, "PWR_Factor", self.PWR_Factor_Spinbox)
+        gv.make_widget_variable(self, "SWR_Factor", self.SWR_Factor_Spinbox)
 
         gv.make_widget_variable(self, "MCU_Command_Headroom", self.MCU_Command_Headroom_Spinbox)
         gv.make_widget_variable(self, "MCU_Update_Period", self.MCU_Update_Period_Spinbox)
@@ -48,26 +46,13 @@ class settingsMachine(baseui.settingsMachineUI):
         self.savePWR_Factor = gv.config.get_PWR_Factor()
         self.saveSWR_Factor = gv.config.get_SWR_Factor()
 
-        self.PWR_Factor_Object = entryFieldHandler(self, "PWR_Factor", 3, VirtualNumericKeyboard, self.master)
-        self.SWR_Factor_Object = entryFieldHandler(self, "SWR_Factor", 3, VirtualNumericKeyboard, self.master)
-
-
         self.saveMCU_Command_Headroom = int(gv.config.get_MCU_Command_Headroom()*1000)
         self.saveMCU_Update_Period = gv.config.get_MCU_Update_Period()
         self.saveMCU_Read_Wait_Period = gv.config.get_MCU_Read_Wait_Period()
 
         self.PWR_SWR_Enable_VAR.set(self.savePWR_SWR_Switch)
-
-        if gv.config.get_NUMBER_DELIMITER() == ",":
-            decimalDelim = "."
-        else:
-            decimalDelim = ","
-
-        formatted_factor = self.savePWR_Factor.replace(".", decimalDelim)
-        self.PWR_Factor_VAR.set(formatted_factor)
-
-        formatted_factor = self.saveSWR_Factor.replace(".", decimalDelim)
-        self.SWR_Factor_VAR.set(formatted_factor)
+        self.PWR_Factor_VAR.set(self.savePWR_Factor)
+        self.SWR_Factor_VAR.set(self.saveSWR_Factor)
 
         if self.PWR_SWR_Enable_VAR.get() == 'False':
             self.disablePWR_SWR_CB()
@@ -117,60 +102,15 @@ class settingsMachine(baseui.settingsMachineUI):
         self.PWR_SWR_Enable_VAR.set("True")
         self.PWR_Factor_Label.configure(state="normal")
         self.SWR_Factor_Label.configure(state="normal")
-        self.PWR_Factor_Entry.configure(state="normal")
-        self.SWR_Factor_Entry.configure(state="normal")
+        self.PWR_Factor_Spinbox.configure(state="normal")
+        self.SWR_Factor_Spinbox.configure(state="normal")
 
     def disablePWR_SWR_CB(self):
         self.PWR_SWR_Enable_VAR.set("False")
         self.PWR_Factor_Label.configure(state="disabled")
         self.SWR_Factor_Label.configure(state="disabled")
-        self.PWR_Factor_Entry.configure(state="disabled")
-        self.SWR_Factor_Entry.configure(state="disabled")
-
-        #
-        #   PWR Factor processing routines
-        #
-
-    def PWR_Factor_validation(self):
-        std_float_str = self.PWR_Factor_VAR.get().replace(",","").replace(".", "")
-        if 10.0 >= float(std_float_str)/10 >= 0.1:
-                return True
-
-        return False
-
-    def PWR_Factor_errorHandler(self):
-        # Bad factor entered, generate warning message and reset
-        messagebox.showinfo("Error Illegal Factor",
-                            "PWR Factor must be a number in the range of 0.1 to 10.0 \n\n Resetting to Prior value.",
-                            parent=self)
-
-    def PWR_Factor_preProcessor(self):
-        return self.PWR_Factor_VAR.get().replace(",", "").replace(".", "")
-
-    def PWR_Factor_postProcessor(self):
-        factor = float(self.PWR_Factor_VAR.get())/10
-        self.PWR_Factor_VAR.set(f"{factor:.1f}")
-
-
-    def SWR_Factor_validation(self):
-        std_float_str = self.SWR_Factor_VAR.get().replace(",","").replace(".", "")
-        if 10.0 >= float(std_float_str)/10 >= 0.1:
-                return True
-
-        return False
-
-    def SWR_Factor_errorHandler(self):
-        # Bad factor entered, generate warning message and reset
-        messagebox.showinfo("Error Illegal Factor",
-                            "SWR Factor must be a number in the range of 0.1 to 10.0 \n\n Resetting to Prior value.",
-                            parent=self)
-
-    def SWR_Factor_preProcessor(self):
-        return self.SWR_Factor_VAR.get().replace(",", "").replace(".", "")
-
-    def SWR_Factor_postProcessor(self):
-        factor = float(self.SWR_Factor_VAR.get())/10
-        self.SWR_Factor_VAR.set(f"{factor:.1f}")
+        self.PWR_Factor_Spinbox.configure(state="disabled")
+        self.SWR_Factor_Spinbox.configure(state="disabled")
 
 
     def apply_CB(self):
@@ -187,13 +127,11 @@ class settingsMachine(baseui.settingsMachineUI):
         if self.PWR_SWR_Enable_VAR.get() != self.savePWR_SWR_Switch:
             gv.config.set_PWR_SWR_Switch(self.PWR_SWR_Enable_VAR.get())
 
-        if self.PWR_Factor_Entry.get() != self.savePWR_Factor:
-            formatted_factor = self.PWR_Factor_Entry.get().replace(",", ".")
-            gv.config.set_PWR_Factor(formatted_factor)
+        if self.PWR_Factor_VAR.get() != self.savePWR_Factor:
+            gv.config.set_PWR_Factor(self.PWR_Factor_VAR.get())
 
-        if self.SWR_Factor_Entry.get() != self.saveSWR_Factor:
-            formatted_factor = self.SWR_Factor_Entry.get().replace(",", ".")
-            gv.config.set_SWR_Factor(formatted_factor)
+        if self.SWR_Factor_VAR.get() != self.saveSWR_Factor:
+            gv.config.set_SWR_Factor(self.SWR_Factor_VAR.get())
 
 
         if int(self.MCU_Command_Headroom_VAR.get()) != self.saveMCU_Command_Headroom:

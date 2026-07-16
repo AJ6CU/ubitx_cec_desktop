@@ -156,14 +156,13 @@ class settingsMachineUI(ttk.Labelframe):
             label='False',
             state="normal")
         self.PWR_SWR_Menubutton.configure(menu=self.PWR_SWR_Menu)
-        self.PWR_SWR_Menubutton.grid(
-            column=1, padx=10, pady="10 0", row=0, sticky="e")
+        self.PWR_SWR_Menubutton.grid(column=1, padx=10, pady="10 0", row=0)
         self.PWR_Factor_Label = ttk.Label(
             self.PWR_SWR_Frame, name="pwr_factor_label")
         self.PWR_Factor_Label.configure(
             state="disabled",
             style="Heading1b.TLabel",
-            text='PWR Adjustment Factor\n(0.0-nn.nn)')
+            text='PWR Adjustment Factor\n(0.1-9.9)')
         self.PWR_Factor_Tooltip = Tooltip(self.PWR_Factor_Label)
         self.PWR_Factor_Tooltip.configure(
             padx=8,
@@ -176,21 +175,12 @@ class settingsMachineUI(ttk.Labelframe):
             pady="10 0",
             row=1,
             sticky="w")
-        self.PWR_Factor_Entry = ttk.Entry(
-            self.PWR_SWR_Frame, name="pwr_factor_entry")
-        self.PWR_Factor_Entry.configure(
-            font="{Arial} 24 {}",
-            justify="right",
-            takefocus=True,
-            width=5)
-        self.PWR_Factor_Entry.grid(
-            column=1, padx=10, pady="10 0", row=1, sticky="e")
         self.SWR_Factor_Label = ttk.Label(
             self.PWR_SWR_Frame, name="swr_factor_label")
         self.SWR_Factor_Label.configure(
             state="disabled",
             style="Heading1b.TLabel",
-            text='SWR Adjustment Factor\n(0.0-nn.nn)')
+            text='SWR Adjustment Factor\n(0.1-9.9)')
         self.SWR_Factor_Tooltip = Tooltip(self.SWR_Factor_Label)
         self.SWR_Factor_Tooltip.configure(
             padx=8,
@@ -199,15 +189,29 @@ class settingsMachineUI(ttk.Labelframe):
             wraplength=300)
         self.SWR_Factor_Label.grid(
             column=0, padx="20 5", pady=10, row=2, sticky="w")
-        self.SWR_Factor_Entry = ttk.Entry(
-            self.PWR_SWR_Frame, name="swr_factor_entry")
-        self.SWR_Factor_Entry.configure(
-            font="{Arial} 24 {}",
-            justify="right",
-            takefocus=True,
-            width=5)
-        self.SWR_Factor_Entry.grid(
-            column=1, padx=10, pady=10, row=2, sticky="e")
+        self.PWR_Factor_Spinbox = ttk.Spinbox(
+            self.PWR_SWR_Frame, name="pwr_factor_spinbox")
+        self.PWR_Factor_Spinbox.configure(
+            font="{arial} 36 {}",
+            format="%.1f",
+            from_=.1,
+            increment=.1,
+            style="Custom.TSpinbox",
+            to=9.9,
+            width=3)
+        self.PWR_Factor_Spinbox.grid(
+            column=1, padx="15 10", pady="15 0", row=1)
+        self.SWR_Factor_Spinbox = ttk.Spinbox(
+            self.PWR_SWR_Frame, name="swr_factor_spinbox")
+        self.SWR_Factor_Spinbox.configure(
+            font="{arial} 36 {}",
+            format="%.1f",
+            from_=.1,
+            increment=.1,
+            style="Custom.TSpinbox",
+            to=9.9,
+            width=3)
+        self.SWR_Factor_Spinbox.grid(column=1, padx="15 10", pady=15, row=2)
         self.PWR_SWR_Frame.grid(
             column=0,
             columnspan=2,

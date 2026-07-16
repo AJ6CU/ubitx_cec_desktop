@@ -176,7 +176,6 @@
                       <property name="padx">10</property>
                       <property name="pady">10 0</property>
                       <property name="row">0</property>
-                      <property name="sticky">e</property>
                     </layout>
                     <child>
                       <object class="tk.Menu" id="PWR_SWR_Menu" named="True">
@@ -206,7 +205,7 @@
                     <property name="state">disabled</property>
                     <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">PWR Adjustment Factor
-(0.0-nn.nn)</property>
+(0.1-9.9)</property>
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">20 5</property>
@@ -225,26 +224,11 @@
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Entry" id="PWR_Factor_Entry" named="True">
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="justify">right</property>
-                    <property name="takefocus">true</property>
-                    <property name="width">5</property>
-                    <layout manager="grid">
-                      <property name="column">1</property>
-                      <property name="padx">10</property>
-                      <property name="pady">10 0</property>
-                      <property name="row">1</property>
-                      <property name="sticky">e</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
                   <object class="ttk.Label" id="SWR_Factor_Label" named="True">
                     <property name="state">disabled</property>
                     <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">SWR Adjustment Factor
-(0.0-nn.nn)</property>
+(0.1-9.9)</property>
                     <layout manager="grid">
                       <property name="column">0</property>
                       <property name="padx">20 5</property>
@@ -264,17 +248,36 @@
                   </object>
                 </child>
                 <child>
-                  <object class="ttk.Entry" id="SWR_Factor_Entry" named="True">
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="justify">right</property>
-                    <property name="takefocus">true</property>
-                    <property name="width">5</property>
+                  <object class="ttk.Spinbox" id="PWR_Factor_Spinbox" named="True">
+                    <property name="font">{arial} 36 {}</property>
+                    <property name="format">%.1f</property>
+                    <property name="from_">.1</property>
+                    <property name="increment">.1</property>
+                    <property name="style">Custom.TSpinbox</property>
+                    <property name="to">9.9</property>
+                    <property name="width">3</property>
                     <layout manager="grid">
                       <property name="column">1</property>
-                      <property name="padx">10</property>
-                      <property name="pady">10</property>
+                      <property name="padx">15 10</property>
+                      <property name="pady">15 0</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Spinbox" id="SWR_Factor_Spinbox" named="True">
+                    <property name="font">{arial} 36 {}</property>
+                    <property name="format">%.1f</property>
+                    <property name="from_">.1</property>
+                    <property name="increment">.1</property>
+                    <property name="style">Custom.TSpinbox</property>
+                    <property name="to">9.9</property>
+                    <property name="width">3</property>
+                    <layout manager="grid">
+                      <property name="column">1</property>
+                      <property name="padx">15 10</property>
+                      <property name="pady">15</property>
                       <property name="row">2</property>
-                      <property name="sticky">e</property>
                     </layout>
                   </object>
                 </child>
