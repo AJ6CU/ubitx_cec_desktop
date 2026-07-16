@@ -570,7 +570,6 @@
                             <child>
                               <object class="ttk.Label" id="currentFilterWidth_Label" named="True">
                                 <property name="style">Heading3b.TLabel</property>
-                                <property name="textvariable">string:currentFilterWidth_VAR</property>
                                 <property name="width">5</property>
                                 <layout manager="pack">
                                   <property name="side">left</property>
@@ -817,7 +816,6 @@ Bank</property>
                                 </child>
                                 <child>
                                   <object class="ttk.Entry" id="newChannel_Entry" named="True">
-                                    <property name="placeholder">station name</property>
                                     <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
                                     <property name="textvariable">string:newChannel_VAR</property>
@@ -854,7 +852,6 @@ Bank</property>
                                 </child>
                                 <child>
                                   <object class="ttk.Entry" id="newStationDescription_Entry" named="True">
-                                    <property name="placeholder">description</property>
                                     <property name="style">Entry3b.TEntry</property>
                                     <property name="takefocus">false</property>
                                     <property name="textvariable">string:newStationDescription_VAR</property>
@@ -937,14 +934,12 @@ Bank</property>
                             <child>
                               <object class="ttk.OptionMenu" id="sourceBank" named="True">
                                 <property name="command" type="command" cbtype="simple">sourceBank_CB</property>
-                                <property name="value">selected</property>
-                                <property name="values">selected, test1, test2</property>
                                 <property name="variable">string:sourceBank_VAR</property>
                                 <layout manager="grid">
                                   <property name="column">1</property>
                                   <property name="pady">10</property>
                                   <property name="row">1</property>
-                                  <property name="sticky">w</property>
+                                  <property name="sticky">ew</property>
                                 </layout>
                               </object>
                             </child>
@@ -969,14 +964,12 @@ Bank</property>
                             <child>
                               <object class="ttk.OptionMenu" id="targetBank" named="True">
                                 <property name="command" type="command" cbtype="simple">targetBank_CB</property>
-                                <property name="value">selected</property>
-                                <property name="values">selected, test1, test2</property>
                                 <property name="variable">string:targetBank_VAR</property>
                                 <layout manager="grid">
                                   <property name="column">1</property>
                                   <property name="pady">10</property>
                                   <property name="row">0</property>
-                                  <property name="sticky">w</property>
+                                  <property name="sticky">ew</property>
                                 </layout>
                               </object>
                             </child>
@@ -1020,10 +1013,8 @@ Bank</property>
                             </child>
                             <child>
                               <object class="ttk.Entry" id="newBankName_Entry" named="True">
-                                <property name="placeholder">new bank name</property>
                                 <property name="style">Entry3b.TEntry</property>
                                 <property name="takefocus">false</property>
-                                <property name="textvariable">string:newBankName_VAR</property>
                                 <property name="width">11</property>
                                 <layout manager="grid">
                                   <property name="column">2</property>
@@ -1166,7 +1157,6 @@ Bank</property>
                           <object class="ttk.Entry" id="scanTime_Entry" named="True">
                             <property name="style">Entry3b.TEntry</property>
                             <property name="takefocus">false</property>
-                            <property name="textvariable">string:scanTime_VAR</property>
                             <property name="width">6</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -1203,14 +1193,12 @@ Bank</property>
                         <child>
                           <object class="ttk.OptionMenu" id="scanBank" named="True">
                             <property name="command" type="command" cbtype="simple">scanBank_CB</property>
-                            <property name="value">selected</property>
-                            <property name="values">selected, test1, test2</property>
                             <property name="variable">string:scanBank_VAR</property>
                             <layout manager="grid">
                               <property name="column">1</property>
                               <property name="pady">10</property>
                               <property name="row">1</property>
-                              <property name="sticky">w</property>
+                              <property name="sticky">ew</property>
                             </layout>
                           </object>
                         </child>
@@ -1333,7 +1321,6 @@ Bank</property>
                 <property name="style">RedLED3.TLabel</property>
                 <property name="takefocus">false</property>
                 <property name="text" translatable="yes">Disconnected</property>
-                <property name="textvariable">string:linkStatus_VAR</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="row">2</property>
@@ -1369,8 +1356,6 @@ Bank</property>
               <object class="ttk.Label" id="sdrIPAddress_Label" named="True">
                 <property name="state">normal</property>
                 <property name="style">Heading3b.TLabel</property>
-                <property name="text" translatable="yes">0.0.0.0	</property>
-                <property name="textvariable">string:sdrIPAddress_VAR</property>
                 <property name="width">11</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -1383,7 +1368,6 @@ Bank</property>
               <object class="ttk.Label" id="sdrPortNumber_Label" named="True">
                 <property name="style">Heading3b.TLabel</property>
                 <property name="text" translatable="yes">8000</property>
-                <property name="textvariable">string:sdrPortNumber_VAR</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">3</property>

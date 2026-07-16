@@ -45,6 +45,12 @@ class sdrDashboard(baseui.sdrDashboardUI):
         gv.config.register_observer("Radio IP", self.updateIPAddress )
         gv.config.register_observer("Radio Port", self.updatePort)
 
+        gv.make_widget_variable(self, "targetBank", self.targetBank)
+        gv.make_widget_variable(self, "sourceBank", self.sourceBank)
+        gv.make_widget_variable(self, "scanBank", self.scanBank)
+        gv.make_widget_variable(self, "newBankName", self.newBankName_Entry)
+        gv.make_widget_variable(self, "scanTime", self.scanTime_Entry)
+
         self.treeChannels["columns"] = ('label','frequency', 'mode', 'description')
         # self.treeChannels.config(show='headings')
         self.treeChannels.config(yscrollcommand=self.treeScrollbar.set)
@@ -85,8 +91,8 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         # Seed initialization field parameters
         self.scanTime_Entry.insert(0, str(round(gv.config.get_Scan_On_Station_Time()/1000)))
-        self.sdrIPAddress_VAR.set(str(gv.config.get_sdr_server_ip()))
-        self.sdrPortNumber_VAR.set(str(gv.config.get_sdr_tcp_port()))
+        self.sdrIPAddress_Label['text'] = str(gv.config.get_sdr_server_ip())
+        self.sdrPortNumber_Label['text'] = str(gv.config.get_sdr_tcp_port())
         self.volume_scale.set(self.pre_mute_volume)
         self.label_volume_val.config(text=f"{self.pre_mute_volume}%")
 
@@ -127,7 +133,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
             self.linkStatus_Label.configure(
                 style="GreenLED.TLabel",
                 takefocus=False)
-            self.linkStatus_VAR.set('Connected')
+            self.linkStatus_Label['text'] = 'Connected'
             self.reconnect_Button.state(['disabled'])
 
             # --- ADD THIS LINE TO FIRE TELEMETRY ON STARTUP ---
@@ -139,7 +145,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
             self.linkStatus_Label.configure(
                 style="RedLED.TLabel",
                 takefocus=False)
-            self.linkStatus_VAR.set('Disconnected')
+            sself.linkStatus_Label['text'] = 'Disconnected'
             self.reconnect_Button.configure(state='normal')
 
         self.pack(expand=tk.YES, fill=tk.BOTH)
@@ -147,10 +153,10 @@ class sdrDashboard(baseui.sdrDashboardUI):
         self.update_filter_telemetry(self.sdr.get_filter_width_hz())
 
     def updateIPAddress (self, newIPAddress):
-        self.sdrIPAddress_VAR.set(newIPAddress)
+        self.self.sdrIPAddress_Label['text'] = newIPAddress
 
     def updatePort(self, newPort):
-        self.sdrPortNumber_VAR.set(newPort)
+        self.sdrPortNumber_Label['text'] = newPort
 
 
 
@@ -181,7 +187,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def update_filter_telemetry(self, filter_hz):
         self.current_live_filter_hz = int(filter_hz)
-        self.currentFilterWidth_VAR.set(str(filter_hz))
+        self.currentFilterWidth_Label['text'] = str(filter_hz)
 
     def refresh_listbox_view(self):
         for item in self.treeChannels.get_children():
@@ -204,7 +210,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
     def action_connect(self):
         gv.config.set_sdr_server_ip(self.sdrIPAddress_VAR.get().strip())
-        gv.config.set_sdr_tcp_port(int(self.sdrPortNumber_VAR.get().strip()))
+        gv.config.set_sdr_tcp_port(int(self.sdrPortNumber_Label['text'].strip()))
         # gv.config.set_sdr_server_ip(self.entry_radio_ip.get().strip())
         # gv.config.set_sdr_tcp_port(int(self.entry_radio_port.get().strip()))
         if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
@@ -212,14 +218,14 @@ class sdrDashboard(baseui.sdrDashboardUI):
             self.linkStatus_Label.configure(
                 style="GreenLED.TLabel",
                 takefocus=False)
-            self.linkStatus_VAR.set('Connected')
+            self.linkStatus_Label['text'] = 'Connected'
             self.reconnect_Button.state(['disabled'])
         else:
             messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.", parent=self)
             self.linkStatus_Label.configure(
                 style="RedLED.TLabel",
                 takefocus=False)
-            self.linkStatus_VAR.set('Disconnected')
+            self.linkStatus_Label['text'] = 'Disconnected'
             self.reconnect_Button.configure(state='normal')
 
 
@@ -631,13 +637,13 @@ class sdrDashboard(baseui.sdrDashboardUI):
     def action_filter_widen(self):
         if not self.sdr.is_connected: return
         self.sdr.widen()
-        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+        self.currentFilterWidth_Label['text'] = self.sdr.get_filter_width_hz()
 
     def action_filter_narrow(self):
 
         if not self.sdr.is_connected: return
         self.sdr.narrow()
-        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+        self.currentFilterWidth_Label['text'] = self.sdr.get_filter_width_hz()
 
     def action_filter_reset(self):
         # print("action filter_reset", gv.config.get_sdr_ssb_filter_default_hz(),gv.config.get_sdr_cw_filter_default_hz() )
@@ -652,7 +658,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
             fallbacks = self.sdr.get_all_mode_fallbacks()
             self.sdr.set_filter_width_hz(fallbacks.get(mode, 120000))
 
-        self.currentFilterWidth_VAR.set(self.sdr.get_filter_width_hz())
+        self.currentFilterWidth_Label['text'] = self.sdr.get_filter_width_hz()
 
     def setAccordionState(self, content_frame, thebutton, frameState):
         parent_frame = content_frame.master
@@ -764,6 +770,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
 
     def scanTime_validation(self):
+        print("scantime validation", self.scanTime_VAR.get())
         if gv.validateNumber(self.scanTime_VAR.get(), 0,100):
             return True
         else:

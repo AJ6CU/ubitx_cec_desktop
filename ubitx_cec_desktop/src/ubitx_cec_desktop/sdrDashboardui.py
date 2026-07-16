@@ -343,11 +343,8 @@ class sdrDashboardUI(ttk.Frame):
         self.filterWidth_Label.pack(padx=20, pady=5, side="left")
         self.currentFilterWidth_Label = ttk.Label(
             frame1, name="currentfilterwidth_label")
-        self.currentFilterWidth_VAR = tk.StringVar()
         self.currentFilterWidth_Label.configure(
-            style="Heading3b.TLabel",
-            textvariable=self.currentFilterWidth_VAR,
-            width=5)
+            style="Heading3b.TLabel", width=5)
         self.currentFilterWidth_Label.pack(side="left")
         self.filterWidthHZ_Label = ttk.Label(
             frame1, name="filterwidthhz_label")
@@ -489,7 +486,6 @@ class sdrDashboardUI(ttk.Frame):
             self.newVFOHeader_Frame, name="newchannel_entry")
         self.newChannel_VAR = tk.StringVar()
         self.newChannel_Entry.configure(
-            placeholder="station name",
             style="Entry3b.TEntry",
             takefocus=False,
             textvariable=self.newChannel_VAR,
@@ -512,7 +508,6 @@ class sdrDashboardUI(ttk.Frame):
             self.newVFOHeader_Frame, name="newstationdescription_entry")
         self.newStationDescription_VAR = tk.StringVar()
         self.newStationDescription_Entry.configure(
-            placeholder="description",
             style="Entry3b.TEntry",
             takefocus=False,
             textvariable=self.newStationDescription_VAR,
@@ -560,15 +555,15 @@ class sdrDashboardUI(ttk.Frame):
             text='Selection of the Source bank. ',
             wraplength=300)
         lbl_src_bank.grid(column=0, row=1)
-        self.sourceBank_VAR = tk.StringVar(value='selected')
-        __values = ['selected', ' test1', ' test2']
+        self.sourceBank_VAR = tk.StringVar()
+        __values = []
         self.sourceBank = ttk.OptionMenu(
             self.sourceTargetLabelframe,
             self.sourceBank_VAR,
-            "selected",
+            None,
             *__values,
             command=self.sourceBank_CB)
-        self.sourceBank.grid(column=1, pady=10, row=1, sticky="w")
+        self.sourceBank.grid(column=1, pady=10, row=1, sticky="ew")
         lbl_tgt_bank = ttk.Label(self.sourceTargetLabelframe)
         lbl_tgt_bank.configure(style="Heading3b.TLabel", text='Target:')
         self.tooltip16 = Tooltip(lbl_tgt_bank)
@@ -578,15 +573,15 @@ class sdrDashboardUI(ttk.Frame):
             text='Selection of the Target bank. ',
             wraplength=300)
         lbl_tgt_bank.grid(column=0, row=0)
-        self.targetBank_VAR = tk.StringVar(value='selected')
-        __values = ['selected', ' test1', ' test2']
+        self.targetBank_VAR = tk.StringVar()
+        __values = []
         self.targetBank = ttk.OptionMenu(
             self.sourceTargetLabelframe,
             self.targetBank_VAR,
-            "selected",
+            None,
             *__values,
             command=self.targetBank_CB)
-        self.targetBank.grid(column=1, pady=10, row=0, sticky="w")
+        self.targetBank.grid(column=1, pady=10, row=0, sticky="ew")
         self.sourceTargetLabelframe.grid(column=0, row=0)
         self.channelControl_Frame = ttk.Frame(
             self.bankRouting_Labelframe,
@@ -609,13 +604,8 @@ class sdrDashboardUI(ttk.Frame):
             command=self.action_create_brand_new_bank)
         self.newBankName_Entry = ttk.Entry(
             self.channelControl_Frame, name="newbankname_entry")
-        self.newBankName_VAR = tk.StringVar()
         self.newBankName_Entry.configure(
-            placeholder="new bank name",
-            style="Entry3b.TEntry",
-            takefocus=False,
-            textvariable=self.newBankName_VAR,
-            width=11)
+            style="Entry3b.TEntry", takefocus=False, width=11)
         self.newBankName_Entry.grid(
             column=2, ipady=5, pady=10, row=0, sticky="w")
         self.bankCloneButton = ttk.Button(
@@ -700,12 +690,8 @@ class sdrDashboardUI(ttk.Frame):
         self.scanTime_Entry = ttk.Entry(
             self.scanParameters_Labelframe,
             name="scantime_entry")
-        self.scanTime_VAR = tk.StringVar()
         self.scanTime_Entry.configure(
-            style="Entry3b.TEntry",
-            takefocus=False,
-            textvariable=self.scanTime_VAR,
-            width=6)
+            style="Entry3b.TEntry", takefocus=False, width=6)
         self.scanTime_Entry.grid(
             column=1,
             ipady=5,
@@ -728,15 +714,15 @@ class sdrDashboardUI(ttk.Frame):
             wraplength=300)
         self.scanBankSelect_Label.grid(
             column=0, padx=5, pady=2, row=1, sticky="e")
-        self.scanBank_VAR = tk.StringVar(value='selected')
-        __values = ['selected', ' test1', ' test2']
+        self.scanBank_VAR = tk.StringVar()
+        __values = []
         self.scanBank = ttk.OptionMenu(
             self.scanParameters_Labelframe,
             self.scanBank_VAR,
-            "selected",
+            None,
             *__values,
             command=self.scanBank_CB)
-        self.scanBank.grid(column=1, pady=10, row=1, sticky="w")
+        self.scanBank.grid(column=1, pady=10, row=1, sticky="ew")
         self.scanParameters_Labelframe.pack(padx=10)
         self.scanControl_Labelframe = ttk.Labelframe(
             self.scanAccordion_Frame, name="scancontrol_labelframe")
@@ -819,12 +805,10 @@ class sdrDashboardUI(ttk.Frame):
         self.linkStatus_Label = ttk.Label(
             self.connectionStatus_Frame,
             name="linkstatus_label")
-        self.linkStatus_VAR = tk.StringVar(value='Disconnected')
         self.linkStatus_Label.configure(
             style="RedLED3.TLabel",
             takefocus=False,
-            text='Disconnected',
-            textvariable=self.linkStatus_VAR)
+            text='Disconnected')
         self.linkStatus_Label.grid(column=1, row=2)
         self.reconnect_Button = ttk.Button(
             self.connectionStatus_Frame,
@@ -851,23 +835,14 @@ class sdrDashboardUI(ttk.Frame):
         self.sdrIPAddress_Label = ttk.Label(
             self.connectionStatus_Frame,
             name="sdripaddress_label")
-        self.sdrIPAddress_VAR = tk.StringVar(value='0.0.0.0\t')
         self.sdrIPAddress_Label.configure(
-            state="normal",
-            style="Heading3b.TLabel",
-            text='0.0.0.0\t',
-            textvariable=self.sdrIPAddress_VAR,
-            width=11)
+            state="normal", style="Heading3b.TLabel", width=11)
         self.sdrIPAddress_Label.grid(column=1, row=0, sticky="w")
         self.sdrPortNumber_Label = ttk.Label(
             self.connectionStatus_Frame,
             name="sdrportnumber_label")
-        self.sdrPortNumber_VAR = tk.StringVar(value='8000')
         self.sdrPortNumber_Label.configure(
-            style="Heading3b.TLabel",
-            text='8000',
-            textvariable=self.sdrPortNumber_VAR,
-            width=5)
+            style="Heading3b.TLabel", text='8000', width=5)
         self.sdrPortNumber_Label.grid(column=3, row=0)
         self.connectionStatus_Frame.pack(anchor="s", side="bottom")
         self.connectionStatus_Frame.grid_anchor("s")
@@ -946,3 +921,9 @@ class sdrDashboardUI(ttk.Frame):
     def action_connect(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = sdrDashboardUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()
