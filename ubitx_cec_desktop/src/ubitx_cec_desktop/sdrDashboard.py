@@ -75,7 +75,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
         #
         #   Create an error handler for each entry field
         #
-        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master, self.action_filter_search_grid)
+        self.channelLookup_Object = entryFieldHandler(self, "channelLookup", 10, VirtualKeyboard, self.master)
         self.newChannel_Object = entryFieldHandler(self, "newChannel", 15, VirtualKeyboard,self.master)
         self.newStationDescription_Object = entryFieldHandler(self, "newStationDescription", 50, VirtualKeyboard, self.master)
         self.newBankName_Object = entryFieldHandler(self, "newBankName", 15, VirtualKeyboard, self.master)
@@ -848,7 +848,7 @@ class SDRDashboardPopup:
         """Ensures scanning timer engines freeze quietly when the window disappears."""
         try:
             self.app.sdr.stop_scan()  # Halt active backgrounds
-            self.app.sdr.disconnect()
+            # self.app.sdr.disconnect()
         except Exception:
             pass
         self.popup.destroy()  # Close window container safely
