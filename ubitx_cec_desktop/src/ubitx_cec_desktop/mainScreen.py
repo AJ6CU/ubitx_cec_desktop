@@ -1319,7 +1319,7 @@ class mainScreen(baseui.mainScreenUI):
                 self.theSDRWindow.on_close()    # close the sdrdashboard when going out of sdr mode
                 self.theSDR.stopSDR()
                 self.theSDR.disconnect()
-                del self.theSDR
+                self.theSDR = None
         else:
             self.speaker_Button_On = True
             self.speaker_Button.configure(style='RedButton2b.TButton', state="pressed")
