@@ -203,8 +203,22 @@ class channels(baseui.channelsUI):
 
         self.mainWindow.theRadio.Set_Mode(
             EEPROM.Text_To_ModeNum[channels.channelList[self.channelSlotSelection].Get_Mode()])
-        self.mainWindow.theRadio.Set_New_Frequency(channels.channelList[self.channelSlotSelection].Get_Freq())
+        theFreq = channels.channelList[self.channelSlotSelection].Get_Freq()
+        theMode = EEPROM.Text_To_ModeNum[channels.channelList[self.channelSlotSelection].Get_Mode()]
+
+        self.mainWindow.theRadio.Set_New_Frequency(theFreq)
         # self.mainWindow.theRadio.Set_Mode(EEPROM.Text_To_ModeNum[channels.channelList[self.channelSlotSelection].Get_Mode()])
+
+        if theMode == "DFT":
+            if theFreq >= 10000000:
+                self.mainWindow.theRadio.Set_Mode("USB")
+            else:
+                self.mainWindow.theRadio.Set_Mode("LSB")
+        else:
+            self.mainWindow.theRadio.Set_Mode(theMode)
+
+
+
         self.current_Channel['text'] = channels.channelList[self.channelSlotSelection].Get_Label()
 
     #
