@@ -104,19 +104,35 @@ connection below before proceeding.</property>
                   <property name="side">top</property>
                 </layout>
                 <child>
-                  <object class="ttk.Combobox" id="connectionType_Combobox" named="True">
-                    <property name="style">ComboBox1.TCombobox</property>
-                    <property name="textvariable">string:radioConnectionType_VAR</property>
-                    <property name="values">ComPort Socket</property>
-                    <property name="width">20</property>
-                    <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="connectionTypeSelected_CB" add="True" />
+                  <object class="ttk.Menubutton" id="connectionType_Menubutton" named="True">
+                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="takefocus">true</property>
+                    <property name="width">10</property>
                     <layout manager="pack">
-                      <property name="expand">true</property>
-                      <property name="fill">x</property>
-                      <property name="ipadx">6</property>
-                      <property name="pady">10</property>
-                      <property name="side">top</property>
+                      <property name="padx">70 0</property>
+                      <property name="side">left</property>
                     </layout>
+                    <child>
+                      <object class="tk.Menu" id="connectionType_Menu" named="True">
+                        <property name="tearoff">false</property>
+                        <child>
+                          <object class="tk.Menuitem.Command" id="selectComPort_Command" named="True">
+                            <property name="command" type="command" cbtype="simple">selectComPort_CB</property>
+                            <property name="font">{Arial} 24 {}</property>
+                            <property name="label" translatable="yes">ComPort</property>
+                            <property name="state">normal</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="tk.Menuitem.Command" id="selectSocket_Command" named="True">
+                            <property name="command" type="command" cbtype="simple">selectSocket_CB</property>
+                            <property name="font">{Arial} 24 {}</property>
+                            <property name="label" translatable="yes">Socket</property>
+                            <property name="state">normal</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -301,13 +317,13 @@ connection below before proceeding.</property>
               <property name="side">top</property>
             </layout>
             <child>
-              <object class="ttk.OptionMenu" id="comPortsOptionMenu" named="True">
+              <object class="ttk.OptionMenu" id="availableComPorts_OptionMenu" named="True">
                 <property name="command" type="command" cbtype="simple">radioSerialPortSelected_CB</property>
                 <property name="style">Heading2b.TMenubutton</property>
-                <property name="value">Select Serial Port</property>
-                <property name="values">Select Serial Port</property>
                 <property name="variable">string:availableComPorts_VAR</property>
                 <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
                   <property name="side">left</property>
                 </layout>
               </object>

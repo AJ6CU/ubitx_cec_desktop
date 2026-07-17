@@ -27,14 +27,19 @@ class comportManager(baseui.comportManagerUI):
         self.master = master
         self.actionCallback = actionCallback
 
+        gv.make_widget_variable(self, "radioConnectionType", self.connectionType_Menubutton)
+        gv.make_widget_variable(self, "availableComPorts", self.availableComPorts_OptionMenu)
+
+        gv.formatOptionMenu(self.availableComPorts_OptionMenu, ("Arial", 20), 40)
+
+
+
 
         self.open_com_port = None
         self.selectionMade = False
 
         self.radioPortType = "ComPort"          # Default to ComPort
 
-
-        gv.formatCombobox(self.connectionType_Combobox, "Arial", "12", "bold")
         #
         #   Determine existing type of connection in config file
         #
@@ -210,7 +215,7 @@ class comportManager(baseui.comportManagerUI):
             self.open_com_port = RS232
 
             if self.radioPortType == "ComPort":
-                self.comPortsOptionMenu.configure(state="disabled")         # disable selection for life of run
+                self.availableComPorts_OptionMenu.configure(state="disabled")         # disable selection for life of run
                 self.comPortListRefresh.configure(state="disabled")
             else:                   # Socket
                 self.wifi_Port_Test_Button.pack_forget()        # success open means we can remove test button
@@ -232,8 +237,20 @@ class comportManager(baseui.comportManagerUI):
         for p in ports:                                 #this used to strip down to just the com port# or path
             if p.vid != None:
                 self.comPortList.append(p.device)
-        self.comPortsOptionMenu.set_menu(*self.comPortList)  # put found ports into the option menu
 
+        self.availableComPorts_OptionMenu["menu"].delete(0, "end")
+
+        # 2. Explicitly bind every single item to update the variable
+        for option in self.comPortList:
+            self.availableComPorts_OptionMenu["menu"].add_command(
+                label=option,
+                # tk._setit binds the click event directly to the StringVar
+                command=tk._setit(self.availableComPorts_VAR, option, self.radioSerialPortSelected_CB)
+            )
+        #
+        # print("available values=", self.comPortList)
+        # self.availableComPorts_OptionMenu.set_menu(*self.comPortList)  # put found ports into the option menu
+        self.availableComPorts_VAR.set(self.comPortList[0])
     def radioSerialPortSelected_CB(self, *args):                # callback specified by UX, connected to main
         self.selectionMade = True
 
@@ -251,8 +268,11 @@ class comportManager(baseui.comportManagerUI):
     def getRadioPortHandle (self):
         return self.open_com_port
 
-    def connectionTypeSelected_CB(self, event=None):
-        self.setRadioPortType (self.radioConnectionType_VAR.get())
+    def selectComPort_CB(self):
+        self.setRadioPortType("ComPort")
+
+    def selectSocket_CB(self):
+        self.setRadioPortType("Socket")
 
 
     def setRadioPortType(self, portType):
@@ -290,6 +310,6 @@ class comportManager(baseui.comportManagerUI):
                 side="top")
             self.comPortListRefresh.configure(image=self.reloadicon)
             self.updateComPorts()  # preload the available com ports
-            self.comPortsOptionMenu.configure(width=15)
+            self.availableComPorts_OptionMenu.configure(width=15)
 
 

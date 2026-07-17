@@ -1,19 +1,26 @@
 #!/usr/bin/python3
+"""
+comPort
+
+pops up com port selector
+
+UI source file: comportManager.ui
+"""
 import tkinter as tk
 import tkinter.ttk as ttk
 
 
-def i18n_translator_noop(value):
+def safe_i18n_translator(value):
     """i18n - Setup translator in derived class file"""
     return value
 
 
-def first_object_callback_noop(widget):
+def safe_fo_callback(widget):
     """on first objec callback - Setup callback in derived class file."""
     pass
 
 
-def image_loader_default(master, image_name: str):
+def safe_image_loader(master, image_name: str):
     """Image loader - Setup image_loader in derived class file."""
     img = None
     try:
@@ -38,12 +45,12 @@ class comportManagerUI(ttk.Frame):
         **kw
     ):
         if translator is None:
-            translator = i18n_translator_noop
+            translator = safe_i18n_translator
         _ = translator  # i18n string marker.
         if image_loader is None:
-            image_loader = image_loader_default
+            image_loader = safe_image_loader
         if on_first_object_cb is None:
-            on_first_object_cb = first_object_callback_noop
+            on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
 
@@ -82,20 +89,28 @@ class comportManagerUI(ttk.Frame):
             expand=True, fill="x", padx=5, pady=5, side="left")
         frame6 = ttk.Frame(frame2)
         frame6.configure(height=200, style="Normal.TFrame", width=200)
-        self.connectionType_Combobox = ttk.Combobox(
-            frame6, name="connectiontype_combobox")
-        self.radioConnectionType_VAR = tk.StringVar()
-        self.connectionType_Combobox.configure(
-            style="ComboBox1.TCombobox",
-            textvariable=self.radioConnectionType_VAR,
-            values='ComPort Socket',
-            width=20)
-        self.connectionType_Combobox.pack(
-            expand=True, fill="x", ipadx=6, pady=10, side="top")
-        self.connectionType_Combobox.bind(
-            "<<ComboboxSelected>>",
-            self.connectionTypeSelected_CB,
-            add="+")
+        self.connectionType_Menubutton = ttk.Menubutton(
+            frame6, name="connectiontype_menubutton")
+        self.connectionType_Menubutton.configure(
+            style="Heading0.TMenubutton", takefocus=True, width=10)
+        self.connectionType_Menu = tk.Menu(
+            self.connectionType_Menubutton,
+            name="connectiontype_menu")
+        self.connectionType_Menu.configure(tearoff=False)
+        self.connectionType_Menu.add(
+            "command",
+            command=self.selectComPort_CB,
+            font="{Arial} 24 {}",
+            label='ComPort',
+            state="normal")
+        self.connectionType_Menu.add(
+            "command",
+            command=self.selectSocket_CB,
+            font="{Arial} 24 {}",
+            label='Socket',
+            state="normal")
+        self.connectionType_Menubutton.configure(menu=self.connectionType_Menu)
+        self.connectionType_Menubutton.pack(padx="70 0", side="left")
         frame6.pack(padx=10, side="top")
         frame2.pack(side="top")
         self.comportMessage_Frame.pack(
@@ -199,15 +214,17 @@ class comportManagerUI(ttk.Frame):
         self.label4.pack(anchor="w", padx="10 0", pady=5, side="left")
         self.frame5 = ttk.Frame(self.comPort_Frame, name="frame5")
         self.frame5.configure(height=200, style="Normal.TFrame", width=200)
-        self.availableComPorts_VAR = tk.StringVar(value='Select Serial Port')
-        __values = ['Select Serial Port']
-        self.comPortsOptionMenu = ttk.OptionMenu(
+        self.availableComPorts_VAR = tk.StringVar()
+        __values = []
+        self.availableComPorts_OptionMenu = ttk.OptionMenu(
             self.frame5,
             self.availableComPorts_VAR,
-            "Select Serial Port",
+            None,
             *__values,
-            command=self.radioSerialPortSelected_CB)
-        self.comPortsOptionMenu.pack(side="left")
+            command=self.radioSerialPortSelected_CB,
+            style="Heading2b.TMenubutton")
+        self.availableComPorts_OptionMenu.pack(
+            expand=True, fill="x", side="left")
         self.comPortListRefresh = tk.Button(
             self.frame5, name="comportlistrefresh")
         self.comPortListRefresh.configure(
@@ -225,9 +242,12 @@ class comportManagerUI(ttk.Frame):
             pady=10,
             side="top")
         self.configure(height=300, style="Normal.TFrame", width=400)
-        self.pack(anchor="w", expand=True, fill="both", side="top")
+        # Layout for 'selectComPortFrame' skipped in custom widget template.
 
-    def connectionTypeSelected_CB(self, event=None):
+    def selectComPort_CB(self):
+        pass
+
+    def selectSocket_CB(self):
         pass
 
     def test_Entered_IP_Address_CB(self):
@@ -239,3 +259,9 @@ class comportManagerUI(ttk.Frame):
     def updateComPorts(self):
         pass
 
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = comportManagerUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

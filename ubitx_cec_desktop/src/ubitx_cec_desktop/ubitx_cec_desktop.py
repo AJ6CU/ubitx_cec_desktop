@@ -31,7 +31,7 @@ def startMainWindow(radioPortName, radioPortHandle):
 
     radioPort.place_forget()
 
-    radioPort.place(relx=0.85, rely=1, anchor="s")
+    radioPort.place(relx=0.8, rely=1, anchor="s")
 
     gv.config.setRadioPort(radioPortName)  # update the config file if necessary because of comport selection
 
@@ -74,7 +74,9 @@ if not radioPort.getRadioPort():
     #   Handles the case where the com port is not valid or not in .ini file.
     #   Have to open up  selection window.
     #
-    radioPort.pack()
+    root.deiconify()
+
+    radioPort.pack(fill="both", expand=True)
 
     root.geometry(gv.POPUP_WINDOW_OFFSET)
 
