@@ -79,7 +79,7 @@
                 </child>
                 <child>
                   <object class="ttk.Label" id="current_Channel" named="True">
-                    <property name="style">Heading2bi.TLabel</property>
+                    <property name="style">Heading2b.TLabel</property>
                     <property name="text" translatable="yes">Not Saved</property>
                     <property name="width">10</property>
                     <layout manager="pack">
@@ -493,7 +493,7 @@ Set</property>
                         <property name="command" type="command" cbtype="simple">ChannelToVFO_CB</property>
                         <property name="compound">none</property>
                         <property name="state">normal</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Channel-&gt;VFO</property>
                         <property name="width">14</property>
                         <layout manager="grid">
@@ -515,7 +515,7 @@ Set</property>
                       <object class="ttk.Button" id="VFOToChannel_Button" named="True">
                         <property name="command" type="command" cbtype="simple">VFOToChannel_CB</property>
                         <property name="state">normal</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">VFO-&gt;Channel</property>
                         <property name="width">14</property>
                         <layout manager="grid">
@@ -536,7 +536,7 @@ Set</property>
                     <child>
                       <object class="ttk.Button" id="scan_Button" named="True">
                         <property name="command" type="command" cbtype="simple">scan_Channel_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Run Scan</property>
                         <property name="width">14</property>
                         <layout manager="grid">
@@ -569,7 +569,7 @@ Set</property>
                     <child>
                       <object class="ttk.Button" id="exportChannel_Button" named="True">
                         <property name="command" type="command" cbtype="simple">exportAllChannels_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Export Channels to Config</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -620,7 +620,7 @@ Set</property>
                       <object class="ttk.Button" id="saveChannel_Button" named="True">
                         <property name="command" type="command" cbtype="simple">saveChannel_CB</property>
                         <property name="state">normal</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Save Channel</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -642,7 +642,7 @@ Set</property>
                       <object class="ttk.Button" id="saveAllChannels_Button" named="True">
                         <property name="command" type="command" cbtype="simple">saveAllChannels_CB</property>
                         <property name="state">normal</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Save All</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -663,7 +663,7 @@ Set</property>
                     <child>
                       <object class="ttk.Button" id="refresh_Button" named="True">
                         <property name="command" type="command" cbtype="simple">refresh_Channel_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Refresh</property>
                         <layout manager="grid">
                           <property name="column">2</property>
@@ -684,7 +684,7 @@ Set</property>
                     <child>
                       <object class="ttk.Button" id="close_Button" named="True">
                         <property name="command" type="command" cbtype="simple">close_Channel_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">Close</property>
                         <layout manager="grid">
                           <property name="column">3</property>

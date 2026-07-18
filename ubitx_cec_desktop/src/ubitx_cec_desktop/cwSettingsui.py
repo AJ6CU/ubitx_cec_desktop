@@ -62,7 +62,7 @@ class cwSettingsUI(ttk.Labelframe):
 
         label1 = ttk.Label(frame1)
         label1.configure(
-            style="Heading2bi.TLabel",
+            style="Heading2b.TLabel",
             text='Note: These values are stored in EEPROM and are the ones that are used. The configuration file values might differ depending on whether you have backed up these values to the configuration file using the Backup settings.',
             wraplength=1100)
         label1.pack(padx=10)
@@ -293,7 +293,8 @@ class cwSettingsUI(ttk.Labelframe):
         self.closingFrame.configure(
             height=50, style="Normal.TFrame", width=200)
         self.apply_Button = ttk.Button(self.closingFrame, name="apply_button")
-        self.apply_Button.configure(style="Button2b.TButton", text='Apply')
+        self.apply_Button.configure(
+            style="Button2bRaised.TButton", text='Apply')
         self.applyButton_Tooltip = Tooltip(self.apply_Button)
         self.applyButton_Tooltip.configure(
             padx=8,
@@ -304,7 +305,8 @@ class cwSettingsUI(ttk.Labelframe):
         self.apply_Button.configure(command=self.apply_CB)
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
-        self.cancel_Buttom.configure(style="Button2b.TButton", text='Cancel')
+        self.cancel_Buttom.configure(
+            style="Button2bRaised.TButton", text='Cancel')
         self.cancelButton_Tooltip = Tooltip(self.cancel_Buttom)
         self.cancelButton_Tooltip.configure(
             padx=8,

@@ -151,7 +151,7 @@ def unformatFrequency(vfo, includeOffset=False, freqOffset=0):
 
 
 def formatOptionMenu(theWidget, theFont, theWidth):
-    theWidget.configure(style="Heading1n.TMenubutton", width=theWidth)
+    theWidget.configure(style="Heading1b.TMenubutton", width=theWidth)
     dropdown_menu = theWidget.nametowidget(theWidget.cget("menu"))
     dropdown_menu.config(font=theFont)
 

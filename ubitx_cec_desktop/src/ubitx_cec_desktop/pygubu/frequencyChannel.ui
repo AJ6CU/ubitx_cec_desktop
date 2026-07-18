@@ -34,7 +34,7 @@
     <child>
       <object class="ttk.Label" id="channel_Number_Label" named="True">
         <property name="anchor">e</property>
-        <property name="style">Heading1bi.TLabel</property>
+        <property name="style">Heading1b.TLabel</property>
         <property name="width">3</property>
         <layout manager="grid">
           <property name="column">0</property>
@@ -47,7 +47,7 @@
     <child>
       <object class="ttk.Button" id="channel_Select_Button" named="True">
         <property name="command" type="command" cbtype="simple">channel_Select_CB</property>
-        <property name="style">Button1bARaised.TButton</property>
+        <property name="style">Button1Raised.TButton</property>
         <property name="text" translatable="yes">Select</property>
         <property name="width">8</property>
         <layout manager="grid">
@@ -62,6 +62,7 @@
         <property name="font">{Arial} 20 {bold}</property>
         <property name="invalidcommand" type="command" cbtype="entry_validate" args="%P">channel_Label_Invalid_CB</property>
         <property name="justify">left</property>
+        <property name="style">Entry1b.TEntry</property>
         <property name="textvariable">string:channel_Label_VAR</property>
         <property name="validate">focusout</property>
         <property name="validatecommand" type="command" cbtype="entry_validate" args="%P %V">channel_Label_Validation_CB</property>
@@ -97,7 +98,7 @@
     </child>
     <child>
       <object class="ttk.Label" id="dirtyChannel_Label" named="True">
-        <property name="style">GreenLED.TLabel</property>
+        <property name="style">Heading3bGreen.TLabel</property>
         <property name="width">2</property>
         <layout manager="grid">
           <property name="column">7</property>

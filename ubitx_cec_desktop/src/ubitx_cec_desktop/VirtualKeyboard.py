@@ -337,8 +337,8 @@ class VirtualKeyboard(tk.Toplevel):
 
             self.shift_status = False
         else:
-            self.row4buttons[indLeft].config(style='Button1Sunken.TButton')
-            self.row4buttons[indRight].config(style='Button1Sunken.TButton')
+            self.row4buttons[indLeft].config(style='Button1Pressed.TButton')
+            self.row4buttons[indRight].config(style='Button1Pressed.TButton')
 
             self.shift_status = True
     #

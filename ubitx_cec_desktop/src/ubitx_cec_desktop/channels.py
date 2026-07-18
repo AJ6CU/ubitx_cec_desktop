@@ -336,7 +336,7 @@ class channels(baseui.channelsUI):
     def channelSlot_CB(self, slotNumber):
         if self.channelSlotSelection != None:
             channels.channelList[self.channelSlotSelection].channel_Select_Button.configure(
-                style="Button1bARaised.TButton")
+                style="Button1Raised.TButton")
             channels.channelList[self.channelSlotSelection].channel_Select_Button['text'] = "Select"  # unselect the prior one
 
         if self.channelSlotSelection == slotNumber:         #Unselect if already selected
@@ -344,7 +344,7 @@ class channels(baseui.channelsUI):
         else:
             self.channelSlotSelection = slotNumber
             channels.channelList[self.channelSlotSelection].channel_Select_Button.configure(
-                    style="Button1bAPressed.TButton")
+                    style="Button1Pressed.TButton")
             channels.channelList[self.channelSlotSelection].channel_Select_Button['text'] = "Selected" # select the new one
     #
     #   Does the actual saving of a particular channel when a save is requested. A "save all"

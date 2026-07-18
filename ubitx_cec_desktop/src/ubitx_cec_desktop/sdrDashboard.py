@@ -135,7 +135,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
 
         if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
             self.linkStatus_Label.configure(
-                style="GreenLED.TLabel",
+                style="Heading3bGreen.TLabel",
                 takefocus=False)
             self.linkStatus_Label['text'] = 'Connected'
             self.reconnect_Button.state(['disabled'])
@@ -147,7 +147,7 @@ class sdrDashboard(baseui.sdrDashboardUI):
                 self.update_mode_telemetry("USB")  # Safe hardware default if empty
         else:
             self.linkStatus_Label.configure(
-                style="RedLED.TLabel",
+                style="Heading3bRed.TLabel",
                 takefocus=False)
             sself.linkStatus_Label['text'] = 'Disconnected'
             self.reconnect_Button.configure(state='normal')
@@ -220,14 +220,14 @@ class sdrDashboard(baseui.sdrDashboardUI):
         if self.sdr.connect(gv.config.get_sdr_server_ip(), gv.config.get_sdr_tcp_port()):
             messagebox.showinfo("Success", "Successfully attached socket link to SDR++ server.", parent=self)
             self.linkStatus_Label.configure(
-                style="GreenLED.TLabel",
+                style="Heading3bGreen.TLabel",
                 takefocus=False)
             self.linkStatus_Label['text'] = 'Connected'
             self.reconnect_Button.state(['disabled'])
         else:
             messagebox.showerror("Error", "SDR++ Connection refused. Verify target host profiles.", parent=self)
             self.linkStatus_Label.configure(
-                style="RedLED.TLabel",
+                style="Heading3bRed.TLabel",
                 takefocus=False)
             self.linkStatus_Label['text'] = 'Disconnected'
             self.reconnect_Button.configure(state='normal')
@@ -548,20 +548,20 @@ class sdrDashboard(baseui.sdrDashboardUI):
         #
         #   Unpress all the buttons
         #
-        self.Band160m.configure(style='Button3Raised.TButton')
-        self.Band80m.configure(style='Button3Raised.TButton')
-        self.Band40m.configure(style='Button3Raised.TButton')
-        self.Band30m.configure(style='Button3Raised.TButton')
-        self.Band20m.configure(style='Button3Raised.TButton')
-        self.Band17m.configure(style='Button3Raised.TButton')
-        self.Band15m.configure(style='Button3Raised.TButton')
-        self.Band12m.configure(style='Button3Raised.TButton')
-        self.Band10m.configure(style='Button3Raised.TButton')
+        self.Band160m.configure(style='Button2bRaised.TButton')
+        self.Band80m.configure(style='Button2bRaised.TButton')
+        self.Band40m.configure(style='Button2bRaised.TButton')
+        self.Band30m.configure(style='Button2bRaised.TButton')
+        self.Band20m.configure(style='Button2bRaised.TButton')
+        self.Band17m.configure(style='Button2bRaised.TButton')
+        self.Band15m.configure(style='Button2bRaised.TButton')
+        self.Band12m.configure(style='Button2bRaised.TButton')
+        self.Band10m.configure(style='Button2bRaised.TButton')
         #
         #   Show button pressed
         #
         if widget_id != None:
-            getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+            getattr(self, widget_id).configure(style='Button2bPressed.TButton')
 
     def action_quick_band(self, widget_id):
         if not self.sdr.is_connected: return
@@ -608,21 +608,21 @@ class sdrDashboard(baseui.sdrDashboardUI):
         #
         #   Unpress all the buttons
         #
-        self.modeLSB_Button.configure(style='Button3Raised.TButton')
-        self.modeUSB_Button.configure(style='Button3Raised.TButton')
-        self.modeCWL_Button.configure(style='Button3Raised.TButton')
-        self.modeCWU_Button.configure(style='Button3Raised.TButton')
+        self.modeLSB_Button.configure(style='Button2bRaised.TButton')
+        self.modeUSB_Button.configure(style='Button2bRaised.TButton')
+        self.modeCWL_Button.configure(style='Button2bRaised.TButton')
+        self.modeCWU_Button.configure(style='Button2bRaised.TButton')
         #
         #   Show button pressed
         #
-        getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+        getattr(self, widget_id).configure(style='Button2bPressed.TButton')
 
     def action_quick_mode(self, widget_id):
         if not self.sdr.is_connected: return
 
         self.showModeButtonPressed(widget_id)
 
-        getattr(self, widget_id).configure(style='Button3Pressed.TButton')
+        getattr(self, widget_id).configure(style='Button2bPressed.TButton')
 
         match widget_id:
             case "modeLSB_Button":

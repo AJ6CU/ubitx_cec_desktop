@@ -414,7 +414,7 @@ class logQSOUI(ttk.Labelframe):
         self.logQSO_Button = ttk.Button(
             self.closingFrame, name="logqso_button")
         self.logQSO_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Log',
             width=10)
@@ -429,7 +429,7 @@ class logQSOUI(ttk.Labelframe):
         self.cancel_Button = ttk.Button(
             self.closingFrame, name="cancel_button")
         self.cancel_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Cancel',
             width=10)

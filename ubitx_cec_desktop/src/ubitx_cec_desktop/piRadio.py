@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 from configuration import ConfigurationManager
 import globalvars as gv
 from tkinter import messagebox
+import tkinter as tk
 import EEPROM as EEPROM
 import random
 

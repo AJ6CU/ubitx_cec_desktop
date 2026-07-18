@@ -224,7 +224,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_Master_Cal_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">2</property>
@@ -239,7 +239,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_Master_Cal_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -254,7 +254,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_Master_Cal_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -297,7 +297,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_SSB_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">2</property>
@@ -312,7 +312,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_SSB_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -327,7 +327,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_SSB_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -370,7 +370,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">N/A</property>
                     <property name="width">10</property>
                     <layout manager="grid">
@@ -386,7 +386,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -401,7 +401,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFIle_CW_BFO_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -443,7 +443,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_Keytype_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">N/A</property>
                     <property name="width">10</property>
                     <layout manager="grid">
@@ -459,7 +459,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_Keytype_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -474,7 +474,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_CW_Keytype_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -516,7 +516,7 @@ File</property>
                 <child>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_Speed_Label" named="True">
                     <property name="anchor">e</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">2</property>
@@ -531,7 +531,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_Speed_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -546,7 +546,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_CW_Speed_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -589,7 +589,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_Sidetone_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">2</property>
@@ -604,7 +604,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_Sidetone_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -619,7 +619,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_CW_Sidetone_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -662,7 +662,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_Delay_Before_TX" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">N/A</property>
                     <property name="width">10</property>
                     <layout manager="grid">
@@ -678,7 +678,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_Delay_Before_TX" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -693,7 +693,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFile_CW_Delay_Before_TX_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -736,7 +736,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Factory_CW_Delay_Returning_To_RX_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="text" translatable="yes">N/A</property>
                     <property name="width">10</property>
                     <layout manager="grid">
@@ -752,7 +752,7 @@ File</property>
                   <object class="ttk.Label" id="EEPROM_Current_CW_Delay_Returning_To_RX_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">3</property>
@@ -767,7 +767,7 @@ File</property>
                   <object class="ttk.Label" id="ConfigFIle_CW_Delay_Returning_To_RX_Label" named="True">
                     <property name="anchor">e</property>
                     <property name="justify">right</property>
-                    <property name="style">Heading1Std.TLabel</property>
+                    <property name="style">Heading1b.TLabel</property>
                     <property name="width">10</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -981,7 +981,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="copy_Button" named="True">
                     <property name="command" type="command" cbtype="simple">copy_CB</property>
-                    <property name="style">Button2b.TButton</property>
+                    <property name="style">Button2bRaised.TButton</property>
                     <property name="text" translatable="yes">Copy</property>
                     <layout manager="pack">
                       <property name="padx">10</property>
@@ -1000,7 +1000,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="cancel_Buttom" named="True">
                     <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                    <property name="style">Button2b.TButton</property>
+                    <property name="style">Button2bRaised.TButton</property>
                     <property name="text" translatable="yes">Cancel</property>
                     <layout manager="pack">
                       <property name="padx">10</property>

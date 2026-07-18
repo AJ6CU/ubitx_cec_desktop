@@ -69,7 +69,7 @@ class theVFOUI(ttk.Frame):
         self.rx_Status_Light_Label.configure(
             borderwidth=4,
             state="normal",
-            style="GreenLED.TLabel",
+            style="Heading3bGreen.TLabel",
             text='  RX',
             width=5)
         self.rx_Status_Light_Label.grid(column=0, pady=10, row=0)
@@ -78,7 +78,7 @@ class theVFOUI(ttk.Frame):
         self.tx_Status_Light_Label.configure(
             borderwidth=4,
             state="disabled",
-            style="RedLED.TLabel",
+            style="Heading3bRed.TLabel",
             text='  TX',
             width=5)
         self.tx_Status_Light_Label.grid(column=0, pady=15, row=1)
@@ -86,7 +86,7 @@ class theVFOUI(ttk.Frame):
             self.rxTX_Status_Frame, name="stop_button")
         self.stop_Button.configure(
             state="normal",
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='Disable TX',
             width=11)
         self.stop_Button_Tooltip = Tooltip(self.stop_Button)
@@ -226,7 +226,7 @@ class theVFOUI(ttk.Frame):
         self.Tx_Freq_Alert_Label = ttk.Label(
             self.VFO_TX_Offset_Frame, name="tx_freq_alert_label")
         self.Tx_Freq_Alert_Label.configure(
-            style="Heading2bi.TLabel", text='       \n        ', width=8)
+            style="Heading2b.TLabel", text='       \n        ', width=8)
         self.Tx_Freq_Alert_Label.pack(
             anchor="w", expand=True, fill="x", side="left")
         self.VFO_TX_Offset_Frame.grid(column=0, padx="0 10", row=4, sticky="w")
@@ -248,20 +248,20 @@ class theVFOUI(ttk.Frame):
         self.RX_Freq_Label = ttk.Label(self.RX_VFO_Frame, name="rx_freq_label")
         self.RX_Freq_Label.configure(
             anchor="e",
-            style="Heading2bi.TLabel",
+            style="Heading2b.TLabel",
             text='RX Freq:',
             width=15)
         self.RX_Freq_Label.pack(side="left")
         self.RX_Freq_VFO_Label = ttk.Label(
             self.RX_VFO_Frame, name="rx_freq_vfo_label")
         self.RX_Freq_VFO_Label.configure(
-            style="Heading2bi.TLabel", text='99.999.999', width=11)
+            style="Heading2b.TLabel", text='99.999.999', width=11)
         self.RX_Freq_VFO_Label.pack(padx="10 0", side="left")
         self.RX_VFO_Frame.pack(side="left")
         self.RX_Freq_Place_Holder = ttk.Label(
             self.rx_vof_frame, name="rx_freq_place_holder")
         self.RX_Freq_Place_Holder.configure(
-            style="Heading2bi.TLabel", text='  ')
+            style="Heading2b.TLabel", text='  ')
         self.RX_Freq_Place_Holder.pack(side="right")
         self.rx_vof_frame.grid(column=0, row=1, sticky="e")
         self.vfoB_Frame = ttk.Frame(self, name="vfob_frame")
@@ -270,7 +270,7 @@ class theVFOUI(ttk.Frame):
         self.vfo_Frame.configure(style="Normal.TFrame")
         self.split_TX_Label = ttk.Label(self.vfo_Frame, name="split_tx_label")
         self.split_TX_Label.configure(
-            style="Heading2bi.TLabel", text='       ', width=8)
+            style="Heading2b.TLabel", text='       ', width=8)
         self.split_TX_Label.pack(
             anchor="w",
             expand=True,
@@ -279,7 +279,7 @@ class theVFOUI(ttk.Frame):
         self.secondary_VFO_Label = ttk.Label(
             self.vfo_Frame, name="secondary_vfo_label")
         self.secondary_VFO_Label.configure(
-            style="Heading1Fixed.TLabel", text='99.999.999', width=10)
+            style="Heading1b.TLabel", text='99.999.999', width=10)
         self.secondaty_VFO_Tooltip = Tooltip(self.secondary_VFO_Label)
         self.secondaty_VFO_Tooltip.configure(
             padx=8,
@@ -290,7 +290,7 @@ class theVFOUI(ttk.Frame):
         self.secondary_Mode_Label = ttk.Label(
             self.vfo_Frame, name="secondary_mode_label")
         self.secondary_Mode_Label.configure(
-            style="Heading1.TLabel", text='CWL')
+            style="Heading1b.TLabel", text='CWL')
         self.secondary_Mode_Label.pack(anchor="ne", padx="5 0", side="right")
         self.vfo_Frame.pack(side="left")
         self.callsign_Frame = ttk.Frame(self.vfoB_Frame, name="callsign_frame")
@@ -353,7 +353,7 @@ class theVFOUI(ttk.Frame):
         self.tuning_Preset_Menubutton.pack(side="left")
         self.tuning_Multiplier_Button = ttk.Button(
             self.tuning_Step_Frame, name="tuning_multiplier_button")
-        self.tuning_Multiplier_Button.configure(style="Button2b.TButton")
+        self.tuning_Multiplier_Button.configure(style="Button2bRaised.TButton")
         self.current_Tuning_Rate_Tooltip = Tooltip(
             self.tuning_Multiplier_Button)
         self.current_Tuning_Rate_Tooltip.configure(
@@ -368,7 +368,7 @@ class theVFOUI(ttk.Frame):
         self.tuning_Preset_Units_Label = ttk.Label(
             self.tuning_Step_Frame, name="tuning_preset_units_label")
         self.tuning_Preset_Units_Label.configure(
-            style="Heading1.TLabel", text='Hz')
+            style="Heading1b.TLabel", text='Hz')
         self.tuning_Preset_Units_Label.pack(padx=15, side="left")
         self.tuning_Preset_Rate_Tooltip = Tooltip(self.tuning_Step_Frame)
         self.tuning_Preset_Rate_Tooltip.configure(

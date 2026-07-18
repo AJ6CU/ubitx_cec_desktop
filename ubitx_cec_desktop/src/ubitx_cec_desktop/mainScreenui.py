@@ -69,7 +69,9 @@ class mainScreenUI(ttk.Frame):
         self.settings_Button = ttk.Button(
             self.menuBar_Frame, name="settings_button")
         self.settings_Button.configure(
-            style="Button2b.TButton", text='SETTINGS', width=12)
+            style="Button2bRaised.TButton",
+            text='SETTINGS',
+            width=12)
         self.settings_Button_Tooltip = Tooltip(self.settings_Button)
         self.settings_Button_Tooltip.configure(
             padx=8,
@@ -86,7 +88,7 @@ class mainScreenUI(ttk.Frame):
         self.vfo_Button = ttk.Button(self.menuBar_Frame, name="vfo_button")
         self.vfo_Button.configure(
             state="normal",
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='VFO',
             width=12)
         self.vfo_Button_Tooltip = Tooltip(self.vfo_Button)
@@ -138,7 +140,9 @@ class mainScreenUI(ttk.Frame):
         self.band_up_Button = ttk.Button(
             self.menuBar_Frame, name="band_up_button")
         self.band_up_Button.configure(
-            style="Button2b.TButton", text='BAND UP', width=12)
+            style="Button2bRaised.TButton",
+            text='BAND UP',
+            width=12)
         self.band_up_Tooltip = Tooltip(self.band_up_Button)
         self.band_up_Tooltip.configure(
             padx=8,
@@ -155,7 +159,7 @@ class mainScreenUI(ttk.Frame):
         self.band_down_Button = ttk.Button(
             self.menuBar_Frame, name="band_down_button")
         self.band_down_Button.configure(
-            style="Button2b.TButton", text='BAND DN', width=12)
+            style="Button2bRaised.TButton", text='BAND DN', width=12)
         self.band_down_tooltip = Tooltip(self.band_down_Button)
         self.band_down_tooltip.configure(
             padx=8,
@@ -167,7 +171,9 @@ class mainScreenUI(ttk.Frame):
         self.band_down_Button.configure(command=self.band_down_CB)
         self.lock_Button = ttk.Button(self.menuBar_Frame, name="lock_button")
         self.lock_Button.configure(
-            style="Button2b.TButton", text='LOCK', width=12)
+            style="Button2bRaised.TButton",
+            text='LOCK',
+            width=12)
         self.lock_Button_Tooltip = Tooltip(self.lock_Button)
         self.lock_Button_Tooltip.configure(
             padx=8,
@@ -179,7 +185,9 @@ class mainScreenUI(ttk.Frame):
         self.speaker_Button = ttk.Button(
             self.menuBar_Frame, name="speaker_button")
         self.speaker_Button.configure(
-            style="Button2b.TButton", text='SPEAKER', width=12)
+            style="Button2bRaised.TButton",
+            text='SPEAKER',
+            width=12)
         self.speaker_Button_Tooltip = Tooltip(self.speaker_Button)
         self.speaker_Button_Tooltip.configure(
             padx=8,
@@ -217,7 +225,7 @@ class mainScreenUI(ttk.Frame):
         self.channels_Button = ttk.Button(
             self.signal_Control_Frame, name="channels_button")
         self.channels_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nCHANNELS\n',
             width=11)
         self.channels_Button_Tooltip = Tooltip(self.channels_Button)
@@ -231,7 +239,7 @@ class mainScreenUI(ttk.Frame):
         self.cwDecode_Button = ttk.Button(
             self.signal_Control_Frame, name="cwdecode_button")
         self.cwDecode_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nCW DECODE\n',
             width=11)
         self.cwDecode_Button_Tooltip = Tooltip(self.cwDecode_Button)
@@ -247,7 +255,7 @@ class mainScreenUI(ttk.Frame):
         self.spectrumScan_Button = ttk.Button(
             self.signal_Control_Frame, name="spectrumscan_button")
         self.spectrumScan_Button.configure(
-            style="Button2b.TButton", text='\nSPECTRUM\n', width=11)
+            style="Button2bRaised.TButton", text='\nSPECTRUM\n', width=11)
         self.spectrumScan_Tooltip = Tooltip(self.spectrumScan_Button)
         self.spectrumScan_Tooltip.configure(
             padx=8,
@@ -261,7 +269,7 @@ class mainScreenUI(ttk.Frame):
         self.bandScan_Button = ttk.Button(
             self.signal_Control_Frame, name="bandscan_button")
         self.bandScan_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nBAND SCAN\n',
             width=11)
         self.bandScan_Button_Tooltip = Tooltip(self.bandScan_Button)
@@ -277,7 +285,7 @@ class mainScreenUI(ttk.Frame):
         self.split_Button = ttk.Button(
             self.signal_Control_Frame, name="split_button")
         self.split_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nSPLIT\n',
             width=11)
         self.split_Button_Tooltip = Tooltip(self.split_Button)
@@ -291,7 +299,7 @@ class mainScreenUI(ttk.Frame):
         self.rit_Button = ttk.Button(
             self.signal_Control_Frame, name="rit_button")
         self.rit_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nRIT\n',
             width=11)
         self.rit_Button_Tooltip = Tooltip(self.rit_Button)
@@ -305,7 +313,7 @@ class mainScreenUI(ttk.Frame):
         self.logQSO_Button = ttk.Button(
             self.signal_Control_Frame, name="logqso_button")
         self.logQSO_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='\nLOG QSO\n',
             width=11)
         self.log_QSO_Tooltip = Tooltip(self.logQSO_Button)
@@ -357,7 +365,7 @@ class mainScreenUI(ttk.Frame):
         self.SWR_Value_VAR = tk.StringVar()
         self.SWR_Value.configure(
             anchor="e",
-            style="Heading4b.TLabel",
+            style="Heading3b.TLabel",
             textvariable=self.SWR_Value_VAR,
             width=4)
         self.SWR_Value.grid(column=1, padx="0 5", row=0, sticky="e")
@@ -368,7 +376,7 @@ class mainScreenUI(ttk.Frame):
         self.PWR_Value_VAR = tk.StringVar()
         self.PWR_Value.configure(
             anchor="e",
-            style="Heading4b.TLabel",
+            style="Heading3b.TLabel",
             textvariable=self.PWR_Value_VAR,
             width=4)
         self.PWR_Value.grid(column=1, padx="0 5", row=1, sticky="e")

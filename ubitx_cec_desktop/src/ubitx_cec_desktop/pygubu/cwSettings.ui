@@ -44,7 +44,7 @@
             </layout>
             <child>
               <object class="ttk.Label" id="label1">
-                <property name="style">Heading2bi.TLabel</property>
+                <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">Note: These values are stored in EEPROM and are the ones that are used. The configuration file values might differ depending on whether you have backed up these values to the configuration file using the Backup settings.</property>
                 <property name="wraplength">1100</property>
                 <layout manager="pack">
@@ -408,7 +408,7 @@ VFO-B on Split</property>
             <child>
               <object class="ttk.Button" id="apply_Button" named="True">
                 <property name="command" type="command" cbtype="simple">apply_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="text" translatable="yes">Apply</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>
@@ -428,7 +428,7 @@ VFO-B on Split</property>
             <child>
               <object class="ttk.Button" id="cancel_Buttom" named="True">
                 <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>

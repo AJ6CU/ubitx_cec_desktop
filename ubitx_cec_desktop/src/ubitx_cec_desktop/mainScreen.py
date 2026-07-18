@@ -457,7 +457,7 @@ class mainScreen(baseui.mainScreenUI):
         self.theVFO_Object.savePresetState()
         self.theRadio.Set_Tuning_Preset(1)
         self.channelsWindow.popup.deiconify()
-        self.channelsWindow.current_Channel_VAR.set("Not Saved")
+        self.channelsWindow.current_Channel['text'] = "Not Saved"
 
     def displayClassic_uBITXControlWindow(self):
         self.classic_uBITX_ControlWindow  = tk.Toplevel(self.master)
@@ -855,10 +855,10 @@ class mainScreen(baseui.mainScreenUI):
                 factorSWR=round(adjustedValue / float(gv.config.get_SWR_Factor()), 1)   # 2,95
                 if factorSWR < 1.0 or factorSWR > 2.9:
                     self.SWR_Label.configure(style="Heading3bRed.TLabel")
-                    self.SWR_Value.configure(style="Heading4bRed.TLabel")
+                    self.SWR_Value.configure(style="Heading3bRed.TLabel")
                 else:
                     self.SWR_Label.configure(style="Heading3b.TLabel")
-                    self.SWR_Value.configure(style="Heading4b.TLabel")
+                    self.SWR_Value.configure(style="Heading3b.TLabel")
 
                 self.SWR_Value_VAR.set(str(factorSWR).replace(".",gv.config.get_NUMBER_DELIMITER()))
 
@@ -1238,12 +1238,12 @@ class mainScreen(baseui.mainScreenUI):
 
         if (self.lock_Button_On):
             self.lock_Button_On = False
-            self.lock_Button.configure(style='Button2b.TButton', state="normal")
+            self.lock_Button.configure(style='Button2bRaised.TButton')   #, state="normal")
             self.lock_Button['text'] = "LOCK"
             self.unlockUX()
         else:
             self.lock_Button_On = True
-            self.lock_Button.configure(style='RedButton2b.TButton', state='pressed')
+            self.lock_Button.configure(style='RedButton2bPressed.TButton')   #, state='pressed')
             self.lock_Button['text']= "LOCKED"
             self.lockUX()
 
@@ -1313,7 +1313,7 @@ class mainScreen(baseui.mainScreenUI):
 
         if (self.speaker_Button_On):
             self.speaker_Button_On = False
-            self.speaker_Button.configure(style='Button2b.TButton', state="normal")
+            self.speaker_Button.configure(style='Button2bRaised.TButton')
             self.speaker_Button['text'] = "SPEAKER"
             if self.theSDR != None:
                 self.theSDRWindow.on_close()    # close the sdrdashboard when going out of sdr mode
@@ -1322,7 +1322,7 @@ class mainScreen(baseui.mainScreenUI):
                 self.theSDR = None
         else:
             self.speaker_Button_On = True
-            self.speaker_Button.configure(style='RedButton2b.TButton', state="pressed")
+            self.speaker_Button.configure(style='RedButton2bPressed.TButton')   #, state="pressed")
             if  gv.config.get_SDR_Switch() == "True":
                 self.speaker_Button['text'] = "SDR"
                 self.theSDRWindow = launch_sdr_popup(self)
@@ -1361,11 +1361,11 @@ class mainScreen(baseui.mainScreenUI):
     def cs_UX_SPLIT_Toggle(self, buffer):
         if (self.split_Button_On):
             self.split_Button_On = False
-            self.split_Button.configure(style='Button2b.TButton', state="normal")
+            self.split_Button.configure(style='Button2bRaised.TButton')  #, state="normal")
             self.theVFO_Object.setSplitmode("OFF")
         else:
             self.split_Button_On = True
-            self.split_Button.configure(style='GreenButton2b.TButton', state="pressed")
+            self.split_Button.configure(style='GreenButton2bPressed.TButton')  #, state="pressed")
             self.theVFO_Object.setSplitmode("ON")
     #
     #   This appears to be a no-op command. If the last rit TX frequency does not equal
@@ -1382,11 +1382,11 @@ class mainScreen(baseui.mainScreenUI):
     def cr_UX_RIT_Toggle(self, buffer):
         if (self.rit_Button_On):
             self.rit_Button_On = False
-            self.rit_Button.configure(style='Button2b.TButton', state="normal")
+            self.rit_Button.configure(style='Button2bRaised.TButton') #, state="normal")
             self.theVFO_Object.setRITmode("OFF")
         else:
             self.rit_Button_On = True
-            self.rit_Button.configure(style='GreenButton2b.TButton', state="pressed")
+            self.rit_Button.configure(style='GreenButton2bPressed.TButton') #, state="pressed")
             self.theVFO_Object.setRITmode("ON")
 
     def vf_UX_ATT_Level(self, buffer):

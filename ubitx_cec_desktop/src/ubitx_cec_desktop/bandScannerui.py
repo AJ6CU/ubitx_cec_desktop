@@ -140,7 +140,8 @@ class bandScannerUI(tk.Toplevel):
         self.band0Frequency_Label.grid(column=0, row=0)
         self.band0GO_Button = ttk.Button(
             self.band0Select_Frame, name="band0go_button")
-        self.band0GO_Button.configure(style="Button2b.TButton", text='QSY')
+        self.band0GO_Button.configure(
+            style="Button2bRaised.TButton", text='QSY')
         self.band0GO_Button.grid(column=1, row=0)
         def band0GO_Button_cmd_(): self.bandGo_CB("band0GO_Button")
 
@@ -156,7 +157,8 @@ class bandScannerUI(tk.Toplevel):
         self.band1Frequency_Label.grid(column=0, row=0)
         self.band1GO_Button = ttk.Button(
             self.band1Select_Frame, name="band1go_button")
-        self.band1GO_Button.configure(style="Button2b.TButton", text='QSY')
+        self.band1GO_Button.configure(
+            style="Button2bRaised.TButton", text='QSY')
         self.band1GO_Button.grid(column=1, row=0)
         def band1GO_Button_cmd_(): self.bandGo_CB("band1GO_Button")
 
@@ -178,7 +180,8 @@ class bandScannerUI(tk.Toplevel):
         self.band2Frequency_Label.grid(column=0, row=0)
         self.band2GO_Button = ttk.Button(
             self.band2Select_Frame, name="band2go_button")
-        self.band2GO_Button.configure(style="Button2b.TButton", text='QSY')
+        self.band2GO_Button.configure(
+            style="Button2bRaised.TButton", text='QSY')
         self.band2GO_Button.grid(column=1, row=0)
         def band2GO_Button_cmd_(): self.bandGo_CB("band2GO_Button")
 
@@ -354,7 +357,7 @@ class bandScannerUI(tk.Toplevel):
         self.scan_Button = ttk.Button(self.closingFrame, name="scan_button")
         self.scan_Button.configure(
             state="disabled",
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             text='Scan',
             width=10)
         self.scanButton_Tooltip = Tooltip(self.scan_Button)
@@ -367,7 +370,9 @@ class bandScannerUI(tk.Toplevel):
         self.scan_Button.configure(command=self.scan_CB)
         self.close_Button = ttk.Button(self.closingFrame, name="close_button")
         self.close_Button.configure(
-            style="Button2b.TButton", text='Close', width=10)
+            style="Button2bRaised.TButton",
+            text='Close',
+            width=10)
         self.close_Button_Tooltip = Tooltip(self.close_Button)
         self.close_Button_Tooltip.configure(
             padx=8,
@@ -381,7 +386,9 @@ class bandScannerUI(tk.Toplevel):
         self.cancel_Button = ttk.Button(
             self.closingFrame, name="cancel_button")
         self.cancel_Button.configure(
-            style="Button2b.TButton", text='Cancel', width=10)
+            style="Button2bRaised.TButton",
+            text='Cancel',
+            width=10)
         self.cancel_Tooltip = Tooltip(self.cancel_Button)
         self.cancel_Tooltip.configure(
             padx=8,

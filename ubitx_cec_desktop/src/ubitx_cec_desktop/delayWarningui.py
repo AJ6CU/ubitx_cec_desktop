@@ -66,7 +66,7 @@ class delayWarningUI(tk.Toplevel):
         self.warningLabel.configure(
             anchor="w",
             justify="center",
-            style="Heading2bi.TLabel",
+            style="Heading2b.TLabel",
             text='Loading...\n\nThis could take several seconds...',
             textvariable=self.warningLabel_VAR)
         self.warningLabel.pack(padx=10, pady=10, side="top")
@@ -76,3 +76,7 @@ class delayWarningUI(tk.Toplevel):
         # Layout for 'delay_warning' skipped in custom widget template.
 
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = delayWarningUI(root)
+    root.mainloop()

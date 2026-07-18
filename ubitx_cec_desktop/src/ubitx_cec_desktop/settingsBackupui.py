@@ -159,19 +159,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_master_cal_label")
         self.EEPROM_Factory_Master_Cal_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Factory_Master_Cal_Label.grid(
             column=2, padx="0 5", pady=5, row=3, sticky="e")
         self.EEPROM_Current_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_master_cal_label")
         self.EEPROM_Current_Master_Cal_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_Master_Cal_Label.grid(
             column=3, padx="0 5", pady=5, row=3, sticky="e")
         self.ConfigFile_Master_Cal_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_master_cal_label")
         self.ConfigFile_Master_Cal_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_Master_Cal_Label.grid(
             column=4, padx="0 5", pady=5, row=3, sticky="e")
         self.SSB_BFO = ttk.Button(self.backupSettings_Frame, name="ssb_bfo")
@@ -192,19 +192,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_ssb_bfo_label")
         self.EEPROM_Factory_SSB_BFO_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Factory_SSB_BFO_Label.grid(
             column=2, padx="0 5", pady="0 5", row=4, sticky="e")
         self.EEPROM_Current_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_ssb_bfo_label")
         self.EEPROM_Current_SSB_BFO_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_SSB_BFO_Label.grid(
             column=3, padx="0 5", pady="0 5", row=4, sticky="e")
         self.ConfigFile_SSB_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_ssb_bfo_label")
         self.ConfigFile_SSB_BFO_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_SSB_BFO_Label.grid(
             column=4, padx="0 5", pady="0 5", row=4, sticky="e")
         self.CW_BFO = ttk.Button(self.backupSettings_Frame, name="cw_bfo")
@@ -225,23 +225,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_bfo_label")
         self.EEPROM_Factory_CW_BFO_Label.configure(
-            anchor="e",
-            justify="right",
-            style="Heading1Std.TLabel",
-            text='N/A',
-            width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", text='N/A', width=10)
         self.EEPROM_Factory_CW_BFO_Label.grid(
             column=2, padx="0 5", pady="0 5", row=5, sticky="e")
         self.EEPROM_Current_CW_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_bfo_label")
         self.EEPROM_Current_CW_BFO_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_BFO_Label.grid(
             column=3, padx="0 5", pady="0 5", row=5, sticky="e")
         self.ConfigFIle_CW_BFO_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_bfo_label")
         self.ConfigFIle_CW_BFO_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFIle_CW_BFO_Label.grid(
             column=4, padx="0 5", pady="0 5", row=5, sticky="e")
         self.CW_Keytype = ttk.Button(
@@ -260,19 +256,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_Keytype_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_keytype_label")
         self.EEPROM_Factory_CW_Keytype_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", text='N/A', width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", text='N/A', width=10)
         self.EEPROM_Factory_CW_Keytype_Label.grid(
             column=2, padx="0 5", pady="0 5", row=6, sticky="e")
         self.EEPROM_Current_CW_Keytype_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_keytype_label")
         self.EEPROM_Current_CW_Keytype_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_Keytype_Label.grid(
             column=3, padx="0 5", pady="0 5", row=6, sticky="e")
         self.ConfigFile_CW_Keytype_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_keytype_label")
         self.ConfigFile_CW_Keytype_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_CW_Keytype_Label.grid(
             column=4, padx="0 5", pady="0 5", row=6, sticky="e")
         self.CW_Speed = ttk.Button(self.backupSettings_Frame, name="cw_speed")
@@ -293,19 +289,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_speed_label")
         self.EEPROM_Factory_CW_Speed_Label.configure(
-            anchor="e", style="Heading1Std.TLabel", width=10)
+            anchor="e", style="Heading1b.TLabel", width=10)
         self.EEPROM_Factory_CW_Speed_Label.grid(
             column=2, padx="0 5", pady="0 5", row=7, sticky="e")
         self.EEPROM_Current_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_speed_label")
         self.EEPROM_Current_CW_Speed_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_Speed_Label.grid(
             column=3, padx="0 5", pady="0 5", row=7, sticky="e")
         self.ConfigFile_CW_Speed_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_speed_label")
         self.ConfigFile_CW_Speed_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_CW_Speed_Label.grid(
             column=4, padx="0 5", pady="0 5", row=7, sticky="e")
         self.CW_Sidetone = ttk.Button(
@@ -328,19 +324,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_sidetone_label")
         self.EEPROM_Factory_CW_Sidetone_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Factory_CW_Sidetone_Label.grid(
             column=2, padx="0 5", pady="0 5", row=8, sticky="e")
         self.EEPROM_Current_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_sidetone_label")
         self.EEPROM_Current_CW_Sidetone_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_Sidetone_Label.grid(
             column=3, padx="0 5", pady="0 5", row=8, sticky="e")
         self.ConfigFile_CW_Sidetone_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_sidetone_label")
         self.ConfigFile_CW_Sidetone_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_CW_Sidetone_Label.grid(
             column=4, padx="0 5", pady="0 5", row=8, sticky="e")
         self.CW_Delay_Before_TX = ttk.Button(
@@ -363,19 +359,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_Delay_Before_TX = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_delay_before_tx")
         self.EEPROM_Factory_CW_Delay_Before_TX.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", text='N/A', width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", text='N/A', width=10)
         self.EEPROM_Factory_CW_Delay_Before_TX.grid(
             column=2, padx="0 5", pady="0 5", row=9, sticky="e")
         self.EEPROM_Current_CW_Delay_Before_TX = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_delay_before_tx")
         self.EEPROM_Current_CW_Delay_Before_TX.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_Delay_Before_TX.grid(
             column=3, padx="0 5", pady="0 5", row=9, sticky="e")
         self.ConfigFile_CW_Delay_Before_TX_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_delay_before_tx_label")
         self.ConfigFile_CW_Delay_Before_TX_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFile_CW_Delay_Before_TX_Label.grid(
             column=4, padx="0 5", pady="0 5", row=9, sticky="e")
         self.CW_Delay_Before_RX = ttk.Button(
@@ -398,19 +394,19 @@ class settingsBackupUI(ttk.Labelframe):
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_factory_cw_delay_returning_to_rx_label")
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", text='N/A', width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", text='N/A', width=10)
         self.EEPROM_Factory_CW_Delay_Returning_To_RX_Label.grid(
             column=2, padx="0 5", pady="0 5", row=10, sticky="e")
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="eeprom_current_cw_delay_returning_to_rx_label")
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.EEPROM_Current_CW_Delay_Returning_To_RX_Label.grid(
             column=3, padx="0 5", pady="0 5", row=10, sticky="e")
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label = ttk.Label(
             self.backupSettings_Frame, name="configfile_cw_delay_returning_to_rx_label")
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label.configure(
-            anchor="e", justify="right", style="Heading1Std.TLabel", width=10)
+            anchor="e", justify="right", style="Heading1b.TLabel", width=10)
         self.ConfigFIle_CW_Delay_Returning_To_RX_Label.grid(
             column=4, padx="0 5", pady="0 5", row=10, sticky="e")
         frame3 = ttk.Frame(self.backupSettings_Frame)
@@ -526,7 +522,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.closingFrame.configure(
             height=50, style="Normal.TFrame", width=200)
         self.copy_Button = ttk.Button(self.closingFrame, name="copy_button")
-        self.copy_Button.configure(style="Button2b.TButton", text='Copy')
+        self.copy_Button.configure(style="Button2bRaised.TButton", text='Copy')
         self.copyButton_Tooltip = Tooltip(self.copy_Button)
         self.copyButton_Tooltip.configure(
             padx=8,
@@ -537,7 +533,8 @@ class settingsBackupUI(ttk.Labelframe):
         self.copy_Button.configure(command=self.copy_CB)
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
-        self.cancel_Buttom.configure(style="Button2b.TButton", text='Cancel')
+        self.cancel_Buttom.configure(
+            style="Button2bRaised.TButton", text='Cancel')
         self.cancelButton_Tooltip = Tooltip(self.cancel_Buttom)
         self.cancelButton_Tooltip.configure(
             padx=8,

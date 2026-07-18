@@ -185,7 +185,7 @@ class settingsSDRUI(ttk.Labelframe):
         self.networkAddressSuggestion_Label = ttk.Label(
             self.heading_Frame, name="networkaddresssuggestion_label")
         self.networkAddressSuggestion_Label.configure(
-            style="Heading2bi.TLabel",
+            style="Heading2b.TLabel",
             text='Usually 127.0.0.1 or localhost with port 4532 or 4533 (less common)',
             width=60)
         self.networkAddressSuggestion_Label.pack(side="left")
@@ -350,7 +350,7 @@ class settingsSDRUI(ttk.Labelframe):
             height=50, style="Normal.TFrame", width=200)
         self.apply_Button = ttk.Button(self.closingFrame, name="apply_button")
         self.apply_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Apply')
         self.apply_Button_Tooltip = Tooltip(self.apply_Button)
@@ -364,7 +364,7 @@ class settingsSDRUI(ttk.Labelframe):
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
         self.cancel_Buttom.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Cancel')
         self.cancel_Button_Tooltip = Tooltip(self.cancel_Buttom)

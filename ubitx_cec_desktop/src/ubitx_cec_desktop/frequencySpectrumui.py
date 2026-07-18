@@ -345,7 +345,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.startStop_Button = ttk.Button(
             self.closingFrame, name="startstop_button")
         self.startStop_Button.configure(
-            style="Button2b.TButton", text='Scan', width=10)
+            style="Button2bRaised.TButton", text='Scan', width=10)
         self.startStop_Tooltip = Tooltip(self.startStop_Button)
         self.startStop_Tooltip.configure(
             padx=8,
@@ -357,7 +357,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.recenter_Button = ttk.Button(
             self.closingFrame, name="recenter_button")
         self.recenter_Button.configure(
-            style="Button2b.TButton", text='Center', width=10)
+            style="Button2bRaised.TButton", text='Center', width=10)
         self.recenter_Tooltip = Tooltip(self.recenter_Button)
         self.recenter_Tooltip.configure(
             padx=8,
@@ -369,7 +369,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.applyClose_Button = ttk.Button(
             self.closingFrame, name="applyclose_button")
         self.applyClose_Button.configure(
-            style="Button2b.TButton", text='Close', width=10)
+            style="Button2bRaised.TButton", text='Close', width=10)
         self.applyClose_Tooltip = Tooltip(self.applyClose_Button)
         self.applyClose_Tooltip.configure(
             padx=8,
@@ -381,7 +381,9 @@ class frequencySpectrumUI(tk.Toplevel):
         self.cancel_Button = ttk.Button(
             self.closingFrame, name="cancel_button")
         self.cancel_Button.configure(
-            style="Button2b.TButton", text='Cancel', width=10)
+            style="Button2bRaised.TButton",
+            text='Cancel',
+            width=10)
         self.cancel_Tooltip = Tooltip(self.cancel_Button)
         self.cancel_Tooltip.configure(
             padx=8,

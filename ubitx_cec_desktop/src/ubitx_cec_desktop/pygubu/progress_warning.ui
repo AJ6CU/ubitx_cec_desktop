@@ -41,7 +41,7 @@
           <object class="ttk.Label" id="warningLabel" named="True">
             <property name="anchor">w</property>
             <property name="justify">center</property>
-            <property name="style">Heading2bi.TLabel</property>
+            <property name="style">Heading2b.TLabel</property>
             <property name="text" translatable="yes">Loading...
 
 This could take several seconds...</property>

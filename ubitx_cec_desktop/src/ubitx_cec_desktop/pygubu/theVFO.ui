@@ -63,7 +63,7 @@
               <object class="ttk.Label" id="rx_Status_Light_Label" named="True">
                 <property name="borderwidth">4</property>
                 <property name="state">normal</property>
-                <property name="style">GreenLED.TLabel</property>
+                <property name="style">Heading3bGreen.TLabel</property>
                 <property name="text" translatable="yes">  RX</property>
                 <property name="width">5</property>
                 <layout manager="grid">
@@ -77,7 +77,7 @@
               <object class="ttk.Label" id="tx_Status_Light_Label" named="True">
                 <property name="borderwidth">4</property>
                 <property name="state">disabled</property>
-                <property name="style">RedLED.TLabel</property>
+                <property name="style">Heading3bRed.TLabel</property>
                 <property name="text" translatable="yes">  TX</property>
                 <property name="width">5</property>
                 <layout manager="grid">
@@ -91,7 +91,7 @@
               <object class="ttk.Button" id="stop_Button" named="True">
                 <property name="command" type="command" cbtype="simple">stop_CB</property>
                 <property name="state">normal</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="text" translatable="yes">Disable TX</property>
                 <property name="width">11</property>
                 <layout manager="grid">
@@ -392,7 +392,7 @@
                 </layout>
                 <child>
                   <object class="ttk.Label" id="Tx_Freq_Alert_Label" named="True">
-                    <property name="style">Heading2bi.TLabel</property>
+                    <property name="style">Heading2b.TLabel</property>
                     <property name="text" translatable="yes">       
         </property>
                     <property name="width">8</property>
@@ -439,7 +439,7 @@
             <child>
               <object class="ttk.Label" id="RX_Freq_Label" named="True">
                 <property name="anchor">e</property>
-                <property name="style">Heading2bi.TLabel</property>
+                <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">RX Freq:</property>
                 <property name="width">15</property>
                 <layout manager="pack">
@@ -449,7 +449,7 @@
             </child>
             <child>
               <object class="ttk.Label" id="RX_Freq_VFO_Label" named="True">
-                <property name="style">Heading2bi.TLabel</property>
+                <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">99.999.999</property>
                 <property name="width">11</property>
                 <layout manager="pack">
@@ -462,7 +462,7 @@
         </child>
         <child>
           <object class="ttk.Label" id="RX_Freq_Place_Holder" named="True">
-            <property name="style">Heading2bi.TLabel</property>
+            <property name="style">Heading2b.TLabel</property>
             <property name="text" translatable="yes">  </property>
             <layout manager="pack">
               <property name="side">right</property>
@@ -488,7 +488,7 @@
             </layout>
             <child>
               <object class="ttk.Label" id="split_TX_Label" named="True">
-                <property name="style">Heading2bi.TLabel</property>
+                <property name="style">Heading2b.TLabel</property>
                 <property name="text" translatable="yes">       </property>
                 <property name="width">8</property>
                 <layout manager="pack">
@@ -501,7 +501,7 @@
             </child>
             <child>
               <object class="ttk.Label" id="secondary_VFO_Label" named="True">
-                <property name="style">Heading1Fixed.TLabel</property>
+                <property name="style">Heading1b.TLabel</property>
                 <property name="text" translatable="yes">99.999.999</property>
                 <property name="width">10</property>
                 <layout manager="pack">
@@ -521,7 +521,7 @@
             </child>
             <child>
               <object class="ttk.Label" id="secondary_Mode_Label" named="True">
-                <property name="style">Heading1.TLabel</property>
+                <property name="style">Heading1b.TLabel</property>
                 <property name="text" translatable="yes">CWL</property>
                 <layout manager="pack">
                   <property name="anchor">ne</property>
@@ -634,7 +634,7 @@
             <child>
               <object class="ttk.Button" id="tuning_Multiplier_Button" named="True">
                 <property name="command" type="command" cbtype="simple">tuning_Multiplier_Button_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <layout manager="pack">
                   <property name="anchor">e</property>
                   <property name="expand">true</property>
@@ -654,7 +654,7 @@
             </child>
             <child>
               <object class="ttk.Label" id="tuning_Preset_Units_Label" named="True">
-                <property name="style">Heading1.TLabel</property>
+                <property name="style">Heading1b.TLabel</property>
                 <property name="text" translatable="yes">Hz</property>
                 <layout manager="pack">
                   <property name="padx">15</property>

@@ -669,7 +669,7 @@
             <child>
               <object class="ttk.Button" id="logQSO_Button" named="True">
                 <property name="command" type="command" cbtype="simple">logQSO_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Log</property>
                 <property name="width">10</property>
@@ -690,7 +690,7 @@
             <child>
               <object class="ttk.Button" id="cancel_Button" named="True">
                 <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <property name="width">10</property>

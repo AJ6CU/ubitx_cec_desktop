@@ -179,3 +179,8 @@ class settingsUI(ttk.Labelframe):
         pass
 
 
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = settingsUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

@@ -107,7 +107,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.DSPMessage_VAR = tk.StringVar(
             value='No DSP Found on startup. Option automatically disabled')
         self.DSPMessage_Label.configure(
-            style="Heading2bi.TLabel",
+            style="Heading2b.TLabel",
             text='No DSP Found on startup. Option automatically disabled',
             textvariable=self.DSPMessage_VAR)
         self.DSPMessage_Label.grid(
@@ -316,7 +316,7 @@ class settingsMachineUI(ttk.Labelframe):
             height=50, style="Normal.TFrame", width=200)
         self.apply_Button = ttk.Button(self.closingFrame, name="apply_button")
         self.apply_Button.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Apply')
         self.apply_Button_Tooltip = Tooltip(self.apply_Button)
@@ -330,7 +330,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
         self.cancel_Buttom.configure(
-            style="Button2b.TButton",
+            style="Button2bRaised.TButton",
             takefocus=True,
             text='Cancel')
         self.cancel_Button_Tooltip = Tooltip(self.cancel_Buttom)

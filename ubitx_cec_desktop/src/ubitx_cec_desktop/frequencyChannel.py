@@ -198,12 +198,12 @@ class frequencyChannel(baseui.frequencyChannelUI):
 
     def channel_Dirty(self):
         if (not self.dirty):
-            self.dirtyChannel_Label.configure(style="RedLED.TLabel")
+            self.dirtyChannel_Label.configure(style="Heading3bRed.TLabel")
             self.dirty = True
 
     def channel_Not_Dirty(self):
         if (self.dirty):
-            self.dirtyChannel_Label.configure(style="GreenLED.TLabel")
+            self.dirtyChannel_Label.configure(style="Heading3bGreen.TLabel")
             self.dirty = False
 
     def channel_Name_Changed_CB(self, original, newValue):

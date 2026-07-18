@@ -51,7 +51,7 @@
         <child>
           <object class="ttk.Button" id="settings_Button" named="True">
             <property name="command" type="command" cbtype="simple">settings_CB</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">SETTINGS</property>
             <property name="width">12</property>
             <layout manager="grid">
@@ -75,7 +75,7 @@
           <object class="ttk.Button" id="vfo_Button" named="True">
             <property name="command" type="command" cbtype="simple">vfo_CB</property>
             <property name="state">normal</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">VFO</property>
             <property name="width">12</property>
             <layout manager="grid">
@@ -149,7 +149,7 @@
         <child>
           <object class="ttk.Button" id="band_up_Button" named="True">
             <property name="command" type="command" cbtype="simple">band_up_CB</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">BAND UP</property>
             <property name="width">12</property>
             <layout manager="grid">
@@ -172,7 +172,7 @@
         <child>
           <object class="ttk.Button" id="band_down_Button" named="True">
             <property name="command" type="command" cbtype="simple">band_down_CB</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">BAND DN</property>
             <property name="width">12</property>
             <layout manager="grid">
@@ -195,7 +195,7 @@
         <child>
           <object class="ttk.Button" id="lock_Button" named="True">
             <property name="command" type="command" cbtype="simple">lock_CB</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">LOCK</property>
             <property name="width">12</property>
             <layout manager="grid">
@@ -217,7 +217,7 @@
         <child>
           <object class="ttk.Button" id="speaker_Button" named="True">
             <property name="command" type="command" cbtype="simple">speaker_CB</property>
-            <property name="style">Button2b.TButton</property>
+            <property name="style">Button2bRaised.TButton</property>
             <property name="text" translatable="yes">SPEAKER</property>
             <property name="width">12</property>
             <bind sequence="&lt;Double-Button-1&gt;" handler="relaunch_SDRPanel_CB" add="" />
@@ -302,7 +302,7 @@
                     <child>
                       <object class="ttk.Button" id="channels_Button" named="True">
                         <property name="command" type="command" cbtype="simple">channels_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 CHANNELS
 </property>
@@ -325,7 +325,7 @@ CHANNELS
                     <child>
                       <object class="ttk.Button" id="cwDecode_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">cwDecode_Button_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 CW DECODE
 </property>
@@ -348,7 +348,7 @@ CW DECODE
                     <child>
                       <object class="ttk.Button" id="spectrumScan_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">spectrumScan_Button_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 SPECTRUM
 </property>
@@ -371,7 +371,7 @@ SPECTRUM
                     <child>
                       <object class="ttk.Button" id="bandScan_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandScan_Button_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 BAND SCAN
 </property>
@@ -394,7 +394,7 @@ BAND SCAN
                     <child>
                       <object class="ttk.Button" id="split_Button" named="True">
                         <property name="command" type="command" cbtype="simple">split_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 SPLIT
 </property>
@@ -417,7 +417,7 @@ SPLIT
                     <child>
                       <object class="ttk.Button" id="rit_Button" named="True">
                         <property name="command" type="command" cbtype="simple">rit_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 RIT
 </property>
@@ -440,7 +440,7 @@ RIT
                     <child>
                       <object class="ttk.Button" id="logQSO_Button" named="True">
                         <property name="command" type="command" cbtype="simple">logQSO_CB</property>
-                        <property name="style">Button2b.TButton</property>
+                        <property name="style">Button2bRaised.TButton</property>
                         <property name="text" translatable="yes">
 LOG QSO
 </property>
@@ -560,7 +560,7 @@ LOG QSO
                     <child>
                       <object class="ttk.Label" id="SWR_Value" named="True">
                         <property name="anchor">e</property>
-                        <property name="style">Heading4b.TLabel</property>
+                        <property name="style">Heading3b.TLabel</property>
                         <property name="textvariable">string:SWR_Value_VAR</property>
                         <property name="width">4</property>
                         <layout manager="grid">
@@ -586,7 +586,7 @@ LOG QSO
                     <child>
                       <object class="ttk.Label" id="PWR_Value" named="True">
                         <property name="anchor">e</property>
-                        <property name="style">Heading4b.TLabel</property>
+                        <property name="style">Heading3b.TLabel</property>
                         <property name="textvariable">string:PWR_Value_VAR</property>
                         <property name="width">4</property>
                         <layout manager="grid">

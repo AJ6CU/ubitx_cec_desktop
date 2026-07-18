@@ -191,7 +191,7 @@ class comportManagerUI(ttk.Frame):
         self.wifi_Port_Test_Button = ttk.Button(
             self.comportSelection_Frame, name="wifi_port_test_button")
         self.wifi_Port_Test_Button.configure(
-            style="Button3.TButton", text='Test', width=5)
+            style="Button2bRaised.TButton", text='Test', width=5)
         self.wifi_Port_Test_Button.pack(side="top")
         self.wifi_Port_Test_Button.configure(
             command=self.test_Entered_IP_Address_CB)

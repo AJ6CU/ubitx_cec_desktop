@@ -267,7 +267,7 @@ connection below before proceeding.</property>
             <child>
               <object class="ttk.Button" id="wifi_Port_Test_Button" named="True">
                 <property name="command" type="command" cbtype="simple">test_Entered_IP_Address_CB</property>
-                <property name="style">Button3.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="text" translatable="yes">Test</property>
                 <property name="width">5</property>
                 <layout manager="pack">

@@ -194,7 +194,9 @@ class cwDecoderUI(tk.Toplevel):
         self.frequencyPlotcwToneValueLabel.pack(padx=5, side="left")
         self.resetMinMax_Button = ttk.Button(frame1, name="resetminmax_button")
         self.resetMinMax_Button.configure(
-            style="Button2b.TButton", text='Reset\nMin/Max', width=12)
+            style="Button2bRaised.TButton",
+            text='Reset\nMin/Max',
+            width=12)
         self.resetMinMax_Button.pack(anchor="e", side="right")
         self.resetMinMax_Button.configure(command=self.resetMinMax_CB)
         frame1.pack(expand=True, fill="x", side="left")
@@ -245,7 +247,9 @@ class cwDecoderUI(tk.Toplevel):
         self.closingFrame.configure(style="Normal.TFrame")
         self.close_Button = ttk.Button(self.closingFrame, name="close_button")
         self.close_Button.configure(
-            style="Button2b.TButton", text='Close', width=10)
+            style="Button2bRaised.TButton",
+            text='Close',
+            width=10)
         self.close_Button.grid(column=3, padx="10 0", row=0)
         self.close_Button.configure(command=self.close_CB)
         self.closingFrame.pack(expand=True, fill="x", ipady=20)

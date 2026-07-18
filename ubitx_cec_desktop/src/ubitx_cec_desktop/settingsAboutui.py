@@ -207,7 +207,8 @@ class settingsAboutUI(ttk.Labelframe):
         self.closingFrame.configure(
             height=50, style="Normal.TFrame", width=200)
         self.close_Button = ttk.Button(self.closingFrame, name="close_button")
-        self.close_Button.configure(style="Button2b.TButton", text='Close')
+        self.close_Button.configure(
+            style="Button2bRaised.TButton", text='Close')
         self.close_Button.pack(anchor="center", padx=10, side="left")
         self.close_Button.configure(command=self.close_CB)
         self.closingFrame.pack(

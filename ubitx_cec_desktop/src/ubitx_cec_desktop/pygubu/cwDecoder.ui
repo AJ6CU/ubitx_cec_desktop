@@ -287,7 +287,7 @@ THR</property>
                             <child>
                               <object class="ttk.Button" id="resetMinMax_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">resetMinMax_CB</property>
-                                <property name="style">Button2b.TButton</property>
+                                <property name="style">Button2bRaised.TButton</property>
                                 <property name="text" translatable="yes">Reset
 Min/Max</property>
                                 <property name="width">12</property>
@@ -369,7 +369,7 @@ Min/Max</property>
             <child>
               <object class="ttk.Button" id="close_Button" named="True">
                 <property name="command" type="command" cbtype="simple">close_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="text" translatable="yes">Close</property>
                 <property name="width">10</property>
                 <layout manager="grid">

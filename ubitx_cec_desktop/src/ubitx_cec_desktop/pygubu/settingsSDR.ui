@@ -251,7 +251,7 @@
                     </child>
                     <child>
                       <object class="ttk.Label" id="networkAddressSuggestion_Label" named="True">
-                        <property name="style">Heading2bi.TLabel</property>
+                        <property name="style">Heading2b.TLabel</property>
                         <property name="text" translatable="yes">Usually 127.0.0.1 or localhost with port 4532 or 4533 (less common)</property>
                         <property name="width">60</property>
                         <layout manager="pack">
@@ -489,7 +489,7 @@
             <child>
               <object class="ttk.Button" id="apply_Button" named="True">
                 <property name="command" type="command" cbtype="simple">apply_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Apply</property>
                 <layout manager="pack">
@@ -510,7 +510,7 @@
             <child>
               <object class="ttk.Button" id="cancel_Buttom" named="True">
                 <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                <property name="style">Button2b.TButton</property>
+                <property name="style">Button2bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <layout manager="pack">

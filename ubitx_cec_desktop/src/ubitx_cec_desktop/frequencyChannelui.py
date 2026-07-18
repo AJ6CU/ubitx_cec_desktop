@@ -57,7 +57,7 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Number_Label = ttk.Label(
             self, name="channel_number_label")
         self.channel_Number_Label.configure(
-            anchor="e", style="Heading1bi.TLabel", width=3)
+            anchor="e", style="Heading1b.TLabel", width=3)
         # First object created
         on_first_object_cb(self.channel_Number_Label)
 
@@ -65,7 +65,7 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Select_Button = ttk.Button(
             self, name="channel_select_button")
         self.channel_Select_Button.configure(
-            style="Button1bARaised.TButton", text='Select', width=8)
+            style="Button1Raised.TButton", text='Select', width=8)
         self.channel_Select_Button.grid(column=1, padx="5 0", row=0)
         self.channel_Select_Button.configure(command=self.channel_Select_CB)
         self.channel_Name_Entry = ttk.Entry(self, name="channel_name_entry")
@@ -73,6 +73,7 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Name_Entry.configure(
             font="{Arial} 20 {bold}",
             justify="left",
+            style="Entry1b.TEntry",
             textvariable=self.channel_Label_VAR,
             validate="focusout",
             width=6)
@@ -107,7 +108,8 @@ class frequencyChannelUI(ttk.Frame):
         self.freq_Entry.configure(invalidcommand=_validatecmd)
         self.freq_Entry.bind("<Button>", self.freq_Entry_Entrered_CB, add="+")
         self.dirtyChannel_Label = ttk.Label(self, name="dirtychannel_label")
-        self.dirtyChannel_Label.configure(style="GreenLED.TLabel", width=2)
+        self.dirtyChannel_Label.configure(
+            style="Heading3bGreen.TLabel", width=2)
         self.dirtyChannel_Label.grid(column=7, padx="10 5", row=0)
         self.mode_Menubutton = ttk.Menubutton(self, name="mode_menubutton")
         self.mode_Menubutton.configure(

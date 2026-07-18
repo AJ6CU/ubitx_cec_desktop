@@ -123,7 +123,7 @@ class sdrDashboardUI(ttk.Frame):
         self.label_volume_val.pack(side="left")
         self.button_mute_toggle = ttk.Button(frame5, name="button_mute_toggle")
         self.button_mute_toggle.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='🔊 Mute Audio',
             width=15)
@@ -165,7 +165,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band160m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band160m")
-        self.Band160m.configure(style="Button3Raised.TButton", text='160M')
+        self.Band160m.configure(style="Button2bRaised.TButton", text='160M')
         self.Band160m.grid(column=0, ipady=5, padx=10, pady=10, row=0)
         def Band160m_cmd_(): self.action_quick_band("Band160m")
 
@@ -173,7 +173,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band80m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band80m")
-        self.Band80m.configure(style="Button3Raised.TButton", text='80M')
+        self.Band80m.configure(style="Button2bRaised.TButton", text='80M')
         self.Band80m.grid(column=1, ipady=5, padx=10, pady=10, row=0)
         def Band80m_cmd_(): self.action_quick_band("Band80m")
 
@@ -181,7 +181,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band40m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band40m")
-        self.Band40m.configure(style="Button3Raised.TButton", text='40M')
+        self.Band40m.configure(style="Button2bRaised.TButton", text='40M')
         self.Band40m.grid(column=2, ipady=5, padx=10, pady=10, row=0)
         def Band40m_cmd_(): self.action_quick_band("Band40m")
 
@@ -189,7 +189,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band30m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band30m")
-        self.Band30m.configure(style="Button3Raised.TButton", text='30M')
+        self.Band30m.configure(style="Button2bRaised.TButton", text='30M')
         self.Band30m.grid(column=0, ipady=5, padx=10, pady=10, row=1)
         def Band30m_cmd_(): self.action_quick_band("Band30m")
 
@@ -197,7 +197,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band20m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band20m")
-        self.Band20m.configure(style="Button3Raised.TButton", text='20M')
+        self.Band20m.configure(style="Button2bRaised.TButton", text='20M')
         self.Band20m.grid(column=1, ipady=5, padx=10, pady=10, row=1)
         def Band20m_cmd_(): self.action_quick_band("Band20m")
 
@@ -205,7 +205,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band17m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band17m")
-        self.Band17m.configure(style="Button3Raised.TButton", text='17M')
+        self.Band17m.configure(style="Button2bRaised.TButton", text='17M')
         self.Band17m.grid(column=2, ipady=5, padx=10, pady=10, row=1)
         def Band17m_cmd_(): self.action_quick_band("Band17m")
 
@@ -213,7 +213,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band15m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band15m")
-        self.Band15m.configure(style="Button3Raised.TButton", text='15M')
+        self.Band15m.configure(style="Button2bRaised.TButton", text='15M')
         self.Band15m.grid(column=0, ipady=5, padx=10, pady=10, row=2)
         def Band15m_cmd_(): self.action_quick_band("Band15m")
 
@@ -221,7 +221,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band12m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band12m")
-        self.Band12m.configure(style="Button3Raised.TButton", text='12M')
+        self.Band12m.configure(style="Button2bRaised.TButton", text='12M')
         self.Band12m.grid(column=1, ipady=5, padx=10, pady=10, row=2)
         def Band12m_cmd_(): self.action_quick_band("Band12m")
 
@@ -229,7 +229,7 @@ class sdrDashboardUI(ttk.Frame):
         self.Band10m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band10m")
-        self.Band10m.configure(style="Button3Raised.TButton", text='10m')
+        self.Band10m.configure(style="Button2bRaised.TButton", text='10m')
         self.Band10m.grid(column=2, ipady=5, padx=10, pady=10, row=2)
         def Band10m_cmd_(): self.action_quick_band("Band10m")
 
@@ -251,7 +251,7 @@ class sdrDashboardUI(ttk.Frame):
             self.modeChange_Labelframe,
             name="modelsb_button")
         self.modeLSB_Button.configure(
-            style="Button3Raised.TButton", text='LSB')
+            style="Button2bRaised.TButton", text='LSB')
         self.modeLSB_Button.grid(column=0, ipady=5, padx=10, pady=10, row=0)
         def modeLSB_Button_cmd_(): self.action_quick_mode("modeLSB_Button")
 
@@ -260,7 +260,7 @@ class sdrDashboardUI(ttk.Frame):
             self.modeChange_Labelframe,
             name="modeusb_button")
         self.modeUSB_Button.configure(
-            style="Button3Raised.TButton", text='USB')
+            style="Button2bRaised.TButton", text='USB')
         self.modeUSB_Button.grid(column=1, ipady=5, padx=10, pady=10, row=0)
         def modeUSB_Button_cmd_(): self.action_quick_mode("modeUSB_Button")
 
@@ -269,7 +269,7 @@ class sdrDashboardUI(ttk.Frame):
             self.modeChange_Labelframe,
             name="modecwl_button")
         self.modeCWL_Button.configure(
-            style="Button3Raised.TButton", text='CWL')
+            style="Button2bRaised.TButton", text='CWL')
         self.modeCWL_Button.grid(column=2, ipady=5, padx=10, pady=10, row=0)
         def modeCWL_Button_cmd_(): self.action_quick_mode("modeCWL_Button")
 
@@ -278,7 +278,7 @@ class sdrDashboardUI(ttk.Frame):
             self.modeChange_Labelframe,
             name="modecwu_button")
         self.modeCWU_Button.configure(
-            style="Button3Raised.TButton", text='CWU')
+            style="Button2bRaised.TButton", text='CWU')
         self.modeCWU_Button.grid(column=3, ipady=5, padx=10, pady=10, row=0)
         def modeCWU_Button_cmd_(): self.action_quick_mode("modeCWU_Button")
 
@@ -299,7 +299,7 @@ class sdrDashboardUI(ttk.Frame):
         frame1.configure(height=200, style="Normal.TFrame", width=200)
         self.widenFilter_Button = ttk.Button(frame1, name="widenfilter_button")
         self.widenFilter_Button.configure(
-            style="Button3Raised.TButton", text='Widen')
+            style="Button2bRaised.TButton", text='Widen')
         self.tooltip5 = Tooltip(self.widenFilter_Button)
         self.tooltip5.configure(
             padx=8,
@@ -311,7 +311,7 @@ class sdrDashboardUI(ttk.Frame):
         self.narrowFilter_Button = ttk.Button(
             frame1, name="narrowfilter_button")
         self.narrowFilter_Button.configure(
-            style="Button3Raised.TButton", text='Narrow')
+            style="Button2bRaised.TButton", text='Narrow')
         self.tooltip6 = Tooltip(self.narrowFilter_Button)
         self.tooltip6.configure(
             padx=8,
@@ -322,7 +322,7 @@ class sdrDashboardUI(ttk.Frame):
         self.narrowFilter_Button.configure(command=self.action_filter_narrow)
         self.resetFilter_Button = ttk.Button(frame1, name="resetfilter_button")
         self.resetFilter_Button.configure(
-            style="Button3Raised.TButton", text='Reset')
+            style="Button2bRaised.TButton", text='Reset')
         self.tooltip7 = Tooltip(self.resetFilter_Button)
         self.tooltip7.configure(
             padx=8,
@@ -427,7 +427,7 @@ class sdrDashboardUI(ttk.Frame):
         self.addChanneltoBank_Button = ttk.Button(
             self.channelEdit_Labelframe, name="addchanneltobank_button")
         self.addChanneltoBank_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Copy to\nTarget\nBank')
         self.tooltip10 = Tooltip(self.addChanneltoBank_Button)
@@ -443,7 +443,7 @@ class sdrDashboardUI(ttk.Frame):
         self.deleteChannel_Button = ttk.Button(
             self.channelEdit_Labelframe, name="deletechannel_button")
         self.deleteChannel_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Erase\nChannel\nin Source\nBank')
         self.tooltip11 = Tooltip(self.deleteChannel_Button)
@@ -508,7 +508,7 @@ class sdrDashboardUI(ttk.Frame):
             self.newChannelFromVFO_Labelframe,
             name="addnewchannel_button")
         self.addNewChannel_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Save to\nSource\nBank')
         self.tooltip14 = Tooltip(self.addNewChannel_Button)
@@ -580,7 +580,7 @@ class sdrDashboardUI(ttk.Frame):
         self.newChannelBank_Button = ttk.Button(
             self.channelControl_Frame, name="newchannelbank_button")
         self.newChannelBank_Button.configure(
-            style="Button3Raised.TButton", takefocus=False, text='New')
+            style="Button2bRaised.TButton", takefocus=False, text='New')
         self.tooltip17 = Tooltip(self.newChannelBank_Button)
         self.tooltip17.configure(
             padx=8,
@@ -600,7 +600,7 @@ class sdrDashboardUI(ttk.Frame):
         self.bankCloneButton = ttk.Button(
             self.channelControl_Frame, name="bankclonebutton")
         self.bankCloneButton.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Clone')
         self.tooltip18 = Tooltip(self.bankCloneButton)
@@ -615,7 +615,7 @@ class sdrDashboardUI(ttk.Frame):
         self.bankDelete_Button = ttk.Button(
             self.channelControl_Frame, name="bankdelete_button")
         self.bankDelete_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Delete\nSource\nBank')
         self.tooltip19 = Tooltip(self.bankDelete_Button)
@@ -721,7 +721,7 @@ class sdrDashboardUI(ttk.Frame):
             self.scanControl_Labelframe,
             name="scanstart_button")
         self.scanStart_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='▶ Start Scan ')
         self.tooltip22 = Tooltip(self.scanStart_Button)
@@ -737,7 +737,7 @@ class sdrDashboardUI(ttk.Frame):
             self.scanControl_Labelframe,
             name="scanstop_button")
         self.scanStop_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='⏹ Stop Scan')
         self.tooltip23 = Tooltip(self.scanStop_Button)
@@ -795,7 +795,7 @@ class sdrDashboardUI(ttk.Frame):
             self.connectionStatus_Frame,
             name="linkstatus_label")
         self.linkStatus_Label.configure(
-            style="RedLED3.TLabel",
+            style="Heading3bRed.TLabel",
             takefocus=False,
             text='Disconnected')
         self.linkStatus_Label.grid(column=1, row=2)
@@ -803,7 +803,7 @@ class sdrDashboardUI(ttk.Frame):
             self.connectionStatus_Frame,
             name="reconnect_button")
         self.reconnect_Button.configure(
-            style="Button3Raised.TButton",
+            style="Button2bRaised.TButton",
             takefocus=False,
             text='Reconnect')
         self.tooltip24 = Tooltip(self.reconnect_Button)
