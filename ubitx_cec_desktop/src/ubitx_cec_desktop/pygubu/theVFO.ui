@@ -91,7 +91,7 @@
               <object class="ttk.Button" id="stop_Button" named="True">
                 <property name="command" type="command" cbtype="simple">stop_CB</property>
                 <property name="state">normal</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Disable TX</property>
                 <property name="width">11</property>
                 <layout manager="grid">
@@ -152,6 +152,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10mhz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">0</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -176,6 +177,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_1mhz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">1</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -198,6 +200,7 @@
                     <property name="width">0</property>
                     <layout manager="grid">
                       <property name="column">2</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -222,6 +225,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_100khz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">3</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -246,6 +250,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10khz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">4</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -269,6 +274,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_1khz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">5</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -291,6 +297,7 @@
                     <property name="width">0</property>
                     <layout manager="grid">
                       <property name="column">6</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -316,6 +323,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_100hz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">7</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -340,6 +348,7 @@
                     <bind sequence="&lt;Button&gt;" handler="primary_vfo_10hz_CB" add="" />
                     <layout manager="grid">
                       <property name="column">8</property>
+                      <property name="padx">0 5</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
                     </layout>
@@ -583,9 +592,9 @@
             </layout>
             <child>
               <object class="ttk.Menubutton" id="tuning_Preset_Menubutton" named="True">
-                <property name="style">Heading2b.TMenubutton</property>
+                <property name="style">Heading1b.TMenubutton</property>
                 <property name="text" translatable="yes">0</property>
-                <property name="width">6</property>
+                <property name="width">10</property>
                 <layout manager="pack">
                   <property name="side">left</property>
                 </layout>
@@ -634,7 +643,7 @@
             <child>
               <object class="ttk.Button" id="tuning_Multiplier_Button" named="True">
                 <property name="command" type="command" cbtype="simple">tuning_Multiplier_Button_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <layout manager="pack">
                   <property name="anchor">e</property>
                   <property name="expand">true</property>
@@ -650,16 +659,6 @@
                     <property name="wraplength">300</property>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="ttk.Label" id="tuning_Preset_Units_Label" named="True">
-                <property name="style">Heading1b.TLabel</property>
-                <property name="text" translatable="yes">Hz</property>
-                <layout manager="pack">
-                  <property name="padx">15</property>
-                  <property name="side">left</property>
-                </layout>
               </object>
             </child>
             <child>

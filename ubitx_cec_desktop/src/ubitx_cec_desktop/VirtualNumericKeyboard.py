@@ -72,10 +72,10 @@ class VirtualNumericKeyboard(tk.Toplevel):
 
         for r, row in enumerate(rows, 1):
             for c, t in enumerate(row):
-                ttk.Button(self.mainframe, style='Button1Raised.TButton',text="\n"+t+"\n", width=6, command=lambda t=t: self.press(t)).grid(row=r, column=c,pady=1,padx="0 1")
+                ttk.Button(self.mainframe, style='Button0bRaised.TButton',text="\n"+t+"\n", width=6, command=lambda t=t: self.press(t)).grid(row=r, column=c,pady=1,padx="0 1")
 
-        ttk.Button(self.mainframe, style='Button1Raised.TButton',text="\nClear\n", width=9, command=self.clear).grid(row=len(rows)+1,column=0, columnspan=2,sticky='w',pady=1,padx="0 1")
-        ttk.Button(self.mainframe, style='Button1Raised.TButton', text="\nEnter\n", width=9, command=self.enter).grid(row=len(rows)+1, column=1,columnspan=2,sticky='e',pady=1,padx=1)
+        ttk.Button(self.mainframe, style='Button0bRaised.TButton',text="\nClear\n", width=9, command=self.clear).grid(row=len(rows)+1,column=0, columnspan=2,sticky='w',pady=1,padx="0 1")
+        ttk.Button(self.mainframe, style='Button0bRaised.TButton', text="\nEnter\n", width=9, command=self.enter).grid(row=len(rows)+1, column=1,columnspan=2,sticky='e',pady=1,padx=1)
         ttk.Entry(self.mainframe, style='Entry1b.TEntry', font=('Arial', 18), textvariable=self.textField,
                   # state="readonly",
                   width=18, justify="center").grid(row=len(rows) + 2, column=0, columnspan=3, pady=2,

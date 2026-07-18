@@ -64,21 +64,21 @@ class settingsUI(ttk.Labelframe):
         self.settingsMisc_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingsmisc_button")
         self.settingsMisc_Button.configure(
-            style="Button1Raised.TButton", text='General', width=15)
+            style="Button1bRaised.TButton", text='General', width=15)
         self.settingsMisc_Button.grid(
             column=0, ipady=25, padx=10, pady=10, row=0)
         self.settingsMisc_Button.configure(command=self.settingsGeneral_CB)
         self.settingsCW_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingscw_button")
         self.settingsCW_Button.configure(
-            style="Button1Raised.TButton", text='CW', width=15)
+            style="Button1bRaised.TButton", text='CW', width=15)
         self.settingsCW_Button.grid(
             column=1, ipady=25, padx=10, pady=10, row=0)
         self.settingsCW_Button.configure(command=self.settingsCW_CB)
         self.settingsBackup_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingsbackup_button")
         self.settingsBackup_Button.configure(
-            style="Button1Raised.TButton", text='Backup', width=15)
+            style="Button1bRaised.TButton", text='Backup', width=15)
         self.settingsBackup_Button.grid(
             column=2, ipady=25, padx=10, pady=10, row=0)
         self.settingsBackup_Button.configure(command=self.settingsBackup_CB)
@@ -86,7 +86,7 @@ class settingsUI(ttk.Labelframe):
             self.settingsButtons_Frame, name="settingsabout_button")
         self.settingsAbout_Button.configure(
             state="normal",
-            style="Button1Raised.TButton",
+            style="Button1bRaised.TButton",
             text='About',
             width=15)
         self.settingsAbout_Button.grid(
@@ -95,14 +95,14 @@ class settingsUI(ttk.Labelframe):
         self.settingsMachine_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingsmachine_button")
         self.settingsMachine_Button.configure(
-            style="Button1Raised.TButton", text='Machine', width=15)
+            style="Button1bRaised.TButton", text='Machine', width=15)
         self.settingsMachine_Button.grid(
             column=1, ipady=25, padx=10, pady=10, row=3)
         self.settingsMachine_Button.configure(command=self.SettingsMachine_CB)
         self.settingsReboot_Button = ttk.Button(
             self.settingsButtons_Frame, name="settingsreboot_button")
         self.settingsReboot_Button.configure(
-            style="Button1Raised.TButton", text='Reboot', width=15)
+            style="Button1bRaised.TButton", text='Reboot', width=15)
         self.settingsReboot_Button.grid(
             column=0, ipady=25, padx=10, pady=10, row=4)
         self.settingsReboot_Button.configure(command=self.settingsReboot_CB)
@@ -110,14 +110,16 @@ class settingsUI(ttk.Labelframe):
             self.settingsButtons_Frame,
             name="logbook_button")
         self.logbook_Button.configure(
-            style="Button1Raised.TButton", text='Logbook', width=15)
+            style="Button1bRaised.TButton",
+            text='Logbook',
+            width=15)
         self.logbook_Button.grid(column=0, ipady=25, padx=10, pady=10, row=3)
         self.logbook_Button.configure(command=self.SettingsLogbook_CB)
         self.SDR_Button = ttk.Button(
             self.settingsButtons_Frame,
             name="sdr_button")
         self.SDR_Button.configure(
-            style="Button1Raised.TButton",
+            style="Button1bRaised.TButton",
             text='SDR',
             width=15)
         self.SDR_Button.grid(column=2, ipady=25, padx=10, pady=10, row=3)
@@ -134,7 +136,7 @@ class settingsUI(ttk.Labelframe):
         self.settingsClosed_Button = ttk.Button(
             self.settingsClose_Frame, name="settingsclosed_button")
         self.settingsClosed_Button.configure(
-            style="Button1Raised.TButton", text='Close')
+            style="Button1bRaised.TButton", text='Close')
         self.settingsClosed_Button.pack(anchor="center", ipady=5, side="top")
         self.settingsClosed_Button.configure(command=self.settingsClose_CB)
         self.settingsClose_Frame.pack(

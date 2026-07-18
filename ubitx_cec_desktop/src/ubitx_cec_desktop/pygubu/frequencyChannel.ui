@@ -47,7 +47,7 @@
     <child>
       <object class="ttk.Button" id="channel_Select_Button" named="True">
         <property name="command" type="command" cbtype="simple">channel_Select_CB</property>
-        <property name="style">Button1Raised.TButton</property>
+        <property name="style">Button1bRaised.TButton</property>
         <property name="text" translatable="yes">Select</property>
         <property name="width">8</property>
         <layout manager="grid">

@@ -196,7 +196,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="Master_Cal" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -269,7 +269,7 @@ File</property>
                   <object class="ttk.Button" id="SSB_BFO" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -342,7 +342,7 @@ File</property>
                   <object class="ttk.Button" id="CW_BFO" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -415,7 +415,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="CW_Keytype" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -489,7 +489,7 @@ File</property>
                   <object class="ttk.Button" id="CW_Speed" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -561,7 +561,7 @@ File</property>
                   <object class="ttk.Button" id="CW_Sidetone" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -634,7 +634,7 @@ File</property>
                   <object class="ttk.Button" id="CW_Delay_Before_TX" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -708,7 +708,7 @@ File</property>
                   <object class="ttk.Button" id="CW_Delay_Before_RX" named="True">
                     <property name="command" type="command" cbtype="with_wid">selectSetting_CB</property>
                     <property name="cursor">arrow</property>
-                    <property name="style">Button2Raised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">No</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -814,7 +814,7 @@ File</property>
                     <child>
                       <object class="ttk.Button" id="select_All" named="True">
                         <property name="command" type="command" cbtype="simple">select_All_Checkbutton_CB</property>
-                        <property name="style">Button2Raised.TButton</property>
+                        <property name="style">Button1bRaised.TButton</property>
                         <property name="text" translatable="yes">Select All</property>
                         <property name="width">10</property>
                         <layout manager="pack">
@@ -981,7 +981,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="copy_Button" named="True">
                     <property name="command" type="command" cbtype="simple">copy_CB</property>
-                    <property name="style">Button2bRaised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">Copy</property>
                     <layout manager="pack">
                       <property name="padx">10</property>
@@ -1000,7 +1000,7 @@ File</property>
                 <child>
                   <object class="ttk.Button" id="cancel_Buttom" named="True">
                     <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                    <property name="style">Button2bRaised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="text" translatable="yes">Cancel</property>
                     <layout manager="pack">
                       <property name="padx">10</property>

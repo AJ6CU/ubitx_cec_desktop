@@ -266,7 +266,7 @@
             <child>
               <object class="ttk.Button" id="close_Button" named="True">
                 <property name="command" type="command" cbtype="simple">close_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Close</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>

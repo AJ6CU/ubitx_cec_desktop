@@ -194,7 +194,7 @@
                     <child>
                       <object class="ttk.Button" id="band0GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
-                        <property name="style">Button2bRaised.TButton</property>
+                        <property name="style">Button1bRaised.TButton</property>
                         <property name="text" translatable="yes">QSY</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -227,7 +227,7 @@
                     <child>
                       <object class="ttk.Button" id="band1GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
-                        <property name="style">Button2bRaised.TButton</property>
+                        <property name="style">Button1bRaised.TButton</property>
                         <property name="text" translatable="yes">QSY</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -268,7 +268,7 @@
                     <child>
                       <object class="ttk.Button" id="band2GO_Button" named="True">
                         <property name="command" type="command" cbtype="with_wid">bandGo_CB</property>
-                        <property name="style">Button2bRaised.TButton</property>
+                        <property name="style">Button1bRaised.TButton</property>
                         <property name="text" translatable="yes">QSY</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -494,7 +494,7 @@
               <object class="ttk.Button" id="scan_Button" named="True">
                 <property name="command" type="command" cbtype="simple">scan_CB</property>
                 <property name="state">disabled</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Scan</property>
                 <property name="width">10</property>
                 <layout manager="pack">
@@ -514,7 +514,7 @@
             <child>
               <object class="ttk.Button" id="close_Button" named="True">
                 <property name="command" type="command" cbtype="with_wid">close_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Close</property>
                 <property name="width">10</property>
                 <layout manager="pack">
@@ -534,7 +534,7 @@
             <child>
               <object class="ttk.Button" id="cancel_Button" named="True">
                 <property name="command" type="command" cbtype="with_wid">close_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <property name="width">10</property>
                 <layout manager="pack">

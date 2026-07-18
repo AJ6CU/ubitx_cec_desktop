@@ -282,10 +282,10 @@ class theVFO(baseui.theVFOUI):
         if lightNum == 0:         # This means we are in "classic" preset mode
 
             if turnOn:
-                self.rate_selection[0].configure(style='GreenButton2bRaised.TButton')
+                self.rate_selection[0].configure(style='GreenButton1bPressed.TButton')
 
             else:
-                self.rate_selection[0].configure(style='Button2bRaised.TButton')
+                self.rate_selection[0].configure(style='Button1bRaised.TButton')
         else:                       # We are toggling one of the digit LED lights
 
             if turnOn:
@@ -323,11 +323,11 @@ class theVFO(baseui.theVFOUI):
     def toggleStopButtonState(self):
         if (self.stop_Button_On):
             self.stop_Button_On = False
-            self.stop_Button.configure(style='Button2bRaised.TButton', state="normal")
+            self.stop_Button.configure(style='Button1bRaised.TButton')
             self.stop_Button['text'] = "Disable TX"
         else:
             self.stop_Button_On = True
-            self.stop_Button.configure(style='RedButton2bPressed.TButton', state="pressed")
+            self.stop_Button.configure(style='RedButton1bPressed.TButton')
             self.stop_Button['text'] = "TX Disabled"
 
     def setRXButtonState(self):

@@ -1,19 +1,26 @@
 #!/usr/bin/python3
+"""
+Classic_uBITX_Control
+
+Implements the "infamous" yellow box for backwards compatibility
+
+UI source file: Classic_uBITX_Control.ui
+"""
 import tkinter as tk
 import tkinter.ttk as ttk
 
 
-def i18n_translator_noop(value):
+def safe_i18n_translator(value):
     """i18n - Setup translator in derived class file"""
     return value
 
 
-def first_object_callback_noop(widget):
+def safe_fo_callback(widget):
     """on first objec callback - Setup callback in derived class file."""
     pass
 
 
-def image_loader_default(master, image_name: str):
+def safe_image_loader(master, image_name: str):
     """Image loader - Setup image_loader in derived class file."""
     img = None
     try:
@@ -38,12 +45,12 @@ class Classic_uBITX_ControlUI(ttk.Labelframe):
         **kw
     ):
         if translator is None:
-            translator = i18n_translator_noop
+            translator = safe_i18n_translator
         _ = translator  # i18n string marker.
         if image_loader is None:
-            image_loader = image_loader_default
+            image_loader = safe_image_loader
         if on_first_object_cb is None:
-            on_first_object_cb = first_object_callback_noop
+            on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
 
@@ -76,4 +83,8 @@ class Classic_uBITX_ControlUI(ttk.Labelframe):
         # Layout for 'greenBox_Labelframe' skipped in custom widget template.
 
 
-
+if __name__ == "__main__":
+    root = tk.Tk()
+    widget = Classic_uBITX_ControlUI(root)
+    widget.pack(expand=True, fill="both")
+    root.mainloop()

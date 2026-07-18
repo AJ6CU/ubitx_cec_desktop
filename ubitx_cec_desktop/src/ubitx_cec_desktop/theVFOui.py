@@ -86,7 +86,7 @@ class theVFOUI(ttk.Frame):
             self.rxTX_Status_Frame, name="stop_button")
         self.stop_Button.configure(
             state="normal",
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Disable TX',
             width=11)
         self.stop_Button_Tooltip = Tooltip(self.stop_Button)
@@ -115,7 +115,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit7_primary_vfo_label")
         self.digit7_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='7', width=1)
-        self.digit7_primary_VFO_Label.grid(column=0, row=0, sticky="e")
+        self.digit7_primary_VFO_Label.grid(
+            column=0, padx="0 5", row=0, sticky="e")
         self.digit7_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10mhz_CB, add="")
         self.digit7_Highlight_Label = ttk.Label(
@@ -126,7 +127,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit6_primary_vfo_label")
         self.digit6_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='6', width=1)
-        self.digit6_primary_VFO_Label.grid(column=1, row=0, sticky="e")
+        self.digit6_primary_VFO_Label.grid(
+            column=1, padx="0 5", row=0, sticky="e")
         self.digit6_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_1mhz_CB, add="")
         self.digit6_Highlight_Label = ttk.Label(
@@ -138,7 +140,7 @@ class theVFOUI(ttk.Frame):
         self.digit_delimiter_primary_VFO_1M_Label.configure(
             style="VFO.TLabel", text='.', width=0)
         self.digit_delimiter_primary_VFO_1M_Label.grid(
-            column=2, row=0, sticky="e")
+            column=2, padx="0 5", row=0, sticky="e")
         self.digital_highlight_1M_Period = ttk.Label(
             self.VFO_Frame, name="digital_highlight_1m_period")
         self.digital_highlight_1M_Period.configure(
@@ -148,7 +150,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit5_primary_vfo_label")
         self.digit5_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='5', width=1)
-        self.digit5_primary_VFO_Label.grid(column=3, row=0, sticky="e")
+        self.digit5_primary_VFO_Label.grid(
+            column=3, padx="0 5", row=0, sticky="e")
         self.digit5_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_100khz_CB, add="")
         self.digit5_Highlight_Label = ttk.Label(
@@ -159,7 +162,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit4_primary_vfo_label")
         self.digit4_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='4', width=1)
-        self.digit4_primary_VFO_Label.grid(column=4, row=0, sticky="e")
+        self.digit4_primary_VFO_Label.grid(
+            column=4, padx="0 5", row=0, sticky="e")
         self.digit4_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10khz_CB, add="")
         self.digit4_Highlight_Label = ttk.Label(
@@ -170,7 +174,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit3_primary_vfo_label")
         self.digit3_primary_VFO_Label.configure(
             style="VFO.TLabel", text='3', width=1)
-        self.digit3_primary_VFO_Label.grid(column=5, row=0, sticky="e")
+        self.digit3_primary_VFO_Label.grid(
+            column=5, padx="0 5", row=0, sticky="e")
         self.digit3_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_1khz_CB, add="")
         self.digit3_Highlight_Label = ttk.Label(
@@ -182,7 +187,7 @@ class theVFOUI(ttk.Frame):
         self.digit_delimiter_primary_VFO_1k_Label.configure(
             style="VFO.TLabel", text='.', width=0)
         self.digit_delimiter_primary_VFO_1k_Label.grid(
-            column=6, row=0, sticky="e")
+            column=6, padx="0 5", row=0, sticky="e")
         self.digital_highlight1K_Period = ttk.Label(
             self.VFO_Frame, name="digital_highlight1k_period")
         self.digital_highlight1K_Period.configure(
@@ -192,7 +197,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit2_primary_vfo_label")
         self.digit2_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='2', width=1)
-        self.digit2_primary_VFO_Label.grid(column=7, row=0, sticky="e")
+        self.digit2_primary_VFO_Label.grid(
+            column=7, padx="0 5", row=0, sticky="e")
         self.digit2_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_100hz_CB, add="")
         self.digit2_Highlight_Label = ttk.Label(
@@ -203,7 +209,8 @@ class theVFOUI(ttk.Frame):
             self.VFO_Frame, name="digit1_primary_vfo_label")
         self.digit1_primary_VFO_Label.configure(
             anchor="e", style="VFO.TLabel", text='1', width=1)
-        self.digit1_primary_VFO_Label.grid(column=8, row=0, sticky="e")
+        self.digit1_primary_VFO_Label.grid(
+            column=8, padx="0 5", row=0, sticky="e")
         self.digit1_primary_VFO_Label.bind(
             "<Button>", self.primary_vfo_10hz_CB, add="")
         self.digit1_Highlight_Label = ttk.Label(
@@ -319,7 +326,7 @@ class theVFOUI(ttk.Frame):
         self.tuning_Preset_Menubutton = ttk.Menubutton(
             self.tuning_Step_Frame, name="tuning_preset_menubutton")
         self.tuning_Preset_Menubutton.configure(
-            style="Heading2b.TMenubutton", text='0', width=6)
+            style="Heading1b.TMenubutton", text='0', width=10)
         self.tuning_Preset_Menu = tk.Menu(
             self.tuning_Preset_Menubutton,
             name="tuning_preset_menu")
@@ -353,7 +360,7 @@ class theVFOUI(ttk.Frame):
         self.tuning_Preset_Menubutton.pack(side="left")
         self.tuning_Multiplier_Button = ttk.Button(
             self.tuning_Step_Frame, name="tuning_multiplier_button")
-        self.tuning_Multiplier_Button.configure(style="Button2bRaised.TButton")
+        self.tuning_Multiplier_Button.configure(style="Button1bRaised.TButton")
         self.current_Tuning_Rate_Tooltip = Tooltip(
             self.tuning_Multiplier_Button)
         self.current_Tuning_Rate_Tooltip.configure(
@@ -365,11 +372,6 @@ class theVFOUI(ttk.Frame):
             anchor="e", expand=True, fill="x", padx="20 0", side="left")
         self.tuning_Multiplier_Button.configure(
             command=self.tuning_Multiplier_Button_CB)
-        self.tuning_Preset_Units_Label = ttk.Label(
-            self.tuning_Step_Frame, name="tuning_preset_units_label")
-        self.tuning_Preset_Units_Label.configure(
-            style="Heading1b.TLabel", text='Hz')
-        self.tuning_Preset_Units_Label.pack(padx=15, side="left")
         self.tuning_Preset_Rate_Tooltip = Tooltip(self.tuning_Step_Frame)
         self.tuning_Preset_Rate_Tooltip.configure(
             padx=8,
@@ -377,7 +379,7 @@ class theVFOUI(ttk.Frame):
             text='Controls which of the preset tuning rates has been selected.',
             wraplength=300)
         self.tuning_Step_Frame.pack(padx="30 0", side="left")
-        self.vfoB_Frame.grid(column=0, row=2, sticky="new")
+        self.vfoB_Frame.grid(column=0, row=2, sticky="n")
         self.configure(height=200, style="Normal.TFrame", width=1250)
         # Layout for 'MainVFO_Frame' skipped in custom widget template.
 

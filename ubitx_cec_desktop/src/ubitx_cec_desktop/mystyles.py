@@ -41,7 +41,7 @@ def setup_ttk_styles(master=None):
             'Heading4': ('Arial',10, 'bold' ),
             'Heading5': ('Fixed', 6),
             # 'Normal': ('Default', 10),
-            'HeadingVFO': ("TkFixedFont",82, 'bold' )
+            'HeadingVFO': ("TkFixedFont",96, 'bold' )
         }
 
 
@@ -62,22 +62,26 @@ def setup_ttk_styles(master=None):
     style.configure('OffLED.TLabel', font=fontList['Heading5'], background='gray', foreground='gray')
     style.configure('OnLED.TLabel', font=fontList['Heading5'], background='green', foreground='green')
 
-    style.configure('Button1Raised.TButton', font=fontList['Heading0b'], justify='center', relief='raised')
-    style.configure('Button1Pressed.TButton', font=fontList['Heading0b'], justify='center', relief='sunken')
+    style.configure('Button0bRaised.TButton', font=fontList['Heading0b'], justify='center', relief='raised')
+    style.configure('Button0bPressed.TButtoΩn', font=fontList['Heading0b'], justify='center', relief='sunken')
+
+    style.configure('Button1bRaised.TButton', font=fontList['Heading1b'], justify='center', relief='raised')
+    style.configure('Button1bPressed.TButton', font=fontList['Heading1b'], justify='center', relief='sunken')
+
+    # style.configure('RedButton1bRaised.TButton', font=fontList['Heading1b'], background='red', foreground='white',
+    #                 anchor="center", relief='raised')
+    style.configure('RedButton1bPressed.TButton', font=fontList['Heading1b'], background='red', foreground='white',
+                    anchor="center", relief='sunken')
+
+    # style.configure('GreenButton1bRaised.TButton', font=fontList['Heading1b'], background='green', foreground='white',
+    #                 justify='center', relief='raised')
+    style.configure('GreenButton1bPressed.TButton', font=fontList['Heading1b'], background='green', foreground='white',
+                    justify='center', relief='sunken')
 
 
     style.configure('Button2bRaised.TButton', font=fontList['Heading2b'], justify='center', relief='raised')
     style.configure('Button2bPressed.TButton', font=fontList['Heading2b'], justify='center', relief='sunken')
 
-    style.configure('RedButton2bRaised.TButton', font=fontList['Heading2b'], background='red', foreground='white',
-                    anchor="center", relief='raised')
-    style.configure('RedButton2bPressed.TButton', font=fontList['Heading2b'], background='red', foreground='white',
-                    anchor="center", relief='sunken')
-
-    style.configure('GreenButton2bRaised.TButton', font=fontList['Heading2b'], background='green', foreground='white',
-                    justify='center', relief='raised')
-    style.configure('GreenButton2bPressed.TButton', font=fontList['Heading2b'], background='green', foreground='white',
-                    justify='center', relief='sunken')
 
 
 

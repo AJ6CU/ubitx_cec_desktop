@@ -111,7 +111,7 @@ class VirtualKeyboard(tk.Toplevel):
                 keyframe1.columnconfigure(ind, weight=2)
             else:
                 keyframe1.columnconfigure(ind, weight=1)
-            appendrow1(ttk.Button(keyframe1,style='Button1Raised.TButton', width=3))
+            appendrow1(ttk.Button(keyframe1,style='Button0bRaised.TButton', width=3))
             if key == "backspace":
                 self.row1buttons[ind].config(text=key.title(), width=8)
 
@@ -150,7 +150,7 @@ class VirtualKeyboard(tk.Toplevel):
             else:
                 keyframe2.columnconfigure(ind, weight=1)
 
-            appendrow2(ttk.Button(keyframe2,style='Button1Raised.TButton', width=3))
+            appendrow2(ttk.Button(keyframe2,style='Button0bRaised.TButton', width=3))
 
             if key ==  "[":
                 self.row2buttons[ind].config(text="{\n[")
@@ -177,10 +177,10 @@ class VirtualKeyboard(tk.Toplevel):
 
             if key == "home" or key == "end":                   # Special case home and end that need greater size
                 keyframe3.columnconfigure(ind, weight=2)
-                appendrow3(ttk.Button(keyframe3,style='Button1Raised.TButton', width=4))
+                appendrow3(ttk.Button(keyframe3,style='Button0bRaised.TButton', width=4))
             else:
                 keyframe3.columnconfigure(ind, weight=1)
-                appendrow3(ttk.Button(keyframe3, style='Button1Raised.TButton', width=3))
+                appendrow3(ttk.Button(keyframe3, style='Button0bRaised.TButton', width=3))
 
             if key == ";":
                 self.row3buttons[ind].config(text=":\n;")
@@ -210,7 +210,7 @@ class VirtualKeyboard(tk.Toplevel):
             else:
                 keyframe4.columnconfigure(ind, weight=1)
 
-            appendrow4(ttk.Button(keyframe4,style='Button1Raised.TButton', width=3))
+            appendrow4(ttk.Button(keyframe4,style='Button0bRaised.TButton', width=3))
 
             if key == ",":
                 self.row4buttons[ind].config(text="<\n,")
@@ -246,7 +246,7 @@ class VirtualKeyboard(tk.Toplevel):
         for key in self.row5keys:
             ind = self.row5keys.index(key)
 
-            appendrow5(ttk.Button(keyframe5, style='Button1Raised.TButton', width=3))
+            appendrow5(ttk.Button(keyframe5, style='Button0bRaised.TButton', width=3))
 
             if key == "spacebar":
                 keyframe5.columnconfigure(ind+1, weight=12)
@@ -332,13 +332,13 @@ class VirtualKeyboard(tk.Toplevel):
         indRight = self.row4keys.index("right shift")
 
         if self.shift_status == True:
-            self.row4buttons[indLeft].config(style='Button1Raised.TButton')
-            self.row4buttons[indRight].config(style='Button1Raised.TButton')
+            self.row4buttons[indLeft].config(style='Button0bRaised.TButton')
+            self.row4buttons[indRight].config(style='Button0bRaised.TButton')
 
             self.shift_status = False
         else:
-            self.row4buttons[indLeft].config(style='Button1Pressed.TButton')
-            self.row4buttons[indRight].config(style='Button1Pressed.TButton')
+            self.row4buttons[indLeft].config(style='Button0bPressed.TButton')
+            self.row4buttons[indRight].config(style='Button0bPressed.TButton')
 
             self.shift_status = True
     #

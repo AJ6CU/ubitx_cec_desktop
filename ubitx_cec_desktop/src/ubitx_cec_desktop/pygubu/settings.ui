@@ -59,7 +59,7 @@
             <child>
               <object class="ttk.Button" id="settingsMisc_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsGeneral_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">General</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -74,7 +74,7 @@
             <child>
               <object class="ttk.Button" id="settingsCW_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsCW_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">CW</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -89,7 +89,7 @@
             <child>
               <object class="ttk.Button" id="settingsBackup_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsBackup_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Backup</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -105,7 +105,7 @@
               <object class="ttk.Button" id="settingsAbout_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsAbout_CB</property>
                 <property name="state">normal</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">About</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -120,7 +120,7 @@
             <child>
               <object class="ttk.Button" id="settingsMachine_Button" named="True">
                 <property name="command" type="command" cbtype="simple">SettingsMachine_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Machine</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -135,7 +135,7 @@
             <child>
               <object class="ttk.Button" id="settingsReboot_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsReboot_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Reboot</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -150,7 +150,7 @@
             <child>
               <object class="ttk.Button" id="logbook_Button" named="True">
                 <property name="command" type="command" cbtype="simple">SettingsLogbook_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Logbook</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -165,7 +165,7 @@
             <child>
               <object class="ttk.Button" id="SDR_Button" named="True">
                 <property name="command" type="command" cbtype="simple">SettingsSDR_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">SDR</property>
                 <property name="width">15</property>
                 <layout manager="grid">
@@ -195,7 +195,7 @@
             <child>
               <object class="ttk.Button" id="settingsClosed_Button" named="True">
                 <property name="command" type="command" cbtype="simple">settingsClose_CB</property>
-                <property name="style">Button1Raised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Close</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>

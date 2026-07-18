@@ -46,6 +46,8 @@ class mainScreen(baseui.mainScreenUI):
         self.pack_forget()
         self.startingspectrum = False
 
+        self.updateLoopID = None    # tracks the update LoopID to kill it on window close
+
         self.theRadio = None            # Object pointer for the Radio
         self.theSDR = None              # This is an Object pointer to the SDR itself.
         self.theSDRWindow = None  # This an object pointer to the popup window for sdrDashboard
@@ -287,6 +289,7 @@ class mainScreen(baseui.mainScreenUI):
             return None
 
     def close_MainWindow (self):
+
         if isinstance(self.sdrplusplus_handle, subprocess.Popen):
             if self.sdrplusplus_handle.poll() is None:
                 print("[*] Cleanup Action: Terminating the SDR++ window spawned by this script.")
@@ -303,7 +306,34 @@ class mainScreen(baseui.mainScreenUI):
             except Exception:
                 pass
         self.portHandle.close()         # Close connection to Radio
-        self.master.destroy()           # Close Window
+        #
+        #   shutting down can be tricky because of the update data loop
+        #   that is looking at the serial com port in theRadio.updateData()
+        #   So we first try to cancel it. and then in case there are still
+        #   possibly a race connection, put the destroy in a try loop to
+        #   catch ny errors generated.
+        #
+        sys.exit(0)     # this is a nuclear option to force all the hidden
+                        # threads and processes to die
+                        # Following code works, but still need the sys.exit(0)
+                        # to make pycharm happy that things closed.
+        if self.updateLoopID != None:
+            self.master.after_cancel(self.updateLoopID)
+            self.theRadio = None
+        #   Appears not to be necessary, but including it anyway.
+        try:
+            self.master.update_idletasks()
+        except tk.TclError:
+            pass  # Window might already be halfway gone
+
+        try:
+            self.master.destroy()
+        except tk.TclError:
+            # If it already partially destroyed itself, pass silently
+            pass
+        #
+        #   Still needed this,
+        # sys.exit(0)
 
     ######################################################################################
     #   This looks up the command processing routing to be called via a dictionary
@@ -1238,12 +1268,12 @@ class mainScreen(baseui.mainScreenUI):
 
         if (self.lock_Button_On):
             self.lock_Button_On = False
-            self.lock_Button.configure(style='Button2bRaised.TButton')   #, state="normal")
+            self.lock_Button.configure(style='Button1bRaised.TButton')
             self.lock_Button['text'] = "LOCK"
             self.unlockUX()
         else:
             self.lock_Button_On = True
-            self.lock_Button.configure(style='RedButton2bPressed.TButton')   #, state='pressed')
+            self.lock_Button.configure(style='RedButton1bPressed.TButton')
             self.lock_Button['text']= "LOCKED"
             self.lockUX()
 
@@ -1313,7 +1343,7 @@ class mainScreen(baseui.mainScreenUI):
 
         if (self.speaker_Button_On):
             self.speaker_Button_On = False
-            self.speaker_Button.configure(style='Button2bRaised.TButton')
+            self.speaker_Button.configure(style='Button1bRaised.TButton')
             self.speaker_Button['text'] = "SPEAKER"
             if self.theSDR != None:
                 self.theSDRWindow.on_close()    # close the sdrdashboard when going out of sdr mode
@@ -1322,7 +1352,7 @@ class mainScreen(baseui.mainScreenUI):
                 self.theSDR = None
         else:
             self.speaker_Button_On = True
-            self.speaker_Button.configure(style='RedButton2bPressed.TButton')   #, state="pressed")
+            self.speaker_Button.configure(style='RedButton1bPressed.TButton')   #, state="pressed")
             if  gv.config.get_SDR_Switch() == "True":
                 self.speaker_Button['text'] = "SDR"
                 self.theSDRWindow = launch_sdr_popup(self)
@@ -1361,11 +1391,11 @@ class mainScreen(baseui.mainScreenUI):
     def cs_UX_SPLIT_Toggle(self, buffer):
         if (self.split_Button_On):
             self.split_Button_On = False
-            self.split_Button.configure(style='Button2bRaised.TButton')  #, state="normal")
+            self.split_Button.configure(style='Button1bRaised.TButton')
             self.theVFO_Object.setSplitmode("OFF")
         else:
             self.split_Button_On = True
-            self.split_Button.configure(style='GreenButton2bPressed.TButton')  #, state="pressed")
+            self.split_Button.configure(style='GreenButton1bPressed.TButton')
             self.theVFO_Object.setSplitmode("ON")
     #
     #   This appears to be a no-op command. If the last rit TX frequency does not equal
@@ -1382,11 +1412,11 @@ class mainScreen(baseui.mainScreenUI):
     def cr_UX_RIT_Toggle(self, buffer):
         if (self.rit_Button_On):
             self.rit_Button_On = False
-            self.rit_Button.configure(style='Button2bRaised.TButton') #, state="normal")
+            self.rit_Button.configure(style='Button1bRaised.TButton')
             self.theVFO_Object.setRITmode("OFF")
         else:
             self.rit_Button_On = True
-            self.rit_Button.configure(style='GreenButton2bPressed.TButton') #, state="pressed")
+            self.rit_Button.configure(style='GreenButton1bPressed.TButton')
             self.theVFO_Object.setRITmode("ON")
 
     def vf_UX_ATT_Level(self, buffer):

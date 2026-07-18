@@ -65,7 +65,7 @@ class frequencyChannelUI(ttk.Frame):
         self.channel_Select_Button = ttk.Button(
             self, name="channel_select_button")
         self.channel_Select_Button.configure(
-            style="Button1Raised.TButton", text='Select', width=8)
+            style="Button1bRaised.TButton", text='Select', width=8)
         self.channel_Select_Button.grid(column=1, padx="5 0", row=0)
         self.channel_Select_Button.configure(command=self.channel_Select_CB)
         self.channel_Name_Entry = ttk.Entry(self, name="channel_name_entry")

@@ -197,7 +197,7 @@
               <object class="pygubu.widgets.PathChooserButton" id="LogbookFileSelectorButton" named="True">
                 <property name="initialdir">~</property>
                 <property name="mustexist">true</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Select
 Logbook
 Location</property>
@@ -307,7 +307,7 @@ Location</property>
             <child>
               <object class="ttk.Button" id="apply_Button" named="True">
                 <property name="command" type="command" cbtype="simple">apply_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Apply</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>
@@ -327,7 +327,7 @@ Location</property>
             <child>
               <object class="ttk.Button" id="cancel_Buttom" named="True">
                 <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <layout manager="pack">
                   <property name="anchor">center</property>

@@ -69,9 +69,9 @@ class mainScreenUI(ttk.Frame):
         self.settings_Button = ttk.Button(
             self.menuBar_Frame, name="settings_button")
         self.settings_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='SETTINGS',
-            width=12)
+            width=10)
         self.settings_Button_Tooltip = Tooltip(self.settings_Button)
         self.settings_Button_Tooltip.configure(
             padx=8,
@@ -81,16 +81,16 @@ class mainScreenUI(ttk.Frame):
         self.settings_Button.grid(
             column=0,
             ipady=20,
-            padx="0 2",
+            padx="0 10",
             row=0,
             sticky="ns")
         self.settings_Button.configure(command=self.settings_CB)
         self.vfo_Button = ttk.Button(self.menuBar_Frame, name="vfo_button")
         self.vfo_Button.configure(
             state="normal",
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='VFO',
-            width=12)
+            width=10)
         self.vfo_Button_Tooltip = Tooltip(self.vfo_Button)
         self.vfo_Button_Tooltip.configure(
             padx=8,
@@ -100,14 +100,14 @@ class mainScreenUI(ttk.Frame):
         self.vfo_Button.grid(
             column=1,
             ipady=20,
-            padx="0 2",
+            padx="0 10",
             row=0,
             sticky="ns")
         self.vfo_Button.configure(command=self.vfo_CB)
         self.mode_select_Menubutton = ttk.Menubutton(
             self.menuBar_Frame, name="mode_select_menubutton")
         self.mode_select_Menubutton.configure(
-            style="Heading2b.TMenubutton", text='Mode', width=9)
+            style="Heading1b.TMenubutton", text='Mode', width=7)
         menu1 = tk.Menu(self.mode_select_Menubutton)
         menu1.configure(tearoff=False)
         menu1.add(
@@ -136,13 +136,13 @@ class mainScreenUI(ttk.Frame):
             state="normal")
         self.mode_select_Menubutton.configure(menu=menu1)
         self.mode_select_Menubutton.grid(
-            column=2, ipady=20, padx="0 2", row=0, sticky="ns")
+            column=2, ipady=20, padx="0 10", row=0, sticky="ns")
         self.band_up_Button = ttk.Button(
             self.menuBar_Frame, name="band_up_button")
         self.band_up_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='BAND UP',
-            width=12)
+            width=10)
         self.band_up_Tooltip = Tooltip(self.band_up_Button)
         self.band_up_Tooltip.configure(
             padx=8,
@@ -152,14 +152,14 @@ class mainScreenUI(ttk.Frame):
         self.band_up_Button.grid(
             column=3,
             ipady=20,
-            padx="0 2",
+            padx="0 10",
             row=0,
             sticky="ns")
         self.band_up_Button.configure(command=self.band_up_CB)
         self.band_down_Button = ttk.Button(
             self.menuBar_Frame, name="band_down_button")
         self.band_down_Button.configure(
-            style="Button2bRaised.TButton", text='BAND DN', width=12)
+            style="Button1bRaised.TButton", text='BAND DN', width=10)
         self.band_down_tooltip = Tooltip(self.band_down_Button)
         self.band_down_tooltip.configure(
             padx=8,
@@ -167,27 +167,31 @@ class mainScreenUI(ttk.Frame):
             text='Click to move the VFO to the next lower band',
             wraplength=300)
         self.band_down_Button.grid(
-            column=4, ipady=20, padx="0 2", row=0, sticky="ns")
+            column=4,
+            ipady=20,
+            padx="0 10",
+            row=0,
+            sticky="ns")
         self.band_down_Button.configure(command=self.band_down_CB)
         self.lock_Button = ttk.Button(self.menuBar_Frame, name="lock_button")
         self.lock_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='LOCK',
-            width=12)
+            width=10)
         self.lock_Button_Tooltip = Tooltip(self.lock_Button)
         self.lock_Button_Tooltip.configure(
             padx=8,
             relief="raised",
             text='Click to lock/unlock all the screen settings.',
             wraplength=300)
-        self.lock_Button.grid(column=5, padx="0 2", row=0, sticky="ns")
+        self.lock_Button.grid(column=5, padx="0 10", row=0, sticky="ns")
         self.lock_Button.configure(command=self.lock_CB)
         self.speaker_Button = ttk.Button(
             self.menuBar_Frame, name="speaker_button")
         self.speaker_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='SPEAKER',
-            width=12)
+            width=10)
         self.speaker_Button_Tooltip = Tooltip(self.speaker_Button)
         self.speaker_Button_Tooltip.configure(
             padx=8,
@@ -225,9 +229,9 @@ class mainScreenUI(ttk.Frame):
         self.channels_Button = ttk.Button(
             self.signal_Control_Frame, name="channels_button")
         self.channels_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nCHANNELS\n',
-            width=11)
+            width=10)
         self.channels_Button_Tooltip = Tooltip(self.channels_Button)
         self.channels_Button_Tooltip.configure(
             padx=8,
@@ -239,9 +243,9 @@ class mainScreenUI(ttk.Frame):
         self.cwDecode_Button = ttk.Button(
             self.signal_Control_Frame, name="cwdecode_button")
         self.cwDecode_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nCW DECODE\n',
-            width=11)
+            width=10)
         self.cwDecode_Button_Tooltip = Tooltip(self.cwDecode_Button)
         self.cwDecode_Button_Tooltip.configure(
             padx=8,
@@ -255,7 +259,7 @@ class mainScreenUI(ttk.Frame):
         self.spectrumScan_Button = ttk.Button(
             self.signal_Control_Frame, name="spectrumscan_button")
         self.spectrumScan_Button.configure(
-            style="Button2bRaised.TButton", text='\nSPECTRUM\n', width=11)
+            style="Button1bRaised.TButton", text='\nSPECTRUM\n', width=10)
         self.spectrumScan_Tooltip = Tooltip(self.spectrumScan_Button)
         self.spectrumScan_Tooltip.configure(
             padx=8,
@@ -269,9 +273,9 @@ class mainScreenUI(ttk.Frame):
         self.bandScan_Button = ttk.Button(
             self.signal_Control_Frame, name="bandscan_button")
         self.bandScan_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nBAND SCAN\n',
-            width=11)
+            width=10)
         self.bandScan_Button_Tooltip = Tooltip(self.bandScan_Button)
         self.bandScan_Button_Tooltip.configure(
             padx=8,
@@ -285,9 +289,9 @@ class mainScreenUI(ttk.Frame):
         self.split_Button = ttk.Button(
             self.signal_Control_Frame, name="split_button")
         self.split_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nSPLIT\n',
-            width=11)
+            width=10)
         self.split_Button_Tooltip = Tooltip(self.split_Button)
         self.split_Button_Tooltip.configure(
             padx=8,
@@ -299,9 +303,9 @@ class mainScreenUI(ttk.Frame):
         self.rit_Button = ttk.Button(
             self.signal_Control_Frame, name="rit_button")
         self.rit_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nRIT\n',
-            width=11)
+            width=10)
         self.rit_Button_Tooltip = Tooltip(self.rit_Button)
         self.rit_Button_Tooltip.configure(
             padx=8,
@@ -313,9 +317,9 @@ class mainScreenUI(ttk.Frame):
         self.logQSO_Button = ttk.Button(
             self.signal_Control_Frame, name="logqso_button")
         self.logQSO_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='\nLOG QSO\n',
-            width=11)
+            width=10)
         self.log_QSO_Tooltip = Tooltip(self.logQSO_Button)
         self.log_QSO_Tooltip.configure(
             padx=8,
@@ -484,8 +488,7 @@ class mainScreenUI(ttk.Frame):
             row=1,
             rowspan=3,
             sticky="sw")
-        self.control_Meter_Tuning_Frame.grid(
-            column=0, padx="5 0", row=1, sticky="nw")
+        self.control_Meter_Tuning_Frame.grid(column=0, row=1, sticky="nw")
         frame2.pack(
             anchor="n",
             expand=True,

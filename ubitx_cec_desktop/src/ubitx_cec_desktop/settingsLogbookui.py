@@ -168,7 +168,7 @@ class settingsLogbookUI(ttk.Labelframe):
         self.LogbookFileSelectorButton.configure(
             initialdir="~",
             mustexist=True,
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Select\nLogbook\nLocation',
             type="directory")
         self.LogbookFileSelector_Tooltip = Tooltip(
@@ -250,7 +250,7 @@ class settingsLogbookUI(ttk.Labelframe):
             height=50, style="Normal.TFrame", width=200)
         self.apply_Button = ttk.Button(self.closingFrame, name="apply_button")
         self.apply_Button.configure(
-            style="Button2bRaised.TButton", text='Apply')
+            style="Button1bRaised.TButton", text='Apply')
         self.apply_Button_Tooltip = Tooltip(self.apply_Button)
         self.apply_Button_Tooltip.configure(
             padx=8,
@@ -262,7 +262,7 @@ class settingsLogbookUI(ttk.Labelframe):
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
         self.cancel_Buttom.configure(
-            style="Button2bRaised.TButton", text='Cancel')
+            style="Button1bRaised.TButton", text='Cancel')
         self.cancel_Button_Tooltip = Tooltip(self.cancel_Buttom)
         self.cancel_Button_Tooltip.configure(
             padx=8,

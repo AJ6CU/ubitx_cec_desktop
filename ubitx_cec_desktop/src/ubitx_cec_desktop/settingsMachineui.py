@@ -316,7 +316,7 @@ class settingsMachineUI(ttk.Labelframe):
             height=50, style="Normal.TFrame", width=200)
         self.apply_Button = ttk.Button(self.closingFrame, name="apply_button")
         self.apply_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             takefocus=True,
             text='Apply')
         self.apply_Button_Tooltip = Tooltip(self.apply_Button)
@@ -330,7 +330,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
         self.cancel_Buttom.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             takefocus=True,
             text='Cancel')
         self.cancel_Button_Tooltip = Tooltip(self.cancel_Buttom)

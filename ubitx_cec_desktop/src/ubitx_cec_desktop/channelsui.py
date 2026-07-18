@@ -253,7 +253,7 @@ class channelsUI(ttk.Labelframe):
         self.ChannelToVFO_Button.configure(
             compound="none",
             state="normal",
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Channel->VFO',
             width=14)
         self.channelToVRO_Tooltip = Tooltip(self.ChannelToVFO_Button)
@@ -268,7 +268,7 @@ class channelsUI(ttk.Labelframe):
             self.channelEdit_Frame, name="vfotochannel_button")
         self.VFOToChannel_Button.configure(
             state="normal",
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='VFO->Channel',
             width=14)
         self.VFOToChannel_Tooltup = Tooltip(self.VFOToChannel_Button)
@@ -282,7 +282,7 @@ class channelsUI(ttk.Labelframe):
         self.scan_Button = ttk.Button(
             self.channelEdit_Frame, name="scan_button")
         self.scan_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Run Scan',
             width=14)
         self.scan_Button_tooltip = Tooltip(self.scan_Button)
@@ -300,7 +300,7 @@ class channelsUI(ttk.Labelframe):
         self.exportChannel_Button = ttk.Button(
             self.closingFrame, name="exportchannel_button")
         self.exportChannel_Button.configure(
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Export Channels to Config')
         self.tooltip1 = Tooltip(self.exportChannel_Button)
         self.tooltip1.configure(
@@ -332,7 +332,7 @@ class channelsUI(ttk.Labelframe):
             self.closingFrame, name="savechannel_button")
         self.saveChannel_Button.configure(
             state="normal",
-            style="Button2bRaised.TButton",
+            style="Button1bRaised.TButton",
             text='Save Channel')
         self.save_Button_Tooltip = Tooltip(self.saveChannel_Button)
         self.save_Button_Tooltip.configure(
@@ -345,7 +345,7 @@ class channelsUI(ttk.Labelframe):
         self.saveAllChannels_Button = ttk.Button(
             self.closingFrame, name="saveallchannels_button")
         self.saveAllChannels_Button.configure(
-            state="normal", style="Button2bRaised.TButton", text='Save All')
+            state="normal", style="Button1bRaised.TButton", text='Save All')
         self.saveAll_Button_Tooltip = Tooltip(self.saveAllChannels_Button)
         self.saveAll_Button_Tooltip.configure(
             padx=8,
@@ -357,7 +357,7 @@ class channelsUI(ttk.Labelframe):
         self.refresh_Button = ttk.Button(
             self.closingFrame, name="refresh_button")
         self.refresh_Button.configure(
-            style="Button2bRaised.TButton", text='Refresh')
+            style="Button1bRaised.TButton", text='Refresh')
         self.refresh_Tooltip = Tooltip(self.refresh_Button)
         self.refresh_Tooltip.configure(
             padx=8,
@@ -368,7 +368,7 @@ class channelsUI(ttk.Labelframe):
         self.refresh_Button.configure(command=self.refresh_Channel_CB)
         self.close_Button = ttk.Button(self.closingFrame, name="close_button")
         self.close_Button.configure(
-            style="Button2bRaised.TButton", text='Close')
+            style="Button1bRaised.TButton", text='Close')
         self.closeButton_Tooltip = Tooltip(self.close_Button)
         self.closeButton_Tooltip.configure(
             padx=8,

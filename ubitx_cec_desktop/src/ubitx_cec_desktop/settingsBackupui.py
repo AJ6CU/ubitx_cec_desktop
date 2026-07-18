@@ -146,7 +146,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.Master_Cal = ttk.Button(
             self.backupSettings_Frame, name="master_cal")
         self.Master_Cal.configure(
-            style="Button2Raised.TButton", text='No', width=5)
+            style="Button1bRaised.TButton", text='No', width=5)
         self.Master_Cal.grid(column=0, pady=15, row=3)
         def Master_Cal_cmd_(): self.selectSetting_CB("Master_Cal")
 
@@ -177,7 +177,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.SSB_BFO = ttk.Button(self.backupSettings_Frame, name="ssb_bfo")
         self.SSB_BFO.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.SSB_BFO.grid(column=0, pady="0 15", row=4)
@@ -210,7 +210,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.CW_BFO = ttk.Button(self.backupSettings_Frame, name="cw_bfo")
         self.CW_BFO.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.CW_BFO.grid(column=0, pady="0 15", row=5)
@@ -243,7 +243,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.CW_Keytype = ttk.Button(
             self.backupSettings_Frame, name="cw_keytype")
         self.CW_Keytype.configure(
-            style="Button2Raised.TButton", text='No', width=5)
+            style="Button1bRaised.TButton", text='No', width=5)
         self.CW_Keytype.grid(column=0, pady="0 15", row=6)
         def CW_Keytype_cmd_(): self.selectSetting_CB("CW_Keytype")
 
@@ -274,7 +274,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.CW_Speed = ttk.Button(self.backupSettings_Frame, name="cw_speed")
         self.CW_Speed.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.CW_Speed.grid(column=0, pady="0 15", row=7)
@@ -308,7 +308,7 @@ class settingsBackupUI(ttk.Labelframe):
             self.backupSettings_Frame, name="cw_sidetone")
         self.CW_Sidetone.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.CW_Sidetone.grid(column=0, pady="0 15", row=8)
@@ -343,7 +343,7 @@ class settingsBackupUI(ttk.Labelframe):
             self.backupSettings_Frame, name="cw_delay_before_tx")
         self.CW_Delay_Before_TX.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.CW_Delay_Before_TX.grid(column=0, pady="0 15", row=9)
@@ -378,7 +378,7 @@ class settingsBackupUI(ttk.Labelframe):
             self.backupSettings_Frame, name="cw_delay_before_rx")
         self.CW_Delay_Before_RX.configure(
             cursor="arrow",
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='No',
             width=5)
         self.CW_Delay_Before_RX.grid(column=0, pady="0 15", row=10)
@@ -419,7 +419,7 @@ class settingsBackupUI(ttk.Labelframe):
         frame5.configure(height=200, style="Normal.TFrame", width=200)
         self.select_All = ttk.Button(frame5, name="select_all")
         self.select_All.configure(
-            style="Button2Raised.TButton",
+            style="Button1bRaised.TButton",
             text='Select All',
             width=10)
         self.sleectAll_Button_Label = Tooltip(self.select_All)
@@ -522,7 +522,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.closingFrame.configure(
             height=50, style="Normal.TFrame", width=200)
         self.copy_Button = ttk.Button(self.closingFrame, name="copy_button")
-        self.copy_Button.configure(style="Button2bRaised.TButton", text='Copy')
+        self.copy_Button.configure(style="Button1bRaised.TButton", text='Copy')
         self.copyButton_Tooltip = Tooltip(self.copy_Button)
         self.copyButton_Tooltip.configure(
             padx=8,
@@ -534,7 +534,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.cancel_Buttom = ttk.Button(
             self.closingFrame, name="cancel_buttom")
         self.cancel_Buttom.configure(
-            style="Button2bRaised.TButton", text='Cancel')
+            style="Button1bRaised.TButton", text='Cancel')
         self.cancelButton_Tooltip = Tooltip(self.cancel_Buttom)
         self.cancelButton_Tooltip.configure(
             padx=8,

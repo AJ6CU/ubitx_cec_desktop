@@ -216,8 +216,6 @@ class piRadio:
             #   Get command
             #
             in_byte = self.radioPort.read(1)
-            # if self.mainWindow.startingspectrum == True:
-            #     print(in_byte)
 
             if in_byte:
                 #
@@ -261,8 +259,13 @@ class piRadio:
                         sleep(float(gv.config.get_MCU_Read_Wait_Period()))
 
         if repeatFlag:
-            self.mainWindow.after(self.MCU_Update_Period,self.updateData)
-
+            # if not self.mainWindow.master.winfo_exists():
+            #     return
+            try:
+                self.mainWindow.updateLoopID = self.mainWindow.after(self.MCU_Update_Period,self.updateData)
+            except tk.TclError:
+                # Catch-all safety net for mid-execution destruction
+                return
 #   Radio Commands
 ########################################################################################
 #   These routines are called to tell the MCU that an action has happened in the UX.

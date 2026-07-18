@@ -159,7 +159,7 @@
                 <child>
                   <object class="ttk.Button" id="button_mute_toggle" named="True">
                     <property name="command" type="command" cbtype="simple">action_toggle_mute</property>
-                    <property name="style">Button2bRaised.TButton</property>
+                    <property name="style">Button1bRaised.TButton</property>
                     <property name="takefocus">false</property>
                     <property name="text" translatable="yes">🔊 Mute Audio</property>
                     <property name="width">15</property>
@@ -252,7 +252,7 @@
                         <child>
                           <object class="ttk.Button" id="Band160m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">160M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -266,7 +266,7 @@
                         <child>
                           <object class="ttk.Button" id="Band80m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">80M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -280,7 +280,7 @@
                         <child>
                           <object class="ttk.Button" id="Band40m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">40M</property>
                             <layout manager="grid">
                               <property name="column">2</property>
@@ -294,7 +294,7 @@
                         <child>
                           <object class="ttk.Button" id="Band30m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">30M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -308,7 +308,7 @@
                         <child>
                           <object class="ttk.Button" id="Band20m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">20M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -322,7 +322,7 @@
                         <child>
                           <object class="ttk.Button" id="Band17m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">17M</property>
                             <layout manager="grid">
                               <property name="column">2</property>
@@ -336,7 +336,7 @@
                         <child>
                           <object class="ttk.Button" id="Band15m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">15M</property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -350,7 +350,7 @@
                         <child>
                           <object class="ttk.Button" id="Band12m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">12M</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -364,7 +364,7 @@
                         <child>
                           <object class="ttk.Button" id="Band10m" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_band</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">10m</property>
                             <layout manager="grid">
                               <property name="column">2</property>
@@ -400,7 +400,7 @@
                         <child>
                           <object class="ttk.Button" id="modeLSB_Button" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_mode</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">LSB</property>
                             <layout manager="grid">
                               <property name="column">0</property>
@@ -414,7 +414,7 @@
                         <child>
                           <object class="ttk.Button" id="modeUSB_Button" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_mode</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">USB</property>
                             <layout manager="grid">
                               <property name="column">1</property>
@@ -428,7 +428,7 @@
                         <child>
                           <object class="ttk.Button" id="modeCWL_Button" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_mode</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">CWL</property>
                             <layout manager="grid">
                               <property name="column">2</property>
@@ -442,7 +442,7 @@
                         <child>
                           <object class="ttk.Button" id="modeCWU_Button" named="True">
                             <property name="command" type="command" cbtype="with_wid">action_quick_mode</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="text" translatable="yes">CWU</property>
                             <layout manager="grid">
                               <property name="column">3</property>
@@ -488,7 +488,7 @@
                             <child>
                               <object class="ttk.Button" id="widenFilter_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_filter_widen</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="text" translatable="yes">Widen</property>
                                 <layout manager="pack">
                                   <property name="ipady">5</property>
@@ -509,7 +509,7 @@
                             <child>
                               <object class="ttk.Button" id="narrowFilter_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_filter_narrow</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="text" translatable="yes">Narrow</property>
                                 <layout manager="pack">
                                   <property name="ipady">5</property>
@@ -530,7 +530,7 @@
                             <child>
                               <object class="ttk.Button" id="resetFilter_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_filter_reset</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="text" translatable="yes">Reset</property>
                                 <layout manager="pack">
                                   <property name="ipady">5</property>
@@ -724,7 +724,7 @@
                         <child>
                           <object class="ttk.Button" id="addChanneltoBank_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_copy_row_to_target_bank</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="takefocus">false</property>
                             <property name="text" translatable="yes">Copy to
 Target
@@ -749,7 +749,7 @@ Bank</property>
                         <child>
                           <object class="ttk.Button" id="deleteChannel_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_del_ch</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="takefocus">false</property>
                             <property name="text" translatable="yes">Erase
 Channel
@@ -868,7 +868,7 @@ Bank</property>
                             <child>
                               <object class="ttk.Button" id="addNewChannel_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_capture_live_vfo_to_channel</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="takefocus">false</property>
                                 <property name="text" translatable="yes">Save to
 Source
@@ -988,7 +988,7 @@ Bank</property>
                             <child>
                               <object class="ttk.Button" id="newChannelBank_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_create_brand_new_bank</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="takefocus">false</property>
                                 <property name="text" translatable="yes">New</property>
                                 <layout manager="grid">
@@ -1025,7 +1025,7 @@ Bank</property>
                             <child>
                               <object class="ttk.Button" id="bankCloneButton" named="True">
                                 <property name="command" type="command" cbtype="simple">action_bulk_clone_source_to_target</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="takefocus">false</property>
                                 <property name="text" translatable="yes">Clone</property>
                                 <layout manager="grid">
@@ -1048,7 +1048,7 @@ Bank</property>
                             <child>
                               <object class="ttk.Button" id="bankDelete_Button" named="True">
                                 <property name="command" type="command" cbtype="simple">action_delete_source_bank_profile</property>
-                                <property name="style">Button2bRaised.TButton</property>
+                                <property name="style">Button1bRaised.TButton</property>
                                 <property name="takefocus">false</property>
                                 <property name="text" translatable="yes">Delete
 Source
@@ -1213,7 +1213,7 @@ Bank</property>
                         <child>
                           <object class="ttk.Button" id="scanStart_Button" named="True">
                             <property name="command" type="command" cbtype="simple">action_start_scan</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="takefocus">false</property>
                             <property name="text" translatable="yes">▶ Start Scan </property>
                             <layout manager="grid">
@@ -1237,7 +1237,7 @@ Bank</property>
                         <child>
                           <object class="ttk.Button" id="scanStop_Button" named="True">
                             <property name="command" type="command" cbtype="simple">stop_scan</property>
-                            <property name="style">Button2bRaised.TButton</property>
+                            <property name="style">Button1bRaised.TButton</property>
                             <property name="takefocus">false</property>
                             <property name="text" translatable="yes">⏹ Stop Scan</property>
                             <layout manager="grid">
@@ -1327,7 +1327,7 @@ Bank</property>
             <child>
               <object class="ttk.Button" id="reconnect_Button" named="True">
                 <property name="command" type="command" cbtype="simple">action_connect</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="takefocus">false</property>
                 <property name="text" translatable="yes">Reconnect</property>
                 <layout manager="grid">

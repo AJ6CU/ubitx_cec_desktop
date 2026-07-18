@@ -435,7 +435,7 @@ MCU/DPS (ms):</property>
             <child>
               <object class="ttk.Button" id="apply_Button" named="True">
                 <property name="command" type="command" cbtype="simple">apply_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Apply</property>
                 <layout manager="pack">
@@ -456,7 +456,7 @@ MCU/DPS (ms):</property>
             <child>
               <object class="ttk.Button" id="cancel_Buttom" named="True">
                 <property name="command" type="command" cbtype="simple">cancel_CB</property>
-                <property name="style">Button2bRaised.TButton</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="takefocus">true</property>
                 <property name="text" translatable="yes">Cancel</property>
                 <layout manager="pack">
