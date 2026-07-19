@@ -60,7 +60,7 @@ class bandScannerUI(tk.Toplevel):
             self, name="bandscanner_labelframe")
         self.bandScanner_Labelframe.configure(
             height=200,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Band Scanner\n',
             width=200)
         # First object created
@@ -218,7 +218,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band160m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='160M')
         self.Band160m.grid(column=0, row=0)
         def Band160m_cmd_(): self.band_Checked_CB("Band160m")
@@ -228,7 +228,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band80m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='80M')
         self.Band80m.grid(column=0, pady="15 0", row=1, sticky="w")
         def Band80m_cmd_(): self.band_Checked_CB("Band80m")
@@ -238,7 +238,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band40m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='40M')
         self.Band40m.grid(column=0, pady="15 10", row=2, sticky="w")
         def Band40m_cmd_(): self.band_Checked_CB("Band40m")
@@ -248,7 +248,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band30m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='30M')
         self.Band30m.grid(column=1, padx="10 0", row=0, sticky="w")
         def Band30m_cmd_(): self.band_Checked_CB("Band30m")
@@ -258,7 +258,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band20m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='20M')
         self.Band20m.grid(
             column=1,
@@ -274,7 +274,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band17m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='17M')
         self.Band17m.grid(
             column=1,
@@ -290,7 +290,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band15m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='15M')
         self.Band15m.grid(column=2, padx="10 0", row=0, sticky="w")
         def Band15m_cmd_(): self.band_Checked_CB("Band15m")
@@ -300,7 +300,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band12m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='12M')
         self.Band12m.grid(
             column=2,
@@ -316,7 +316,7 @@ class bandScannerUI(tk.Toplevel):
         self.Band10m.configure(
             offvalue=0,
             onvalue=1,
-            style="Checkbox2b.TCheckbutton",
+            style="Checkbox1b.TCheckbutton",
             text='10M')
         self.Band10m.grid(
             column=2,

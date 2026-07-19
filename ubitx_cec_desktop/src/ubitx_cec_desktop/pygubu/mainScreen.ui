@@ -657,7 +657,7 @@ LOG QSO
             <child>
               <object class="ttk.Labelframe" id="tuningArrow_Labelframe" named="True">
                 <property name="height">200</property>
-                <property name="style">Heading3.TLabelframe</property>
+                <property name="style">Heading2b.TLabelframe</property>
                 <property name="text" translatable="yes">Tuning</property>
                 <property name="width">200</property>
                 <layout manager="grid">

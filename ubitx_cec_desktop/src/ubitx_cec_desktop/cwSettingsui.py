@@ -322,7 +322,7 @@ class cwSettingsUI(ttk.Labelframe):
             side="top")
         self.configure(
             height=400,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='CW Settings',
             width=600)
         # Layout for 'labelframe1' skipped in custom widget template.

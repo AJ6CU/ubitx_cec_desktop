@@ -24,90 +24,57 @@ import tkinter.ttk as ttk
 def setup_ttk_styles(master=None):
     
     style = ttk.Style(master)
-    #sv_ttk.set_theme("dark"))
     style.theme_use('default')
 
     fontList = {
             'Heading0b': ('Arial', 24, 'bold'),
-
             'Heading1b': ('Arial', 20, 'bold'),
-            # 'Heading1n': ('Arial', 20),
-            # 'Heading1bi': ('Arial', 20, 'bold', 'italic'),
-            # 'Heading2': ('Arial',20, 'bold' ),
             'Heading2b': ('Arial',14, 'bold' ),
-            # 'Heading2bi': ('Arial', 14, 'bold', 'italic'),
             'Heading3b': ('Arial',12, 'bold' ),
-            # 'Heading3i': ('Arial', 12, 'bold', 'italic'),
-            'Heading4': ('Arial',10, 'bold' ),
+            'Heading4b': ('Arial',10, 'bold' ),
             'Heading5': ('Fixed', 6),
-            # 'Normal': ('Default', 10),
             'HeadingVFO': ("TkFixedFont",96, 'bold' )
         }
 
 
-    # style.configure('Heading1.TLabel', font=fontList['Heading0b'], background='gray', foreground='white')
-
     style.configure('Heading1b.TLabel', font=fontList['Heading1b'], background='gray', foreground='white')
     style.map('Heading1b.TLabel', background=[('disabled', 'gray')], foreground=[('disabled', 'white')])
-
     style.configure('Heading2b.TLabel',font=fontList['Heading2b'], foreground='white', background="gray")
     style.configure('Heading3b.TLabel',font=fontList['Heading3b'], background='gray', foreground='white')
-    style.configure('Heading4b.TLabel',font=fontList['Heading4'], background='gray', foreground='white')
+    style.configure('Heading4b.TLabel',font=fontList['Heading4b'], background='gray', foreground='white')
 
     style.configure('VFO.TLabel',font=fontList['HeadingVFO'], background='gray', foreground='white')
-
     style.configure('Heading3bRed.TLabel', font=fontList['Heading3b'], background='red', foreground='white')
     style.configure('Heading3bGreen.TLabel', font=fontList['Heading3b'], background='green', foreground='white')
-
     style.configure('OffLED.TLabel', font=fontList['Heading5'], background='gray', foreground='gray')
     style.configure('OnLED.TLabel', font=fontList['Heading5'], background='green', foreground='green')
 
+
     style.configure('Button0bRaised.TButton', font=fontList['Heading0b'], justify='center', relief='raised')
     style.configure('Button0bPressed.TButtoΩn', font=fontList['Heading0b'], justify='center', relief='sunken')
-
     style.configure('Button1bRaised.TButton', font=fontList['Heading1b'], justify='center', relief='raised')
     style.configure('Button1bPressed.TButton', font=fontList['Heading1b'], justify='center', relief='sunken')
-
-    # style.configure('RedButton1bRaised.TButton', font=fontList['Heading1b'], background='red', foreground='white',
-    #                 anchor="center", relief='raised')
     style.configure('RedButton1bPressed.TButton', font=fontList['Heading1b'], background='red', foreground='white',
                     anchor="center", relief='sunken')
-
-    # style.configure('GreenButton1bRaised.TButton', font=fontList['Heading1b'], background='green', foreground='white',
-    #                 justify='center', relief='raised')
     style.configure('GreenButton1bPressed.TButton', font=fontList['Heading1b'], background='green', foreground='white',
                     justify='center', relief='sunken')
-
-
     style.configure('Button2bRaised.TButton', font=fontList['Heading2b'], justify='center', relief='raised')
     style.configure('Button2bPressed.TButton', font=fontList['Heading2b'], justify='center', relief='sunken')
 
 
-
-
-
-
     style.configure('Custom.Toolbutton', font=fontList['Heading3b'], background='gray', foreground='black')
-
 
     style.configure('Heading1b.TMenubutton', font=fontList['Heading1b'], anchor='center')
 
-
-
-
     style.configure('Checkbox1b.TCheckbutton', font=fontList['Heading1b'], background='gray', foreground='white')
-    style.configure('Checkbox2b.TCheckbutton', font=fontList['Heading2b'], background='gray', foreground='white')
-
-
 
     style.configure('Entry1b.TEntry', font=fontList['Heading0b'])
-    # style.configure('Entry2b.TEntry', font=fontList['Heading1b'])
 
-    style.configure('Heading2.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading1b'])
-    style.configure('Heading2.TLabelframe', background='gray', bd=4)
+    style.configure('Heading1b.TLabelframe', background='gray', bd=4)
+    style.configure('Heading1b.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading1b'])
 
-    style.configure('Heading3.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading2b'])
-    style.configure('Heading3.TLabelframe', background='gray', bd=4)
+    style.configure('Heading2b.TLabelframe', background='gray', bd=4)
+    style.configure('Heading2b.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading2b'])
 
     style.configure('GreenBox.TLabelframe', background='green', bd=4)
     style.configure('GreenBox.TLabelframe.Label', background='green', foreground='white', bd=4, font=fontList['Heading1b'])
@@ -115,15 +82,8 @@ def setup_ttk_styles(master=None):
     style.configure('GreenBoxi.TLabel', font=('Fixed', 24, 'italic'), background='green', bd=0)
 
 
-
-
-    style.configure('Normal.TFrame', background='gray', bd=4,font=fontList['Heading1b'])
+    style.configure('Normal.TFrame', background='gray', bd=4)
     style.configure('NormalOutline.TFrame', background='gray', bd=4, bordercolor='white' ,relief='groove')
-
-
-    style.configure('Normal.TLabelframe', background='gray', bd=4, font=fontList['Heading1b'])
-    style.configure('Normal.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading3b'])
-
 
 
     style.configure("Striped.Horizontal.TProgressbar",
@@ -140,6 +100,24 @@ def setup_ttk_styles(master=None):
                     foreground=[('disabled', 'gray'),('!disabled', 'blue')],
                     troughcolor=[('disabled', 'gray'), ('!disabled', 'black')],
                     background=[('disabled', 'gray'), ('!disabled', 'gray')])
+
+
+    #style.configure('Normal.TLabelframe', background='gray', bd=4, font=fontList['Heading1b'])
+    # style.configure('Normal.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading3b'])
+
+    # style.configure('Normal.TFrame', background='gray', bd=4, font=fontList['Heading1b'])
+    # style.configure('RedButton1bRaised.TButton', font=fontList['Heading1b'], background='red', foreground='white',
+    #                 anchor="center", relief='raised')
+    # style.configure('GreenButton1bRaised.TButton', font=fontList['Heading1b'], background='green', foreground='white',
+    #                 justify='center', relief='raised')
+    # style.configure('Heading1.TLabel', font=fontList['Heading0b'], background='gray', foreground='white')
+    # style.configure('Heading2.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading1b'])
+    # style.configure('Heading2.TLabelframe', background='gray', bd=4)
+    # style.configure('Heading3.TLabelframe.Label', background='gray', bd=4, font=fontList['Heading2b'])
+    # style.configure('Heading3.TLabelframe', background='gray', bd=4)
+
+    # style.configure('Entry2b.TEntry', font=fontList['Heading1b'])
+    # style.configure('Checkbox2b.TCheckbutton', font=fontList['Heading2b'], background='gray', foreground='white')
 
     # style.configure('Heading0.TMenubutton', font=fontList['Heading0b'], anchor='center')
     # style.configure('Heading1n.TMenubutton', font=fontList['Heading1n'], anchor='center')

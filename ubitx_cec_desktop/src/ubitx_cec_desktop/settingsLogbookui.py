@@ -276,7 +276,7 @@ class settingsLogbookUI(ttk.Labelframe):
             expand=False,
             pady=20,
             side="top")
-        self.configure(style="Heading2.TLabelframe", text='Logbook Settings')
+        self.configure(style="Heading1b.TLabelframe", text='Logbook Settings')
         # Layout for 'labelframe1' skipped in custom widget template.
 
     def selectLogbookOn_CB(self):

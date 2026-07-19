@@ -217,8 +217,8 @@ class settingsAboutUI(ttk.Labelframe):
             pady=20,
             side="top")
         self.configure(
-            style="Heading2.TLabelframe",
-            text='About CECNextionEmulator')
+            style="Heading1b.TLabelframe",
+            text='About uBITX CEC DEsktop')
         # Layout for 'labelframe1' skipped in custom widget template.
 
     def close_CB(self):

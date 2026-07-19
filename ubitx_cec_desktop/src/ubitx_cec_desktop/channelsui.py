@@ -475,7 +475,7 @@ class channelsUI(ttk.Labelframe):
         frame1.pack(expand=True, fill="both", side="top")
         self.configure(
             height=600,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Frequency Channels')
         # Layout for 'labelframe1' skipped in custom widget template.
 

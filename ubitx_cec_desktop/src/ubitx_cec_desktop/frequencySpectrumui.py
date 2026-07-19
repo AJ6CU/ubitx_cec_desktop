@@ -59,7 +59,7 @@ class frequencySpectrumUI(tk.Toplevel):
             self, name="frequencyspectrum_labelframe")
         self.frequencySpectrum_Labelframe.configure(
             height=200,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Frequency Spectrum\n',
             width=200)
         # First object created
@@ -74,7 +74,7 @@ class frequencySpectrumUI(tk.Toplevel):
             self.frequencySpectrumFrame, name="average_labelframe")
         self.average_Labelframe.configure(
             height=200,
-            style="Heading3.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Average',
             width=200)
         self.frequencyPlotCanvas = tk.Canvas(
@@ -91,7 +91,7 @@ class frequencySpectrumUI(tk.Toplevel):
             self.frequencySpectrumFrame, name="peak_labelframe")
         self.peak_Labelframe.configure(
             height=200,
-            style="Heading3.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Peak',
             width=200)
         self.waterfall_Canvas = tk.Canvas(
@@ -99,7 +99,12 @@ class frequencySpectrumUI(tk.Toplevel):
         self.waterfall_Canvas.configure(
             background="#0432ff", height=160, width=430)
         self.waterfall_Canvas.pack(expand=True, fill="both", side="top")
-        self.peak_Labelframe.grid(column=0, padx="8 0", row=1, sticky="ew")
+        self.peak_Labelframe.grid(
+            column=0,
+            padx="8 0",
+            pady="10 0",
+            row=1,
+            sticky="ew")
         self.freqTuneFrame = ttk.Frame(
             self.frequencySpectrumFrame,
             name="freqtuneframe")

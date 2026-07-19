@@ -382,7 +382,7 @@ class settingsSDRUI(ttk.Labelframe):
             side="top")
         self.configure(
             cursor="arrow",
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='SDR Settings ')
         # Layout for 'settingsSDR_Labelframe' skipped in custom widget
         # template.

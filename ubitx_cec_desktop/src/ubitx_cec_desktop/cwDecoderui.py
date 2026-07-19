@@ -58,7 +58,7 @@ class cwDecoderUI(tk.Toplevel):
             self, name="cwdecoder_labelframe")
         self.cwDecoder_Labelframe.configure(
             height=200,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='CW Decode',
             width=200)
         # First object created
@@ -68,7 +68,7 @@ class cwDecoderUI(tk.Toplevel):
             self.cwDecoder_Labelframe, name="frequencyspectrumlabelframe")
         self.frequencySpectrumLabelframe.configure(
             height=150,
-            style="Heading3.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Frequency Spectrum\n',
             width=200)
         self.frequencySpectrumFrame = ttk.Frame(
@@ -205,12 +205,12 @@ class cwDecoderUI(tk.Toplevel):
         frame2.pack(expand=True, fill="x", padx=10, side="top")
         self.frequencySpectrumFrame.pack(expand=True, fill="x", side="top")
         self.frequencySpectrumLabelframe.pack(
-            expand=True, fill="x", padx=5, side="top")
+            expand=True, fill="x", padx=5, pady="10 0", side="top")
         self.cwDecodeLabelframe = ttk.Labelframe(
             self.cwDecoder_Labelframe, name="cwdecodelabelframe")
         self.cwDecodeLabelframe.configure(
             height=150,
-            style="Heading3.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='CW Decode',
             width=200)
         self.cwDecodeFrame = ttk.Frame(
@@ -240,7 +240,12 @@ class cwDecoderUI(tk.Toplevel):
             self.enable_CW_Decode_CB,
             add="+")
         self.cwDecodeFrame.pack(expand=True, fill="x", side="top")
-        self.cwDecodeLabelframe.pack(expand=True, fill="x", padx=5, side="top")
+        self.cwDecodeLabelframe.pack(
+            expand=True,
+            fill="x",
+            padx=5,
+            pady="10 0",
+            side="top")
         self.closingFrame = ttk.Frame(
             self.cwDecoder_Labelframe,
             name="closingframe")

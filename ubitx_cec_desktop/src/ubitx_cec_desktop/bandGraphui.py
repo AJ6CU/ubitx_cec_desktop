@@ -96,7 +96,7 @@ class bandGraphUI(ttk.Labelframe):
         self.bandGraph_Frame.pack(expand=True, fill="x", side="top")
         self.configure(
             height=200,
-            style="Heading3.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Select Band...',
             width=200)
         # Layout for 'bandLabelFrame' skipped in custom widget template.

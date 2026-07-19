@@ -32,7 +32,7 @@
     <child>
       <object class="ttk.Labelframe" id="bandScanner_Labelframe" named="True">
         <property name="height">200</property>
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">Band Scanner
 </property>
         <property name="width">200</property>
@@ -330,7 +330,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">160M</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -343,7 +343,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">80M</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -358,7 +358,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">40M</property>
                         <layout manager="grid">
                           <property name="column">0</property>
@@ -373,7 +373,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">30M</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -388,7 +388,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">20M</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -404,7 +404,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">17M</property>
                         <layout manager="grid">
                           <property name="column">1</property>
@@ -420,7 +420,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">15M</property>
                         <layout manager="grid">
                           <property name="column">2</property>
@@ -435,7 +435,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">12M</property>
                         <layout manager="grid">
                           <property name="column">2</property>
@@ -451,7 +451,7 @@
                         <property name="command" type="command" cbtype="with_wid">band_Checked_CB</property>
                         <property name="offvalue">0</property>
                         <property name="onvalue">1</property>
-                        <property name="style">Checkbox2b.TCheckbutton</property>
+                        <property name="style">Checkbox1b.TCheckbutton</property>
                         <property name="text" translatable="yes">10M</property>
                         <layout manager="grid">
                           <property name="column">2</property>

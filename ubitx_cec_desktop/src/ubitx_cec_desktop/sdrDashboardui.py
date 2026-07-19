@@ -60,7 +60,7 @@ class sdrDashboardUI(ttk.Frame):
         self.liveTelemetry_Frame = ttk.Labelframe(
             self, name="livetelemetry_frame")
         self.liveTelemetry_Frame.configure(
-            style="Normal.TLabelframe",
+            style="Heading2b.TLabelframe",
             text=' Live Telemetry Tracker Panel ')
         # First object created
         on_first_object_cb(self.liveTelemetry_Frame)
@@ -161,7 +161,7 @@ class sdrDashboardUI(ttk.Frame):
         self.quickHamBandSelect_Labelframe = ttk.Labelframe(
             self.bandsAccordion_Frame, name="quickhambandselect_labelframe")
         self.quickHamBandSelect_Labelframe.configure(
-            style="Normal.TLabelframe", text=' Ham Radio Bands')
+            style="Heading2b.TLabelframe", text=' Ham Radio Bands')
         self.Band160m = ttk.Button(
             self.quickHamBandSelect_Labelframe,
             name="band160m")
@@ -246,7 +246,7 @@ class sdrDashboardUI(ttk.Frame):
         self.modeChange_Labelframe = ttk.Labelframe(
             self.bandsAccordion_Frame, name="modechange_labelframe")
         self.modeChange_Labelframe.configure(
-            style="Normal.TLabelframe", text='Mode')
+            style="Heading2b.TLabelframe", text='Mode')
         self.modeLSB_Button = ttk.Button(
             self.modeChange_Labelframe,
             name="modelsb_button")
@@ -294,7 +294,7 @@ class sdrDashboardUI(ttk.Frame):
         self.bandwidthManagement_Labelframe = ttk.Labelframe(
             self.bandsAccordion_Frame, name="bandwidthmanagement_labelframe")
         self.bandwidthManagement_Labelframe.configure(
-            style="Normal.TLabelframe", text='IF Filter')
+            style="Heading2b.TLabelframe", text='IF Filter')
         frame1 = ttk.Frame(self.bandwidthManagement_Labelframe)
         frame1.configure(height=200, style="Normal.TFrame", width=200)
         self.widenFilter_Button = ttk.Button(frame1, name="widenfilter_button")
@@ -399,7 +399,7 @@ class sdrDashboardUI(ttk.Frame):
         self.channelSearch_Labelframe = ttk.Labelframe(
             frame4, name="channelsearch_labelframe")
         self.channelSearch_Labelframe.configure(
-            style="Normal.TLabelframe", text='Search')
+            style="Heading2b.TLabelframe", text='Search')
         self.channelLookup_Entry = ttk.Entry(
             self.channelSearch_Labelframe,
             name="channellookup_entry")
@@ -421,7 +421,7 @@ class sdrDashboardUI(ttk.Frame):
             self.channelsAccordion_Frame, name="channeledit_labelframe")
         self.channelEdit_Labelframe.configure(
             height=200,
-            style="Normal.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Channel Edit',
             width=200)
         self.addChanneltoBank_Button = ttk.Button(
@@ -459,7 +459,7 @@ class sdrDashboardUI(ttk.Frame):
             self.channelEdit_Labelframe, name="newchannelfromvfo_labelframe")
         self.newChannelFromVFO_Labelframe.configure(
             height=200,
-            style="Normal.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Save VFO to Channel and Target Bank',
             width=200)
         self.newVFOHeader_Frame = ttk.Frame(
@@ -526,13 +526,13 @@ class sdrDashboardUI(ttk.Frame):
         self.bankRouting_Labelframe = ttk.Labelframe(
             self.channelsAccordion_Frame, name="bankrouting_labelframe")
         self.bankRouting_Labelframe.configure(
-            style="Normal.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Channel Bank Management')
         self.sourceTargetLabelframe = ttk.Labelframe(
             self.bankRouting_Labelframe, name="sourcetargetlabelframe")
         self.sourceTargetLabelframe.configure(
             height=200,
-            style="Normal.TLabelframe",
+            style="Heading2b.TLabelframe",
             text='Select Banks',
             width=200)
         lbl_src_bank = ttk.Label(self.sourceTargetLabelframe)
@@ -663,7 +663,7 @@ class sdrDashboardUI(ttk.Frame):
         self.scanParameters_Labelframe = ttk.Labelframe(
             self.scanAccordion_Frame, name="scanparameters_labelframe")
         self.scanParameters_Labelframe.configure(
-            style="Normal.TLabelframe", text='Settings')
+            style="Heading2b.TLabelframe", text='Settings')
         lbl_delay = ttk.Label(self.scanParameters_Labelframe)
         lbl_delay.configure(
             justify="right",
@@ -716,7 +716,7 @@ class sdrDashboardUI(ttk.Frame):
         self.scanControl_Labelframe = ttk.Labelframe(
             self.scanAccordion_Frame, name="scancontrol_labelframe")
         self.scanControl_Labelframe.configure(
-            style="Normal.TLabelframe", text='Control')
+            style="Heading2b.TLabelframe", text='Control')
         self.scanStart_Button = ttk.Button(
             self.scanControl_Labelframe,
             name="scanstart_button")
@@ -769,7 +769,7 @@ class sdrDashboardUI(ttk.Frame):
         self.connectionStatus_Frame = ttk.Labelframe(
             self, name="connectionstatus_frame")
         self.connectionStatus_Frame.configure(
-            style="Normal.TLabelframe", text='Status')
+            style="Heading2b.TLabelframe", text='Status')
         self.ipAddress_Label = ttk.Label(
             self.connectionStatus_Frame,
             name="ipaddress_label")

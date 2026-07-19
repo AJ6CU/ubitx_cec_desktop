@@ -28,7 +28,7 @@
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
         <property name="height">400</property>
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">Radio Backup</property>
         <property name="width">600</property>
         <layout manager="pack">

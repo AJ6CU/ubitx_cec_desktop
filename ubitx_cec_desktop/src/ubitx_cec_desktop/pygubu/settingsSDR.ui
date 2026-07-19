@@ -28,7 +28,7 @@
     <child>
       <object class="ttk.Labelframe" id="settingsSDR_Labelframe" named="True">
         <property name="cursor">arrow</property>
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">SDR Settings </property>
         <layout manager="pack">
           <property name="expand">true</property>

@@ -29,8 +29,8 @@
     <property name="width">550</property>
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
-        <property name="style">Heading2.TLabelframe</property>
-        <property name="text" translatable="yes">About CECNextionEmulator</property>
+        <property name="style">Heading1b.TLabelframe</property>
+        <property name="text" translatable="yes">About uBITX CEC DEsktop</property>
         <layout manager="pack">
           <property name="expand">true</property>
           <property name="fill">both</property>

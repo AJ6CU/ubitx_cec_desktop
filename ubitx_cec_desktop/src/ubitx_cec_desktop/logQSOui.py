@@ -445,7 +445,7 @@ class logQSOUI(ttk.Labelframe):
         self.closingFrame.grid_anchor("center")
         self.configure(
             height=200,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Log QSO\n',
             width=200)
         # Layout for 'logQSO_Labelframe' skipped in custom widget template.

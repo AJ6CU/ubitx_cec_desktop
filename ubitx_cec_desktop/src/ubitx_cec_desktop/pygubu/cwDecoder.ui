@@ -28,7 +28,7 @@
     <child>
       <object class="ttk.Labelframe" id="cwDecoder_Labelframe" named="True">
         <property name="height">200</property>
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">CW Decode</property>
         <property name="width">200</property>
         <layout manager="pack">
@@ -39,7 +39,7 @@
         <child>
           <object class="ttk.Labelframe" id="frequencySpectrumLabelframe" named="True">
             <property name="height">150</property>
-            <property name="style">Heading3.TLabelframe</property>
+            <property name="style">Heading2b.TLabelframe</property>
             <property name="text" translatable="yes">Frequency Spectrum
 </property>
             <property name="width">200</property>
@@ -47,6 +47,7 @@
               <property name="expand">true</property>
               <property name="fill">x</property>
               <property name="padx">5</property>
+              <property name="pady">10 0</property>
               <property name="side">top</property>
             </layout>
             <child>
@@ -310,13 +311,14 @@ Min/Max</property>
         <child>
           <object class="ttk.Labelframe" id="cwDecodeLabelframe" named="True">
             <property name="height">150</property>
-            <property name="style">Heading3.TLabelframe</property>
+            <property name="style">Heading2b.TLabelframe</property>
             <property name="text" translatable="yes">CW Decode</property>
             <property name="width">200</property>
             <layout manager="pack">
               <property name="expand">true</property>
               <property name="fill">x</property>
               <property name="padx">5</property>
+              <property name="pady">10 0</property>
               <property name="side">top</property>
             </layout>
             <child>

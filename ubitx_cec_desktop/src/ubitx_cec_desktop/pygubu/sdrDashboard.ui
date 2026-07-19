@@ -40,7 +40,7 @@
         </containerlayout>
         <child>
           <object class="ttk.Labelframe" id="liveTelemetry_Frame" named="True">
-            <property name="style">Normal.TLabelframe</property>
+            <property name="style">Heading2b.TLabelframe</property>
             <property name="text" translatable="yes"> Live Telemetry Tracker Panel </property>
             <layout manager="pack">
               <property name="anchor">n</property>
@@ -239,7 +239,7 @@
                     </layout>
                     <child>
                       <object class="ttk.Labelframe" id="quickHamBandSelect_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes"> Ham Radio Bands</property>
                         <layout manager="pack">
                           <property name="anchor">w</property>
@@ -387,7 +387,7 @@
                     </child>
                     <child>
                       <object class="ttk.Labelframe" id="modeChange_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">Mode</property>
                         <layout manager="pack">
                           <property name="anchor">w</property>
@@ -465,7 +465,7 @@
                     </child>
                     <child>
                       <object class="ttk.Labelframe" id="bandwidthManagement_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">IF Filter</property>
                         <layout manager="pack">
                           <property name="anchor">w</property>
@@ -677,7 +677,7 @@
                         </child>
                         <child>
                           <object class="ttk.Labelframe" id="channelSearch_Labelframe" named="True">
-                            <property name="style">Normal.TLabelframe</property>
+                            <property name="style">Heading2b.TLabelframe</property>
                             <property name="text" translatable="yes">Search</property>
                             <layout manager="pack">
                               <property name="anchor">center</property>
@@ -713,7 +713,7 @@
                     <child>
                       <object class="ttk.Labelframe" id="channelEdit_Labelframe" named="True">
                         <property name="height">200</property>
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">Channel Edit</property>
                         <property name="width">200</property>
                         <layout manager="pack">
@@ -775,7 +775,7 @@ Bank</property>
                         <child>
                           <object class="ttk.Labelframe" id="newChannelFromVFO_Labelframe" named="True">
                             <property name="height">200</property>
-                            <property name="style">Normal.TLabelframe</property>
+                            <property name="style">Heading2b.TLabelframe</property>
                             <property name="text" translatable="yes">Save VFO to Channel and Target Bank</property>
                             <property name="width">200</property>
                             <layout manager="grid">
@@ -893,7 +893,7 @@ Bank</property>
                     </child>
                     <child>
                       <object class="ttk.Labelframe" id="bankRouting_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">Channel Bank Management</property>
                         <layout manager="pack">
                           <property name="anchor">w</property>
@@ -903,7 +903,7 @@ Bank</property>
                         <child>
                           <object class="ttk.Labelframe" id="sourceTargetLabelframe" named="True">
                             <property name="height">200</property>
-                            <property name="style">Normal.TLabelframe</property>
+                            <property name="style">Heading2b.TLabelframe</property>
                             <property name="text" translatable="yes">Select Banks</property>
                             <property name="width">200</property>
                             <layout manager="grid">
@@ -1122,7 +1122,7 @@ Bank</property>
                     </layout>
                     <child>
                       <object class="ttk.Labelframe" id="scanParameters_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">Settings</property>
                         <layout manager="pack">
                           <property name="padx">10</property>
@@ -1203,7 +1203,7 @@ Bank</property>
                     </child>
                     <child>
                       <object class="ttk.Labelframe" id="scanControl_Labelframe" named="True">
-                        <property name="style">Normal.TLabelframe</property>
+                        <property name="style">Heading2b.TLabelframe</property>
                         <property name="text" translatable="yes">Control</property>
                         <layout manager="pack">
                           <property name="anchor">w</property>
@@ -1268,7 +1268,7 @@ Bank</property>
         </child>
         <child>
           <object class="ttk.Labelframe" id="connectionStatus_Frame" named="True">
-            <property name="style">Normal.TLabelframe</property>
+            <property name="style">Heading2b.TLabelframe</property>
             <property name="text" translatable="yes">Status</property>
             <layout manager="pack">
               <property name="anchor">s</property>

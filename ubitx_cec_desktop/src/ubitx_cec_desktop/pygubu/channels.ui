@@ -30,7 +30,7 @@
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
         <property name="height">600</property>
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">Frequency Channels</property>
         <layout manager="pack">
           <property name="expand">true</property>

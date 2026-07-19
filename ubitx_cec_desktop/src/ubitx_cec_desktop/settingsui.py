@@ -148,7 +148,7 @@ class settingsUI(ttk.Labelframe):
             side="top")
         self.configure(
             height=200,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Settings',
             width=400)
         # Layout for 'settings_Labelframe' skipped in custom widget template.

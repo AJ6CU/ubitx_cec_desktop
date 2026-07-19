@@ -27,7 +27,7 @@
     <property name="title" translatable="yes">Settings</property>
     <child>
       <object class="ttk.Labelframe" id="labelframe1">
-        <property name="style">Heading2.TLabelframe</property>
+        <property name="style">Heading1b.TLabelframe</property>
         <property name="text" translatable="yes">Logbook Settings</property>
         <layout manager="pack">
           <property name="expand">true</property>

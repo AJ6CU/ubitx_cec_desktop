@@ -348,7 +348,7 @@ class settingsMachineUI(ttk.Labelframe):
             side="top")
         self.configure(
             cursor="arrow",
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Machine Settings ( Caution Advised)')
         # Layout for 'labelframe1' skipped in custom widget template.
 

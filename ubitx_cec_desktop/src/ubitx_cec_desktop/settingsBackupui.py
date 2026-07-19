@@ -553,7 +553,7 @@ class settingsBackupUI(ttk.Labelframe):
         frame1.pack(anchor="center", expand=True, fill="both", side="top")
         self.configure(
             height=400,
-            style="Heading2.TLabelframe",
+            style="Heading1b.TLabelframe",
             text='Radio Backup',
             width=600)
         # Layout for 'labelframe1' skipped in custom widget template.

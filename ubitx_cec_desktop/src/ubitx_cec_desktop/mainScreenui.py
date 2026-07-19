@@ -435,7 +435,7 @@ class mainScreenUI(ttk.Frame):
         self.tuningArrow_Labelframe = ttk.Labelframe(
             self.control_Meter_Tuning_Frame, name="tuningarrow_labelframe")
         self.tuningArrow_Labelframe.configure(
-            height=200, style="Heading3.TLabelframe", text='Tuning', width=200)
+            height=200, style="Heading2b.TLabelframe", text='Tuning', width=200)
         self.downButton_Canvas = tk.Canvas(
             self.tuningArrow_Labelframe,
             name="downbutton_canvas")

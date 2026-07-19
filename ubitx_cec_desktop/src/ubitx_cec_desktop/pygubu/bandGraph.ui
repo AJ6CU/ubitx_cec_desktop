@@ -25,7 +25,7 @@
   </project>
   <object class="ttk.Labelframe" id="bandLabelFrame" named="True">
     <property name="height">200</property>
-    <property name="style">Heading3.TLabelframe</property>
+    <property name="style">Heading2b.TLabelframe</property>
     <property name="text" translatable="yes">Select Band...</property>
     <property name="width">200</property>
     <layout manager="pack">

@@ -236,7 +236,7 @@ class settingsGeneralUI(ttk.Labelframe):
             expand=False,
             pady=20,
             side="top")
-        self.configure(style="Heading2.TLabelframe", text='General Settings')
+        self.configure(style="Heading1b.TLabelframe", text='General Settings')
         # Layout for 'labelframe1' skipped in custom widget template.
 
     def selectCommaDelimiter_CB(self):
