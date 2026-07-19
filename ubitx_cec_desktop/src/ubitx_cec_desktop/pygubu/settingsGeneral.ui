@@ -69,7 +69,7 @@
             </child>
             <child>
               <object class="ttk.Menubutton" id="Number_Delimiter_Menubutton" named="True">
-                <property name="style">Heading0.TMenubutton</property>
+                <property name="style">Heading1b.TMenubutton</property>
                 <property name="width">2</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -103,7 +103,7 @@
             </child>
             <child>
               <object class="ttk.Menubutton" id="Virtual_Keyboard_Menubutton" named="True">
-                <property name="style">Heading0.TMenubutton</property>
+                <property name="style">Heading1b.TMenubutton</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -181,7 +181,7 @@
             </child>
             <child>
               <object class="ttk.Menubutton" id="VFO_Touch_Optimized_Menubutton" named="True">
-                <property name="style">Heading0.TMenubutton</property>
+                <property name="style">Heading1b.TMenubutton</property>
                 <property name="width">5</property>
                 <layout manager="grid">
                   <property name="column">1</property>

@@ -82,7 +82,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.DSP_Enable_Menubutton = ttk.Menubutton(
             self.DSP_Frame, name="dsp_enable_menubutton")
         self.DSP_Enable_Menubutton.configure(
-            style="Heading0.TMenubutton", takefocus=True, width=5)
+            style="Heading1b.TMenubutton", takefocus=True, width=5)
         self.DSP_Enable_Menu = tk.Menu(
             self.DSP_Enable_Menubutton,
             name="dsp_enable_menu")
@@ -138,7 +138,7 @@ class settingsMachineUI(ttk.Labelframe):
         self.PWR_SWR_Menubutton = ttk.Menubutton(
             self.PWR_SWR_Frame, name="pwr_swr_menubutton")
         self.PWR_SWR_Menubutton.configure(
-            style="Heading0.TMenubutton", takefocus=True, width=5)
+            style="Heading1b.TMenubutton", takefocus=True, width=5)
         self.PWR_SWR_Menu = tk.Menu(
             self.PWR_SWR_Menubutton,
             name="pwr_swr_menu")

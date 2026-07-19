@@ -81,7 +81,7 @@ class settingsLogbookUI(ttk.Labelframe):
         self.LogbookSwitch_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbookswitch_menubutton")
         self.LogbookSwitch_Menubutton.configure(
-            style="Heading0.TMenubutton", width=5)
+            style="Heading1b.TMenubutton", width=5)
         self.LogbookSwitch_Menu = tk.Menu(
             self.LogbookSwitch_Menubutton,
             name="logbookswitch_menu")
@@ -118,7 +118,7 @@ class settingsLogbookUI(ttk.Labelframe):
         self.LogbookType_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="logbooktype_menubutton")
         self.LogbookType_Menubutton.configure(
-            style="Heading0.TMenubutton", width=5)
+            style="Heading1b.TMenubutton", width=5)
         self.LogbookType_Menu = tk.Menu(
             self.LogbookType_Menubutton,
             name="logbooktype_menu")

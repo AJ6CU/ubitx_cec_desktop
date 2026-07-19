@@ -191,7 +191,7 @@
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="mode_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="takefocus">true</property>
                     <property name="width">6</property>
                     <layout manager="grid">

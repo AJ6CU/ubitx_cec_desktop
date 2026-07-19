@@ -889,7 +889,7 @@ File</property>
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="from_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="text" translatable="yes">Select</property>
                     <property name="width">10</property>
                     <layout manager="grid">
@@ -932,7 +932,7 @@ File</property>
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="to_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="text" translatable="yes">Select</property>
                     <property name="width">10</property>
                     <layout manager="grid">

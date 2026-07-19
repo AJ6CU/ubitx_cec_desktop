@@ -88,10 +88,12 @@ def setup_ttk_styles(master=None):
 
 
     style.configure('Custom.Toolbutton', font=fontList['Heading3b'], background='gray', foreground='black')
-    style.configure('Heading0.TMenubutton', font=fontList['Heading0b'], anchor='center')
+
+
     style.configure('Heading1b.TMenubutton', font=fontList['Heading1b'], anchor='center')
-    # style.configure('Heading1n.TMenubutton', font=fontList['Heading1n'], anchor='center')
-    style.configure('Heading2b.TMenubutton',font=fontList['Heading2b'])
+
+
+
 
     style.configure('Checkbox1b.TCheckbutton', font=fontList['Heading1b'], background='gray', foreground='white')
     style.configure('Checkbox2b.TCheckbutton', font=fontList['Heading2b'], background='gray', foreground='white')
@@ -138,6 +140,10 @@ def setup_ttk_styles(master=None):
                     foreground=[('disabled', 'gray'),('!disabled', 'blue')],
                     troughcolor=[('disabled', 'gray'), ('!disabled', 'black')],
                     background=[('disabled', 'gray'), ('!disabled', 'gray')])
+
+    # style.configure('Heading0.TMenubutton', font=fontList['Heading0b'], anchor='center')
+    # style.configure('Heading1n.TMenubutton', font=fontList['Heading1n'], anchor='center')
+    # style.configure('Heading2b.TMenubutton',font=fontList['Heading2b'])
 
     # style.configure('Heading1bi.TLabel', font=fontList['Heading1bi'], background='gray', foreground='white')
     # style.configure('Heading3.TLabel',font=fontList['Heading3b'])

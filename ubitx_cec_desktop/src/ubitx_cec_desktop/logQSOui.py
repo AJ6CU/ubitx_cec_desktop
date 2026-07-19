@@ -145,7 +145,7 @@ class logQSOUI(ttk.Labelframe):
         self.mode_Menubutton = ttk.Menubutton(
             self.freq_Frame, name="mode_menubutton")
         self.mode_Menubutton.configure(
-            style="Heading0.TMenubutton", takefocus=True, width=6)
+            style="Heading1b.TMenubutton", takefocus=True, width=6)
         self.mode_Menu = tk.Menu(self.mode_Menubutton, name="mode_menu")
         self.mode_Menu.configure(tearoff=False)
         def SSB_cmd(itemid="SSB"): self.selectMode_CB(itemid)

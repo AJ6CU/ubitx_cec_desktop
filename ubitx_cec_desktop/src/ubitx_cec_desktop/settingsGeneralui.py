@@ -80,7 +80,7 @@ class settingsGeneralUI(ttk.Labelframe):
         self.Number_Delimiter_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="number_delimiter_menubutton")
         self.Number_Delimiter_Menubutton.configure(
-            style="Heading0.TMenubutton", width=2)
+            style="Heading1b.TMenubutton", width=2)
         self.Number_Delimiter_Menu = tk.Menu(
             self.Number_Delimiter_Menubutton,
             name="number_delimiter_menu")
@@ -104,7 +104,7 @@ class settingsGeneralUI(ttk.Labelframe):
         self.Virtual_Keyboard_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="virtual_keyboard_menubutton")
         self.Virtual_Keyboard_Menubutton.configure(
-            style="Heading0.TMenubutton", width=5)
+            style="Heading1b.TMenubutton", width=5)
         self.Virtual_Keyboard_Menu = tk.Menu(
             self.Virtual_Keyboard_Menubutton,
             name="virtual_keyboard_menu")
@@ -157,7 +157,7 @@ class settingsGeneralUI(ttk.Labelframe):
         self.VFO_Touch_Optimized_Menubutton = ttk.Menubutton(
             self.general_Settings_Frame, name="vfo_touch_optimized_menubutton")
         self.VFO_Touch_Optimized_Menubutton.configure(
-            style="Heading0.TMenubutton", width=5)
+            style="Heading1b.TMenubutton", width=5)
         self.VFO_Touch_Optimized_Menu = tk.Menu(
             self.VFO_Touch_Optimized_Menubutton,
             name="vfo_touch_optimized_menu")

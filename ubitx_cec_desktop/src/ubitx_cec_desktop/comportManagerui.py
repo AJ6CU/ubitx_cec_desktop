@@ -92,7 +92,7 @@ class comportManagerUI(ttk.Frame):
         self.connectionType_Menubutton = ttk.Menubutton(
             frame6, name="connectiontype_menubutton")
         self.connectionType_Menubutton.configure(
-            style="Heading0.TMenubutton", takefocus=True, width=10)
+            style="Heading1b.TMenubutton", takefocus=True, width=10)
         self.connectionType_Menu = tk.Menu(
             self.connectionType_Menubutton,
             name="connectiontype_menu")
@@ -222,7 +222,7 @@ class comportManagerUI(ttk.Frame):
             None,
             *__values,
             command=self.radioSerialPortSelected_CB,
-            style="Heading2b.TMenubutton")
+            style="Heading1b.TMenubutton")
         self.availableComPorts_OptionMenu.pack(
             expand=True, fill="x", side="left")
         self.comPortListRefresh = tk.Button(

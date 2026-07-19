@@ -85,7 +85,7 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_Key_Type_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="cw_key_type_menubutton")
         self.CW_Key_Type_Menubutton.configure(
-            style="Heading0.TMenubutton", width=9)
+            style="Heading1b.TMenubutton", width=9)
         self.CW_Key_Type_Menu = tk.Menu(
             self.CW_Key_Type_Menubutton,
             name="cw_key_type_menu")
@@ -226,7 +226,7 @@ class cwSettingsUI(ttk.Labelframe):
         self.CW_Freq_Display_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="cw_freq_display_menubutton")
         self.CW_Freq_Display_Menubutton.configure(
-            style="Heading0.TMenubutton", width=3)
+            style="Heading1b.TMenubutton", width=3)
         self.CW_Freq_Display_Menu = tk.Menu(
             self.CW_Freq_Display_Menubutton,
             name="cw_freq_display_menu")
@@ -264,7 +264,7 @@ class cwSettingsUI(ttk.Labelframe):
         self.CopyVFOonSplit_Menubutton = ttk.Menubutton(
             self.General_CW_Settings_Frame, name="copyvfoonsplit_menubutton")
         self.CopyVFOonSplit_Menubutton.configure(
-            style="Heading0.TMenubutton", width=5)
+            style="Heading1b.TMenubutton", width=5)
         self.CopyVFOonSplit_Menu = tk.Menu(
             self.CopyVFOonSplit_Menubutton,
             name="copyvfoonsplit_menu")

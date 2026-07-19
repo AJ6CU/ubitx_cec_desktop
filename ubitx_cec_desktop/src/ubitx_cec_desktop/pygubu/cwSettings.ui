@@ -83,7 +83,7 @@
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="CW_Key_Type_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="width">9</property>
                     <layout manager="grid">
                       <property name="column">1</property>
@@ -303,7 +303,7 @@ This setting will be reset to that stored in the EEPROM on reboot.  Use the Sett
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="CW_Freq_Display_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="width">3</property>
                     <layout manager="grid">
                       <property name="column">4</property>
@@ -358,7 +358,7 @@ VFO-B on Split</property>
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="CopyVFOonSplit_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="width">5</property>
                     <layout manager="grid">
                       <property name="column">1</property>

@@ -93,7 +93,7 @@
                     </child>
                     <child>
                       <object class="ttk.Menubutton" id="SDR_Enable_Menubutton" named="True">
-                        <property name="style">Heading0.TMenubutton</property>
+                        <property name="style">Heading1b.TMenubutton</property>
                         <property name="takefocus">true</property>
                         <property name="width">5</property>
                         <layout manager="pack">
@@ -162,7 +162,7 @@
                     </child>
                     <child>
                       <object class="ttk.Menubutton" id="sdrSoftware_Menubutton" named="True">
-                        <property name="style">Heading0.TMenubutton</property>
+                        <property name="style">Heading1b.TMenubutton</property>
                         <property name="takefocus">true</property>
                         <property name="textvariable">string:SDR_Software_VAR</property>
                         <property name="width">5</property>

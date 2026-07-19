@@ -85,7 +85,7 @@ class settingsSDRUI(ttk.Labelframe):
         self.SDR_Enable_Menubutton = ttk.Menubutton(
             self.enableSDR_Frame, name="sdr_enable_menubutton")
         self.SDR_Enable_Menubutton.configure(
-            style="Heading0.TMenubutton", takefocus=True, width=5)
+            style="Heading1b.TMenubutton", takefocus=True, width=5)
         self.SDR_Enable_Menu = tk.Menu(
             self.SDR_Enable_Menubutton,
             name="sdr_enable_menu")
@@ -134,7 +134,7 @@ class settingsSDRUI(ttk.Labelframe):
             self.sdrSoftwareSelection_Frame, name="sdrsoftware_menubutton")
         self.SDR_Software_VAR = tk.StringVar()
         self.sdrSoftware_Menubutton.configure(
-            style="Heading0.TMenubutton",
+            style="Heading1b.TMenubutton",
             takefocus=True,
             textvariable=self.SDR_Software_VAR,
             width=5)

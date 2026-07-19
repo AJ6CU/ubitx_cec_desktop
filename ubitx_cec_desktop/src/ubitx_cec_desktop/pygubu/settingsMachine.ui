@@ -83,7 +83,7 @@
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="DSP_Enable_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="takefocus">true</property>
                     <property name="width">5</property>
                     <layout manager="grid">
@@ -168,7 +168,7 @@
                 </child>
                 <child>
                   <object class="ttk.Menubutton" id="PWR_SWR_Menubutton" named="True">
-                    <property name="style">Heading0.TMenubutton</property>
+                    <property name="style">Heading1b.TMenubutton</property>
                     <property name="takefocus">true</property>
                     <property name="width">5</property>
                     <layout manager="grid">

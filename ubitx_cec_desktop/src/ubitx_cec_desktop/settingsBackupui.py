@@ -458,7 +458,7 @@ class settingsBackupUI(ttk.Labelframe):
         self.from_Menubutton = ttk.Menubutton(
             self.action_Frame, name="from_menubutton")
         self.from_Menubutton.configure(
-            style="Heading0.TMenubutton", text='Select', width=10)
+            style="Heading1b.TMenubutton", text='Select', width=10)
         self.from_Menu = tk.Menu(self.from_Menubutton, name="from_menu")
         self.from_Menu.configure(tearoff=False)
         self.from_Menu.add(
@@ -489,7 +489,9 @@ class settingsBackupUI(ttk.Labelframe):
         self.to_Menubutton = ttk.Menubutton(
             self.action_Frame, name="to_menubutton")
         self.to_Menubutton.configure(
-            style="Heading0.TMenubutton", text='Select', width=10)
+            style="Heading1b.TMenubutton",
+            text='Select',
+            width=10)
         self.to_Menu = tk.Menu(self.to_Menubutton, name="to_menu")
         self.to_Menu.configure(tearoff=False)
         self.to_Menu.add(

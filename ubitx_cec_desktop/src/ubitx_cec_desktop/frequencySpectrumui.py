@@ -196,7 +196,7 @@ class frequencySpectrumUI(tk.Toplevel):
         self.bandwidth_Menubutton = ttk.Menubutton(
             self.bandwidthControlFrame, name="bandwidth_menubutton")
         self.bandwidth_Menubutton.configure(
-            style="Heading0.TMenubutton", width=8)
+            style="Heading1b.TMenubutton", width=8)
         self.bandwidth_Menu = tk.Menu(
             self.bandwidth_Menubutton,
             name="bandwidth_menu")
@@ -235,7 +235,8 @@ class frequencySpectrumUI(tk.Toplevel):
         self.bandwidth_Menubutton.grid(padx="0 20", row=1, sticky="w")
         self.repeat_Menubutton = ttk.Menubutton(
             self.bandwidthControlFrame, name="repeat_menubutton")
-        self.repeat_Menubutton.configure(style="Heading0.TMenubutton", width=3)
+        self.repeat_Menubutton.configure(
+            style="Heading1b.TMenubutton", width=3)
         self.repeat_Menu = tk.Menu(self.repeat_Menubutton, name="repeat_menu")
         self.repeat_Menu.configure(tearoff=False)
         self.repeat_Menu.add(

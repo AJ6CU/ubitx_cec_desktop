@@ -317,6 +317,7 @@ class mainScreen(baseui.mainScreenUI):
                         # threads and processes to die
                         # Following code works, but still need the sys.exit(0)
                         # to make pycharm happy that things closed.
+
         if self.updateLoopID != None:
             self.master.after_cancel(self.updateLoopID)
             self.theRadio = None
