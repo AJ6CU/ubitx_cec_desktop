@@ -59,7 +59,7 @@ def setup_ttk_styles(master=None):
     style.configure('GreenButton1bPressed.TButton', font=fontList['Heading1b'], background='green', foreground='white',
                     justify='center', relief='sunken')
     style.configure('Button2bRaised.TButton', font=fontList['Heading2b'], justify='center', relief='raised')
-    style.configure('Button2bPressed.TButton', font=fontList['Heading2b'], justify='center', relief='sunken')
+    style.configure('Button2bPressed.TButton', font=fontList['Heading2b'], justify='center', borderwidth=3, relief='sunken')
 
 
     style.configure('Custom.Toolbutton', font=fontList['Heading3b'], background='gray', foreground='black')

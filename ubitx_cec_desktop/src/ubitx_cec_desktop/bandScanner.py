@@ -137,7 +137,7 @@ class bandScanner(baseui.bandScannerUI):
         self.frequencyTuning_Scale.configure(variable=self.frequencyTuning_VAR)
 
 
-        self.frequencyTuning_VAR.set(0)                                                # Set scrollbar to middle
+        self.frequencyTuning_VAR.set(0)                # Set scrollbar to middle
 
 
         self.startingFrequency = self.mainWindow.theVFO_Object.getIntPrimaryVFO()

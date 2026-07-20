@@ -20,6 +20,7 @@ class bandGraph(baseui.bandGraphUI):
     def __init__(self, master=None,  **kw):
 
         super().__init__(master, **kw)
+        self.windowResized_CB = None
         #
         # Have to handle this manually because it is a "variable" and not "textvariable"
         #
@@ -28,9 +29,6 @@ class bandGraph(baseui.bandGraphUI):
 
         gv.make_widget_variable(self, "scanningRange", self.scanningRange_Label)
         gv.make_widget_variable(self, "bandRange", self.bandRange_Label)
-
-        # print("allocating a band")
-        # self.bandScannerWindow = bandScannerWindow
     #
     #   This function allows the attachment of a callback within the GraphPak object
     #   for scrollbar movement after the bandGraph has been created. This callback
@@ -43,13 +41,14 @@ class bandGraph(baseui.bandGraphUI):
         # self.currentFrequency_CB = currentFrequency_callback
 
     def attachWindowResized_CB( self, windowResized_callback):
-       self.windowResized_CB = windowResized_callback
+        self.windowResized_CB = windowResized_callback
 
     def bandStart_CB(self, scale_value):
         self.scrollbar_CB(scale_value )
         # self.currentFrequency_CB()
 
     def resizeCanvas_CB(self, event=None):
-        self.windowResized_CB()
+        if self.windowResized_CB is not None:
+            self.windowResized_CB()
 
 
