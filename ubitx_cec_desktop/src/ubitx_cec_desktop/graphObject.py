@@ -194,6 +194,7 @@ class graphObject(barPlotter):
 
 
     def drawHighLightBars(self):
+        print("drawHighLightBars", self.masterFreqScrollbar.get())
         super().drawHighLightBars(int(self.masterFreqScrollbar.get()))
 
     def displayData(self, buffer):

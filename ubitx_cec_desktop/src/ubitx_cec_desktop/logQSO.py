@@ -89,7 +89,7 @@ class logQSO(baseui.logQSOUI):
         self.utcTimeMM_VAR.set(datetime.now(UTC).strftime("%M"))
 
 
-        if self.mainWindow.mode_select_Menubutton['text'] == "CWL" or self.mainWindow.mode_select_Menubutton['text'] == "CWU":
+        if self.mainWindow.mode_Button['text'] == "CWL" or self.mainWindow.mode_Button['text'] == "CWU":
             self.commType_VAR.set("CW")
         else:
             self.commType_VAR.set("SSB")

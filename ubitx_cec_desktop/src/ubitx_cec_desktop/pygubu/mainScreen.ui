@@ -96,10 +96,11 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Menubutton" id="mode_select_Menubutton" named="True">
-            <property name="style">Heading1b.TMenubutton</property>
+          <object class="ttk.Button" id="mode_Button" named="True">
+            <property name="command" type="command" cbtype="simple">mode_CB</property>
+            <property name="style">Button1bRaised.TButton</property>
             <property name="text" translatable="yes">Mode</property>
-            <property name="width">7</property>
+            <property name="width">10</property>
             <layout manager="grid">
               <property name="column">2</property>
               <property name="ipady">20</property>
@@ -108,40 +109,11 @@
               <property name="sticky">ns</property>
             </layout>
             <child>
-              <object class="tk.Menu" id="menu1">
-                <property name="tearoff">false</property>
-                <child>
-                  <object class="tk.Menuitem.Command" id="mode_lsb_Command" named="True">
-                    <property name="command" type="command" cbtype="simple">mode_lsb_CB</property>
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="label" translatable="yes">LSB</property>
-                    <property name="state">normal</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="tk.Menuitem.Command" id="mode_usb_Command" named="True">
-                    <property name="command" type="command" cbtype="simple">mode_usb_CB</property>
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="label" translatable="yes">USB</property>
-                    <property name="state">normal</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="tk.Menuitem.Command" id="mode_cwl_Command" named="True">
-                    <property name="command" type="command" cbtype="simple">mode_cwl_CB</property>
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="label" translatable="yes">CWL</property>
-                    <property name="state">normal</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="tk.Menuitem.Command" id="mode_cwu_Command" named="True">
-                    <property name="command" type="command" cbtype="simple">mode_cwu_CB</property>
-                    <property name="font">{Arial} 24 {}</property>
-                    <property name="label" translatable="yes">CWU</property>
-                    <property name="state">normal</property>
-                  </object>
-                </child>
+              <object class="pygubu.widgets.Tooltip" id="tooltip1" named="True">
+                <property name="padx">8</property>
+                <property name="relief">raised</property>
+                <property name="text" translatable="yes">Click to move the VFO to the next higher band</property>
+                <property name="wraplength">300</property>
               </object>
             </child>
           </object>

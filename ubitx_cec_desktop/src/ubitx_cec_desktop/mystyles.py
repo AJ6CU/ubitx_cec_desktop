@@ -24,7 +24,8 @@ import tkinter.ttk as ttk
 def setup_ttk_styles(master=None):
     
     style = ttk.Style(master)
-    style.theme_use('default')
+    # style.theme_use('default')
+    style.theme_use('clam')
 
     fontList = {
             'Heading0b': ('Arial', 24, 'bold'),

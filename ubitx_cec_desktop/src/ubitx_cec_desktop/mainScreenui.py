@@ -104,39 +104,24 @@ class mainScreenUI(ttk.Frame):
             row=0,
             sticky="ns")
         self.vfo_Button.configure(command=self.vfo_CB)
-        self.mode_select_Menubutton = ttk.Menubutton(
-            self.menuBar_Frame, name="mode_select_menubutton")
-        self.mode_select_Menubutton.configure(
-            style="Heading1b.TMenubutton", text='Mode', width=7)
-        menu1 = tk.Menu(self.mode_select_Menubutton)
-        menu1.configure(tearoff=False)
-        menu1.add(
-            "command",
-            command=self.mode_lsb_CB,
-            font="{Arial} 24 {}",
-            label='LSB',
-            state="normal")
-        menu1.add(
-            "command",
-            command=self.mode_usb_CB,
-            font="{Arial} 24 {}",
-            label='USB',
-            state="normal")
-        menu1.add(
-            "command",
-            command=self.mode_cwl_CB,
-            font="{Arial} 24 {}",
-            label='CWL',
-            state="normal")
-        menu1.add(
-            "command",
-            command=self.mode_cwu_CB,
-            font="{Arial} 24 {}",
-            label='CWU',
-            state="normal")
-        self.mode_select_Menubutton.configure(menu=menu1)
-        self.mode_select_Menubutton.grid(
-            column=2, ipady=20, padx="0 10", row=0, sticky="ns")
+        self.mode_Button = ttk.Button(self.menuBar_Frame, name="mode_button")
+        self.mode_Button.configure(
+            style="Button1bRaised.TButton",
+            text='Mode',
+            width=10)
+        self.tooltip1 = Tooltip(self.mode_Button)
+        self.tooltip1.configure(
+            padx=8,
+            relief="raised",
+            text='Click to move the VFO to the next higher band',
+            wraplength=300)
+        self.mode_Button.grid(
+            column=2,
+            ipady=20,
+            padx="0 10",
+            row=0,
+            sticky="ns")
+        self.mode_Button.configure(command=self.mode_CB)
         self.band_up_Button = ttk.Button(
             self.menuBar_Frame, name="band_up_button")
         self.band_up_Button.configure(
@@ -726,16 +711,7 @@ class mainScreenUI(ttk.Frame):
     def vfo_CB(self):
         pass
 
-    def mode_lsb_CB(self):
-        pass
-
-    def mode_usb_CB(self):
-        pass
-
-    def mode_cwl_CB(self):
-        pass
-
-    def mode_cwu_CB(self):
+    def mode_CB(self):
         pass
 
     def band_up_CB(self):

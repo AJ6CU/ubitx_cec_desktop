@@ -107,7 +107,7 @@ class channels(baseui.channelsUI):
 
     def initChannelsUX(self):
         self.update_Current_Frequency(self.mainWindow.theVFO_Object.getFormattedPrimaryVFO())
-        self.update_Current_Mode(self.mainWindow.mode_select_Menubutton['text'])
+        self.update_Current_Mode(self.mainWindow.mode_Button['text'])
         self.mainWindow.theRadio.Req_Channel_Freqs()
         self.mainWindow.theRadio.Req_Channel_Labels()
         self.mainWindow.theRadio.Req_Channel_Show_Labels()

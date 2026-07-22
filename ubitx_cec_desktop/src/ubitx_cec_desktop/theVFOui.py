@@ -323,41 +323,24 @@ class theVFOUI(ttk.Frame):
         self.tuning_Step_Frame = ttk.Frame(
             self.vfoB_Frame, name="tuning_step_frame")
         self.tuning_Step_Frame.configure(style="Normal.TFrame", width=200)
-        self.tuning_Preset_Menubutton = ttk.Menubutton(
-            self.tuning_Step_Frame, name="tuning_preset_menubutton")
-        self.tuning_Preset_Menubutton.configure(
-            style="Heading1b.TMenubutton", text='0', width=10)
-        self.tuning_Preset_Menu = tk.Menu(
-            self.tuning_Preset_Menubutton,
-            name="tuning_preset_menu")
-        self.tuning_Preset_Menu.configure(tearoff=False)
-        self.tuning_Preset_Menu.add(
-            "command",
-            command=self.tuning_Preset_5_CB,
-            font="{Arial} 24 {}",
-            label='50000')
-        self.tuning_Preset_Menu.add(
-            "command",
-            command=self.tuning_Preset_4_CB,
-            font="{Arial} 24 {}",
-            label='10000')
-        self.tuning_Preset_Menu.add(
-            "command",
-            command=self.tuning_Preset_3_CB,
-            font="{Arial} 24 {}",
-            label='5000')
-        self.tuning_Preset_Menu.add(
-            "command",
-            command=self.tuning_Preset_2_CB,
-            font="{Arial} 24 {}",
-            label='1000')
-        self.tuning_Preset_Menu.add(
-            "command",
-            command=self.tuning_Preset_1_CB,
-            font="{Arial} 24 {}",
-            label='100')
-        self.tuning_Preset_Menubutton.configure(menu=self.tuning_Preset_Menu)
-        self.tuning_Preset_Menubutton.pack(side="left")
+        self.tuning_Preset_Button = ttk.Button(
+            self.tuning_Step_Frame, name="tuning_preset_button")
+        self.tuning_Preset_Button.configure(
+            style="Button1bRaised.TButton", text='0')
+        self.tooltip1 = Tooltip(self.tuning_Preset_Button)
+        self.tooltip1.configure(
+            padx=8,
+            relief="raised",
+            text='Click to cycle thru different tuning rates. You can also directly click a digit in the VFO and this will be set automatically.',
+            wraplength=300)
+        self.tuning_Preset_Button.pack(
+            anchor="e",
+            expand=True,
+            fill="x",
+            ipady=10,
+            padx="20 0",
+            side="left")
+        self.tuning_Preset_Button.configure(command=self.tuning_Preset_CB)
         self.tuning_Multiplier_Button = ttk.Button(
             self.tuning_Step_Frame, name="tuning_multiplier_button")
         self.tuning_Multiplier_Button.configure(style="Button1bRaised.TButton")
@@ -407,19 +390,7 @@ class theVFOUI(ttk.Frame):
     def primary_vfo_10hz_CB(self, event=None):
         pass
 
-    def tuning_Preset_5_CB(self):
-        pass
-
-    def tuning_Preset_4_CB(self):
-        pass
-
-    def tuning_Preset_3_CB(self):
-        pass
-
-    def tuning_Preset_2_CB(self):
-        pass
-
-    def tuning_Preset_1_CB(self):
+    def tuning_Preset_CB(self):
         pass
 
     def tuning_Multiplier_Button_CB(self):

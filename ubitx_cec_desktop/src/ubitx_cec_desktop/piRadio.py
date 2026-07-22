@@ -516,6 +516,8 @@ class piRadio:
         #   Now have to write it to EEPROM as this is not one of the values that are automatically saved to EEPROM
         #   This requires reboot to take effect
         #
+        print("lsb=", hex(EEPROM.Mem_Address["cw_bfo"][EEPROM.lsb]), "msb=", hex(EEPROM.Mem_Address["cw_bfo"][EEPROM.msb]),
+              "memlength=", EEPROM.Mem_Address["cw_bfo"][EEPROM.memLength])
 
         checksum = (EEPROM.Mem_Address["cw_bfo"][EEPROM.lsb] + EEPROM.Mem_Address["cw_bfo"][EEPROM.msb]
                     + EEPROM.Mem_Address["cw_bfo"][EEPROM.memLength]) % 256

@@ -20,7 +20,7 @@ class theVFO(baseui.theVFOUI):
         super().__init__(master, **kw)
 
         self.rate_selection = {
-            0: self.tuning_Preset_Menubutton,
+            0: self.tuning_Preset_Button,
             1: self.digit1_Highlight_Label,
             2: self.digit2_Highlight_Label,
             3: self.digit3_Highlight_Label,
@@ -42,7 +42,7 @@ class theVFO(baseui.theVFOUI):
         }
 
         self.theRadio = None
-        # self.virtualDial = None                     # pointer to the jogwheel (vfo dial)
+
         self.mainWindow = None
 
         self.currentDigitPos = 0                    # Position of digit in VFO being edited
@@ -91,17 +91,14 @@ class theVFO(baseui.theVFOUI):
                                                         # set of radiobuttons for the presets
         self.saved_tuning_Preset_Label = None
 
-        self.update_Tuning_Preset_Menubutton_Label = True
+        self.tuning_Preset_Values = [None] * 5
+
+        self.update_Tuning_Preset_Button_Label = True
 
         self.RITmode = False                        # Saves whether RIT is on or off
         self.SPLITmode = False                      # Saves whether SPLIT mode is on or off
 
-        #
-        #   Set some of the strgvars
-        #
-        gv.make_widget_variable(self, "tuning_Preset_Label", self.tuning_Preset_Menubutton)
-        self.tuning_Preset_Label_VAR .set("1")   # Seed it a default value, doesnt matter as it is overridden
-
+        self.tuning_Preset_Button['text'] = "1"
 
 
     #
@@ -146,10 +143,12 @@ class theVFO(baseui.theVFOUI):
         #   Special case 0, which is the current value of the preset
         #
         if (self.currentVFO_Tuning_Rate == 0):
-            if self.tuning_Preset_Label_VAR.get() == "Direct Tune":
+            if self.tuning_Preset_Button['text'] == "Direct Tune":
                 self.theRadio.Set_Tuning_Preset(1)
             else:
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Label_VAR.get())
+                # self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Label_VAR.get())
+                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Button['text'])
+
 
       # The Label on the Tuning Select Button (just to right of tuning preselects), should reflect
       # the current multiplier for every notch change in the virtual Dial. This
@@ -204,11 +203,11 @@ class theVFO(baseui.theVFOUI):
                 #
                 self.savePresetState()
                 #
-                self.tuning_Preset_Label_VAR.set("Direct Tune")
+                self.tuning_Preset_Button['text'] = "Direct Tune"
                 #   turn off any changes in the label due to a change in preset coming from the radio
-                self.update_Tuning_Preset_Menubutton_Label = False
+                self.update_Tuning_Preset_Button_Label = False
                 #   Disable the tuning rate button so selected preset cannot be changed while in direct tune
-                self.tuning_Preset_Menubutton.configure(state='disabled')
+                self.tuning_Preset_Button.configure(state='disabled')
                 #
                 #   Select the lowest tuning rate of the presets. The need to do this is the result of the original
                 #   CEC software using the rate preselects to truncate digits below the preset. For example.
@@ -224,13 +223,13 @@ class theVFO(baseui.theVFOUI):
             if (self.saved_tuning_Preset_Selection != None):  # dont restore unless it was previously saved
 
                 #   Allow updating of the Label for the selected preset
-                self.update_Tuning_Preset_Menubutton_Label = True
+                self.update_Tuning_Preset_Button_Label = True
 
                 #   Restore the saved states
                 self.restorePresetState()
                 #   Re-enable the button to select a preset
 
-                self.tuning_Preset_Menubutton.configure(state='enabled')
+                self.tuning_Preset_Button.configure(state='enabled')
 
                 #   indicate the saved states are now invalid
                 self.saved_tuning_Preset_Selection = None
@@ -295,10 +294,10 @@ class theVFO(baseui.theVFOUI):
 
     def savePresetState(self):
         self.saved_tuning_Preset_Selection = self.get_Active_Tuning_Preset()
-        self.saved_tuning_Preset_Label = self.tuning_Preset_Label_VAR.get()
+        self.saved_tuning_Preset_Label = self.tuning_Preset_Button['text']
 
     def restorePresetState(self):
-        self.tuning_Preset_Label_VAR.set(self.saved_tuning_Preset_Label)
+        self.tuning_Preset_Button['text'] = self.saved_tuning_Preset_Label
         self.theRadio.Set_Tuning_Preset(self.saved_tuning_Preset_Selection)
         self.set_Active_Tuning_Preset(self.saved_tuning_Preset_Selection)
         self.saved_tuning_Preset_Selection = None
@@ -346,7 +345,7 @@ class theVFO(baseui.theVFOUI):
     #
     def setVFOUXState(self, newState):
         self.tuning_Multiplier_Button.configure(state=newState)
-        self.tuning_Preset_Menubutton.configure(state=newState)
+        self.tuning_Preset_Button.configure(state=newState)
 
     #
     #   Get/Set routines
@@ -377,11 +376,11 @@ class theVFO(baseui.theVFOUI):
         saveSecondary_Mode = self.secondary_Mode_Label['text']
 
         self.secondary_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO)
-        self.secondary_Mode_Label['text'] = self.mainWindow.mode_select_Menubutton['text']
+        self.secondary_Mode_Label['text'] = self.mainWindow.mode_Button['text']
 
         self.setPrimaryVFO(saveSecondary_VFO)
 
-        self.mainWindow.mode_select_Menubutton['text'] = saveSecondary_Mode
+        self.mainWindow.mode_Button['text'] = saveSecondary_Mode
 
     def setTXOffset(self,offset):
         self.TXfreqOffset = offset
@@ -389,83 +388,51 @@ class theVFO(baseui.theVFOUI):
     def getTXOffset(self):
         return self.TXfreqOffset
 
-    def set_Tuning_Preset_5(self,value):
-        self.tuning_Preset_Menu.entryconfigure(0,label=value)
 
-    def set_Tuning_Preset_4(self, value):
-        self.tuning_Preset_Menu.entryconfigure(1, label=value)
-        
-    def set_Tuning_Preset_3(self, value):
-        self.tuning_Preset_Menu.entryconfigure(2, label=value)
-        
-    def set_Tuning_Preset_2(self, value):
-        self.tuning_Preset_Menu.entryconfigure(3, label=value)
-        
-    def set_Tuning_Preset_1(self, value):
-        self.tuning_Preset_Menu.entryconfigure(4, label=value)
 
     #
     #   Returns the preset number in terms of KD8CEC (5-highest to 1-lowest)
     #
     def get_Active_Tuning_Preset(self):
-        for i in range(self.tuning_Preset_Menu.index(tk.END)+1):
-            if(self.tuning_Preset_Menu.entrycget(i, "label") == self.tuning_Preset_Label_VAR.get()):
+        for i in range(5):
+            if (self.tuning_Preset_Values[i] == self.tuning_Preset_Button['text']):
                 return 5 - i
-        return 1            # default to highest resolution if not found
+        return 1
 
         
     def set_Active_Tuning_Preset(self,value):
-
-
-        match value:
-            case "5":
-                if (self.update_Tuning_Preset_Menubutton_Label):
-                    self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(0, "label"))
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Menu.entrycget(0, "label"))
-
-            case "4":
-                if (self.update_Tuning_Preset_Menubutton_Label):
-                    self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(1, "label"))
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Menu.entrycget(1, "label"))
-
-            case "3":
-                if (self.update_Tuning_Preset_Menubutton_Label):
-                    self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(2, "label"))
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Menu.entrycget(2, "label"))
-
-            case "2":
-                if (self.update_Tuning_Preset_Menubutton_Label):
-                    self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(3, "label"))
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Menu.entrycget(3, "label"))
-
-            case "1":
-                if (self.update_Tuning_Preset_Menubutton_Label):
-                    self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(4, "label"))
-                self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Menu.entrycget(4, "label"))
-
-
-
+        if (self.update_Tuning_Preset_Button_Label):
+            self.tuning_Preset_Button['text'] = self.tuning_Preset_Values[5-int(value)]
+        self.currentVFO_Tuning_Rate = int(self.tuning_Preset_Values[5-int(value)])
 
         self.setRateMultiplier()  # set the multiplier for each change in virtual dial
         self.setTuningMultiplierLabel()  # set the Label text for the Tuning Select Button
 
+    def setTuningPreset(self,preset,value):
+        self.tuning_Preset_Values[5 - preset] = value
 
+
+    def tuning_Preset_CB(self):
+        i = self.get_Active_Tuning_Preset() + 1
+        if i > 5:
+            i=1
+
+        self.set_Active_Tuning_Preset(str(i))
+        self.theRadio.Set_Tuning_Preset(i)
 
     def reformatVFO(self, value):
-            #
-            # self.digit_delimiter_primary_VFO_1M_Label['text'] = value
-            # self.digit_delimiter_primary_VFO_1k_Label['text'] = value
-            if value == ",":
-                old_value = "."
-            else:
-                old_value = ","
 
-            self.RX_Freq_VFO_Label['text'] = self.RX_Freq_VFO_Label['text'].replace(old_value,value)
-            self.secondary_VFO_Label['text'] = self.secondary_VFO_Label['text'].replace(old_value,value)
+        if value == ",":
+            old_value = "."
+        else:
+            old_value = ","
 
-            self.digit_delimiter_primary_VFO_1M_Label['text'] = value
-            self.digit_delimiter_primary_VFO_1k_Label['text'] = value
-            self.update_VFO_Display(int(self.PrimaryVFO), self.TXfreqOffset)
+        self.RX_Freq_VFO_Label['text'] = self.RX_Freq_VFO_Label['text'].replace(old_value,value)
+        self.secondary_VFO_Label['text'] = self.secondary_VFO_Label['text'].replace(old_value,value)
+
+        self.digit_delimiter_primary_VFO_1M_Label['text'] = value
+        self.digit_delimiter_primary_VFO_1k_Label['text'] = value
+        self.update_VFO_Display(int(self.PrimaryVFO), self.TXfreqOffset)
 
 
     #   ****Start Callbacks****
@@ -502,8 +469,6 @@ class theVFO(baseui.theVFOUI):
 
         self.setNextLEDTuningHighlight(digit)
         #
-        # #   Update rate multiplier for jogwheel
-        #
         self.setRateMultiplier()
 
         #
@@ -532,31 +497,6 @@ class theVFO(baseui.theVFOUI):
     def primary_vfo_10hz_CB(self, event=None):
         self.primary_vfo_direct_digit_set(1)
 
-    def tuning_Preset_5_CB(self):
-        self.theRadio.Set_Tuning_Preset(5)
-        self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(0,"label"))
-
-    def tuning_Preset_4_CB(self):
-        self.theRadio.Set_Tuning_Preset(4)
-        self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(1,"label"))
-
-    def tuning_Preset_3_CB(self):
-        self.theRadio.Set_Tuning_Preset(3)
-        self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(2,"label"))
-
-    def tuning_Preset_2_CB(self):
-        self.theRadio.Set_Tuning_Preset(2)
-        self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(3,"label"))
-
-    def tuning_Preset_1_CB(self):
-        self.theRadio.Set_Tuning_Preset(1)
-        self.tuning_Preset_Label_VAR.set(self.tuning_Preset_Menu.entrycget(4,"label"))
-
-
-    #
-    #   Controls visability of the RX freq display. It is only visable in the case where we are in CW and the
-    #   user has selected to show the TX frequency on the primary display. This is just a "reminder" for the user
-    #   of which frequency is being listen on.
 
     def RX_VFO_Visability (self, RX_Frame_Visible = False):
         if RX_Frame_Visible:
@@ -572,7 +512,7 @@ class theVFO(baseui.theVFOUI):
     def set_CW_OffsetforTX(self, switch):
         if switch == "ON":
             tone = int(self.mainWindow.tone_value_Label['text'])
-            if self.mainWindow.mode_select_Menubutton['text'] == 'CWL':
+            if self.mainWindow.mode_Button['text'] == 'CWL':
                 self.TXfreqOffset = tone + self.cwTX_Tweak
 
             else:
@@ -583,10 +523,8 @@ class theVFO(baseui.theVFOUI):
         #
         #   With offsets now correct, we can update the VFO display
         #
-        # if not self.RITmode:
         self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)
 
-        # self.updateVFO_Info("CW", switch)
         self._CW(switch)
 
 
@@ -736,16 +674,13 @@ class theVFO(baseui.theVFOUI):
                     f1 = self.intDisplayedPrimaryVFO
                     f2 = self.PrimaryVFO
 
-                    m = Text_To_ModeNum[self.mainWindow.mode_select_Menubutton['text']]
+                    m = Text_To_ModeNum[self.mainWindow.mode_Button['text']]
                     self.theRadio.Toggle_VFO()
 
                     self.theRadio.Set_New_Frequency(f1)
                     self.theRadio.Set_Mode(m)
                     self.theRadio.Toggle_VFO()
                     self.theRadio.Set_New_Frequency(f2)
-
-
-
 
                 self._SPLIT_ManageLabels(switch)
             else:
@@ -762,7 +697,6 @@ class theVFO(baseui.theVFOUI):
             if switch == "ON":
                 self.SPLITmode = True
 
-
                 self.CW_VFOA_Offset_On = False
                 self.CW_VFOAUX_Offset_On = False
 
@@ -771,7 +705,7 @@ class theVFO(baseui.theVFOUI):
                     f2 = self.PrimaryVFO
 
 
-                    m = Text_To_ModeNum[self.mainWindow.mode_select_Menubutton['text']]
+                    m = Text_To_ModeNum[self.mainWindow.mode_Button['text']]
                     self.theRadio.Toggle_VFO()
 
                     self.theRadio.Set_New_Frequency(f1)
@@ -780,8 +714,6 @@ class theVFO(baseui.theVFOUI):
                     self.theRadio.Set_New_Frequency(f2)
 
                 self._SPLIT_ManageLabels(switch)
-
-
 
             else:  # Exiting Split mode, must unwind
                 self.SPLITmode = False  # Saves whether SPLIT mode is on or off
@@ -818,8 +750,6 @@ class theVFO(baseui.theVFOUI):
                 self._SPLIT(switch)
             case _:
                 print("unidentified info setting change:", settingChange)
-
-
 
 
     def update_VFO_Display (self, vfo, offset=0 ):

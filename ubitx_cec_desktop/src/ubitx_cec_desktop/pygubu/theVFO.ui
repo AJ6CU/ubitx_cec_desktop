@@ -591,51 +591,24 @@
               <property name="side">left</property>
             </layout>
             <child>
-              <object class="ttk.Menubutton" id="tuning_Preset_Menubutton" named="True">
-                <property name="style">Heading1b.TMenubutton</property>
+              <object class="ttk.Button" id="tuning_Preset_Button" named="True">
+                <property name="command" type="command" cbtype="simple">tuning_Preset_CB</property>
+                <property name="style">Button1bRaised.TButton</property>
                 <property name="text" translatable="yes">0</property>
-                <property name="width">10</property>
                 <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="ipady">10</property>
+                  <property name="padx">20 0</property>
                   <property name="side">left</property>
                 </layout>
                 <child>
-                  <object class="tk.Menu" id="tuning_Preset_Menu" named="True">
-                    <property name="tearoff">false</property>
-                    <child>
-                      <object class="tk.Menuitem.Command" id="tuning_Preset_5_Command" named="True">
-                        <property name="command" type="command" cbtype="simple">tuning_Preset_5_CB</property>
-                        <property name="font">{Arial} 24 {}</property>
-                        <property name="label" translatable="yes">50000</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="tk.Menuitem.Command" id="tuning_Preset_4_Command" named="True">
-                        <property name="command" type="command" cbtype="simple">tuning_Preset_4_CB</property>
-                        <property name="font">{Arial} 24 {}</property>
-                        <property name="label" translatable="yes">10000</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="tk.Menuitem.Command" id="tuning_Preset_3_Command" named="True">
-                        <property name="command" type="command" cbtype="simple">tuning_Preset_3_CB</property>
-                        <property name="font">{Arial} 24 {}</property>
-                        <property name="label" translatable="yes">5000</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="tk.Menuitem.Command" id="tuning_Preset_2_Command" named="True">
-                        <property name="command" type="command" cbtype="simple">tuning_Preset_2_CB</property>
-                        <property name="font">{Arial} 24 {}</property>
-                        <property name="label" translatable="yes">1000</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="tk.Menuitem.Command" id="tuning_Preset_1_Command" named="True">
-                        <property name="command" type="command" cbtype="simple">tuning_Preset_1_CB</property>
-                        <property name="font">{Arial} 24 {}</property>
-                        <property name="label" translatable="yes">100</property>
-                      </object>
-                    </child>
+                  <object class="pygubu.widgets.Tooltip" id="tooltip1" named="True">
+                    <property name="padx">8</property>
+                    <property name="relief">raised</property>
+                    <property name="text" translatable="yes">Click to cycle thru different tuning rates. You can also directly click a digit in the VFO and this will be set automatically.</property>
+                    <property name="wraplength">300</property>
                   </object>
                 </child>
               </object>

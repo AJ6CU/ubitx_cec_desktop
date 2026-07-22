@@ -522,19 +522,27 @@ class mainScreen(baseui.mainScreenUI):
     def vfo_CB(self):
         self.theRadio.Toggle_VFO()
 
-    def mode_lsb_CB(self):
-        self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["LSB"])
-
-    def mode_usb_CB(self):
-        self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["USB"])
-
-
-    def mode_cwl_CB(self):
-        self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["CWL"])
+    def mode_CB(self):
+        currentModeNumber = EEPROM.Text_To_ModeNum[self.mode_Button['text']] + 1
+        if currentModeNumber > 5:
+            currentModeNumber = 2
+        self.theRadio.Set_Mode(currentModeNumber)
 
 
-    def mode_cwu_CB(self):
-        self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["CWU"])
+
+    # def mode_lsb_CB(self):
+    #     self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["LSB"])
+    #
+    # def mode_usb_CB(self):
+    #     self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["USB"])
+    #
+    #
+    # def mode_cwl_CB(self):
+    #     self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["CWL"])
+    #
+    #
+    # def mode_cwu_CB(self):
+    #     self.theRadio.Set_Mode(EEPROM.Text_To_ModeNum["CWU"])
 
     def band_up_CB(self):
          self.theRadio.Change_Band(self.Text_To_BandChange["UP"])
@@ -558,8 +566,9 @@ class mainScreen(baseui.mainScreenUI):
         if self.downButton_Canvas.cget("state") == "normal":
             self.downButton_Canvas.itemconfig(self.downButton, image=self.arrow_down_normal)
             self.downButton_Canvas.move(self.downButton,-10,-10)
+
             newFreq = self.theVFO_Object.getIntPrimaryVFO()-self.theVFO_Object.getCurrentVFO_Tuning_Rate()
-            # print("newFreq=", newFreq)
+
             self.theRadio.Set_New_Frequency(newFreq)
 
     def upButtonPressed_CB(self, event=None):
@@ -571,8 +580,9 @@ class mainScreen(baseui.mainScreenUI):
         if self.upButton_Canvas.cget("state") == "normal":
             self.upButton_Canvas.itemconfig(self.upButton, image=self.arrow_up_normal)
             self.upButton_Canvas.move(self.upButton, -10, -10)
+
             newFreq = self.theVFO_Object.getIntPrimaryVFO()+self.theVFO_Object.getCurrentVFO_Tuning_Rate()
-            # print("newFreq=", newFreq)
+
             self.theRadio.Set_New_Frequency(newFreq)
 
 
@@ -778,7 +788,7 @@ class mainScreen(baseui.mainScreenUI):
 
     def v1_UX_Set_Tuning_Preset_1(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theVFO_Object.set_Tuning_Preset_1(value)
+        self.theVFO_Object.setTuningPreset(1, value)
 
 
     #
@@ -786,21 +796,21 @@ class mainScreen(baseui.mainScreenUI):
     #
     def v2_UX_Set_Tuning_Preset_2(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theVFO_Object.set_Tuning_Preset_2(value)
+        self.theVFO_Object.setTuningPreset(2,value)
 
     #
     #   The "v3" command 1s used for the third (middle) tuning rate
     #
     def v3_UX_Set_Tuning_Preset_3(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theVFO_Object.set_Tuning_Preset_3(value)
+        self.theVFO_Object.setTuningPreset(3, value)
 
     #
     #   The "v4" command 1s used for the next largest tuning rate
     #
     def v4_UX_Set_Tuning_Preset_4(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theVFO_Object.set_Tuning_Preset_4(value)
+        self.theVFO_Object.setTuningPreset(4, value)
 
 
     #
@@ -808,7 +818,7 @@ class mainScreen(baseui.mainScreenUI):
     #
     def v5_UX_Set_Tuning_Preset_5(self, buffer):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
-        self.theVFO_Object.set_Tuning_Preset_5(value)
+        self.theVFO_Object.setTuningPreset(5, value)
 
     #
     #   The "cn" command indicates which tuning step is active (1(smallest) - 5(largest)
@@ -1284,7 +1294,7 @@ class mainScreen(baseui.mainScreenUI):
     def lockUX(self):
         self.settings_Button.configure(state = "disabled")
         self.vfo_Button.configure(state="disabled")
-        self.mode_select_Menubutton.configure(state="disabled")
+        self.mode_Button.configure(state="disabled")
         self.band_up_Button.configure(state="disabled")
         self.band_down_Button.configure(state="disabled")
         self.speaker_Button.configure(state="disabled")
@@ -1314,7 +1324,7 @@ class mainScreen(baseui.mainScreenUI):
     def unlockUX(self):
         self.settings_Button.configure(state = "normal")
         self.vfo_Button.configure(state="normal")
-        self.mode_select_Menubutton.configure(state="normal")
+        self.mode_Button.configure(state="normal")
         self.band_up_Button.configure(state="normal")
         self.band_down_Button.configure(state="normal")
         self.speaker_Button.configure(state="normal")
@@ -1362,7 +1372,8 @@ class mainScreen(baseui.mainScreenUI):
                     # print("sdr connected")
                     self.theSDR.startSDR()
                     self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
-                    self.theSDR.set_mode(self.mode_select_Menubutton['text'].replace("CWL","CW").replace("CWU","CW"))
+                    self.theSDR.set_mode(self.mode_Button['text'].replace("CWL","CW").replace("CWU","CW"))
+
                     self.theSDR.on_frequency_change_primary = self.sdr_frequency_change_callback
                     self.theSDR.on_mode_change_primary = self.sdr_mode_change_callback
 
@@ -1378,7 +1389,7 @@ class mainScreen(baseui.mainScreenUI):
                 # print("sdr connected")
                 self.theSDR.startSDR()
                 self.theSDR.set_frequency_hz(int(self.theVFO_Object.getIntPrimaryVFO()))
-                self.theSDR.set_mode(self.mode_select_Menubutton['text'].replace("CWL","CW").replace("CWU","CW"))
+                self.theSDR.set_mode(self.mode_Button['text'].replace("CWL","CW").replace("CWU","CW"))
                 self.theSDR.on_frequency_change_primary = self.sdr_frequency_change_callback
                 self.theSDR.on_mode_change_primary = self.sdr_mode_change_callback
 
@@ -1521,7 +1532,7 @@ class mainScreen(baseui.mainScreenUI):
 
         if value == '':
             print("cc_UX_Set_Primary_Mode key error, buffer=", buffer)
-        self.mode_select_Menubutton['text'] = EEPROM.modeNum_To_TextDict[value]
+        self.mode_Button['text'] = EEPROM.modeNum_To_TextDict[value]
         if self.cwTX_OffsetFlag and (EEPROM.modeNum_To_TextDict[value] == "CWL" or EEPROM.modeNum_To_TextDict[value] == "CWU"):
             #
             #   We are showing the TX frequency on the VFO so need to offset it
@@ -1531,11 +1542,11 @@ class mainScreen(baseui.mainScreenUI):
             self.theVFO_Object.set_CW_OffsetforTX("OFF")
 
         if self.theSDR != None:
-            self.theSDR.set_mode(self.mode_select_Menubutton['text'].replace("CWL", "CW").replace("CWU", "CW"))
+            self.theSDR.set_mode(self.mode_Button['text'].replace("CWL", "CW").replace("CWU", "CW"))
 
         if self.channelsWindow != None:
             # Only update frequency if the channel window has been created once
-            self.channelsWindow.update_Current_Mode(self.mode_select_Menubutton['text'])
+            self.channelsWindow.update_Current_Mode(self.mode_Button['text'])
 
 
     #
@@ -1574,7 +1585,7 @@ class mainScreen(baseui.mainScreenUI):
 
         if (self.vfo_Button['text'] == self.VFO_A):
 
-            self.mode_select_Menubutton['text'] = EEPROM.modeNum_To_TextDict[value]
+            self.mode_Button['text'] = EEPROM.modeNum_To_TextDict[value]
         else:
             self.theVFO_Object.setSecondaryMode(EEPROM.modeNum_To_TextDict[value])
 
@@ -1607,7 +1618,7 @@ class mainScreen(baseui.mainScreenUI):
         value = self.extractValue(buffer, 10, len(buffer) - 3)
 
         if (self.vfo_Button['text'] == self.VFO_B):       #update displayed frequency
-            self.mode_select_Menubutton['text'] = EEPROM.modeNum_To_TextDict[value]
+            self.mode_Button['text'] = EEPROM.modeNum_To_TextDict[value]
         else:
             self.theVFO_Object.secondary_Mode_Label['text'] = EEPROM.modeNum_To_TextDict[value]
 
