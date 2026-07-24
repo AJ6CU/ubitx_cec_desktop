@@ -39,7 +39,9 @@ def setup_ttk_styles(master=None):
 
 
     style.configure('Heading1b.TLabel', font=fontList['Heading1b'], background='gray', foreground='white')
-    style.map('Heading1b.TLabel', background=[('disabled', 'gray')], foreground=[('disabled', 'white')])
+    style.map('Heading1b.TLabel', background=[('disabled', 'gray')],
+                                        foreground=[('disabled', 'lightgray')])
+
     style.configure('Heading2b.TLabel',font=fontList['Heading2b'], foreground='white', background="gray")
     style.configure('Heading3b.TLabel',font=fontList['Heading3b'], background='gray', foreground='white')
     style.configure('Heading4b.TLabel',font=fontList['Heading4b'], background='gray', foreground='white')
@@ -61,7 +63,8 @@ def setup_ttk_styles(master=None):
                     justify='center', relief='sunken')
     style.configure('Button2bRaised.TButton', font=fontList['Heading2b'], justify='center', relief='raised')
     style.configure('Button2bPressed.TButton', font=fontList['Heading2b'], justify='center', borderwidth=3, relief='sunken')
-
+    style.configure('RedButton2bPressed.TButton', font=fontList['Heading2b'], background='red', foreground='white',
+                    anchor="center", relief='sunken')
 
     style.configure('Custom.Toolbutton', font=fontList['Heading3b'], background='gray', foreground='black')
 

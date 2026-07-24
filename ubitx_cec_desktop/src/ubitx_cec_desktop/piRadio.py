@@ -593,16 +593,19 @@ class piRadio:
         self.sendCommandToMCU(bytes(command))
 
     def Set_ATT(self, value: bytes):
+        print("setting att, value =", value)
         command = [self.toRadioCommandDict["TS_CMD_ATT"], value, 0, 0, 0]
         self.sendCommandToMCU(bytes(command))
 
     def Toggle_IFS(self):
+        print("toggling IFS")
         command = [self.toRadioCommandDict["TS_CMD_IFS"], 0, 0, 0, 0]
         self.sendCommandToMCU(bytes(command))
 
 
 
     def Set_IFS_Level(self, level):
+        print("setting IFS Level", level)
         encodedBytes = self.Freq_Encode(str(level))
 
         command = [self.toRadioCommandDict["TS_CMD_IFSVALUE"], encodedBytes[0], encodedBytes[1], encodedBytes[2], 0]

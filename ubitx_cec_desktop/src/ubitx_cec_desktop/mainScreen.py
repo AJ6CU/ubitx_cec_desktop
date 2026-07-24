@@ -111,6 +111,7 @@ class mainScreen(baseui.mainScreenUI):
                                                     # is sent to the UX, the IFS setting and Jogwheel will be enabled.
 
 
+
         self.cwTX_OffsetFlag = False                # Controls whether the display shows the transmit freq when in CW
         self.cwTX_OffsetFlagOverride = None
         self.cwTX_Offset = 0
@@ -186,8 +187,15 @@ class mainScreen(baseui.mainScreenUI):
         self.EEPROM_Current_Slot_Label = 0
         self.EEPROM_Current_Slot_ShowLabel = 0
 
+        self.ATT_Value_Label['text'] = '70'
 
+        self.setATTScaleState('disabled')
+        self.setIFSScaleState('disabled')
+
+        print ( "init", self.ATT_Scale.get() )
         self.ATT_Status_Off = 0         #indicates that ATT has been turned off
+        # self.ATT_lastValue = 0
+        self.IFS_lastValue = 0
 
 
 
@@ -211,7 +219,7 @@ class mainScreen(baseui.mainScreenUI):
         self.update()       # since we just created the window, need to run update to get width and height calculated
 
         self.master.geometry(str(self.winfo_width()) + "x" + str(self.winfo_height()) + gv.MAIN_WINDOW_OFFSET)
-        self.master.title("CECNextionEmulator - A Nextion Emulator for CEC Firmware running on the uBITX")
+        self.master.title("uBITX CEC Desktop - A visual desktop for KD8CEC-powered uBITX radios")
 
         self.master.protocol("WM_DELETE_WINDOW", lambda: self.close_MainWindow())
         self.SWR_PWR_Frame.grid_remove()
@@ -613,78 +621,90 @@ class mainScreen(baseui.mainScreenUI):
 
     def channels_CB(self):
         self.displayChannelWindow()
-    #
-    #   The following routines handles the ATT jogwheel.
-    #   Basically any click with no movement will toggle
-    #   the ATT on or off. When turned on it remembers the last value
-    #   (or 70 if this is the first time)
-    #   The two "ButtonPressed_CB" and "ButtonReleased" are used to
-    #   capture the initial value when first clicked and then when
-    #   the jogwheel is released, a check is made on whether there was
-    #   a change in value.
-    #   The routines in this area just send a command to the Radio via the
-    #   self.theRadio.Set_ATT (value) routine. Zero turns it off, any other value turns it on.
-    #   Note that although the UX is updated as the jogwheel is moved, the real value is set
-    #   self.vf_UX_ATT_Level routine which is kicked off when the Radio(MCU) sends a "vf"
-    #   command to the screen
-    #
-    def ATT_Jogwheel_ButtonPressed_CB(self, event=None):
-        if(self.lock_Button_On == False):                           # Have to check explictly for lock button because of
-                                                                    # Release callbacks
-            self.ATT_Jogwheel.lastValue = self.ATT_Jogwheel.get()
-
-    def ATT_Jogwheel_ButtonReleased_CB(self, event=None):
-        if(self.lock_Button_On == False):
-            currentValue = self.ATT_Jogwheel.get()
-            if (self.ATT_Jogwheel.lastValue == currentValue) :
-                self.toggleATT_State()
-            else:
-                self.theRadio.Set_ATT(currentValue)
 
     #
-    #   toggle ATT state to on if it was off, off it it was on
+    #   Since both ATT and IFS scales are tk.scales, and not themed, this adjusts its state
     #
-    def toggleATT_State(self):
-        if self.ATT_Jogwheel.state == "disabled":
-            self.theRadio.Set_ATT(self.ATT_Jogwheel.lastValue)     # Signal radio ATT on and last value
+    def setATTScaleState(self, state):
+        if state == 'normal':
+            print("setting scale state normal")
+            self.ATT_Scale.configure(state='normal', troughcolor="white",    # Light grey background for the trough
+                                     bg="gray",                     # Darker grey for the outer frame/label
+                                     fg="white")                    # White text
+            self.ATT_Value_Label.configure(state='normal')
+
+
         else:
-            self.theRadio.Set_ATT(self.ATT_Status_Off)             # Signal radio ATT turning off
-
-    #
-    #   Send Radio/MCU the updated value for the  ATT. Although the UX reflects the new
-    #   value up front, it gets re-set when the radio/mcu sends the "real" value via the "vf"
-    #   command.  This means that the wheel might do a little forward/back dance depending
-    #   on the speed of the MCU
-    #
-    def updateATTValue_CB(self):
-
-        self.theRadio.Set_ATT(self.ATT_Jogwheel.get())
+            print("setting scale state disabled")
+            self.ATT_Scale.configure(state='disabled', troughcolor="#d3d3d3",  # Light grey background for the trough
+                                     bg="#a9a9a9",  # Darker grey for the outer frame/label
+                                     fg="#808080")  # Dimmed text color for numbers)
+            self.ATT_Value_Label.configure(state='disabled')
 
 
     #
-    #   The following handles the IFS Jogwheel. This is basically the same pattern
-    #   as the ATT jogwheel above, except IFS hastwo functions (on/off and
-    #   value set) where the ATT command only has one value with a "Zero" indicating ON/OFF.
+    #   Turns the ATT on and off. Uses the label value to remember last value
+    #
+    def ATT_Toggle_CB(self):
+        if self.ATT_Button_On:  # toggle off
+            print("ATT_Toggle_CB off")
+            self.theRadio.Set_ATT(self.ATT_Status_Off)
+        else:
+            self.ATT_Scale.set(int(self.ATT_Value_Label['text']))
+            print("ATT_Toggle_CB on", self.ATT_Value_Label['text'])
+            self.theRadio.Set_ATT(int(self.ATT_Value_Label['text']))
+
+
+    #
+    #   This routine is called when scale is moved. Because the Value Label is set to use
+    #   the same string value, no need to update it too
     #
 
-    def IFS_Jogwheel_ButtonPressed_CB(self, event=None):
-        if (self.lock_Button_On == False):
-            self.IFS_Jogwheel.lastValue = self.IFS_Jogwheel.get()
+    def update_ATT_Value_CB(self,scaleValue):
+        print("ATT Scale Value:",scaleValue)
+        self.ATT_Value_Label['text'] = scaleValue
+        self.theRadio.Set_ATT(int(scaleValue))
 
-    def IFS_Jogwheel_ButtonReleased_CB(self, event=None):
-        if (self.lock_Button_On == False):
-            currentValue = self.IFS_Jogwheel.get()
-            if self.IFS_Jogwheel.lastValue == currentValue:
-                self.toggleIFS_State()
-            else:
-                self.theRadio.Set_IFS_Level(currentValue)
+    def setIFSScaleState(self, state):
+        if state == 'normal':
+            self.IFS_Scale.configure(state='normal', troughcolor="white",  # Light grey background for the trough
+                            bg="gray",  # Darker grey for the outer frame/label
+                            fg="white")  # White text
+            self.IFS_Value_Label.configure(state='normal')
+            # self.IFS_Toggle_Button.configure(state='normal',style='RedButton2bPressed.TButton')
 
+
+        else:
+            self.IFS_Scale.configure(state='disabled', troughcolor="#d3d3d3",  # Light grey background for the trough
+                                     bg="#a9a9a9",  # Darker grey for the outer frame/label
+                                     fg="#808080")  # Dimmed text color for numbers)
+            self.IFS_Value_Label.configure(state='disabled')
+            # self.IFS_Toggle_Button.configure(state='disabled',style='Button2bPressed.TButton')
+
+
+    def IFS_Toggle_CB(self):
+        if self.IFS_Toggle_Button['text'] == "IFS ON":
+            self.IFS_Toggle_Button.configure(text="IFS OFF", style='Button2bPressed.TButton')
+            self.setIFSScaleState('disabled')
+            # self.theRadio.Toggle_IFS()
+        else:
+            self.IFS_Toggle_Button.configure(text="IFS ON", style='RedButton2bPressed.TButton')
+            self.setIFSScaleState('normal')
+            # self.theRadio.Toggle_IFS()
+            # self.theRadio.Set_IFS_Level(int(self.IFS_Value_Label['text']))
 
     def toggleIFS_State(self):
         self.theRadio.Toggle_IFS()
 
     def updateIFSValue_CB(self):
         self.theRadio.Set_IFS_Level(self.IFS_Jogwheel.get())
+
+    def update_IFS_Value_CB(self, scaleValue):
+        print("IFS Scale Value:",scaleValue)
+        self.IFS_Value_Label['text'] = scaleValue
+        self.theRadio.Set_IFS_Level(scaleValue)
+
+
 
     def cwDecode_Button_CB(self, event=None):
         #
@@ -1432,21 +1452,24 @@ class mainScreen(baseui.mainScreenUI):
             self.theVFO_Object.setRITmode("ON")
 
     def vf_UX_ATT_Level(self, buffer):
-
         value = int(self.extractValue(buffer, 10, len(buffer) - 3))
 
         #
         #   Zero Value indicated Radio turning off the ATT
         #
         if (value == 0):
-            self.ATT_Jogwheel.setStateDisabled()
-            self.ATT_Status_VAR.set("ATT (OFF)")
+            self.setATTScaleState('disabled')
+            self.ATT_Toggle_Button.configure(text="ATT OFF", style='Button2bRaised.TButton')
             self.ATT_Button_On = False
         else:
-            if self.ATT_Jogwheel.state == 'disabled':
-                self.ATT_Jogwheel.setStateNormal()
-                self.ATT_Status_VAR.set("ATT (ON)")
-                self.ATT_Button_On = True
+            self.setATTScaleState('normal')
+            self.ATT_Toggle_Button.configure(text="ATT ON", style='RedButton2bPressed.TButton')
+            self.ATT_Scale.set(value)
+            self.ATT_Button_On = True
+            # if self.ATT_Jogwheel.state == 'disabled':
+            #     self.ATT_Jogwheel.setStateNormal()
+            #     self.ATT_Status_VAR.set("ATT (ON)")
+            #     self.ATT_Button_On = True
             #
             # mjh normally ux should be set to the value ack-ed by mcu. Problem with this
             # with jog wheels is that they jerk around too much because of all the callbacks
@@ -1458,8 +1481,8 @@ class mainScreen(baseui.mainScreenUI):
             # BUT...
             # In Classic mode, still need to update the jogwheel...
             #
-            if self.classic_uBITX_ControlWindow != None:
-                self.ATT_Jogwheel.set(value)            # Set UX to value acked by MCU
+            # if self.classic_uBITX_ControlWindow != None:
+            #     self.ATT_Jogwheel.set(value)            # Set UX to value acked by MCU
 
 
     def ci_UX_IFS_State_Set(self, buffer):

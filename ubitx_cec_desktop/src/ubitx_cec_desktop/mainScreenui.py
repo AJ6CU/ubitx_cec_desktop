@@ -8,7 +8,6 @@ UI source file: mainScreen.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from JogwheelCustom import JogwheelCustom
 from pygubu.widgets.simpletooltip import Tooltip
 from theVFO import theVFO
 
@@ -319,7 +318,7 @@ class mainScreenUI(ttk.Frame):
             self.control_Meter_Tuning_Frame,
             name="smeter_frame")
         self.sMeter_Frame.configure(
-            height=70, style="Normal.TFrame", width=525)
+            height=60, style="Normal.TFrame", width=550)
         self.meter_Frame = ttk.Frame(self.sMeter_Frame, name="meter_frame")
         self.meter_Frame.configure(height=60, style="Normal.TFrame", width=425)
         label7 = ttk.Label(self.meter_Frame)
@@ -369,9 +368,14 @@ class mainScreenUI(ttk.Frame):
             textvariable=self.PWR_Value_VAR,
             width=4)
         self.PWR_Value.grid(column=1, padx="0 5", row=1, sticky="e")
-        self.SWR_PWR_Frame.grid(column=1, row=0, rowspan=2, sticky="se")
+        self.SWR_PWR_Frame.grid(
+            column=1,
+            padx="30 0",
+            row=0,
+            rowspan=2,
+            sticky="se")
         self.SWR_PWR_Frame.grid_propagate(0)
-        self.sMeter_Frame.grid(column=0, padx="20 0", row=1, sticky="w")
+        self.sMeter_Frame.grid(column=0, padx="60 0", row=1, sticky="w")
         self.sMeter_Frame.grid_propagate(0)
         self.cwDecodeFrame = ttk.Frame(
             self.control_Meter_Tuning_Frame,
@@ -411,12 +415,7 @@ class mainScreenUI(ttk.Frame):
             expand=False,
             padx="10 0",
             side="left")
-        self.cwDecodeFrame.grid(
-            column=0,
-            padx="10 0",
-            pady="10 0",
-            row=2,
-            sticky="nw")
+        self.cwDecodeFrame.grid(column=0, padx="10 0", row=2, sticky="nw")
         self.tuningArrow_Labelframe = ttk.Labelframe(
             self.control_Meter_Tuning_Frame, name="tuningarrow_labelframe")
         self.tuningArrow_Labelframe.configure(
@@ -483,8 +482,10 @@ class mainScreenUI(ttk.Frame):
             side="top")
         frame2.columnconfigure(0, weight=1)
         frame2.columnconfigure(1, weight=2)
+        frame1 = ttk.Frame(self)
+        frame1.configure(height=200, style="Normal.TFrame", width=200)
         self.ATT_IFS_Adjust_Frame = ttk.Frame(
-            self, name="att_ifs_adjust_frame")
+            frame1, name="att_ifs_adjust_frame")
         self.ATT_IFS_Adjust_Frame.configure(style="Normal.TFrame", width=1250)
         self.att_ifs_Frame = ttk.Frame(
             self.ATT_IFS_Adjust_Frame,
@@ -493,81 +494,88 @@ class mainScreenUI(ttk.Frame):
             height=200, style="Normal.TFrame", width=400)
         self.ATT_Frame = ttk.Frame(self.att_ifs_Frame, name="att_frame")
         self.ATT_Frame.configure(height=200, style="Normal.TFrame", width=200)
-        self.ATT_Jogwheel = JogwheelCustom(
-            self.ATT_Frame,
-            start=0,
-            end=255,
-            divisions=10,
-            radius=200,
-            button_radius=25,
-            value=70,
-            scroll_steps=10,
-            name="att_jogwheel")
-        self.ATT_Jogwheel.configure(state="disabled", touchOptimized=False)
-        self.ATT_Jogwheel.pack(anchor="center", padx="20 0", side="top")
-        self.ATT_Jogwheel.configure(command=self.updateATTValue_CB)
-        self.ATT_Jogwheel.bind(
-            "<ButtonPress>",
-            self.ATT_Jogwheel_ButtonPressed_CB,
-            add="+")
-        self.ATT_Jogwheel.bind(
-            "<ButtonRelease>",
-            self.ATT_Jogwheel_ButtonReleased_CB,
-            add="+")
-        self.ATT_Status_Label = ttk.Label(
-            self.ATT_Frame, name="att_status_label")
-        self.ATT_Status_VAR = tk.StringVar(value='ATT (OFF)')
-        self.ATT_Status_Label.configure(
-            style="Heading2b.TLabel",
-            text='ATT (OFF)',
-            textvariable=self.ATT_Status_VAR)
-        self.ATT_Status_Label.pack(anchor="center", side="bottom")
-        self.ATT_Tooltip = Tooltip(self.ATT_Frame)
-        self.ATT_Tooltip.configure(
-            padx=8,
-            relief="raised",
-            text='Click to enable ATT. Move the dial to adjust the ATT. Click in plac to disable ATT.',
-            wraplength=300)
-        self.ATT_Frame.pack(padx=30, side="left")
+        self.ATT_Toggle_Button = ttk.Button(
+            self.ATT_Frame, name="att_toggle_button")
+        self.ATT_Toggle_Button.configure(
+            style="Button2bRaised.TButton", text='ATT OFF')
+        self.ATT_Toggle_Button.grid(column=0, padx="0 10", row=0)
+        self.ATT_Toggle_Button.configure(command=self.ATT_Toggle_CB)
+        self.ATT_Scale = tk.Scale(self.ATT_Frame, name="att_scale")
+        self.ATT_Scale.configure(
+            background="gray",
+            bigincrement=50,
+            borderwidth=3,
+            digits=0,
+            font="{Arial} 14 {}",
+            foreground="white",
+            from_=0,
+            length=600,
+            orient="horizontal",
+            relief="sunken",
+            resolution=5,
+            showvalue=False,
+            sliderlength=50,
+            sliderrelief="raised",
+            state="normal",
+            tickinterval=50,
+            to=255,
+            troughcolor="white",
+            width=25)
+        self.ATT_Scale.grid(column=1, row=0)
+        self.ATT_Scale.configure(command=self.update_ATT_Value_CB)
+        self.ATT_Value_Label = ttk.Label(
+            self.ATT_Frame, name="att_value_label")
+        self.ATT_Value_Label.configure(
+            anchor="e",
+            state="normal",
+            style="Heading1b.TLabel",
+            text='70',
+            width=5)
+        self.ATT_Value_Label.grid(column=2, padx=10, row=0)
+        self.ATT_Frame.pack(expand=True, fill="x", pady="0 10", side="top")
         self.IFS_Frame = ttk.Frame(self.att_ifs_Frame, name="ifs_frame")
         self.IFS_Frame.configure(height=200, style="Normal.TFrame", width=200)
-        self.IFS_Jogwheel = JogwheelCustom(
-            self.IFS_Frame,
-            start=-2000,
-            end=2000,
-            divisions=150,
-            radius=200,
-            button_radius=25,
-            value=0,
-            scroll_steps=150,
-            name="ifs_jogwheel")
-        self.IFS_Jogwheel.configure(state="disabled", touchOptimized=False)
-        self.IFS_Jogwheel.pack(anchor="center", padx="20 0", side="top")
-        self.IFS_Jogwheel.configure(command=self.updateIFSValue_CB)
-        self.IFS_Jogwheel.bind(
-            "<ButtonPress>",
-            self.IFS_Jogwheel_ButtonPressed_CB,
-            add="+")
-        self.IFS_Jogwheel.bind(
-            "<ButtonRelease>",
-            self.IFS_Jogwheel_ButtonReleased_CB,
-            add="+")
-        self.IFS_Status_Label = ttk.Label(
-            self.IFS_Frame, name="ifs_status_label")
-        self.IFS_Status_VAR = tk.StringVar(value='IFS (OFF)')
-        self.IFS_Status_Label.configure(
-            style="Heading2b.TLabel",
-            text='IFS (OFF)',
-            textvariable=self.IFS_Status_VAR)
-        self.IFS_Status_Label.pack(anchor="center", side="bottom")
-        self.IFS_Tooltip = Tooltip(self.IFS_Frame)
-        self.IFS_Tooltip.configure(
-            justify="left",
-            padx=8,
-            relief="raised",
-            text='Click to enable IFS. Move the dial to adjust the IFS. Click in plac to disable IFS.',
-            wraplength=300)
-        self.IFS_Frame.pack(side="left")
+        self.IFS_Toggle_Button = ttk.Button(
+            self.IFS_Frame, name="ifs_toggle_button")
+        self.IFS_Toggle_Button.configure(
+            style="Button2bRaised.TButton", text='IFS OFF')
+        self.IFS_Toggle_Button.grid(column=0, padx="0 10", row=0)
+        self.IFS_Toggle_Button.configure(command=self.IFS_Toggle_CB)
+        self.IFS_Scale = tk.Scale(self.IFS_Frame, name="ifs_scale")
+        self.IFS_Scale_VAR = tk.StringVar()
+        self.IFS_Scale.configure(
+            background="gray",
+            borderwidth=3,
+            digits=0,
+            font="{Arial} 14 {}",
+            foreground="white",
+            from_=-2000,
+            length=600,
+            orient="horizontal",
+            relief="sunken",
+            resolution=100,
+            showvalue=False,
+            sliderlength=50,
+            sliderrelief="raised",
+            state="normal",
+            tickinterval=500,
+            to=2000,
+            troughcolor="white",
+            variable=self.IFS_Scale_VAR,
+            width=25)
+        self.IFS_Scale.grid(column=1, row=0)
+        self.IFS_Scale.configure(command=self.update_IFS_Value_CB)
+        self.IFS_Value_Label = ttk.Label(
+            self.IFS_Frame, name="ifs_value_label")
+        self.IFS_Value_Label.configure(
+            anchor="e",
+            state="normal",
+            style="Heading1b.TLabel",
+            text='0',
+            textvariable=self.IFS_Scale_VAR,
+            width=5)
+        self.IFS_Value_Label.grid(column=2, padx=10, row=0)
+        self.IFS_Frame.pack(expand=True, fill="x", ipady=10, side="top")
         self.att_ifs_Frame.pack(
             anchor="nw",
             expand=False,
@@ -695,12 +703,13 @@ class mainScreenUI(ttk.Frame):
         self.ATT_IFS_Adjust_Frame.pack(
             anchor="w",
             expand=True,
-            fill="both",
-            pady="10 50",
+            fill="x",
+            pady="10 100",
             side="top")
+        frame1.pack(expand=True, fill="both", side="top")
         self.configure(
             borderwidth=5,
-            height=900,
+            height=1000,
             style="Normal.TFrame",
             width=875)
         # Layout for 'main_window' skipped in custom widget template.
@@ -762,22 +771,16 @@ class mainScreenUI(ttk.Frame):
     def upButtonReleased_CB(self, event=None):
         pass
 
-    def updateATTValue_CB(self):
+    def ATT_Toggle_CB(self):
         pass
 
-    def ATT_Jogwheel_ButtonPressed_CB(self, event=None):
+    def update_ATT_Value_CB(self, scale_value):
         pass
 
-    def ATT_Jogwheel_ButtonReleased_CB(self, event=None):
+    def IFS_Toggle_CB(self):
         pass
 
-    def updateIFSValue_CB(self):
-        pass
-
-    def IFS_Jogwheel_ButtonPressed_CB(self, event=None):
-        pass
-
-    def IFS_Jogwheel_ButtonReleased_CB(self, event=None):
+    def update_IFS_Value_CB(self, scale_value):
         pass
 
     def cwSettings_CB(self, event=None):
