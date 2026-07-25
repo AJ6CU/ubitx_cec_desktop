@@ -278,10 +278,9 @@
 CHANNELS
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="channels_Button_Tooltip" named="True">
@@ -301,10 +300,10 @@ CHANNELS
 CW DECODE
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">1</property>
+                          <property name="padx">10 0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="cwDecode_Button_Tooltip" named="True">
@@ -324,10 +323,10 @@ CW DECODE
 SPECTRUM
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">2</property>
+                          <property name="padx">10 0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="spectrumScan_Tooltip" named="True">
@@ -347,10 +346,10 @@ SPECTRUM
 BAND SCAN
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">3</property>
+                          <property name="padx">10 0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="bandScan_Button_Tooltip" named="True">
@@ -370,10 +369,10 @@ BAND SCAN
 SPLIT
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">4</property>
+                          <property name="padx">10 0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="split_Button_Tooltip" named="True">
@@ -393,10 +392,10 @@ SPLIT
 RIT
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 10</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">5</property>
+                          <property name="padx">10 0</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="rit_Button_Tooltip" named="True">
@@ -416,10 +415,9 @@ RIT
 LOG QSO
 </property>
                         <property name="width">10</property>
-                        <layout manager="pack">
-                          <property name="anchor">nw</property>
-                          <property name="padx">0 20</property>
-                          <property name="side">left</property>
+                        <layout manager="grid">
+                          <property name="column">6</property>
+                          <property name="row">0</property>
                         </layout>
                         <child>
                           <object class="pygubu.widgets.Tooltip" id="log_QSO_Tooltip" named="True">

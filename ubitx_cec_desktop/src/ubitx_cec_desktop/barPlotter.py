@@ -18,7 +18,6 @@ class barPlotter:
         self.parent = parent
         self.bandPlot_Canvas = canvasObj
         self.totalX = totalX
-        print("totalX", totalX)
         self.maxY = maxY
         self.currentMax = currentMax
         self.maxY = maxY
@@ -45,7 +44,6 @@ class barPlotter:
         self.barObj = [None] * self.totalX * 1      # pointer to the bar (rectangle created)
         self.barY = [None] * self.totalX * 1        # height of the bar
         self.barX0 = [None] * self.totalX * 1       # first point of a bar along the x axis
-        print("barX0", len(self.barX0))
         self.barX1 = [None] * self.totalX * 1       # second point of a bar along the x axis
 
         self.tuningLine1 = None  # used to save the tuning line object
@@ -117,7 +115,6 @@ class barPlotter:
 
 
     def drawBars(self,x,y):
-        print("drawBars called from graphpak", x, y)
 
         # calculate rectangle coordinates (integers) for each bar
         # x0 = x * x_stretch + x * x_width + x_gap
@@ -139,7 +136,6 @@ class barPlotter:
         #   Save y magnitude for resize event
         #   Save x0,x1 for beginning and end of every bar. This allows us to redraw the guide bars as the cw tuning bar is moved
         #
-        print("drawing bars for X,Y",x,y)
         self.barY[x] = y
         self.barX0[x] = x0
         self.barX1[x] = x1
@@ -155,22 +151,18 @@ class barPlotter:
         #     barPos = round((x / scaleLength) * self.totalX)
         # else:
         #     barPos = x
-        print ("drawHighLightBars plotter", barPos)
 
 
         if self.barX0[barPos] == None:
-            print("no lines, returning")
             return
 
         x0 = self.barX0[barPos]
         x1 = self.barX1[barPos]
 
         if self.tuningLine1 == None:
-            print("tuningLine1 = None")
             self.tuningLine1 = self.bandPlot_Canvas.create_line(x0, self.canvas_height, x0, 0, fill="white", width=2, tags="tuningLine")
             self.tuningLine2 = self.bandPlot_Canvas.create_line(x1, self.canvas_height, x1, 0, fill="white", width=2, tags="tuningLine")
         else:
-            print("tuningLine1 != None")
 
             self.bandPlot_Canvas.coords(self.tuningLine1, x0, self.canvas_height, x0, 0)
             self.bandPlot_Canvas.itemconfig(self.tuningLine1, fill="white")
@@ -178,7 +170,6 @@ class barPlotter:
             self.bandPlot_Canvas.itemconfig(self.tuningLine2, fill="white")
 
     def clearCanvas(self, what="All"):
-        # print("clearCanvas")
         if what == "All":
             self.bandPlot_Canvas.delete("bars")
             for x in range(self.totalX):
@@ -226,6 +217,5 @@ class barPlotter:
 
 class barPlotterBdata (barPlotter):
     def process_Data(self, buffer, yDivider=0):
-        print("barPlotterBdata process_Data called")
         super().process_Data(bytearray.fromhex(buffer), yDivider)
 

@@ -188,11 +188,18 @@ class mainScreen(baseui.mainScreenUI):
         self.EEPROM_Current_Slot_ShowLabel = 0
 
         self.ATT_Value_Label['text'] = '70'
+        #
+        #   If DSP is turned off, don't show cwdecode, spetrum and bandscan
+        #
+        if gv.config.get_DSP_Switch() == "False":
+            self.cwDecode_Button.grid_remove()
+            self.spectrumScan_Button.grid_remove()
+            self.bandScan_Button.grid_remove()
+
 
         self.setATTScaleState('disabled')
         self.setIFSScaleState('disabled')
 
-        print ( "init", self.ATT_Scale.get() )
         self.ATT_Status_Off = 0         #indicates that ATT has been turned off
         # self.ATT_lastValue = 0
         self.IFS_lastValue = 0
@@ -707,14 +714,8 @@ class mainScreen(baseui.mainScreenUI):
 
 
     def cwDecode_Button_CB(self, event=None):
-        #
-        #   Intercept any attempt to start CW Decoding ig DSP is not enabled
-        #
-        if gv.config.get_DSP_Switch() != "True":
-            messagebox.showerror(message="Error: DSP not enabled", detail="Please enable in Machine Settings and try again.\n\n",
-                                 parent=self)
-        else:
-            self.consumerDSPdata = cwDecoder(self.master, self)
+
+        self.consumerDSPdata = cwDecoder(self.master, self)
 
     def spectrumScan_Button_CB(self, event=None):
         #

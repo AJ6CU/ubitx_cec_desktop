@@ -309,10 +309,6 @@ class bandScanner(baseui.bandScannerUI):
         byteBuffer =bytearray.fromhex(buffer)
 
         for x, y in enumerate(byteBuffer):
-            # if y >5:
-            #     print("larger value", x, y)
-            # if x == 12:
-            #     print("newvalue =", y)
 
             tmp = int(round(self.averageBuffer[x] +((y-self.averageBuffer[x])/valueCount)))
 

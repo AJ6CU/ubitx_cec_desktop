@@ -143,7 +143,7 @@ def unformatFrequency(vfo, includeOffset=False, freqOffset=0):
     if includeOffset:
         return (vfo.replace(",", "").replace(".", ""))
     else:
-            return (str(int(vfo.replace(",","").replace(".","")) - freqOffset))
+        return (str(int(vfo.replace(",","").replace(".","")) - freqOffset))
 
 # def formatCombobox( combobox, family="Arial", size="36", weight="bold"):
 #     # combobox.configure(font=font.Font(family=family, size=size, weight=weight))

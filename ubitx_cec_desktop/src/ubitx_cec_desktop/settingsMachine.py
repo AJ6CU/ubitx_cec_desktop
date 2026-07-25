@@ -120,8 +120,14 @@ class settingsMachine(baseui.settingsMachineUI):
 
             if self.DSP_Enable_VAR.get() == "True":
                 self.mainWindow.highlightCWorSpectrumBoxes(True)
+                self.mainWindow.cwDecode_Button.grid()
+                self.mainWindow.spectrumScan_Button.grid()
+                self.mainWindow.bandScan_Button.grid()
             else:
                 self.mainWindow.highlightCWorSpectrumBoxes(False)
+                self.mainWindow.cwDecode_Button.grid_remove()
+                self.mainWindow.spectrumScan_Button.grid_remove()
+                self.mainWindow.bandScan_Button.grid_remove()
 
 
         if self.PWR_SWR_Enable_VAR.get() != self.savePWR_SWR_Switch:
