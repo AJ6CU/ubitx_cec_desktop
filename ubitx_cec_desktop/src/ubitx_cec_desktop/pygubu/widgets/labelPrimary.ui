@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">labelPrimary</setting>
+      <setting id="description">The primary label used for headers etc.</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">labelPrimaryTemplate</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">labelPrimary</setting>
+      <setting id="main_classname">labelPrimary</setting>
+      <setting id="output_dir">../../widgets</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">../../widgets</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">True</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="customtkinter.CTkFrame" id="ctkframe2">
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="customtkinter.CTkLabel" id="labelPrimaryTemplate" named="True">
+        <property name="text" translatable="yes">ctklabel1</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

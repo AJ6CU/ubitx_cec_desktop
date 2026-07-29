@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">widgettesterNew</setting>
+      <setting id="description">just tests eah widget</setting>
+      <setting id="template">codescript</setting>
+      <setting id="main_widget">ctk1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">widgettesterNew</setting>
+      <setting id="main_classname">widgettesterNew</setting>
+      <setting id="output_dir">..</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2" />
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+      <customwidget path="../widgets/customCTK.py" />
+      <customwidget path="../widgets/textBoxPrimarybo.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="customtkinter.CTk" id="ctk1">
+    <child>
+      <object class="customtkinter.CTkFrame" id="ctkframe1">
+        <property name="border_color">green</property>
+        <property name="border_width">2</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="customtkinter.CTkScrollableFrame" id="ctkscrollableframe1">
+            <property name="border_color">green</property>
+            <property name="border_width">2</property>
+            <property name="label_anchor">s</property>
+            <property name="label_font">{Arial} 15 {bold}</property>
+            <property name="label_text">Buttons	</property>
+            <property name="label_text_color">#F9FAFB</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10 0</property>
+              <property name="pady">10</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkButton" id="ctkbutton1">
+                <property name="text" translatable="yes">ctkb button</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.buttonPrimary" id="primary1" named="True">
+                <property name="command" type="command" cbtype="simple">primary1_CB</property>
+                <property name="text" translatable="yes">primary button</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.buttonSecondary" id="secondary2" named="True">
+                <property name="command" type="command" cbtype="simple">secondary2_CB</property>
+                <property name="text" translatable="yes">secondary button</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.buttonTertiary" id="ghost3" named="True">
+                <property name="command" type="command" cbtype="simple">ghost3_cb</property>
+                <property name="text" translatable="yes">ghost button</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="customtkinter.CTkScrollableFrame" id="ctkscrollableframe2">
+            <property name="border_color">green</property>
+            <property name="border_width">2</property>
+            <property name="label_anchor">w</property>
+            <property name="label_text">Entry</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="padx">20 0</property>
+              <property name="pady">10</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkEntry" id="testentry" named="True">
+                <property name="placeholder_text_color">gray</property>
+                <property name="text" translatable="yes">ctk Entry</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.entryPrimary" id="helloEntryP1" named="True">
+                <property name="justify">left</property>
+                <property name="placeholder_text">primary entry</property>
+                <property name="state">normal</property>
+                <property name="takefocus">false</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.entrySecondary" id="secondaryentry1">
+                <property name="placeholder_text">second entry</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="customtkinter.CTkScrollableFrame" id="ctkscrollableframe4">
+            <property name="border_color">green</property>
+            <property name="border_width">2</property>
+            <property name="label_anchor">w</property>
+            <property name="label_text">Option Menus</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="padx">20 10</property>
+              <property name="pady">10</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkOptionMenu" id="ctkoptionmenu1">
+                <property name="values">["apple","orange","grape"]</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.optionMenuPrimary" id="myOptionMenu" named="True">
+                <property name="command" type="command" cbtype="simple">menuOption_CB</property>
+                <property name="variable">string:myOptionMenu_VAR</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.optionMenuSecondary" id="secondaryOption" named="True">
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="customtkinter.CTkScrollableFrame" id="ctkscrollableframe3">
+            <property name="border_color">green</property>
+            <property name="border_width">2</property>
+            <property name="label_anchor">w</property>
+            <property name="label_text">Labels</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10 0</property>
+              <property name="pady">20</property>
+              <property name="row">1</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkLabel" id="ctklabel1">
+                <property name="justify">left</property>
+                <property name="state">normal</property>
+                <property name="text" translatable="yes">ctkLabel</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.labelPrimary" id="primaryLabel" named="True">
+                <property name="anchor">center</property>
+                <property name="justify">center</property>
+                <property name="padx">10</property>
+                <property name="pady">10</property>
+                <property name="state">normal</property>
+                <property name="takefocus">false</property>
+                <property name="text" translatable="yes">primary Label</property>
+                <property name="textvariable">string:primaryLabel_VAR</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.labelSecondary" id="secondarylabel1">
+                <property name="padx">5</property>
+                <property name="pady">5</property>
+                <property name="state">normal</property>
+                <property name="text" translatable="yes">secondary Label</property>
+                <layout manager="pack">
+                  <property name="pady">10</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.labelTertiary" id="tertiarylabel1">
+                <property name="state">normal</property>
+                <property name="text" translatable="yes">tertiary label</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.frameLabeledPrimary" id="framelabeled1">
+            <property name="label_anchor">w</property>
+            <property name="label_text">frameLabeledPrimary </property>
+            <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="padx">20 10</property>
+              <property name="pady">20</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkButton" id="ctkbutton2">
+                <property name="text" translatable="yes">ctkbutton2</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.labelSecondary" id="labelsecondary1">
+                <property name="anchor">center</property>
+                <property name="justify">center</property>
+                <property name="text" translatable="yes">labelFrame equiv</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.frameLabeledSecondary" id="framelabeledsecondary1">
+                <property name="height">50</property>
+                <property name="label_anchor">w</property>
+                <property name="label_text">frameLabeledSecondary</property>
+                <property name="width">150</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">2</property>
+                </layout>
+                <child>
+                  <object class="customtkinter.CTkEntry" id="ctkentry1">
+                    <property name="text" translatable="yes">ctkentry1</property>
+                    <layout manager="pack">
+                      <property name="pady">10</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary1">
+            <property name="label_anchor">w</property>
+            <property name="label_text">frameLabeledPrimary </property>
+            <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="padx">20 10</property>
+              <property name="pady">20</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="customtkinter.CTkButton" id="ctkbutton3">
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.frameOutlined" id="frameoutlined1">
+                <property name="height">150</property>
+                <property name="width">175</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">10</property>
+                  <property name="pady">10</property>
+                  <property name="row">1</property>
+                  <property name="sticky">nsew</property>
+                </layout>
+                <child>
+                  <object class="customtkinter.CTkLabel" id="ctklabel2">
+                    <property name="text" translatable="yes">ctklabel2</property>
+                    <layout manager="pack">
+                      <property name="pady">5</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="customtkinter.CTkLabel" id="ctklabel3">
+                    <property name="text" translatable="yes">ctklabel3</property>
+                    <layout manager="pack">
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="customtkinter.CTkLabel" id="ctklabel5">
+                    <property name="text" translatable="yes">ctklabel5</property>
+                    <layout manager="pack">
+                      <property name="pady">5</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary2">
+            <property name="label_anchor">w</property>
+            <property name="label_text">textboxes</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.textBoxPrimary" id="textboxprimary1">
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary3">
+            <property name="label_anchor">w</property>
+            <property name="label_text">outline frame</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.frameOutlined" id="frameoutlined2">
+                <property name="height">150</property>
+                <property name="width">150</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+                <child>
+                  <object class="customtkinter.CTkTextbox" id="ctktextbox1">
+                    <property name="text" translatable="yes">ctktextbox1</property>
+                    <layout manager="pack">
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

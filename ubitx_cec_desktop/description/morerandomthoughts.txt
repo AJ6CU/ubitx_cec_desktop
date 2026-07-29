@@ -250,11 +250,8 @@ if __name__ == "__main__":
     app = TransceiverGUI(root)
     root.mainloop()
 
-## Tips for Styling Tkinter to Match SDR++
-Tkinter's default grey styling looks a bit outdated compared to modern software. You can make your dashboard visually match SDR++'s dark theme with a few tweaks: [13] 
 
-* The Color Palette: Set your main window background to a dark grey (#1e1e24) and your text labels to a bright neon or clean white (#00ffcc or #ffffff).
-* Use ttk Widgets: Import from tkinter import ttk to use themed widgets (like modern sliders and combo boxes) which look significantly cleaner on Windows and macOS. [14, 15] 
+
 
 Are you planning to communicate with SDR++ using its built-in Rigctl (Hamlib) protocol emulation, or are you planning to tap into its native WebSockets API?
 
@@ -275,3 +272,85 @@ Are you planning to communicate with SDR++ using its built-in Rigctl (Hamlib) pr
 [15] [https://ttkbootstrap.readthedocs.io](https://ttkbootstrap.readthedocs.io/en/latest/api/style/stylebuildertk/)
 
 ---
+
+wheel notes
+
+If your code generator outputs exactly from ghostButton import ghostButton (assuming ghostButton is a python file inside a widgets directory), you can make this wheel work perfectly without touching a single line of generated code.You achieve this by configuring your wheel to treat the widgets directory as a top-level source root. When the wheel installs, the contents of widgets get placed directly into Python's global search path (site-packages).Here is how to set up your directory and configuration:1. Structure Your ProjectKeep your generated files inside the widgets directory. Make sure you add an empty __init__.py file inside widgets if it isn't already there.
+
+
+my_project_repo/
+├── pyproject.toml
+├── main.py              # Contains your startup code
+└── widgets/             # The directory containing generated files
+    ├── __init__.py
+    └── ghostButton.py   # Code generator output file
+
+
+2. Configure pyproject.tomlThe trick here is to explicitly tell the build system (setuptools) that widgets is a root package directory, and that main.py should be included as a top-level module.
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my_generated_app"
+version = "1.0.0"
+requires-python = ">=3.8"
+
+[tool.setuptools]
+# 1. Force the wheel to treat 'widgets' as a top-level package
+packages = ["widgets"]
+
+# 2. Tell the wheel to include main.py at the root level
+py-modules = ["main"]
+
+
+
+$$$$$$$$$$$$
+the way I am trying
+$$$$$$$$$$
+
+code mod:
+# src_app/main.py
+import sys
+import os
+
+# 1. Locate 'widgets' relative to where main.py is installed in site-packages
+current_dir = os.path.dirname(os.path.abspath(__file__))
+widgets_dir = os.path.join(current_dir, "widgets")
+
+# 2. Inject it into the search path
+sys.path.insert(0, widgets_dir)
+
+# 3. Now safely trigger the automated code
+from ghostButton import ghostButton
+
+def start():
+    print("Path initialization successful!")
+    # Call your generated code functions here
+    
+if __name__ == "__main__":
+    start()
+
+pyproject.toml
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my_generated_app"
+version = "1.0.0"
+requires-python = ">=3.8"
+
+# Maps a terminal command to your manual start function
+[project.scripts]
+run-my-app = "src_app.main:start"
+
+[tool.setuptools]
+packages = ["src_app", "src_app.widgets"]
+
+
+
+
+
+

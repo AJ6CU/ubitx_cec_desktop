@@ -22,7 +22,7 @@ import tkinter.ttk as ttk
 #import sv_ttk
 
 def setup_ttk_styles(master=None):
-    
+
     style = ttk.Style(master)
     # style.theme_use('default')
     style.theme_use('clam')
@@ -104,6 +104,10 @@ def setup_ttk_styles(master=None):
                     foreground=[('disabled', 'gray'),('!disabled', 'blue')],
                     troughcolor=[('disabled', 'gray'), ('!disabled', 'black')],
                     background=[('disabled', 'gray'), ('!disabled', 'gray')])
+
+
+
+
 
 
     #style.configure('Normal.TLabelframe', background='gray', bd=4, font=fontList['Heading1b'])

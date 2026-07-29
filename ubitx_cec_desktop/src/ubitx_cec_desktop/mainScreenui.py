@@ -4,7 +4,7 @@ pi_Nextion_UX
 
 A Nextion GUI emulator for CEC
 
-UI source file: mainScreen.ui
+UI source file: testmainwindow.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -236,7 +236,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to bring up a window that allows you to scan 240kHz and select an area to decode CW. This requires a second Nano.',
             wraplength=300)
-        self.cwDecode_Button.grid(column=4, padx="10 0", row=0)
+        self.cwDecode_Button.grid(column=1, padx="10 0", row=0)
         def cwDecode_Button_cmd_(): self.cwDecode_Button_CB("cwDecode_Button")
 
         self.cwDecode_Button.configure(command=cwDecode_Button_cmd_)
@@ -250,7 +250,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to bring up a window that allows you to scan 240kHZ of the band and look at average and peak signal levels.',
             wraplength=300)
-        self.spectrumScan_Button.grid(column=5, padx="10 0", row=0)
+        self.spectrumScan_Button.grid(column=2, padx="10 0", row=0)
         def spectrumScan_Button_cmd_(): self.spectrumScan_Button_CB("spectrumScan_Button")
 
         self.spectrumScan_Button.configure(command=spectrumScan_Button_cmd_)
@@ -266,7 +266,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to bring up a window that allows you to scan up to three sepeate bands for signals. ',
             wraplength=300)
-        self.bandScan_Button.grid(column=6, padx="10 0", row=0)
+        self.bandScan_Button.grid(column=3, padx="10 0", row=0)
         def bandScan_Button_cmd_(): self.bandScan_Button_CB("bandScan_Button")
 
         self.bandScan_Button.configure(command=bandScan_Button_cmd_)
@@ -282,7 +282,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to go into Split mode. RX will be VFO A and TX will be on VFO B.',
             wraplength=300)
-        self.split_Button.grid(column=1, padx="10 0", row=0)
+        self.split_Button.grid(column=4, padx="10 0", row=0)
         self.split_Button.configure(command=self.split_CB)
         self.rit_Button = ttk.Button(
             self.signal_Control_Frame, name="rit_button")
@@ -296,7 +296,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to go enable RIT. TX will remain as before entering RIT while the tuned frequency will be used for RX.',
             wraplength=300)
-        self.rit_Button.grid(column=2, padx="10 0", row=0)
+        self.rit_Button.grid(column=5, padx="10 0", row=0)
         self.rit_Button.configure(command=self.rit_CB)
         self.logQSO_Button = ttk.Button(
             self.signal_Control_Frame, name="logqso_button")
@@ -310,7 +310,7 @@ class mainScreenUI(ttk.Frame):
             relief="raised",
             text='Click to bring up a window to Log a QSO.',
             wraplength=300)
-        self.logQSO_Button.grid(column=3, padx="10 0", row=0)
+        self.logQSO_Button.grid(column=6, row=0)
         self.logQSO_Button.configure(command=self.logQSO_CB)
         self.signal_Control_Frame.grid(column=0, pady=10, row=0, sticky="n")
         self.secondary_menu_Frame.grid(column=0, padx=5, row=0)
