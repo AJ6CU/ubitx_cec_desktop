@@ -81,7 +81,7 @@ register_custom_property (
 register_custom_property (
     builder_id,
     "border_width",
-    "integernumber"
+    "naturalnumber"
 )
 
 register_custom_property (
@@ -100,11 +100,11 @@ register_custom_property (
 register_custom_property (
     builder_id,
     "height",
-    "integernumber"
+    "naturalnumber"
 )
 
 register_custom_property (
     builder_id,
     "width",
-    "integernumber"
+    "naturalnumber"
 )
