@@ -23,6 +23,7 @@
     <customwidgets>
       <customwidget path="../widgets/customCTK.py" />
       <customwidget path="../widgets/textBoxPrimarybo.py" />
+      <customwidget path="../widgets/textBoxSecondarybo.py" />
     </customwidgets>
     <resources />
   </project>

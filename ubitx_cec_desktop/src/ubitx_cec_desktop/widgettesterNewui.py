@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """
-customCTK_WidgetTester
+widgettesterNew
 
 just tests eah widget
 
-UI source file: customCTK_WidgetTester.ui
+UI source file: widgettester.ui
 """
 import tkinter as tk
 from buttonPrimary import buttonPrimary
@@ -53,7 +53,7 @@ def safe_image_loader(master, image_name: str):
     return img
 
 
-class customCTK_WidgetTesterUI:
+class widgettesterNewUI:
     def __init__(
         self,
         master=None,
@@ -236,12 +236,6 @@ class customCTK_WidgetTesterUI:
         framelabeledprimary2.configure(
             label_anchor="w", label_text="textboxes")
         textboxprimary1 = textBoxPrimary(framelabeledprimary2)
-        textboxprimary1.configure(
-            insertofftime=300,
-            insertontime=300,
-            insertwidth=5,
-            selectborderwidth=8,
-            state="normal")
         textboxprimary1.pack(side="top")
         framelabeledprimary2.grid(column=0, row=2)
         framelabeledprimary3 = frameLabeledPrimary(ctkframe1)
@@ -250,7 +244,12 @@ class customCTK_WidgetTesterUI:
         frameoutlined2 = frameOutlined(framelabeledprimary3)
         frameoutlined2.configure(height=150, width=150)
         ctktextbox1 = CTkTextbox(frameoutlined2)
-        _text_ = 'testfoo'
+        ctktextbox1.configure(
+            insertborderwidth=5,
+            insertofftime=6,
+            insertontime=7,
+            insertwidth=8)
+        _text_ = 'ctktextbox1'
         ctktextbox1.insert("0.0", _text_)
         ctktextbox1.pack(side="top")
         frameoutlined2.pack(side="top")
@@ -280,5 +279,5 @@ class customCTK_WidgetTesterUI:
 
 
 if __name__ == "__main__":
-    app = customCTK_WidgetTesterUI()
+    app = widgettesterNewUI()
     app.run()

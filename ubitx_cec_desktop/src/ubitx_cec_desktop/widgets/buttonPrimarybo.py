@@ -31,6 +31,7 @@ class buttonPrimaryBO(BuilderObject):
         "anchor",
         "image",
         "command",
+        # "font",
         "state",
         "text",
         "textvariable",
@@ -80,6 +81,12 @@ register_custom_property (
     "command",
     "commandentry"
 )
+
+# register_custom_property (
+#     builder_id,
+#     "font",
+#     "fontentry"
+# )
 
 register_custom_property (
     builder_id,

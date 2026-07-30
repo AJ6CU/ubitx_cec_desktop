@@ -22,7 +22,6 @@
     </settings>
     <customwidgets>
       <customwidget path="../widgets/customCTK.py" />
-      <customwidget path="../widgets/textBoxPrimarybo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -358,13 +357,14 @@
         <child>
           <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary2">
             <property name="label_anchor">w</property>
-            <property name="label_text">textboxes</property>
+            <property name="label_text">textboxes primary</property>
             <layout manager="grid">
               <property name="column">0</property>
               <property name="row">2</property>
             </layout>
             <child>
               <object class="custom_widgets.textBoxPrimary" id="textboxprimary1">
+                <property name="state">normal</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -377,7 +377,7 @@
             <property name="label_anchor">w</property>
             <property name="label_text">outline frame</property>
             <layout manager="grid">
-              <property name="column">1</property>
+              <property name="column">2</property>
               <property name="row">2</property>
             </layout>
             <child>
@@ -389,12 +389,33 @@
                 </layout>
                 <child>
                   <object class="customtkinter.CTkTextbox" id="ctktextbox1">
-                    <property name="text" translatable="yes">ctktextbox1</property>
+                    <property name="text" translatable="yes">testfoo</property>
                     <layout manager="pack">
                       <property name="side">top</property>
                     </layout>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary4">
+            <property name="label_anchor">w</property>
+            <property name="label_text">textboxes secondary</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.textBoxSecondary" id="textboxsecondary1">
+                <property name="insertofftime">0</property>
+                <property name="insertontime">0</property>
+                <property name="insertwidth">0</property>
+                <property name="selectborderwidth">0</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
               </object>
             </child>
           </object>
