@@ -29,22 +29,37 @@ class buttonTertiaryBO(BuilderObject):
     class_ = buttonTertiary
     OPTIONS_CUSTOM = {
         "anchor",
-        "image",
+        "background_corner_colors",
+        "bg_color",
+        "border_color",
+        # "border_spacing"     # rejected by pygubu-designer
+        "border_width",
         "command",
+        "compound",
+        # "font",
+        "corner_radius",
+        "fg_color",
+        # "font",           # currently pygubu-designer via plugins generates the wrong font.
+        "height",
+        "hover",
+        "hover_color",
+        "image",
+        "round_height_to_even_numbers",
+        "round_width_to_even_numbers",
         "state",
         "text",
+        "text_color",
+        "text_color_disabled",
         "textvariable",
-        "height",
-        "width"
+        "width",
     }
-    # ro_properties = ("height", "width")
     command_properties = ("command",)
     properties = OPTIONS_CUSTOM
 
     # virtual_events = ("<<primaryButtonSelected>>",)
 
     def _process_property_value(self, pname, value):
-        if pname in ("height", "width"):
+        if pname in ("height", "width", "border_width", "corner_radius"):
             return int(value)
         return super()._process_property_value(pname, value)
 
@@ -70,17 +85,118 @@ register_custom_property (
     values=("n", "ne", "nw", "e", "w", "s", "se", "sw",  "center"),
 )
 
+
 register_custom_property (
     builder_id,
-    "image",
-    "imageentry"
+    "background_corner_colors",
+    "colorentry"
 )
+
+register_custom_property (
+    builder_id,
+    "bg_color",
+    "colorentry"
+)
+
+register_custom_property (
+    builder_id,
+    "border_color",
+    "colorentry"
+)
+
+# register_custom_property (
+#     builder_id,
+#     "border_spacing",
+#     "naturalnumber"
+# )
+
+
 
 register_custom_property (
     builder_id,
     "command",
     "commandentry"
 )
+
+register_custom_property(
+    builder_id,
+    "compound",
+    "choice",
+    values=("", "top", "bottom", "left", "right", "center", "none")
+)
+
+register_custom_property (
+    builder_id,
+    "border_width",
+    "naturalnumber"
+)
+
+register_custom_property (
+    builder_id,
+    "fg_color",
+    "colorentry"
+)
+
+# register_custom_property (
+#     builder_id,
+#     "font",
+#     "fontentry"
+# )
+
+register_custom_property (
+    builder_id,
+    "corner_radius",
+    "naturalnumber"
+)
+
+
+
+# register_custom_property (
+#     builder_id,
+#     "font",
+#     "fontentry"
+# )
+
+register_custom_property (
+    builder_id,
+    "height",
+    "naturalnumber"
+)
+
+register_custom_property(
+    builder_id,
+    "hover",
+    "choice",
+    values=("", "True", "False")
+)
+
+register_custom_property (
+    builder_id,
+    "hover_color",
+    "colorentry"
+)
+
+register_custom_property (
+    builder_id,
+    "image",
+    "imageentry"
+)
+
+
+register_custom_property(
+    builder_id,
+    "round_height_to_even_numbers",
+    "choice",
+    values=("", "True", "False")
+)
+
+register_custom_property(
+    builder_id,
+    "round_width_to_even_numbers",
+    "choice",
+    values=("", "True", "False")
+)
+
 
 register_custom_property (
     builder_id,
@@ -97,17 +213,25 @@ register_custom_property (
 
 register_custom_property (
     builder_id,
+    "text_color",
+    "colorentry"
+)
+
+register_custom_property (
+    builder_id,
+    "text_color_disabled",
+    "colorentry"
+)
+
+register_custom_property (
+    builder_id,
     "textvariable",
     "tkvarentry"
 )
 
 register_custom_property (
     builder_id,
-    "height",
-    "naturalnumber"
-)
-register_custom_property (
-    builder_id,
     "width",
     "naturalnumber"
 )
+
