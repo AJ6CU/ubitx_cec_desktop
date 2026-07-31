@@ -11,5 +11,5 @@ import optionMenuSecondarybo
 import labelPrimarybo
 import labelSecondarybo
 import labelTertiarybo
-import textBoxPrimarybo
-import textBoxSecondarybo
+import textboxPrimarybo
+import textboxSecondarybo

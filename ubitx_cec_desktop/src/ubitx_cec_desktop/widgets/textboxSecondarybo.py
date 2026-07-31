@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-buttonTertiary
+textboxSecondary
 
 A custom widget.
 
@@ -8,29 +8,29 @@ UI source file: my_ctk_label.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkButton
+from customtkinter import CTkLabel
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from buttonTertiary import buttonTertiary
+from textboxSecondary import textboxSecondary
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.widgets import CTkButtonBO
+from pygubu.plugins.customtkinter.widgets import CTkTextboxBO
 from pygubu.api.v1 import copy_custom_property
 
 
 #
 # Builder definition section
 #
-widget_namespace = "buttonTertiary"
-widget_classname = "buttonTertiary"
+widget_namespace = "textboxSecondary"
+widget_classname = "textboxSecondary"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
 
-class buttonTertiaryBO(CTkButtonBO):
-    class_ = buttonTertiary
+class textboxSecondaryBO(CTkTextboxBO):
+    class_ = textboxSecondary
 
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
@@ -42,12 +42,12 @@ class buttonTertiaryBO(CTkButtonBO):
 
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, buttonTertiaryBO, widget_classname, ("ttk", section_name)
+    builder_id, textboxSecondaryBO, widget_classname, ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.
 #
 # nsctk is the customtkinter plugin namespace
-# nsctk.CTkButton is the registered name for CTkButtonBO builder.
-for pname in CTkButtonBO.properties:
-    copy_custom_property(nsctk.CTkButton, pname, builder_id)
+# nsctk.CTkLabel is the registered name for BO builder.
+for pname in CTkTextboxBO.properties:
+    copy_custom_property(nsctk.CTkLabel, pname, builder_id)

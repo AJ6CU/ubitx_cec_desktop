@@ -2,13 +2,13 @@
 <interface version="1.5" author="PygubuDesigner 0.41.4">
   <project>
     <settings>
-      <setting id="name">textBoxSecondary</setting>
-      <setting id="description">Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden. This textBox is typically used for user information or explanations as there is no border and the font is smaller.</setting>
+      <setting id="name">textboxSecondary</setting>
+      <setting id="description">based on ctktextbox</setting>
       <setting id="template">widget</setting>
-      <setting id="main_widget">textBoxSecondaryTemplate</setting>
+      <setting id="main_widget">textboxSecondaryTemplate</setting>
       <setting id="module_namespace" />
-      <setting id="module_name">textBoxSecondary</setting>
-      <setting id="main_classname">textBoxSecondary</setting>
+      <setting id="module_name">textboxSecondary</setting>
+      <setting id="main_classname">textboxSecondary</setting>
       <setting id="output_dir">../../widgets</setting>
       <setting id="builder_namespace">custom_widgets</setting>
       <setting id="output_dir2">../../widgets</setting>
@@ -28,7 +28,7 @@
       <property name="side">top</property>
     </layout>
     <child>
-      <object class="customtkinter.CTkTextbox" id="textBoxSecondaryTemplate" named="True">
+      <object class="customtkinter.CTkTextbox" id="textboxSecondaryTemplate" named="True">
         <property name="state">normal</property>
         <layout manager="pack">
           <property name="side">top</property>

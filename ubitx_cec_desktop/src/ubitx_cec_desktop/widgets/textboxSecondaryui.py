@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """
-frameLabeledPrimary
+textboxSecondary
 
-Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden
+based on ctktextbox
 
-UI source file: textBoxPrimary.ui
+UI source file: textboxSecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -34,7 +34,7 @@ def safe_image_loader(master, image_name: str):
 #
 # Base class definition
 #
-class textBoxPrimaryUI(CTkTextbox):
+class textboxSecondaryUI(CTkTextbox):
     def __init__(
         self,
         master=None,
@@ -56,12 +56,12 @@ class textBoxPrimaryUI(CTkTextbox):
         super().__init__(master, **kw)
 
         self.configure(state="normal")
-        # Layout for 'textBoxPrimaryTemplate' skipped in custom widget
+        # Layout for 'textboxSecondaryTemplate' skipped in custom widget
         # template.
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = textBoxPrimaryUI(root)
+    widget = textboxSecondaryUI(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

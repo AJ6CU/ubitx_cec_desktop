@@ -50,7 +50,7 @@
             </layout>
             <child>
               <object class="customtkinter.CTkButton" id="ctkbutton1">
-                <property name="text" translatable="yes">ctkb button</property>
+                <property name="text" translatable="yes">myctk button</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
                   <property name="side">top</property>
@@ -114,14 +114,7 @@
             </child>
             <child>
               <object class="custom_widgets.entryPrimary" id="helloEntryP1" named="True">
-                <property name="font">{times new roman} 20 {bold italic underline overstrike}</property>
-                <property name="insertborderwidth">7</property>
-                <property name="justify">left</property>
-                <property name="placeholder_text">primary entry</property>
-                <property name="state">normal</property>
-                <property name="takefocus">false</property>
-                <property name="text" translatable="yes">failure</property>
-                <property name="text_color">yellow</property>
+                <property name="text" translatable="yes">Entry Primary</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
                   <property name="side">top</property>
@@ -130,7 +123,7 @@
             </child>
             <child>
               <object class="custom_widgets.entrySecondary" id="secondaryentry1">
-                <property name="placeholder_text">second entry</property>
+                <property name="text" translatable="yes">Entry Secondary</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
                   <property name="side">top</property>
@@ -368,7 +361,7 @@
               <property name="row">2</property>
             </layout>
             <child>
-              <object class="custom_widgets.textBoxPrimary" id="textboxprimary1">
+              <object class="custom_widgets.textboxPrimary" id="textboxprimary1">
                 <property name="font">{Arial} 24 {}</property>
                 <property name="insertborderwidth">1</property>
                 <property name="state">normal</property>
@@ -417,7 +410,7 @@
               <property name="row">2</property>
             </layout>
             <child>
-              <object class="custom_widgets.textBoxSecondary" id="textboxsecondary1">
+              <object class="custom_widgets.textboxSecondary" id="textboxsecondary1">
                 <property name="font">{Times New Roman} 16 {bold italic underline overstrike}</property>
                 <property name="insertborderwidth">2</property>
                 <property name="insertofftime">0</property>

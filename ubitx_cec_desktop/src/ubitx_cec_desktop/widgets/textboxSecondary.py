@@ -1,23 +1,23 @@
 #!/usr/bin/python3
 """
-textBoxSecondary
+textboxSecondary
 
 Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden. This textBox is typically used for user information or explanations as there is no border and the font is smaller.
 
-UI source file: textBoxSecondary.ui
+UI source file: textboxSecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
 import re
 import customtkinter as ctk
-import textBoxSecondaryui as baseui
+import textboxSecondaryui as baseui
 
 
 #
 # Manual user code
 #
 
-class textBoxSecondary(baseui.textBoxSecondaryUI):
+class textboxSecondary(baseui.textboxSecondaryUI):
     def __init__(self, master=None, **kw):
         #
         #   Defaults for this widget
@@ -92,6 +92,6 @@ class textBoxSecondary(baseui.textBoxSecondaryUI):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = textBoxSecondary(root)
+    widget = textboxSecondary(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

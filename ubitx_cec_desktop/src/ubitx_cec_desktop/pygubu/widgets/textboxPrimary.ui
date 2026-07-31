@@ -2,13 +2,13 @@
 <interface version="1.5" author="PygubuDesigner 0.41.4">
   <project>
     <settings>
-      <setting id="name">frameLabeledPrimary</setting>
-      <setting id="description">Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden</setting>
+      <setting id="name">textboxPrimary</setting>
+      <setting id="description">update to ctktextbox</setting>
       <setting id="template">widget</setting>
-      <setting id="main_widget">textBoxPrimaryTemplate</setting>
+      <setting id="main_widget">textboxPrimaryTemplate</setting>
       <setting id="module_namespace" />
-      <setting id="module_name">textBoxPrimary</setting>
-      <setting id="main_classname">textBoxPrimary</setting>
+      <setting id="module_name">textboxPrimary</setting>
+      <setting id="main_classname">textboxPrimary</setting>
       <setting id="output_dir">../../widgets</setting>
       <setting id="builder_namespace">custom_widgets</setting>
       <setting id="output_dir2">../../widgets</setting>
@@ -28,7 +28,7 @@
       <property name="side">top</property>
     </layout>
     <child>
-      <object class="customtkinter.CTkTextbox" id="textBoxPrimaryTemplate" named="True">
+      <object class="customtkinter.CTkTextbox" id="textboxPrimaryTemplate" named="True">
         <property name="state">normal</property>
         <layout manager="pack">
           <property name="side">top</property>

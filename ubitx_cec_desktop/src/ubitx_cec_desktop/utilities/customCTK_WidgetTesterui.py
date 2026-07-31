@@ -93,7 +93,7 @@ class customCTK_WidgetTesterUI:
             label_text="Buttons	",
             label_text_color="#F9FAFB")
         ctkbutton1 = CTkButton(ctkscrollableframe1)
-        ctkbutton1.configure(text='ctkb button')
+        ctkbutton1.configure(text='myctk button')
         ctkbutton1.pack(pady=10, side="top")
         self.primary1 = buttonPrimary(ctkscrollableframe1)
         self.primary1.configure(text='primary button')
@@ -128,20 +128,12 @@ class customCTK_WidgetTesterUI:
         self.testentry.insert(0, 'ctk Entry')
         self.testentry.pack(pady=10, side="top")
         self.helloEntryP1 = entryPrimary(ctkscrollableframe2)
-        self.helloEntryP1.configure(
-            font="{times new roman} 20 {bold italic underline overstrike}",
-            insertborderwidth=7,
-            justify="left",
-            placeholder_text="primary entry",
-            state="normal",
-            takefocus=False,
-            text='failure',
-            text_color="yellow")
+        self.helloEntryP1.delete(0, "end")
+        self.helloEntryP1.insert(0, 'Entry Primary')
         self.helloEntryP1.pack(pady=10, side="top")
         secondaryentry1 = entrySecondary(ctkscrollableframe2)
-        secondaryentry1.configure(
-            font="{arial} 14 {bold italic underline overstrike}",
-            text='courier font')
+        secondaryentry1.delete(0, "end")
+        secondaryentry1.insert(0, 'Entry Secondary')
         secondaryentry1.pack(pady=10, side="top")
         ctkscrollableframe2.grid(column=1, padx="20 0", pady=10, row=0)
         ctkscrollableframe4 = CTkScrollableFrame(ctkframe1)
@@ -251,11 +243,10 @@ class customCTK_WidgetTesterUI:
         framelabeledprimary2.configure(
             label_anchor="w", label_text="textboxes primary")
         textboxprimary1 = textBoxPrimary(framelabeledprimary2)
-        textboxprimary1.configure(
-            font="{Arial} 24 {}",
-            insertborderwidth=1,
-            state="normal",
-            text='will this fail?')
+        textboxprimary1.configure(insertborderwidth=1, state="normal")
+        _text_ = 'will this fail? Or work?'
+        textboxprimary1.delete("0.0", "end")
+        textboxprimary1.insert("0.0", _text_)
         textboxprimary1.pack(side="top")
         framelabeledprimary2.grid(column=0, row=2)
         framelabeledprimary3 = frameLabeledPrimary(ctkframe1)
@@ -273,6 +264,7 @@ class customCTK_WidgetTesterUI:
                 True,
                 True))
         _text_ = 'testfoo'
+        ctktextbox1.delete("0.0", "end")
         ctktextbox1.insert("0.0", _text_)
         ctktextbox1.pack(side="top")
         frameoutlined2.pack(side="top")
@@ -308,7 +300,7 @@ class customCTK_WidgetTesterUI:
     def ghost3_cb(self):
         pass
 
-    def menuOption_CB(self):
+    def menuOption_CB(self, current_value):
         pass
 
     def callback(self, event=None):
