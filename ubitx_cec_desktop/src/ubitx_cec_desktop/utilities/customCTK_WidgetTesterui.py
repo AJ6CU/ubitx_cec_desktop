@@ -30,8 +30,8 @@ from labelSecondary import labelSecondary
 from labelTertiary import labelTertiary
 from optionMenuPrimary import optionMenuPrimary
 from optionMenuSecondary import optionMenuSecondary
-from textBoxPrimary import textBoxPrimary
-from textBoxSecondary import textBoxSecondary
+from textboxPrimary import textboxPrimary
+from textboxSecondary import textboxSecondary
 
 
 def safe_i18n_translator(value):
@@ -242,9 +242,18 @@ class customCTK_WidgetTesterUI:
         framelabeledprimary2 = frameLabeledPrimary(ctkframe1)
         framelabeledprimary2.configure(
             label_anchor="w", label_text="textboxes primary")
-        textboxprimary1 = textBoxPrimary(framelabeledprimary2)
-        textboxprimary1.configure(insertborderwidth=1, state="normal")
-        _text_ = 'will this fail? Or work?'
+        textboxprimary1 = textboxPrimary(framelabeledprimary2)
+        textboxprimary1.configure(
+            font=CTkFont(
+                "Arial",
+                24,
+                None,
+                "roman",
+                False,
+                False),
+            insertborderwidth=1,
+            state="normal")
+        _text_ = 'will this fail?\nI hope not'
         textboxprimary1.delete("0.0", "end")
         textboxprimary1.insert("0.0", _text_)
         textboxprimary1.pack(side="top")
@@ -272,15 +281,23 @@ class customCTK_WidgetTesterUI:
         framelabeledprimary4 = frameLabeledPrimary(ctkframe1)
         framelabeledprimary4.configure(
             label_anchor="w", label_text="textboxes secondary")
-        textboxsecondary1 = textBoxSecondary(framelabeledprimary4)
+        textboxsecondary1 = textboxSecondary(framelabeledprimary4)
         textboxsecondary1.configure(
-            font="{Times New Roman} 16 {bold italic underline overstrike}",
+            font=CTkFont(
+                "Times New Roman",
+                16,
+                "bold",
+                "italic",
+                True,
+                True),
             insertborderwidth=2,
             insertofftime=0,
             insertontime=0,
             insertwidth=0,
-            selectborderwidth=0,
-            text='Times Roman 15 normal')
+            selectborderwidth=0)
+        _text_ = 'Times Roman 15 normal'
+        textboxsecondary1.delete("0.0", "end")
+        textboxsecondary1.insert("0.0", _text_)
         textboxsecondary1.pack(side="top")
         framelabeledprimary4.grid(column=1, row=2)
         ctkframe1.grid(column=0, row=0)

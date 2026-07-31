@@ -365,7 +365,8 @@
                 <property name="font">{Arial} 24 {}</property>
                 <property name="insertborderwidth">1</property>
                 <property name="state">normal</property>
-                <property name="text" translatable="yes">will this fail?</property>
+                <property name="text" translatable="yes">will this fail?
+I hope not</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
