@@ -40,12 +40,12 @@ class textBoxPrimaryBO(BuilderObject):
         "border_width",
         "border_color",
         "corner_radius",
-        # "cursor"                      # rejected by pygubu designer
+        "cursor",
         "exportselection",
         "fg_color",
         "font",
         "height",
-        # "insertborderwidth"           # rejected by pygubu-designer
+        "insertborderwidth",
         "insertofftime",
         "insertontime",
         "insertwidth",
@@ -137,13 +137,15 @@ register_custom_property (
 )
 
 
-# register_custom_property (            # rejected by pygubu-designer
-#     builder_id,
-#     "cursor",
-#     "choice",
-#         values= CTK_CURSORS
-# )
-
+register_custom_property (
+    builder_id,
+    "cursor",
+    "choice",
+        values= (                   # pygubu-designer rejected the cursor property
+            "arrow", "clock", "cross", "hand1", "hand2",
+            "heart", "pencil", "sieve", "watch", "xterm"
+        )
+)
 
 register_custom_property (
     builder_id,
@@ -171,14 +173,14 @@ register_custom_property (
 )
 
 
-# register_custom_property (                # rejected by pygubu-designer
-#     builder_id,
-#     "insertborderwidth",
-#     "spinbox",
-# "0",                # The default initialization string
-#     values=tuple(str(x) for x in range(0, 21, 1))
-# # values=tuple(str(x) for x in range(0, 1000, 1))
-# )
+register_custom_property (
+    builder_id,
+    "insertborderwidth",
+    "spinbox",
+"0",                # The default initialization string
+    values=tuple(str(x) for x in range(0, 21, 1))
+# values=tuple(str(x) for x in range(0, 1000, 1))
+)
 
 
 register_custom_property (

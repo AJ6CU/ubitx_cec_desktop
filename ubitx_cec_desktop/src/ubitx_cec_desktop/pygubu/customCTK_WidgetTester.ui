@@ -103,6 +103,7 @@
             </layout>
             <child>
               <object class="customtkinter.CTkEntry" id="testentry" named="True">
+                <property name="font">{arial} 12 {bold italic underline overstrike}</property>
                 <property name="placeholder_text_color">gray</property>
                 <property name="text" translatable="yes">ctk Entry</property>
                 <layout manager="pack">
@@ -113,10 +114,14 @@
             </child>
             <child>
               <object class="custom_widgets.entryPrimary" id="helloEntryP1" named="True">
+                <property name="font">{times new roman} 20 {bold italic underline overstrike}</property>
+                <property name="insertborderwidth">7</property>
                 <property name="justify">left</property>
                 <property name="placeholder_text">primary entry</property>
                 <property name="state">normal</property>
                 <property name="takefocus">false</property>
+                <property name="text" translatable="yes">failure</property>
+                <property name="text_color">yellow</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
                   <property name="side">top</property>
@@ -364,7 +369,10 @@
             </layout>
             <child>
               <object class="custom_widgets.textBoxPrimary" id="textboxprimary1">
+                <property name="font">{Arial} 24 {}</property>
+                <property name="insertborderwidth">1</property>
                 <property name="state">normal</property>
+                <property name="text" translatable="yes">will this fail?</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -389,6 +397,7 @@
                 </layout>
                 <child>
                   <object class="customtkinter.CTkTextbox" id="ctktextbox1">
+                    <property name="font">{Times New Roman} 20 {bold italic underline overstrike}</property>
                     <property name="text" translatable="yes">testfoo</property>
                     <layout manager="pack">
                       <property name="side">top</property>
@@ -409,10 +418,13 @@
             </layout>
             <child>
               <object class="custom_widgets.textBoxSecondary" id="textboxsecondary1">
+                <property name="font">{Times New Roman} 16 {bold italic underline overstrike}</property>
+                <property name="insertborderwidth">2</property>
                 <property name="insertofftime">0</property>
                 <property name="insertontime">0</property>
                 <property name="insertwidth">0</property>
                 <property name="selectborderwidth">0</property>
+                <property name="text" translatable="yes">Times Roman 15 normal</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>

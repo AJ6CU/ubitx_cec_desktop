@@ -31,6 +31,7 @@ from labelTertiary import labelTertiary
 from optionMenuPrimary import optionMenuPrimary
 from optionMenuSecondary import optionMenuSecondary
 from textBoxPrimary import textBoxPrimary
+from textBoxSecondary import textBoxSecondary
 
 
 def safe_i18n_translator(value):
@@ -114,19 +115,33 @@ class customCTK_WidgetTesterUI:
             label_anchor="w",
             label_text="Entry")
         self.testentry = CTkEntry(ctkscrollableframe2)
-        self.testentry.configure(placeholder_text_color="gray")
+        self.testentry.configure(
+            font=CTkFont(
+                "arial",
+                12,
+                "bold",
+                "italic",
+                True,
+                True),
+            placeholder_text_color="gray")
         self.testentry.delete(0, "end")
         self.testentry.insert(0, 'ctk Entry')
         self.testentry.pack(pady=10, side="top")
         self.helloEntryP1 = entryPrimary(ctkscrollableframe2)
         self.helloEntryP1.configure(
+            font="{times new roman} 20 {bold italic underline overstrike}",
+            insertborderwidth=7,
             justify="left",
             placeholder_text="primary entry",
             state="normal",
-            takefocus=False)
+            takefocus=False,
+            text='failure',
+            text_color="yellow")
         self.helloEntryP1.pack(pady=10, side="top")
         secondaryentry1 = entrySecondary(ctkscrollableframe2)
-        secondaryentry1.configure(placeholder_text="second entry")
+        secondaryentry1.configure(
+            font="{arial} 14 {bold italic underline overstrike}",
+            text='courier font')
         secondaryentry1.pack(pady=10, side="top")
         ctkscrollableframe2.grid(column=1, padx="20 0", pady=10, row=0)
         ctkscrollableframe4 = CTkScrollableFrame(ctkframe1)
@@ -234,14 +249,13 @@ class customCTK_WidgetTesterUI:
         framelabeledprimary1.bind("<MouseWheel>", self.callback, add="")
         framelabeledprimary2 = frameLabeledPrimary(ctkframe1)
         framelabeledprimary2.configure(
-            label_anchor="w", label_text="textboxes")
+            label_anchor="w", label_text="textboxes primary")
         textboxprimary1 = textBoxPrimary(framelabeledprimary2)
         textboxprimary1.configure(
-            insertofftime=300,
-            insertontime=300,
-            insertwidth=5,
-            selectborderwidth=8,
-            state="normal")
+            font="{Arial} 24 {}",
+            insertborderwidth=1,
+            state="normal",
+            text='will this fail?')
         textboxprimary1.pack(side="top")
         framelabeledprimary2.grid(column=0, row=2)
         framelabeledprimary3 = frameLabeledPrimary(ctkframe1)
@@ -250,11 +264,33 @@ class customCTK_WidgetTesterUI:
         frameoutlined2 = frameOutlined(framelabeledprimary3)
         frameoutlined2.configure(height=150, width=150)
         ctktextbox1 = CTkTextbox(frameoutlined2)
+        ctktextbox1.configure(
+            font=CTkFont(
+                "Times New Roman",
+                20,
+                "bold",
+                "italic",
+                True,
+                True))
         _text_ = 'testfoo'
         ctktextbox1.insert("0.0", _text_)
         ctktextbox1.pack(side="top")
         frameoutlined2.pack(side="top")
-        framelabeledprimary3.grid(column=1, row=2)
+        framelabeledprimary3.grid(column=2, row=2)
+        framelabeledprimary4 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary4.configure(
+            label_anchor="w", label_text="textboxes secondary")
+        textboxsecondary1 = textBoxSecondary(framelabeledprimary4)
+        textboxsecondary1.configure(
+            font="{Times New Roman} 16 {bold italic underline overstrike}",
+            insertborderwidth=2,
+            insertofftime=0,
+            insertontime=0,
+            insertwidth=0,
+            selectborderwidth=0,
+            text='Times Roman 15 normal')
+        textboxsecondary1.pack(side="top")
+        framelabeledprimary4.grid(column=1, row=2)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget

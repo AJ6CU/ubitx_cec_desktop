@@ -104,6 +104,12 @@ register_custom_property (
     "colorentry"
 )
 
+register_custom_property (
+    builder_id,
+    "border_width",
+    "naturalnumber"
+)
+
 # register_custom_property (
 #     builder_id,
 #     "border_spacing",
@@ -125,11 +131,6 @@ register_custom_property(
     values=("", "top", "bottom", "left", "right", "center", "none")
 )
 
-register_custom_property (
-    builder_id,
-    "border_width",
-    "naturalnumber"
-)
 
 register_custom_property (
     builder_id,

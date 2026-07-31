@@ -34,6 +34,7 @@ class labelSecondary(baseui.labelSecondaryUI):
         super().__init__(master, **kw)
 
 
+
 if __name__ == "__main__":
     root = tk.Tk()
     widget = labelSecondary(root)
