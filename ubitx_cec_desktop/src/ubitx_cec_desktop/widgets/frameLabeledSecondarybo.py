@@ -27,6 +27,11 @@ widget_classname = "frameLabeledSecondary"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
+container = True
+# CTkScrollableFrame does some weird things
+# with layout so I disable container layout here on purpose.
+container_layout = False
+
 
 class frameLabeledSecondaryBO(CTkScrollableFrameBO):
     class_ = frameLabeledSecondary

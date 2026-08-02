@@ -12,12 +12,13 @@ from customtkinter import CTkTabview
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
+    copy_custom_property,
 )
-from tabview import tabview
+
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.tabview import CTkTabviewBO
-from pygubu.api.v1 import copy_custom_property
+from pygubu.plugins.customtkinter.tabview import CTkTabviewBO, CTkTabviewTabBO
+from tabview import tabview
 
 
 #
@@ -28,7 +29,6 @@ widget_classname = "tabview"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
-
 class tabviewBO(CTkTabviewBO):
     class_ = tabview
 
@@ -36,14 +36,31 @@ class tabviewBO(CTkTabviewBO):
         # should return an iterable of (module, classname/function) to import
         # or None
         imports = [(widget_namespace, widget_classname)]
-        imports.extend(self.code_extra_imports())
+        # imports.extend(self.code_extra_imports())
         return imports
-
-
 
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
     builder_id, tabviewBO, widget_classname, ("ttk", section_name)
+)
+#
+# Allow CTkTabviewTab to be child of MyCtkTabview
+#
+tabviewBO.add_allowed_child(nsctk.CTkTabviewTab)
+
+#
+# Allow CTkTabviewTAb to have new parent MyCtkTabview
+#
+CTkTabviewTabBO.add_allowed_parent(builder_id)
+
+#
+# Register CTkTabview.Tab as MyCtkTabview.Tab in same menu to avoid
+# going to customtkinter menu:
+register_widget(
+    nsctk.CTkTabviewTab,
+    CTkTabviewTabBO,
+    f"{widget_classname}.Tab",
+    ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.

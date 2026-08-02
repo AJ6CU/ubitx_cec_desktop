@@ -27,6 +27,11 @@ widget_classname = "frameLabeledPrimary"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
+container = True
+# CTkScrollableFrame does some weird things
+# with layout so I disable container layout here on purpose.
+container_layout = False
+
 
 class frameLabeledPrimaryBO(CTkScrollableFrameBO):
     class_ = frameLabeledPrimary

@@ -349,6 +349,186 @@ run-my-app = "src_app.main:start"
 [tool.setuptools]
 packages = ["src_app", "src_app.widgets"]
 
+-------------
+
+i am going to host a s library of python ctk widgets on my github. Going to want to use them in another application - also on my github too - what is the best way to structure thise?
+
+The best way to structure this is to build your widget collection as a standard installable Python package in its own GitHub repository, and then add it as a Git dependency in your application's requirements.txt or pyproject.toml.
+
+Widget Library Repository Structure
+
+Set up your my_ctk_widgets repository using a flat layout with a dedicated package folder:
+
+my_ctk_widgets/ (Root directory)
+	my_ctk_widgets/ (Package directory containing your code)
+		__init__.py (Exposes your custom widget classes)
+		buttons.py (Custom CTk buttons, etc.)
+		inputs.py (Custom CTk entry/sliders, etc.)
+	pyproject.toml or setup.py (Standard package metadata)
+	EADME.md
+	
+	
+Application Repository Integration
+In your main application repository, install your custom library directly from GitHub using pip inside your virtual environment:
+
+pip install git+https://github.com
+
+Alternatively, add this line directly to your application's requirements.txt file so it builds automatically:
+
+git+https://github.com
+
+-------
+i would need help both using it within pycharm and also as part of the whl for the other application
+
+To use your custom widget library seamlessly in PyCharm and bundle it into your application's final wheel (.whl) file, follow this setup guide.
+
+1. PyCharm Development Workflow
+To avoid rebuilding and reinstalling your library every time you change a widget, install the library in editable mode within PyCharm.
+	Open your main application project in PyCharm.
+	Ensure both repositories are cloned locally on your computer.
+	Open the PyCharm terminal at the bottom.
+	Run the following command (replace with the actual path to your widget repo folder):
+	
+		pip install -e /path/to/local/my_ctk_widgets
+	PyCharm will now automatically link the code.
+	Editing code in the widget repository instantly updates the application.
+	PyCharm will fully support autocomplete and code jumping for your widgets.
+	
+2. Application Packaging Layout
+To bundle the library into your application's .whl package, manage your dependencies using a modern pyproject.toml file in your application repository.
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my_main_application"
+version = "1.0.0"
+dependencies = [
+    "customtkinter",
+    "my_ctk_widgets @ git+https://github.com"
+]
+
+
+3. Building the Application Wheel
+When you build your application wheel, standard Python tools will parse the dependencies.
+
+	Open your terminal in the application project root.
+	Install the official build isolation tool:
+		pip install build
+	Run the build command to generate distribution packages:
+		python -m build
+	Look inside the newly created dist/ directory.
+	You will find your application's .whl file inside.
+	When users install your application wheel, pip automatically fetches your widget code from GitHub.
+	
+	
+-----
+
+Would you like help writing the __init__.py file for your widget library to ensure clean imports in PyCharm?
+
+Here is how to set up your library's __init__.py file. This pattern gives you clean import paths in PyCharm and hides your internal file structure from the main application.
+
+1. Library Internal Code Structure
+Assume your widget repository has two files containing your custom CustomTkinter classes:
+
+	Buttons.py: Contains class CoolButton(customtkinter.CTkButton):
+	inputs.py: Contains class CustomEntry(customtkinter.CTkEntry):
+	
+2. The __init__.py ImplementationPlace this exact code inside your my_ctk_widgets/__init__.py file:
+
+
+# Import the custom widgets from their respective files
+from .buttons import CoolButton
+from .inputs import CustomEntry
+
+# Define what is exposed to the outside world
+__all__ = [
+    "CoolButton",
+    "CustomEntry",
+]
+
+3. How You Import It in Your Application
+Because of the __init__.py file above, PyCharm will give you clean autocomplete. You do not need to reference the underlying file names (buttons or inputs) when writing your main application:
+
+import customtkinter as ctk
+# Clean, top-level imports from your package
+from my_ctk_widgets import CoolButton, CustomEntry
+
+root = ctk.CTk()
+
+# Use your custom widgets seamlessly
+my_btn = CoolButton(root, text="Click Me")
+my_btn.pack()
+
+root.mainloop()
+
+
+-----
+Here are the complete templates for your widget library repository to get everything running.
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my_ctk_widgets"
+version = "0.1.0"
+description = "A collection of custom CustomTkinter widgets"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "customtkinter>=5.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["my_ctk_widgets*"]
+
+
+2. The README.md File
+
+Place this file in the root directory of your library repository. It serves as clean documentation for you or anyone else wanting to use the widgets.
+
+# My CTk Widgets Library
+
+A reusable collection of custom CustomTkinter widgets for Python desktop applications.
+
+## 🚀 Installation
+
+### Production Use
+To install this package directly from GitHub into your project environment:
+```bash
+pip install git+https://github.com
+```
+
+### Local Development (Editable Mode)
+If you are developing this library locally alongside a main application in PyCharm, clone this repository and install it in editable mode:
+```bash
+pip install -e /path/to/local/my_ctk_widgets
+```
+
+## 🛠️ Usage Example
+
+```python
+import customtkinter as ctk
+from my_ctk_widgets import CoolButton, CustomEntry
+
+root = ctk.CTk()
+
+# Example usage of your library widgets
+btn = CoolButton(root, text="Custom Button")
+btn.pack(pady=10)
+
+entry = CustomEntry(root, placeholder_text="Custom Entry")
+entry.pack(pady=10)
+
+root.mainloop()
+```
 
 
 
