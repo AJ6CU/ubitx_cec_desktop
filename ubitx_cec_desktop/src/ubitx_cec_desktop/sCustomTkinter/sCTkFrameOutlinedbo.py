@@ -1,36 +1,37 @@
 #!/usr/bin/python3
 """
-optionMenuPrimary
+sCTkFrameOutlined
 
-A custom widget.
+Standard CTk form but with an outline border
 
-UI source file: my_ctk_label.ui
+UI source file: sCTkFrameOutlined.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkLabel
+from customtkinter import CTkFrame
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from optionMenuPrimary import optionMenuPrimary
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.widgets import CTkOptionMenuBO
+from pygubu.plugins.customtkinter.widgets import CTkFrameBO
 from pygubu.api.v1 import copy_custom_property
+
+from sCTkFrameOutlined import sCTkFrameOutlined
 
 
 #
 # Builder definition section
 #
-widget_namespace = "optionMenuPrimary"
-widget_classname = "optionMenuPrimary"
+widget_namespace = "sCTkFrameOutlined"
+widget_classname = "sCTkFrameOutlined"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class optionMenuPrimaryBO(CTkOptionMenuBO):
-    class_ = optionMenuPrimary
+class sCTkFrameOutlinedBO(CTkFrameBO):
+    class_ = sCTkFrameOutlined
 
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
@@ -40,15 +41,17 @@ class optionMenuPrimaryBO(CTkOptionMenuBO):
         return imports
 
 
-
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, optionMenuPrimaryBO, widget_classname, ("ttk", section_name)
+    builder_id, sCTkFrameOutlinedBO, widget_classname, ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.
 #
 # nsctk is the customtkinter plugin namespace
-# nsctk.CTkLabel is the registered name for BO builder.
-for pname in CTkOptionMenuBO.properties:
-    copy_custom_property(nsctk.CTkLabel, pname, builder_id)
+# nsctk.CTkFrame is the registered name for CTkFrameBO builder.
+for pname in CTkFrameBO.properties:
+    # try:
+    copy_custom_property(nsctk.CTkFrame, pname, builder_id)
+# except:
+#     pass

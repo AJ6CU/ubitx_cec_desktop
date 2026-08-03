@@ -27,10 +27,10 @@ from sCTkComboBox import sCTkComboBox
 widget_namespace = "sCTkComboBox"
 widget_classname = "sCTkComboBox"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class sCTkComboBoxBO(BuilderObject):
+class sCTkComboBoxBO(CTkComboBoxBO):
     class_ = sCTkComboBox
 
     def code_imports(self):

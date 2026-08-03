@@ -3,7 +3,7 @@
   <project>
     <settings>
       <setting id="name">customCTK_WidgetTesterPart2</setting>
-      <setting id="description">just tests eah widget</setting>
+      <setting id="description">just tests each widget</setting>
       <setting id="template">codescript</setting>
       <setting id="main_widget">ctk1</setting>
       <setting id="module_namespace" />
@@ -21,7 +21,7 @@
       <setting id="ttk_style_definition_file" />
     </settings>
     <customwidgets>
-      <customwidget path="../widgets/customCTK2.py" />
+      <customwidget path="../sCustomTkinter/sCTK.py" />
     </customwidgets>
     <resources />
   </project>
@@ -35,7 +35,7 @@
           <property name="row">0</property>
         </layout>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary5">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary5">
             <property name="label_anchor">w</property>
             <property name="label_text">CheckBox and ComboBox</property>
             <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
@@ -79,7 +79,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.checkBox" id="checkbox1">
+              <object class="custom_widgets.sCTkCheckBox" id="checkbox1">
                 <property name="text" translatable="yes">subCheckbox</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -121,7 +121,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.comboBox" id="combobox1">
+              <object class="custom_widgets.sCTkComboBox" id="combobox1">
                 <property name="values">["apple","pear","grape"]</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -132,7 +132,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeled1">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeled1">
             <property name="label_anchor">w</property>
             <property name="label_text">Progressbars and Sliders</property>
             <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
@@ -163,7 +163,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.progressBar" id="progressbar1">
+              <object class="custom_widgets.sCTkProgressBar" id="progressbar1">
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -191,7 +191,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.slider" id="slider1">
+              <object class="custom_widgets.sCTkSlider" id="slider1">
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -200,7 +200,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary6">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary6">
             <property name="label_anchor">w</property>
             <property name="label_text">RadioButton and Switch</property>
             <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
@@ -267,7 +267,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.radioButton" id="radiobutton1">
+              <object class="custom_widgets.sCTkRadioButton" id="radiobutton1">
                 <property name="text" translatable="yes">subradiobutton</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -288,7 +288,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.switch" id="switch1">
+              <object class="custom_widgets.sCTkSwitch" id="switch1">
                 <property name="text" translatable="yes">subswitch</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -300,7 +300,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary2">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary2">
             <property name="label_anchor">w</property>
             <property name="label_text">Segmented Button</property>
             <layout manager="grid">
@@ -339,7 +339,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.segmentedButton" id="segmentedbutton1">
+              <object class="custom_widgets.sCTkSegmentedButton" id="segmentedbutton1">
                 <property name="values">["VW", "Audi", "Porsche"]</property>
                 <layout manager="grid">
                   <property name="column">0</property>
@@ -348,7 +348,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.scrollbar" id="scrollbar1">
+              <object class="custom_widgets.sCTkScrollbar" id="scrollbar1">
                 <property name="orientation">horizontal</property>
                 <property name="width">400</property>
                 <layout manager="grid">
@@ -363,7 +363,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary4">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary4">
             <property name="label_anchor">w</property>
             <property name="label_text">textboxes secondary</property>
             <layout manager="grid">
@@ -371,23 +371,23 @@
               <property name="row">1</property>
             </layout>
             <child>
-              <object class="custom_widgets.tabview" id="tabview1">
+              <object class="custom_widgets.sCTkTabview" id="tabview1">
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab1">
-                    <property name="label" translatable="yes">ctktabviewtab1</property>
+                    <property name="label" translatable="yes">HI</property>
                   </object>
                 </child>
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab2">
-                    <property name="label" translatable="yes">ctktabviewtab2</property>
+                    <property name="label" translatable="yes">goodbye</property>
                   </object>
                 </child>
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab3">
-                    <property name="label" translatable="yes">ctktabviewtab3</property>
+                    <property name="label" translatable="yes">no more</property>
                   </object>
                 </child>
               </object>
@@ -395,7 +395,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary3">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary3">
             <property name="label_anchor">w</property>
             <property name="label_text">outline frame</property>
             <layout manager="grid">

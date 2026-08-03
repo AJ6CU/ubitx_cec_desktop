@@ -27,10 +27,10 @@ from sCTkEntryPrimary import sCTkEntryPrimary
 widget_namespace = "sCTkEntryPrimary"
 widget_classname = "sCTkEntryPrimary"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class sCTkEntryPrimaryBO(BuilderObject):
+class sCTkEntryPrimaryBO(CTkEntryBO):
     class_ = sCTkEntryPrimary
 
     def code_imports(self):

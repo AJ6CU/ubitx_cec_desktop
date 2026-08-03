@@ -27,7 +27,7 @@ from sCTkFrameLabeledSecondary import sCTkFrameLabeledSecondary
 widget_namespace = "sCTkFrameLabeledSecondary"
 widget_classname = "sCTkFrameLabeledSecondary"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 container = True
 # CTkScrollableFrame does some weird things
@@ -35,7 +35,7 @@ container = True
 container_layout = False
 
 
-class sCTkFrameLabeledSecondaryBO(BuilderObject):
+class sCTkFrameLabeledSecondaryBO(CTkScrollableFrameBO):
     class_ = sCTkFrameLabeledSecondary
 
     def code_imports(self):

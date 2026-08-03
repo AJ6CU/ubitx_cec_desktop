@@ -3,7 +3,7 @@
   <project>
     <settings>
       <setting id="name">customCTK_WidgetTester</setting>
-      <setting id="description">just tests eah widget</setting>
+      <setting id="description">just tests each widget</setting>
       <setting id="template">codescript</setting>
       <setting id="main_widget">ctk1</setting>
       <setting id="module_namespace" />
@@ -21,7 +21,7 @@
       <setting id="ttk_style_definition_file" />
     </settings>
     <customwidgets>
-      <customwidget path="../widgets/customCTK.py" />
+      <customwidget path="../sCustomTkinter/sCTK.py" />
     </customwidgets>
     <resources />
   </project>
@@ -58,7 +58,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.buttonPrimary" id="primary1" named="True">
+              <object class="custom_widgets.sCTkButtonPrimary" id="primary1" named="True">
                 <property name="command" type="command" cbtype="simple">primary1_CB</property>
                 <property name="text" translatable="yes">primary button</property>
                 <layout manager="pack">
@@ -68,7 +68,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.buttonSecondary" id="secondary2" named="True">
+              <object class="custom_widgets.sCTkButtonSecondary" id="secondary2" named="True">
                 <property name="command" type="command" cbtype="simple">secondary2_CB</property>
                 <property name="text" translatable="yes">secondary button</property>
                 <layout manager="pack">
@@ -78,7 +78,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.buttonTertiary" id="ghost3" named="True">
+              <object class="custom_widgets.sCTkButtonTertiary" id="ghost3" named="True">
                 <property name="command" type="command" cbtype="simple">ghost3_cb</property>
                 <property name="text" translatable="yes">ghost button</property>
                 <layout manager="pack">
@@ -113,7 +113,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.entryPrimary" id="helloEntryP1" named="True">
+              <object class="custom_widgets.sCTkEntryPrimary" id="helloEntryP1" named="True">
                 <property name="text" translatable="yes">Entry Primary</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
@@ -122,7 +122,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.entrySecondary" id="secondaryentry1">
+              <object class="custom_widgets.sCTkEntrySecondary" id="secondaryentry1">
                 <property name="text" translatable="yes">Entry Secondary</property>
                 <layout manager="pack">
                   <property name="pady">10</property>
@@ -154,7 +154,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.optionMenuPrimary" id="myOptionMenu" named="True">
+              <object class="custom_widgets.sCTkOptionMenuPrimary" id="myOptionMenu" named="True">
                 <property name="command" type="command" cbtype="simple">menuOption_CB</property>
                 <property name="variable">string:myOptionMenu_VAR</property>
                 <layout manager="pack">
@@ -164,7 +164,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.optionMenuSecondary" id="secondaryOption" named="True">
+              <object class="custom_widgets.sCTkOptionMenuSecondary" id="secondaryOption" named="True">
                 <layout manager="pack">
                   <property name="pady">10</property>
                   <property name="side">top</property>
@@ -198,7 +198,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.labelPrimary" id="primaryLabel" named="True">
+              <object class="custom_widgets.sCTkLabelPrimary" id="primaryLabel" named="True">
                 <property name="anchor">center</property>
                 <property name="justify">center</property>
                 <property name="padx">10</property>
@@ -214,7 +214,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.labelSecondary" id="secondarylabel1">
+              <object class="custom_widgets.sCTkLabelSecondary" id="secondarylabel1">
                 <property name="padx">5</property>
                 <property name="pady">5</property>
                 <property name="state">normal</property>
@@ -226,7 +226,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.labelTertiary" id="tertiarylabel1">
+              <object class="custom_widgets.sCTkLabelTertiary" id="tertiarylabel1">
                 <property name="state">normal</property>
                 <property name="text" translatable="yes">tertiary label</property>
                 <layout manager="pack">
@@ -237,7 +237,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeled1">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeled1">
             <property name="label_anchor">w</property>
             <property name="label_text">frameLabeledPrimary </property>
             <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
@@ -258,7 +258,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.labelSecondary" id="labelsecondary1">
+              <object class="custom_widgets.sCTkLabelSecondary" id="labelsecondary1">
                 <property name="anchor">center</property>
                 <property name="justify">center</property>
                 <property name="text" translatable="yes">labelFrame equiv</property>
@@ -269,7 +269,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.frameLabeledSecondary" id="framelabeledsecondary1">
+              <object class="custom_widgets.sCTkFrameLabeledSecondary" id="framelabeledsecondary1">
                 <property name="height">50</property>
                 <property name="label_anchor">w</property>
                 <property name="label_text">frameLabeledSecondary</property>
@@ -292,7 +292,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary1">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary1">
             <property name="label_anchor">w</property>
             <property name="label_text">frameLabeledPrimary </property>
             <bind sequence="&lt;MouseWheel&gt;" handler="callback" add="" />
@@ -312,7 +312,7 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.frameOutlined" id="frameoutlined1">
+              <object class="custom_widgets.sCTkFrameOutlined" id="frameoutlined1">
                 <property name="height">150</property>
                 <property name="width">175</property>
                 <layout manager="grid">
@@ -353,7 +353,7 @@
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary2">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary2">
             <property name="label_anchor">w</property>
             <property name="label_text">textboxes primary</property>
             <layout manager="grid">
@@ -361,7 +361,7 @@
               <property name="row">2</property>
             </layout>
             <child>
-              <object class="custom_widgets.textboxPrimary" id="textboxprimary1">
+              <object class="custom_widgets.sCTkTextboxPrimary" id="textboxprimary1">
                 <property name="font">{Arial} 24 {}</property>
                 <property name="insertborderwidth">1</property>
                 <property name="state">normal</property>
@@ -375,7 +375,31 @@ I hope not</property>
           </object>
         </child>
         <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary3">
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary4">
+            <property name="label_anchor">w</property>
+            <property name="label_text">textboxes secondary</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkTextboxSecondary" id="textboxsecondary1">
+                <property name="font">{Times New Roman} 16 {bold italic underline overstrike}</property>
+                <property name="insertborderwidth">2</property>
+                <property name="insertofftime">0</property>
+                <property name="insertontime">0</property>
+                <property name="insertwidth">0</property>
+                <property name="selectborderwidth">0</property>
+                <property name="text" translatable="yes">Times Roman 15 normal</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary3">
             <property name="label_anchor">w</property>
             <property name="label_text">outline frame</property>
             <layout manager="grid">
@@ -383,7 +407,7 @@ I hope not</property>
               <property name="row">2</property>
             </layout>
             <child>
-              <object class="custom_widgets.frameOutlined" id="frameoutlined2">
+              <object class="custom_widgets.sCTkFrameOutlined" id="frameoutlined2">
                 <property name="height">150</property>
                 <property name="width">150</property>
                 <layout manager="pack">
@@ -398,30 +422,6 @@ I hope not</property>
                     </layout>
                   </object>
                 </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="custom_widgets.frameLabeledPrimary" id="framelabeledprimary4">
-            <property name="label_anchor">w</property>
-            <property name="label_text">textboxes secondary</property>
-            <layout manager="grid">
-              <property name="column">1</property>
-              <property name="row">2</property>
-            </layout>
-            <child>
-              <object class="custom_widgets.textboxSecondary" id="textboxsecondary1">
-                <property name="font">{Times New Roman} 16 {bold italic underline overstrike}</property>
-                <property name="insertborderwidth">2</property>
-                <property name="insertofftime">0</property>
-                <property name="insertontime">0</property>
-                <property name="insertwidth">0</property>
-                <property name="selectborderwidth">0</property>
-                <property name="text" translatable="yes">Times Roman 15 normal</property>
-                <layout manager="pack">
-                  <property name="side">top</property>
-                </layout>
               </object>
             </child>
           </object>

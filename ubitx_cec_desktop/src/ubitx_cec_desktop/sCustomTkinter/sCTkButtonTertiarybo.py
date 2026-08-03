@@ -14,6 +14,8 @@ from pygubu.api.v1 import (
     register_widget,
 )
 from sCTkButtonTertiary import sCTkButtonTertiary
+
+from pygubu.plugins.customtkinter import nsctk
 from pygubu.plugins.customtkinter.widgets import CTkButtonBO
 from pygubu.api.v1 import copy_custom_property
 
@@ -24,10 +26,10 @@ from pygubu.api.v1 import copy_custom_property
 widget_namespace = "sCTkButtonTertiary"
 widget_classname = "sCTkButtonTertiary"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class sCTkButtonTertiaryBO(BuilderObject):
+class sCTkButtonTertiaryBO(CTkButtonBO):
     class_ = sCTkButtonTertiary
 
     def code_imports(self):

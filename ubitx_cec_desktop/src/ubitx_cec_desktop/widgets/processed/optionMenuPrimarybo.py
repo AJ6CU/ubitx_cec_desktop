@@ -1,36 +1,36 @@
 #!/usr/bin/python3
 """
-sCTkButtonPrimary
+optionMenuPrimary
 
-sublass of CTkButton
+A custom widget.
 
-UI source file: sCTkButtonPrimary.ui
+UI source file: my_ctk_label.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkButton
+from customtkinter import CTkLabel
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from sCTkButtonPrimary import sCTkButtonPrimary
+from optionMenuPrimary import optionMenuPrimary
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.widgets import CTkButtonBO
+from pygubu.plugins.customtkinter.widgets import CTkOptionMenuBO
 from pygubu.api.v1 import copy_custom_property
 
 
 #
 # Builder definition section
 #
-widget_namespace = "sCTkButtonPrimary"
-widget_classname = "sCTkButtonPrimary"
+widget_namespace = "optionMenuPrimary"
+widget_classname = "optionMenuPrimary"
 builder_namespace = "custom_widgets"
-section_name = "sCustomTkinter"
+section_name = "Project Widgets"
 
 
-class sCTkButtonPrimaryBO(CTkButtonBO):
-    class_ = sCTkButtonPrimary
+class optionMenuPrimaryBO(CTkOptionMenuBO):
+    class_ = optionMenuPrimary
 
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
@@ -40,14 +40,16 @@ class sCTkButtonPrimaryBO(CTkButtonBO):
         return imports
 
 
+
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, sCTkButtonPrimaryBO, widget_classname, ("ttk", section_name)
+    builder_id, optionMenuPrimaryBO, widget_classname, ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.
 #
 # nsctk is the customtkinter plugin namespace
-# nsctk.CTkButton is the registered name for CTkButtonBO builder.
-for pname in CTkButtonBO.properties:
-    copy_custom_property(nsctk.CTkButton, pname, builder_id)
+# nsctk.CTkLabel is the registered name for BO builder.
+for pname in CTkOptionMenuBO.properties:
+    copy_custom_property(nsctk.CTkOptionMenu, pname, builder_id)
+    # copy_custom_property(nsctk.CTkLabel, pname, builder_id)

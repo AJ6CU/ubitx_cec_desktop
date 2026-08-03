@@ -28,10 +28,11 @@ from sCTkCheckBox import sCTkCheckBox
 widget_namespace = "sCTkCheckBox"
 widget_classname = "sCTkCheckBox"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class sCTkCheckBoxBO(BuilderObject):
+class sCTkCheckBoxBO(CTkCheckBoxBO):
+    class_ = sCTkCheckBox
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
         # or None

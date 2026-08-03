@@ -1,36 +1,37 @@
 #!/usr/bin/python3
 """
-sCTkButtonPrimary
+sCTkScrollbar
 
-sublass of CTkButton
+scrollbar
 
-UI source file: sCTkButtonPrimary.ui
+UI source file: sCTkScrollbar.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkButton
+from customtkinter import CTkScrollbar
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from sCTkButtonPrimary import sCTkButtonPrimary
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.widgets import CTkButtonBO
+from pygubu.plugins.customtkinter.widgets import CTkScrollbarBO
 from pygubu.api.v1 import copy_custom_property
+
+from sCTkScrollbar import sCTkScrollbar
 
 
 #
 # Builder definition section
 #
-widget_namespace = "sCTkButtonPrimary"
-widget_classname = "sCTkButtonPrimary"
+widget_namespace = "sCTkScrollbar"
+widget_classname = "sCTkScrollbar"
 builder_namespace = "custom_widgets"
 section_name = "sCustomTkinter"
 
 
-class sCTkButtonPrimaryBO(CTkButtonBO):
-    class_ = sCTkButtonPrimary
+class sCTkScrollbarBO(CTkScrollbarBO):
+    class_ = sCTkScrollbar
 
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
@@ -42,12 +43,12 @@ class sCTkButtonPrimaryBO(CTkButtonBO):
 
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, sCTkButtonPrimaryBO, widget_classname, ("ttk", section_name)
+    builder_id, sCTkScrollbarBO, widget_classname, ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.
 #
 # nsctk is the customtkinter plugin namespace
-# nsctk.CTkButton is the registered name for CTkButtonBO builder.
-for pname in CTkButtonBO.properties:
-    copy_custom_property(nsctk.CTkButton, pname, builder_id)
+# nsctk.CTkScrollbar is the registered name for CTkScrollbarBO builder.
+for pname in CTkScrollbarBO.properties:
+    copy_custom_property(nsctk.CTkScrollbar, pname, builder_id)

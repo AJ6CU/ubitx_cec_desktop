@@ -27,7 +27,7 @@ from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
 widget_namespace = "sCTkFrameLabeledPrimary"
 widget_classname = "sCTkFrameLabeledPrimary"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
 container = True
@@ -36,7 +36,7 @@ container = True
 container_layout = False
 
 
-class sCTkFrameLabeledPrimaryBO(BuilderObject):
+class sCTkFrameLabeledPrimaryBO(CTkScrollableFrameBO):
     class_ = sCTkFrameLabeledPrimary
 
     def code_imports(self):

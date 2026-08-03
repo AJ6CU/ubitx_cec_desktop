@@ -27,10 +27,10 @@ from pygubu.api.v1 import copy_custom_property
 widget_namespace = "sCTkButtonSecondary"
 widget_classname = "sCTkButtonSecondary"
 builder_namespace = "custom_widgets"
-section_name = "Project Widgets"
+section_name = "sCustomTkinter"
 
 
-class sCTkButtonSecondaryBO(BuilderObject):
+class sCTkButtonSecondaryBO(CTkButtonBO):
     class_ = sCTkButtonSecondary
 
     def code_imports(self):
