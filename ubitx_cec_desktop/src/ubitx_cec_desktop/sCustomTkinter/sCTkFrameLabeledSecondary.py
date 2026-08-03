@@ -1,33 +1,32 @@
 #!/usr/bin/python3
 """
-frameLabeledPrimary
+sCTkFrameLabeledSecondary
 
 Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden
 
-UI source file: frameLabeledPrimary.ui
+UI source file: sCTkFrameLabeledSecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-import customtkinter as ctk
-import frameLabeledPrimaryui as baseui
+import sCTkFrameLabeledSecondaryui as baseui
 
 
 #
 # Manual user code
 #
 
-class frameLabeledPrimary(baseui.frameLabeledPrimaryUI):
+class sCTkFrameLabeledSecondary(baseui.sCTkFrameLabeledSecondaryUI):
     def __init__(self, master=None, **kw):
-
         #
         #   Defaults for this widget
         #
         theme_defaults = {
-            "border_color": ("#2ed158", "#11802b"),
-            "border_width": 2,
-            "label_font": ("Arial", 15, "bold"),
+            "border_color": ("#0f4d1e", "#00ff66"),
+            "border_width": 1,
+            "label_font": ("Arial", 12, "normal"),
             "label_text_color": ("#111827", "#F9FAFB"),
         }
+
         #
         #   Merge them into the kw
         #
@@ -36,14 +35,15 @@ class frameLabeledPrimary(baseui.frameLabeledPrimaryUI):
         super().__init__(master, **kw)
 
         #
-        #   This allows us to hide the scrollbar by making it the same color as the background. We are doing
-        #   this to provide the equivalent to ttk.labelframe without having to create it from scratch
+        #   The following gets the current background color and tries to hide the scrollbar by making it the same color
+        #   This allows us to use the scrollerdlabelframe instead of creating one our selves from a frame to emulate
+        #   a ttk.labelframe
         #
         current_bg = self.cget("fg_color")
         self.configure(
             scrollbar_button_color=current_bg,
             scrollbar_button_hover_color=current_bg,
-            scrollbar_fg_color= current_bg,
+            scrollbar_fg_color=current_bg
         )
 
         self._scrollbar.configure(height=0)
@@ -51,6 +51,6 @@ class frameLabeledPrimary(baseui.frameLabeledPrimaryUI):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = frameLabeledPrimary(root)
+    widget = sCTkFrameLabeledSecondary(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

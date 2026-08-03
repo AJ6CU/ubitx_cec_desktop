@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 """
-checkBox
+sCTkEntrySecondary
 
-derived from CTkCheckBox
+Customized ctk Entry field. - Secondary version
 
-UI source file: checkBox.ui
+UI source file: sCTkEntrySecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkCheckBox
+from customtkinter import CTkEntry
 
 
 def safe_i18n_translator(value):
@@ -34,7 +34,7 @@ def safe_image_loader(master, image_name: str):
 #
 # Base class definition
 #
-class checkBoxUI(CTkCheckBox):
+class sCTkEntrySecondaryUI(CTkEntry):
     def __init__(
         self,
         master=None,
@@ -55,12 +55,14 @@ class checkBoxUI(CTkCheckBox):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctkcheckbox1')
-        # Layout for 'checkBoxTemplate' skipped in custom widget template.
+        self.delete(0, "end")
+        self.insert(0, 'ctkentry1')
+        # Layout for 'entrySecondaryTemplate' skipped in custom widget
+        # template.
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = checkBoxUI(root)
+    widget = sCTkEntrySecondaryUI(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

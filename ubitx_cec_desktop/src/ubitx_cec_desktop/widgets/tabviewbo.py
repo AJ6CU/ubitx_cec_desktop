@@ -36,7 +36,7 @@ class tabviewBO(CTkTabviewBO):
         # should return an iterable of (module, classname/function) to import
         # or None
         imports = [(widget_namespace, widget_classname)]
-        # imports.extend(self.code_extra_imports())
+        imports.extend(self.code_extra_imports())
         return imports
 
 builder_id = f"{builder_namespace}.{widget_classname}"
@@ -53,15 +53,16 @@ tabviewBO.add_allowed_child(nsctk.CTkTabviewTab)
 #
 CTkTabviewTabBO.add_allowed_parent(builder_id)
 
-#
+# Not working as expected. Deletes from Customttlinter manual.
+# commenting out for now.
 # Register CTkTabview.Tab as MyCtkTabview.Tab in same menu to avoid
 # going to customtkinter menu:
-register_widget(
-    nsctk.CTkTabviewTab,
-    CTkTabviewTabBO,
-    f"{widget_classname}.Tab",
-    ("ttk", section_name)
-)
+# register_widget(
+#     nsctk.CTkTabviewTab,
+#     CTkTabviewTabBO,
+#     f"{widget_classname}.Tab",
+#     ("ttk", section_name)
+# )
 
 # Copy properties before we define our own properties.
 #

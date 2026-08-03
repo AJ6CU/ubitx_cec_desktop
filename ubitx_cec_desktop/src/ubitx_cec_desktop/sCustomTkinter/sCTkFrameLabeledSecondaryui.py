@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 """
-segmentedButton
+sCTkFrameLabeledSecondary
 
-segmentedButton
+Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden
 
-UI source file: canvas.ui
+UI source file: sCTkFrameLabeledSecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter.windows.widgets.core_rendering.ctk_canvas import CTkCanvas
+from customtkinter import CTkScrollableFrame
 
 
 def safe_i18n_translator(value):
@@ -34,7 +34,7 @@ def safe_image_loader(master, image_name: str):
 #
 # Base class definition
 #
-class canvasUI(CTkCanvas):
+class sCTkFrameLabeledSecondaryUI(CTkScrollableFrame):
     def __init__(
         self,
         master=None,
@@ -55,11 +55,12 @@ class canvasUI(CTkCanvas):
 
         super().__init__(master, **kw)
 
-        # Layout for 'canvasTemplate' skipped in custom widget template.
+        # Layout for 'frameLabeledSecondaryTemplate' skipped in custom widget
+        # template.
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = canvasUI(root)
+    widget = sCTkFrameLabeledSecondaryUI(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

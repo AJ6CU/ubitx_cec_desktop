@@ -2,16 +2,16 @@
 <interface version="1.5" author="PygubuDesigner 0.41.4">
   <project>
     <settings>
-      <setting id="name">buttonSecondary</setting>
-      <setting id="description">secondary ctk button</setting>
+      <setting id="name">sCTkEntrySecondary</setting>
+      <setting id="description">Customized ctk Entry field. - Secondary version</setting>
       <setting id="template">widget</setting>
-      <setting id="main_widget">buttonSecondary</setting>
+      <setting id="main_widget">entrySecondaryTemplate</setting>
       <setting id="module_namespace" />
-      <setting id="module_name">buttonSecondary</setting>
-      <setting id="main_classname">buttonSecondary</setting>
-      <setting id="output_dir">../../widgets</setting>
+      <setting id="module_name">sCTkEntrySecondary</setting>
+      <setting id="main_classname">sCTkEntrySecondary</setting>
+      <setting id="output_dir">../../sCustomTkinter</setting>
       <setting id="builder_namespace">custom_widgets</setting>
-      <setting id="output_dir2">../../widgets</setting>
+      <setting id="output_dir2">../../sCustomTkinter</setting>
       <setting id="generate_code_onsave">False</setting>
       <setting id="use_i18n">False</setting>
       <setting id="all_ids_attributes">False</setting>
@@ -28,8 +28,8 @@
       <property name="side">top</property>
     </layout>
     <child>
-      <object class="customtkinter.CTkButton" id="buttonSecondary" named="True">
-        <property name="text" translatable="yes">ctkbutton4</property>
+      <object class="customtkinter.CTkEntry" id="entrySecondaryTemplate" named="True">
+        <property name="text" translatable="yes">ctkentry1</property>
         <layout manager="pack">
           <property name="side">top</property>
         </layout>

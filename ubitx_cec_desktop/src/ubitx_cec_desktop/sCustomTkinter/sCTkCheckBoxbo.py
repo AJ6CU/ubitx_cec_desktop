@@ -1,37 +1,37 @@
 #!/usr/bin/python3
 """
-canvas
+sCTkCheckBox
 
-A custom widget.
+derived from CTkCheckBox
 
-UI source file: my_ctk_label.ui
+UI source file: sCTkCheckBox.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkCanvas
+from customtkinter import CTkCheckBox
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from canvas import canvas
+
 
 from pygubu.plugins.customtkinter import nsctk
-from pygubu.plugins.customtkinter.widgets import CTkCanvasBO
+from pygubu.plugins.customtkinter.widgets import CTkCheckBoxBO
 from pygubu.api.v1 import copy_custom_property
+
+from sCTkCheckBox import sCTkCheckBox
 
 
 #
 # Builder definition section
 #
-widget_namespace = "canvas"
-widget_classname = "canvas"
+widget_namespace = "sCTkCheckBox"
+widget_classname = "sCTkCheckBox"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
 
-class canvasBO(CTkCanvasBO):
-    class_ = canvas
-
+class sCTkCheckBoxBO(BuilderObject):
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
         # or None
@@ -40,15 +40,14 @@ class canvasBO(CTkCanvasBO):
         return imports
 
 
-
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, canvasBO, widget_classname, ("ttk", section_name)
+    builder_id, sCTkCheckBoxBO, widget_classname, ("ttk", section_name)
 )
 
 # Copy properties before we define our own properties.
 #
 # nsctk is the customtkinter plugin namespace
-# nsctk.CTkCanvas is the registered name for CTkCanvasBO builder.
-for pname in CTkCanvasBO.properties:
-    copy_custom_property(nsctk.CTkCanvas, pname, builder_id)
+# nsctk.CTkCheckBox is the registered name for CTkCheckBoxBO builder.
+for pname in CTkCheckBoxBO.properties:
+    copy_custom_property(nsctk.CTkCheckBox, pname, builder_id)

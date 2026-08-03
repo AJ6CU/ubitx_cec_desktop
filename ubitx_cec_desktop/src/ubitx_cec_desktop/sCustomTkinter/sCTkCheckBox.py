@@ -1,27 +1,27 @@
 #!/usr/bin/python3
 """
-canvas
+sCTkCheckBox
 
-canvas
+derived from CTkCheckBox
 
-UI source file: canvas.ui
+UI source file: sCTkCheckBox.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-import canvasui as baseui
+import sCTkCheckBoxui as baseui
 
 
 #
 # Manual user code
 #
 
-class canvas(baseui.canvasUI):
+class sCTkCheckBox(baseui.sCTkCheckBoxUI):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = canvas(root)
+    widget = sCTkCheckBox(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()
