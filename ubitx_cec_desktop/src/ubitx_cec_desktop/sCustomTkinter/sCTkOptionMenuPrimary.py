@@ -21,6 +21,8 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI):
         #   Defaults for this widget
         #
         theme_defaults = {
+            "font": ("Arial", 15, "normal"),
+            "dropdown_font": ("Arial", 15, "normal"),
             # Match fg_color to  button color so the whole menu is cohesive
             "fg_color": ("#1A4375", "#2471A3"),
             'button_color': ("#1F538D", "#2471A3"),

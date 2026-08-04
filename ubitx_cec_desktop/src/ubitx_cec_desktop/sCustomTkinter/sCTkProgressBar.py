@@ -18,6 +18,27 @@ import sCTkProgressBarui as baseui
 
 class sCTkProgressBar(baseui.sCTkProgressBarUI):
     def __init__(self, master=None, **kw):
+        theme_defaults = {
+            # 📐 Physical Geometry (Passed via **kwargs)
+            "width": 200,  # Standard horizontal track length
+            "height": 6,  # FIX: Natively sets a sleek, ultra-thin 6px track height
+
+            # 🎨 Color Map
+            # Matches your slider's high-contrast unselected gray tones
+            "fg_color": ("#E5E7EB", "#4B5563"),
+
+            # Matches your primary OptionMenu/ComboBox brand blue
+            "progress_color": ("#1A4375", "#2471A3"),
+
+            # 🔘 Smooth continuous edge styling
+            "corner_radius": 100  # Fully rounds off the left and right ends of the track
+        }
+
+        #
+        #   Merge them into the kw
+        #
+        kw = theme_defaults | kw
+
         super().__init__(master, **kw)
 
     def bind(self, sequence=None, command=None, add=None):

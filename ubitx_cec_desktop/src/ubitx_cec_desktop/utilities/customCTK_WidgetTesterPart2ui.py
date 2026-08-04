@@ -2,29 +2,36 @@
 """
 customCTK_WidgetTesterPart2
 
-just tests eah widget
+just tests each widget
 
 UI source file: customCTK_WidgetTesterPart2.ui
 """
-from checkBox import checkBox
-from comboBox import comboBox
 from customtkinter import (
     CTk,
     CTkCheckBox,
     CTkComboBox,
     CTkFrame,
     CTkLabel,
+    CTkOptionMenu,
     CTkProgressBar,
     CTkRadioButton,
     CTkSegmentedButton,
     CTkSlider,
     CTkSwitch)
-from frameLabeledPrimary import frameLabeledPrimary
-from progressBar import progressBar
-from radioButton import radioButton
-from segmentedButton import segmentedButton
-from slider import slider
-from switch import switch
+from sCTkButtonSecondary import sCTkButtonSecondary
+from sCTkCheckBox import sCTkCheckBox
+from sCTkComboBox import sCTkComboBox
+from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
+from sCTkLabelPrimary import sCTkLabelPrimary
+from sCTkOptionMenuPrimary import sCTkOptionMenuPrimary
+from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
+from sCTkProgressBar import sCTkProgressBar
+from sCTkRadioButton import sCTkRadioButton
+from sCTkScrollbar import sCTkScrollbar
+from sCTkSegmentedButton import sCTkSegmentedButton
+from sCTkSlider import sCTkSlider
+from sCTkSwitch import sCTkSwitch
+from sCTkTabview import sCTkTabview
 
 
 def safe_i18n_translator(value):
@@ -70,8 +77,7 @@ class customCTK_WidgetTesterPart2UI:
         on_first_object_cb(ctk1)
 
         ctkframe1 = CTkFrame(ctk1)
-        ctkframe1.configure(border_color="green", border_width=2)
-        framelabeledprimary5 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary5 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary5.configure(
             label_anchor="w", label_text="CheckBox and ComboBox")
         ctklabel1 = CTkLabel(framelabeledprimary5)
@@ -83,20 +89,21 @@ class customCTK_WidgetTesterPart2UI:
         ctklabel2 = CTkLabel(framelabeledprimary5)
         ctklabel2.configure(text='subCTk:')
         ctklabel2.grid(column=0, padx="0 5", row=1, sticky="e")
-        checkbox1 = checkBox(framelabeledprimary5)
-        checkbox1.configure(text='subCheckbox')
-        checkbox1.grid(column=1, row=1, sticky="w")
+        sctkcheckbox1 = sCTkCheckBox(framelabeledprimary5)
+        sctkcheckbox1.configure(text='sctkcheckbox1')
+        sctkcheckbox1.grid(column=1, row=1, sticky="w")
         ctklabel3 = CTkLabel(framelabeledprimary5)
         ctklabel3.configure(text='ctk:')
         ctklabel3.grid(column=0, padx="0 5", pady="20 0", row=2, sticky="e")
         ctkcombobox1 = CTkComboBox(framelabeledprimary5)
+        ctkcombobox1.configure(values=["apple", "pear", "grape"])
         ctkcombobox1.grid(column=1, pady="20 0", row=2)
         ctklabel4 = CTkLabel(framelabeledprimary5)
         ctklabel4.configure(text='subCTk:')
-        ctklabel4.grid(column=0, padx="0 5", row=3, sticky="e")
-        combobox1 = comboBox(framelabeledprimary5)
-        combobox1.configure(values=["apple", "pear", "grape"])
-        combobox1.grid(column=1, row=3)
+        ctklabel4.grid(column=0, padx="0 5", pady="10 0", row=3, sticky="e")
+        sctkcombobox1 = sCTkComboBox(framelabeledprimary5)
+        sctkcombobox1.configure(values=["apple", "pear", "grape"])
+        sctkcombobox1.grid(column=1, row=3)
         framelabeledprimary5.grid(
             column=0,
             padx="20 10",
@@ -104,7 +111,7 @@ class customCTK_WidgetTesterPart2UI:
             row=0,
             sticky="ew")
         framelabeledprimary5.bind("<MouseWheel>", self.callback, add="")
-        framelabeled1 = frameLabeledPrimary(ctkframe1)
+        framelabeled1 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeled1.configure(
             label_anchor="w",
             label_text="Progressbars and Sliders")
@@ -116,7 +123,7 @@ class customCTK_WidgetTesterPart2UI:
         ctklabel6 = CTkLabel(framelabeled1)
         ctklabel6.configure(text='subCTk:')
         ctklabel6.pack()
-        progressbar1 = progressBar(framelabeled1)
+        progressbar1 = sCTkProgressBar(framelabeled1)
         progressbar1.pack(side="top")
         ctklabel7 = CTkLabel(framelabeled1)
         ctklabel7.configure(text='ctk:')
@@ -126,36 +133,36 @@ class customCTK_WidgetTesterPart2UI:
         ctklabel8 = CTkLabel(framelabeled1)
         ctklabel8.configure(text='subCTk:')
         ctklabel8.pack()
-        slider1 = slider(framelabeled1)
+        slider1 = sCTkSlider(framelabeled1)
         slider1.pack(side="top")
         framelabeled1.grid(column=1, padx="20 10", pady=20, row=0, sticky="ew")
         framelabeled1.bind("<MouseWheel>", self.callback, add="")
-        framelabeledprimary6 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary6 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary6.configure(
             label_anchor="w",
             label_text="RadioButton and Switch")
         ctklabel9 = CTkLabel(framelabeledprimary6)
         ctklabel9.configure(text='ctk:')
         ctklabel9.grid(column=0, padx="0 5", row=0, sticky="e")
-        ctklabel10 = CTkLabel(framelabeledprimary6)
-        ctklabel10.configure(text='subCTk:')
-        ctklabel10.grid(column=0, padx="0 5", row=1, sticky="e")
-        ctklabel11 = CTkLabel(framelabeledprimary6)
-        ctklabel11.configure(text='ctk:')
-        ctklabel11.grid(column=0, padx="0 5", pady="20 0", row=2, sticky="e")
-        ctklabel12 = CTkLabel(framelabeledprimary6)
-        ctklabel12.configure(text='subCTk:')
-        ctklabel12.grid(column=0, padx="0 5", row=3, sticky="e")
         self.ctkradiobutton = CTkRadioButton(framelabeledprimary6)
         self.ctkradiobutton.configure(text='ctkradiobutton')
         self.ctkradiobutton.grid(column=1, row=0, sticky="w")
-        radiobutton1 = radioButton(framelabeledprimary6)
+        ctklabel10 = CTkLabel(framelabeledprimary6)
+        ctklabel10.configure(text='subCTk:')
+        ctklabel10.grid(column=0, padx="0 5", row=1, sticky="e")
+        radiobutton1 = sCTkRadioButton(framelabeledprimary6)
         radiobutton1.configure(text='subradiobutton')
         radiobutton1.grid(column=1, row=1, sticky="w")
+        ctklabel11 = CTkLabel(framelabeledprimary6)
+        ctklabel11.configure(text='ctk:')
+        ctklabel11.grid(column=0, padx="0 5", pady="20 0", row=2, sticky="e")
         ctkswitch1 = CTkSwitch(framelabeledprimary6)
         ctkswitch1.configure(text='ctkswitch')
         ctkswitch1.grid(column=1, pady="20 0", row=2, sticky="w")
-        switch1 = switch(framelabeledprimary6)
+        ctklabel12 = CTkLabel(framelabeledprimary6)
+        ctklabel12.configure(text='subCTk:')
+        ctklabel12.grid(column=0, padx="0 5", row=3, sticky="e")
+        switch1 = sCTkSwitch(framelabeledprimary6)
         switch1.configure(text='subswitch')
         switch1.grid(column=1, row=3, sticky="w")
         framelabeledprimary6.grid(
@@ -165,30 +172,104 @@ class customCTK_WidgetTesterPart2UI:
             row=0,
             sticky="ew")
         framelabeledprimary6.bind("<MouseWheel>", self.callback, add="")
-        framelabeledprimary2 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary2 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary2.configure(
             label_anchor="w", label_text="Segmented Button")
         ctklabel13 = CTkLabel(framelabeledprimary2)
         ctklabel13.configure(text='ctk:')
-        ctklabel13.pack()
+        ctklabel13.grid(column=0, row=0)
         ctksegmentedbutton1 = CTkSegmentedButton(framelabeledprimary2)
-        ctksegmentedbutton1.configure(values=["apple", "orange", "pear"])
-        ctksegmentedbutton1.pack(side="top")
+        ctksegmentedbutton1.configure(
+            dynamic_resizing=False,
+            values=[
+                "apple",
+                "blueberry",
+                "orange",
+                "pear"],
+            width=300)
+        ctksegmentedbutton1.grid(column=0, columnspan=3, row=1, sticky="ew")
         ctklabel14 = CTkLabel(framelabeledprimary2)
         ctklabel14.configure(text='subctk:')
-        ctklabel14.pack(pady="20 0")
-        segmentedbutton1 = segmentedButton(framelabeledprimary2)
+        ctklabel14.grid(column=0, row=2)
+        segmentedbutton1 = sCTkSegmentedButton(framelabeledprimary2)
         segmentedbutton1.configure(values=["VW", "Audi", "Porsche"])
-        segmentedbutton1.pack(side="top")
+        segmentedbutton1.grid(column=0, row=3)
+        sctkscrollbar1 = sCTkScrollbar(framelabeledprimary2)
+        sctkscrollbar1.grid(column=1, row=0, rowspan=6)
         framelabeledprimary2.grid(column=0, row=1)
-        framelabeledprimary4 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary4 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary4.configure(
-            label_anchor="w", label_text="textboxes secondary")
+            border_color="#2370a2",
+            label_anchor="w",
+            label_text="textboxes secondary")
+        tabview1 = sCTkTabview(framelabeledprimary4)
+        ctktabviewtab1 = tabview1.add("HI")
+        ctkframe2 = CTkFrame(ctktabviewtab1)
+        ctkframe2.configure(
+            bg_color="green",
+            border_color="yellow",
+            border_width=2)
+        sctkbuttonsecondary1 = sCTkButtonSecondary(ctkframe2)
+        sctkbuttonsecondary1.configure(text='sctkbuttonsecondary1')
+        sctkbuttonsecondary1.pack(side="top")
+        sctkbuttonsecondary2 = sCTkButtonSecondary(ctkframe2)
+        sctkbuttonsecondary2.configure(text='sctkbuttonsecondary2')
+        sctkbuttonsecondary2.pack(side="top")
+        ctkframe2.pack(side="top")
+        ctktabviewtab2 = tabview1.add("goodbye")
+        ctkframe3 = CTkFrame(ctktabviewtab2)
+        sctkcheckbox2 = sCTkCheckBox(ctkframe3)
+        sctkcheckbox2.configure(text='sctkcheckbox2')
+        sctkcheckbox2.pack(side="top")
+        sctkcheckbox3 = sCTkCheckBox(ctkframe3)
+        sctkcheckbox3.configure(text='sctkcheckbox3')
+        sctkcheckbox3.pack(side="top")
+        ctkframe3.pack(side="top")
+        ctktabviewtab3 = tabview1.add("no more")
+        ctkframe4 = CTkFrame(ctktabviewtab3)
+        sctklabelprimary1 = sCTkLabelPrimary(ctkframe4)
+        sctklabelprimary1.configure(text='sctklabelprimary1')
+        sctklabelprimary1.pack(side="top")
+        sctklabelprimary2 = sCTkLabelPrimary(ctkframe4)
+        sctklabelprimary2.configure(text='sctklabelprimary2')
+        sctklabelprimary2.pack(side="top")
+        ctkframe4.pack(side="top")
+        tabview1.pack(side="top")
         framelabeledprimary4.grid(column=1, row=1)
-        framelabeledprimary3 = frameLabeledPrimary(ctkframe1)
+        framelabeledprimary3 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary3.configure(
-            label_anchor="w", label_text="outline frame")
+            label_anchor="w",
+            label_text="Outline Frame + OptionMenu")
+        ctklabel15 = CTkLabel(framelabeledprimary3)
+        ctklabel15.configure(text='ctk:')
+        ctklabel15.grid(column=0, row=0, sticky="e")
+        ctklabel18 = CTkLabel(framelabeledprimary3)
+        ctklabel18.configure(text='subCTk:')
+        ctklabel18.grid(column=0, pady="10 0", row=1)
+        sctkoptionmenuprimary1 = sCTkOptionMenuPrimary(framelabeledprimary3)
+        sctkoptionmenuprimary1.configure(values=["VW", "Audi", "Ford"])
+        sctkoptionmenuprimary1.grid(column=1, pady="10 0", row=1)
+        ctkoptionmenu1 = CTkOptionMenu(framelabeledprimary3)
+        ctkoptionmenu1.configure(values=["VW", "Audi", "Ford"])
+        ctkoptionmenu1.grid(column=1, row=0)
+        ctklabel19 = CTkLabel(framelabeledprimary3)
+        ctklabel19.configure(text='2ndCTk:')
+        ctklabel19.grid(column=0, pady="10 0", row=2)
+        sctkoptionmenusecondary1 = sCTkOptionMenuSecondary(
+            framelabeledprimary3)
+        sctkoptionmenusecondary1.configure(values=["VW", "Audi", "Ford"])
+        sctkoptionmenusecondary1.grid(column=1, pady="10 0", row=2)
         framelabeledprimary3.grid(column=2, row=1)
+        sctkframelabeledprimary1 = sCTkFrameLabeledPrimary(ctkframe1)
+        sctkframelabeledprimary1.configure(
+            label_anchor="w", label_text="Scrollbars")
+        sctkscrollbar2 = sCTkScrollbar(sctkframelabeledprimary1)
+        sctkscrollbar2.grid(column=1, row=0, rowspan=6, sticky="e")
+        sctkscrollbar3 = sCTkScrollbar(
+            sctkframelabeledprimary1,
+            orientation="horizontal")
+        sctkscrollbar3.grid(column=1, row=1, rowspan=6, sticky="s")
+        sctkframelabeledprimary1.grid(column=0, row=2)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget

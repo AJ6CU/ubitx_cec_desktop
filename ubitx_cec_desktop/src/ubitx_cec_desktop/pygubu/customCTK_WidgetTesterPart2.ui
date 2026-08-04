@@ -22,14 +22,13 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
+      <customwidget path="../widgets/processed/checkBoxbo.py" />
     </customwidgets>
     <resources />
   </project>
   <object class="customtkinter.CTk" id="ctk1">
     <child>
       <object class="customtkinter.CTkFrame" id="ctkframe1">
-        <property name="border_color">green</property>
-        <property name="border_width">2</property>
         <layout manager="grid">
           <property name="column">0</property>
           <property name="row">0</property>
@@ -79,8 +78,8 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.sCTkCheckBox" id="checkbox1">
-                <property name="text" translatable="yes">subCheckbox</property>
+              <object class="custom_widgets.sCTkCheckBox" id="sctkcheckbox1">
+                <property name="text" translatable="yes">sctkcheckbox1</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="row">1</property>
@@ -102,6 +101,7 @@
             </child>
             <child>
               <object class="customtkinter.CTkComboBox" id="ctkcombobox1">
+                <property name="values">["apple","pear","grape"]</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="pady">20 0</property>
@@ -115,13 +115,14 @@
                 <layout manager="grid">
                   <property name="column">0</property>
                   <property name="padx">0 5</property>
+                  <property name="pady">10 0</property>
                   <property name="row">3</property>
                   <property name="sticky">e</property>
                 </layout>
               </object>
             </child>
             <child>
-              <object class="custom_widgets.sCTkComboBox" id="combobox1">
+              <object class="custom_widgets.sCTkComboBox" id="sctkcombobox1">
                 <property name="values">["apple","pear","grape"]</property>
                 <layout manager="grid">
                   <property name="column">1</property>
@@ -223,6 +224,16 @@
               </object>
             </child>
             <child>
+              <object class="customtkinter.CTkRadioButton" id="ctkradiobutton" named="True">
+                <property name="text" translatable="yes">ctkradiobutton</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                  <property name="sticky">w</property>
+                </layout>
+              </object>
+            </child>
+            <child>
               <object class="customtkinter.CTkLabel" id="ctklabel10">
                 <property name="text" translatable="yes">subCTk:</property>
                 <layout manager="grid">
@@ -230,6 +241,16 @@
                   <property name="padx">0 5</property>
                   <property name="row">1</property>
                   <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.sCTkRadioButton" id="radiobutton1">
+                <property name="text" translatable="yes">subradiobutton</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                  <property name="sticky">w</property>
                 </layout>
               </object>
             </child>
@@ -246,37 +267,6 @@
               </object>
             </child>
             <child>
-              <object class="customtkinter.CTkLabel" id="ctklabel12">
-                <property name="text" translatable="yes">subCTk:</property>
-                <layout manager="grid">
-                  <property name="column">0</property>
-                  <property name="padx">0 5</property>
-                  <property name="row">3</property>
-                  <property name="sticky">e</property>
-                </layout>
-              </object>
-            </child>
-            <child>
-              <object class="customtkinter.CTkRadioButton" id="ctkradiobutton" named="True">
-                <property name="text" translatable="yes">ctkradiobutton</property>
-                <layout manager="grid">
-                  <property name="column">1</property>
-                  <property name="row">0</property>
-                  <property name="sticky">w</property>
-                </layout>
-              </object>
-            </child>
-            <child>
-              <object class="custom_widgets.sCTkRadioButton" id="radiobutton1">
-                <property name="text" translatable="yes">subradiobutton</property>
-                <layout manager="grid">
-                  <property name="column">1</property>
-                  <property name="row">1</property>
-                  <property name="sticky">w</property>
-                </layout>
-              </object>
-            </child>
-            <child>
               <object class="customtkinter.CTkSwitch" id="ctkswitch1">
                 <property name="text" translatable="yes">ctkswitch</property>
                 <layout manager="grid">
@@ -284,6 +274,17 @@
                   <property name="pady">20 0</property>
                   <property name="row">2</property>
                   <property name="sticky">w</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="customtkinter.CTkLabel" id="ctklabel12">
+                <property name="text" translatable="yes">subCTk:</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">0 5</property>
+                  <property name="row">3</property>
+                  <property name="sticky">e</property>
                 </layout>
               </object>
             </child>
@@ -348,15 +349,11 @@
               </object>
             </child>
             <child>
-              <object class="custom_widgets.sCTkScrollbar" id="scrollbar1">
-                <property name="orientation">horizontal</property>
-                <property name="width">400</property>
+              <object class="custom_widgets.sCTkScrollbar" id="sctkscrollbar1">
                 <layout manager="grid">
-                  <property name="column">0</property>
-                  <property name="columnspan">5</property>
-                  <property name="pady">50</property>
-                  <property name="row">4</property>
-                  <property name="sticky">s</property>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                  <property name="rowspan">6</property>
                 </layout>
               </object>
             </child>
@@ -364,6 +361,7 @@
         </child>
         <child>
           <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary4">
+            <property name="border_color">#2370a2</property>
             <property name="label_anchor">w</property>
             <property name="label_text">textboxes secondary</property>
             <layout manager="grid">
@@ -378,16 +376,88 @@
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab1">
                     <property name="label" translatable="yes">HI</property>
+                    <child>
+                      <object class="customtkinter.CTkFrame" id="ctkframe2">
+                        <property name="bg_color">green</property>
+                        <property name="border_color">yellow</property>
+                        <property name="border_width">2</property>
+                        <layout manager="pack">
+                          <property name="side">top</property>
+                        </layout>
+                        <child>
+                          <object class="custom_widgets.sCTkButtonSecondary" id="sctkbuttonsecondary1">
+                            <property name="text" translatable="yes">sctkbuttonsecondary1</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="custom_widgets.sCTkButtonSecondary" id="sctkbuttonsecondary2">
+                            <property name="text" translatable="yes">sctkbuttonsecondary2</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab2">
                     <property name="label" translatable="yes">goodbye</property>
+                    <child>
+                      <object class="customtkinter.CTkFrame" id="ctkframe3">
+                        <layout manager="pack">
+                          <property name="side">top</property>
+                        </layout>
+                        <child>
+                          <object class="custom_widgets.sCTkCheckBox" id="sctkcheckbox2">
+                            <property name="text" translatable="yes">sctkcheckbox2</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="custom_widgets.sCTkCheckBox" id="sctkcheckbox3">
+                            <property name="text" translatable="yes">sctkcheckbox3</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
                   <object class="customtkinter.CTkTabviewTab" id="ctktabviewtab3">
                     <property name="label" translatable="yes">no more</property>
+                    <child>
+                      <object class="customtkinter.CTkFrame" id="ctkframe4">
+                        <layout manager="pack">
+                          <property name="side">top</property>
+                        </layout>
+                        <child>
+                          <object class="custom_widgets.sCTkLabelPrimary" id="sctklabelprimary1">
+                            <property name="text" translatable="yes">sctklabelprimary1</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="custom_widgets.sCTkLabelPrimary" id="sctklabelprimary2">
+                            <property name="text" translatable="yes">sctklabelprimary2</property>
+                            <layout manager="pack">
+                              <property name="side">top</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -397,11 +467,101 @@
         <child>
           <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary3">
             <property name="label_anchor">w</property>
-            <property name="label_text">outline frame</property>
+            <property name="label_text">Outline Frame + OptionMenu</property>
             <layout manager="grid">
               <property name="column">2</property>
               <property name="row">1</property>
             </layout>
+            <child>
+              <object class="customtkinter.CTkLabel" id="ctklabel15">
+                <property name="text" translatable="yes">ctk:</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="customtkinter.CTkLabel" id="ctklabel18">
+                <property name="text" translatable="yes">subCTk:</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.sCTkOptionMenuPrimary" id="sctkoptionmenuprimary1">
+                <property name="values">["VW","Audi","Ford"]</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="customtkinter.CTkOptionMenu" id="ctkoptionmenu1">
+                <property name="values">["VW","Audi","Ford"]</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="customtkinter.CTkLabel" id="ctklabel19">
+                <property name="text" translatable="yes">2ndCTk:</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.sCTkOptionMenuSecondary" id="sctkoptionmenusecondary1">
+                <property name="values">["VW","Audi","Ford"]</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="pady">10 0</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="sctkframelabeledprimary1">
+            <property name="label_anchor">w</property>
+            <property name="label_text">Scrollbars</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkScrollbar" id="sctkscrollbar2">
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                  <property name="rowspan">6</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="custom_widgets.sCTkScrollbar" id="sctkscrollbar3">
+                <property name="orientation">horizontal</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                  <property name="rowspan">6</property>
+                  <property name="sticky">s</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
       </object>
