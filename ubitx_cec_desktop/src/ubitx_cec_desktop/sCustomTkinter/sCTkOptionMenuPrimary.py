@@ -9,6 +9,7 @@ UI source file: sCTkOptionMenuPrimary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkOptionMenuPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -18,32 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "font": ("Arial", 15, "normal"),
-            "dropdown_font": ("Arial", 15, "normal"),
 
-            # 🎨 Active Palette (Primary Brand Blue Accents & High-Contrast Layout Panels)
-            "fg_color": ("#1A4375", "#2471A3"),  # Deep brand blue click-bar container
-            "button_color": ("#112A4B", "#1F618D"),  # Right-aligned disclosure arrow block
-            "button_hover_color": ("#0D1F38", "#1A5276"),  # Feedback highlight on arrow hover
-            "text_color": ("#FFFFFF", "#FFFFFF"),  # Main selected item text
-            "corner_radius": 6,
-
-            # 📂 Floating Popup Menu Card Customization (Explicit solid tuples satisfy engine checks)
-            "dropdown_fg_color": ("#FFFFFF", "#1F2937"),
-            "dropdown_text_color": ("#1F2937", "#F9FAFB"),
-            "dropdown_hover_color": ("#E5E7EB", "#374151"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#CBD5E1", "#374151"),  # Clean silver trace for Light Mode | Charcoal for Dark Mode
-                "button_color": ("#CBD5E1", "#374151"),  # Matches track to form a single locked block
-                "text_color": ("#94A3B8", "#64748B")  # Soft, high-contrast muted typography
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkOptionMenuPrimary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -119,11 +96,14 @@ if __name__ == "__main__":
     print("Populating updated parameters track values list...")
     widget.update_list(["Mode: USB", "Mode: LSB", "Mode: AM", "Mode: CW"], default_index=1)
 
-    # Test tracking loop sequences on your console window
+    # Verify our custom cascading state system locks down the option menu instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state =", widget.get_state())  # Output: disabled
 
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state =", widget.get_state())  # Output: normal
 
     root.mainloop()

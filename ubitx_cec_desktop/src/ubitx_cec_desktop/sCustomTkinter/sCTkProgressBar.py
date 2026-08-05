@@ -9,6 +9,7 @@ UI source file: sCTkProgressBar.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import os
 import sCTkProgressBarui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -19,27 +20,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        theme_defaults = {
-            # 📐 Physical Geometry (Passed via **kwargs)
-            "width": 200,  # Standard horizontal track length
-            "height": 6,  # FIX: Natively sets a sleek, ultra-thin 6px track height
 
-            # 🎨 Color Map
-            # Matches your slider's high-contrast unselected gray tones
-            "fg_color": ("#E5E7EB", "#4B5563"),
-
-            # Matches your primary OptionMenu/ComboBox brand blue
-            "progress_color": ("#1A4375", "#2471A3"),
-
-            # 🔘 Smooth continuous edge styling
-            "corner_radius": 100,  # Fully rounds off the left and right ends of the track
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#CBD5E1", "#374151"),  # Dulls unselected track backing
-                "progress_color": ("#94A3B8", "#4B5563")  # Mutes current metric level bar contrast
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkProgressBar"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -94,17 +76,20 @@ if __name__ == "__main__":
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
     widget = sCTkProgressBar(base)
-    # 🔄 FIX: Changed expand to False to prevent the 6px track height from over-expanding vertically!
+    # FIX: Changed expand to False to prevent the 6px track height from over-expanding vertically!
     widget.pack(expand=False, fill="x", padx=40, pady=10)
 
     # Simulate a partial tracking progress status value filling the bar
     widget.set(0.65)
 
-    # Test tracking loop sequences on your console window
+    # Verify our custom cascading state system locks down the progress indicator!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state =", widget.get_state())  # Output: disabled
 
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state =", widget.get_state())  # Output: normal
 
     root.mainloop()

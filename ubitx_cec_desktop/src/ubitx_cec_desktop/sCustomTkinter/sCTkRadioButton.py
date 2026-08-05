@@ -9,6 +9,7 @@ UI source file: sCTkRadioButton.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkRadioButtonui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -18,31 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkRadioButton(baseui.sCTkRadioButtonUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        # 📐 Universal Flat Theme Defaults
-        theme_defaults = {
-            "font": ("Arial", 15, "normal"),
 
-            # 📝 Text matching your standard labels and checkboxes
-            "text_color": ("#374151", "#D1D5DB"),
-
-            # 🔲 Thicker unchecked rings give hover highlights an excellent surface area to pop!
-            "border_width_unchecked": 4,
-            "border_width_checked": 6,
-            "border_color": ("#64748B", "#94A3B8"),
-
-            # 🎨 Active selection dot (matches OptionMenu/ComboBox base blue)
-            "fg_color": ("#1A4375", "#2471A3"),
-
-            # 🖱️ High-contrast navy/blue tones for tracking cursor movements
-            "hover_color": ("#112A4B", "#1F618D"),
-
-            # ⛔ Muted Soft-Contrast Disabled Overlay
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B"),
-                "fg_color": ("#CBD5E1", "#374151"),  # Inner dot drops to a soft silver in light mode
-                "border_color": ("#CBD5E1", "#475569")  # Outer circle matches the soft silver trace look
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkRadioButton"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -100,14 +78,17 @@ if __name__ == "__main__":
     radio_var = tk.StringVar(value="VFO_A")
 
     widget = sCTkRadioButton(base, text="Primary VFO A Link Target", variable=radio_var, value="VFO_A")
-    # 🔄 FIX: Settled expand to False to lock geometry baseline metrics cleanly
+    # Settled expand to False to lock geometry baseline metrics cleanly
     widget.pack(expand=False, fill="none", padx=10, pady=10)
 
-    # Test tracking loop sequences on your console window
+    # Verify our custom cascading state system locks down the component!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state =", widget.get_state())  # Output: disabled
 
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state =", widget.get_state())  # Output: normal
 
     root.mainloop()

@@ -8,6 +8,7 @@ UI source file: sCTkTextboxSecondary.ui
 """
 import tkinter as tk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import tkinter.ttk as ttk
 import sCTkTextboxSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -20,28 +21,8 @@ from sCTkFrame import sCTkFrame
 
 class sCTkTextboxSecondary(baseui.sCTkTextboxSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        theme_defaults = {
-            # 🔤 Compact size 12 font for minor logs or multi-column data views
-            "font": ("Arial", 12, "normal"),
-            "border_width": 0,
-            "corner_radius": 0,
 
-            # 🎨 Canvas Base Layers (Flat Card Mirroring Colors)
-            "fg_color": ("#FFFFFF", "#111827"),
-            "text_color": ("#1F2937", "#F9FAFB"),
-
-            # 🟢 Internal Native Scrollbar Map
-            "scrollbar_button_color": ("#64748B", "#4B5563"),
-            "scrollbar_button_hover_color": ("#1A4375", "#2471A3"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#E5E7EB", "#111827"),  # Lock container canvas back completely
-                "text_color": ("#94A3B8", "#64748B"),
-                "scrollbar_button_color": ("#E5E7EB", "#1F2937"),  # Mutes the inner handle tracking rails
-                "scrollbar_button_hover_color": ("#E5E7EB", "#1F2937")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkTextboxSecondary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -57,7 +38,7 @@ class sCTkTextboxSecondary(baseui.sCTkTextboxSecondaryUI, ThemeableWidget):
         if hasattr(self, "_text_widget") and self._text_widget is not None:
             self._text_widget.configure(padx=5, pady=5)
 
-        # 🔄 FIX: Self-correcting transparency workaround!
+        # FIX: Self-correcting transparency workaround!
         # Climbs the parent frame hierarchy automatically to pull and match solid colors
         # if placed on top of your completely see-through structural spacer frames.
         try:
@@ -75,7 +56,7 @@ class sCTkTextboxSecondary(baseui.sCTkTextboxSecondaryUI, ThemeableWidget):
         if mode in ("normal", "enabled", "active"):
             self.configure(state="normal")
 
-            # 🔄 FIX: Dynamically restore all active properties out of final_kw
+            # FIX: Dynamically restore all active properties out of final_kw
             for key in ("fg_color", "text_color", "scrollbar_button_color", "scrollbar_button_hover_color"):
                 active_val = self.final_kw.get(key, self._local_defaults.get(key))
                 try:
@@ -88,7 +69,7 @@ class sCTkTextboxSecondary(baseui.sCTkTextboxSecondaryUI, ThemeableWidget):
         elif mode == "disabled":
             self.configure(state="disabled")
 
-            # 🔄 FIX: Dynamically apply your complete high-contrast disabled muted configurations out of your map!
+            # FIX: Dynamically apply your complete high-contrast disabled muted configurations out of your map!
             for key in ("fg_color", "text_color", "scrollbar_button_color", "scrollbar_button_hover_color"):
                 if key in self._custom_disabled_map:
                     try:
@@ -115,10 +96,12 @@ if __name__ == "__main__":
 
     # Verify our custom cascading state system locks down the canvas and text elements instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
 
-    # 🔄 FIX: Verification hook successfully flushes properties back to normal
-    # widget.state("normal")
-    # print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
+    # FIX: Verification hook successfully flushes properties back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

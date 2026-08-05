@@ -9,6 +9,7 @@ UI source file: sCTkScrollbar.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkScrollbarui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -22,18 +23,7 @@ class sCTkScrollbar(baseui.sCTkScrollbarUI, ThemeableWidget):
         orientation = kw.get("orientation", "vertical").lower()
         is_horizontal = orientation == "horizontal"
 
-        # Define the universal color system
-        theme_defaults = {
-            "corner_radius": 4,
-            "fg_color": "transparent",
-            "button_color": ("#64748B", "#4B5563"),
-            "button_hover_color": ("#1A4375", "#2471A3"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "button_color": ("#E5E7EB", "#1F2937")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkScrollbar"]
 
         # Physical Geometry Injector: Lock down dimensions safely right inside the defaults mapping
         if is_horizontal:
@@ -66,7 +56,7 @@ class sCTkScrollbar(baseui.sCTkScrollbarUI, ThemeableWidget):
         mode = mode.lower()
 
         if mode in ("normal", "enabled", "active"):
-            # 🔄 FIX: Re-bind CustomTkinter's native framework listener shortcuts to maintain scope!
+            # FIX: Re-bind CustomTkinter's native framework listener shortcuts to maintain scope!
             try:
                 self._canvas.bind("<Enter>", self.enter)
                 self._canvas.bind("<Leave>", self.leave)
@@ -126,11 +116,14 @@ if __name__ == "__main__":
     widget = sCTkScrollbar(base, orientation="vertical")
     widget.pack(side="right", fill="y", padx=5, pady=5)
 
-    # Test tracking loop sequences on your console window
+    # Verify our custom cascading state system locks down the standalone scrollbar!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state =", widget.get_state())  # Output: disabled
 
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state =", widget.get_state())  # Output: normal
 
     root.mainloop()

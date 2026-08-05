@@ -9,9 +9,9 @@ UI source file: sCTkCheckBox.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkCheckBoxui as baseui
 from ThemeableWidget import ThemeableWidget
-
 
 #
 # Manual user code
@@ -19,26 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkCheckBox(baseui.sCTkCheckBoxUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "font": ("Arial", 15, "normal"),
-            "border_width": 3,
 
-            # 🎨 Active Palette (Primary Brand Blue Accents)
-            "border_color": ("#64748B", "#94A3B8"),  # High-visibility structural rims
-            "fg_color": ("#1A4375", "#2471A3"),  # Inner fill color when checked
-            "hover_color": ("#112A4B", "#1F618D"),  # Smooth feedback glow on cursor over
-            "text_color": ("#374151", "#D1D5DB"),  # Crisp standard body typography
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B"),  # Fades label text out of active focus
-                "fg_color": ("#E5E7EB", "#374151"),  # Dulls the core inner box fill
-                "border_color": ("#CBD5E1", "#475569")  # Softens the outer ring track line
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkCheckBox"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -83,7 +65,7 @@ class sCTkCheckBox(baseui.sCTkCheckBoxUI, ThemeableWidget):
 
 
 if __name__ == "__main__":
-    ctk.set_appearance_mode("dark")
+    # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
     root.geometry("400x200")
 
@@ -96,15 +78,14 @@ if __name__ == "__main__":
     widget = sCTkCheckBox(base, text="Enable Logging Framework")
     widget.pack(expand=True, fill="none", padx=10, pady=10)
 
-    # Sync backgrounds dynamically
-    frame_color = base.cget("fg_color")
-    widget.configure(fg_color=frame_color)
+    # FIX: Completely scrubbed out the configure(fg_color="transparent") line
+    # to permanent avoid CustomTkinter's validation type check crashes!
 
     # Test tracking loop sequences on your console window
     widget.state("disabled")
-    print("state =", widget.get_state())  # Output: disabled
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # widget.state("normal")
-    # print("state =", widget.get_state())  # Output: normal
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

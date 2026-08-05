@@ -9,6 +9,7 @@ UI source file: sCTkSlider.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkSliderui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -19,38 +20,14 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkSlider(baseui.sCTkSliderUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 📐 Physical Geometry (Passed via **kwargs)
-            "width": 200,
-            "height": 24,
-            "button_length": 12,
-            "border_width": 9,
 
-            # 🎨 Color Map
-            # FIX: Changed Dark Mode track color from #1F2937 to #4B5563 for sharp visibility
-            "fg_color": ("#E5E7EB", "#4B5563"),
-
-            "progress_color": ("#1A4375", "#2471A3"),
-            "button_color": ("#2471A3", "#2471A3"),
-            "button_hover_color": ("#112A4B", "#1F618D"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                # 🔄 FIX: Added fg_color and unified to use your soft silver trace / charcoal dark gray palette maps!
-                "fg_color": ("#CBD5E1", "#374151"),
-                "progress_color": ("#CBD5E1", "#4B5563"),
-                "button_color": ("#94A3B8", "#4B5563")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkSlider"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        # 🔄 FIX: Pass exactly TWO dictionary arguments to stay synchronized with your master engine class
+        # FIX: Pass exactly TWO dictionary arguments to stay synchronized with your master engine class
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
         # Initialize CustomTkinter with the clean final kwargs array safely
@@ -99,15 +76,17 @@ if __name__ == "__main__":
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
     widget = sCTkSlider(base)
-    # 🔄 FIX: Set expand to False to lock geometry baseline metrics cleanly
+    # Settled expand to False to lock geometry baseline metrics cleanly
     widget.pack(expand=False, fill="x", padx=40, pady=10)
     widget.set(0.45)
 
     # Verify our custom state loop handles double-pass transitions flawlessly on the console
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

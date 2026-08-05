@@ -8,6 +8,7 @@ UI source file: sCTkFrameOutlined.ui
 """
 import tkinter as tk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import tkinter.ttk as ttk
 import sCTkFrameOutlinedui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -19,23 +20,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkFrameOutlined(baseui.sCTkFrameOutlinedUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "border_width": 1.5,
-            # Light Mode: Crisp Slate Gray | Dark Mode: High-contrast Light Slate Gray
-            "border_color": ("#64748B", "#94A3B8"),
-            "corner_radius": 8,  # Smooth rounded container edges
 
-            # 🎨 Base Canvas Surface Layers (Crisp solid container cards)
-            "fg_color": ("#FFFFFF", "#111827"),
-
-            # ⛔ Muted Disabled Overlay for the container border
-            "disabled_map": {
-                "border_color": ("#CBD5E1", "#374151")  # Soft silver trace light / Charcoal dark
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkFrameOutlined"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -107,12 +93,24 @@ if __name__ == "__main__":
     # Let's drop a themeable input child inside to test the cascade layer profile!
     from sCTkEntryPrimary import sCTkEntryPrimary
 
-    test_input = sCTkEntryPrimary(widget)
+    # FIX: Safely discover and route the child component to the frame's true inner content container
+    # to maintain pristine geometric alignment with Pygubu Designer specifications!
+    target_container = getattr(widget, "w_child_container", widget)
+
+    test_input = sCTkEntryPrimary(target_container)
     test_input.pack(padx=20, pady=20, fill="x")
 
-    # Disabling the card panel grays out its border and locks down the nested text field instantly
+    # Verify our custom cascading state system locks down the container block!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Outlined Card panel tracker =", widget.get_state())
+    print("Nested child Entry tracker  =", test_input.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("Outlined Card panel tracker =", widget.get_state())
     print("Nested child Entry tracker  =", test_input.get_state())
 
     root.mainloop()
+

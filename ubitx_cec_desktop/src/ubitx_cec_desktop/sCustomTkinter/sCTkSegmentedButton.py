@@ -9,6 +9,7 @@ UI source file: sCTkSegmentedButton.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import os
 import sCTkSegmentedButtonui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -20,48 +21,14 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkSegmentedButton(baseui.sCTkSegmentedButtonUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        theme_defaults = {
-            # 🔤 Typography matching your core form controls
-            "font": ("Arial", 15, "normal"),
 
-            # 🎨 Base Track Background (Pure neutral medium gray / dark container)
-            "fg_color": ("#9E9E9E", "#111827"),
-
-            # 📝 Active selected text remains crisp white over the brand blue
-            "text_color": ("#FFFFFF", "#FFFFFF"),
-
-            # 📈 Selected / Active Segment (Your primary OptionMenu/ComboBox brand navy blues)
-            "selected_color": ("#1A4375", "#2471A3"),
-            "selected_hover_color": ("#112A4B", "#1F618D"),
-
-            # 🖱️ The perfect mid-dark neutral gray tone
-            "unselected_color": ("#9E9E9E", "#1F2937"),
-            "unselected_hover_color": ("#7D7D7D", "#374151"),  # Smoothly deepens on hover
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                # 🔄 FIX: Lightened the track background BEHIND the buttons completely to match your frame panels!
-                "fg_color": ("#FFFFFF", "#111827"),
-
-                # The individual button segments preserve their crisp, solid inactive looks
-                "selected_color": ("#64748B", "#4B5563"),
-                "unselected_color": ("#64748B", "#4B5563"),
-
-                # Hover states completely lock to the background color to mask cursor movements
-                "selected_hover_color": ("#64748B", "#4B5563"),
-                "unselected_hover_color": ("#64748B", "#4B5563"),
-
-                # Text turns into a light silver font in light mode, and a soft gray font in dark mode
-                "text_color": ("#CBD5E1", "#94A3B8")
-            }
-
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkSegmentedButton"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        # 🔄 FIX: Pass exactly TWO dictionary arguments to stay synchronized with your master engine class
+        # FIX: Pass exactly TWO dictionary arguments to stay synchronized with your master engine class
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
         # Initialize CustomTkinter with the clean final kwargs array securely
@@ -105,7 +72,7 @@ class sCTkSegmentedButton(baseui.sCTkSegmentedButtonUI, ThemeableWidget):
             except Exception:
                 pass
 
-            # 🔄 FIX: Reach deep into the internal button dictionary to override text color configurations!
+            # FIX: Reach deep into the internal button dictionary to override text color configurations!
             # This completely fixes CustomTkinter's native font coloring bug when disabled.
             if hasattr(self, "_buttons_dict"):
                 disabled_txt = self._custom_disabled_map.get("text_color", ("#CBD5E1", "#94A3B8"))
@@ -136,11 +103,14 @@ if __name__ == "__main__":
     widget.pack(expand=False, fill="none", padx=10, pady=10)
     widget.set("VFO-A")
 
-    # Verify our custom state loop handles double-pass transitions flawlessly on the console
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # widget.state("normal")
-    # print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+    # FIX: Uncommented and standardized to cleanly verify the component successfully scales back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

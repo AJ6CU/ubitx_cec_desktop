@@ -9,6 +9,7 @@ UI source file: sCTkLabelSecondary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkLabelSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -19,25 +20,13 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 🔤 Standard body size 15 to match checkbox and option menu labels on a uniform baseline
-            "font": ("Arial", 15, "normal"),
-            "fg_color": "transparent",
-            "text_color": ("#374151", "#D1D5DB"),
 
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B")  # Soft slate tone across both modes uniformly
-            }
-        }
-
+        theme_defaults = THEME_DEFAULTS["sCTkLabelSecondary"]
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        # 🔄 FIX: Aligned parameters to pass exactly TWO dictionary objects up to the base theme class
+        # FIX: Aligned parameters to pass exactly TWO dictionary objects up to the base theme class
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
         # Initialize CustomTkinter with the clean final kwargs array safely
@@ -72,11 +61,14 @@ if __name__ == "__main__":
     widget = sCTkLabelSecondary(base, text="Squelch Threshold Level:")
     widget.pack(expand=True, fill="none", padx=10, pady=10)
 
-    # Test tracking loop sequences on your console window
+    # Verify our custom cascading state system locks down the body text instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state =", widget.get_state())  # Output: disabled
 
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state =", widget.get_state())  # Output: normal
 
     root.mainloop()

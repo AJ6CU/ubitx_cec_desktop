@@ -9,9 +9,9 @@ UI source file: sCTkButtonPrimary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkButtonPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
-
 
 #
 # Manual user code
@@ -19,45 +19,10 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 📐 Physical Geometry (Passed to lock layout boundaries natively)
-            "width": 140,  # Standard compact horizontal width profile
-            "height": 34,  # FIX: Natively sets a clean, balanced button height
 
-            "font": ("Arial", 15, "normal"),
-            "fg_color": ("#1A4375", "#2471A3"),
-            "hover_color": ("#112A4B", "#1F618D"),
-            "text_color": ("#FFFFFF", "#FFFFFF"),
-            "corner_radius": 6,
+        theme_defaults = THEME_DEFAULTS["sCTkButtonPrimary"]
 
-            "disabled_map": {
-                "fg_color": ("#E5E7EB", "#374151"),
-                "hover_color": ("#E5E7EB", "#374151"),
-                "text_color": ("#94A3B8", "#64748B")
-            },
-
-            # ⛔ FIX: Higher-contrast Blue-Slate pressed state for maximum background separation
-            "pressed_map": {
-                # Light Mode: Balanced deep slate blue (#3B5984) - clean contrast against white background
-                # Dark Mode: Lighter Cobalt-Slate blue (#2E4A75) - pops sharply forward from #111827 background
-                "fg_color": ("#3B5984", "#2E4A75"),
-                "hover_color": ("#3B5984", "#2E4A75"),
-
-                # High-contrast font pairing to keep text perfectly legible
-                "text_color": ("#FFFFFF", "#FFFFFF")
-            },
-
-            "alarm_map": {
-                "fg_color": ("#990000", "#E74C3C"),
-                "hover_color": ("#990000", "#E74C3C"),
-                "text_color": ("#FFFFFF", "#FFFFFF")
-            }
-        }
-
-        # Store a reference to theme_defaults on the object instance
+        # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
         self._custom_pressed_map = theme_defaults.get("pressed_map", {})
@@ -76,12 +41,12 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
         """Dedicated button state controller."""
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            # 🔄 FIX: Re-bind core canvas event loops cleanly when coming back to active status
+            #  Re-bind core canvas event loops cleanly when coming back to active status using native framework tags
             try:
                 self._canvas.bind("<Enter>", self._on_enter)
                 self._canvas.bind("<Leave>", self._on_leave)
                 self._canvas.bind("<Button-1>", self._on_clicked)
-                self._canvas.bind("<ButtonRelease-1>", self._on_clicked)
+                self._canvas.bind("<ButtonRelease>", self._on_clicked)
             except Exception:
                 pass
 
@@ -91,12 +56,12 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             self._custom_current_state = "normal"
 
         elif mode == "disabled":
-            # 🔄 FIX: Explicitly unbind cursor listeners to completely absorb hovering glitches
+            # FIX: Explicitly unbind cursor listeners with clean cross-platform identifiers to permanently absorb hovering glitches
             try:
                 self._canvas.unbind("<Enter>")
                 self._canvas.unbind("<Leave>")
                 self._canvas.unbind("<Button-1>")
-                self._canvas.unbind("<ButtonRelease-1>")
+                self._canvas.unbind("<ButtonRelease>")
             except Exception:
                 pass
 
@@ -164,28 +129,36 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
 
 
 if __name__ == "__main__":
-    if __name__ == "__main__":
-        ctk.set_appearance_mode("dark")
-        root = ctk.CTk()
-        root.geometry("400x400")
+    # # ctk.set_appearance_mode("dark")
+    root = ctk.CTk()
+    root.geometry("400x400")
 
-        widget = sCTkButtonPrimary(root, text="System Action Button")
-        widget1 = sCTkButtonPrimary(root, text="testpressed")
-        widget1.configure(text="testpressed")
+    from sCTkFrame import sCTkFrame
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
 
-        # 🔄 FIX: Remove expand=True and fill="both" so the button scales to its true width/height config!
-        widget.pack(padx=40, pady=40)
-        widget1.pack(padx=40, pady=40)
+    widget = sCTkButtonPrimary(base, text="System Action Button")
+    widget1 = sCTkButtonPrimary(base, text="testpressed")
 
-        # Test tracking loop sequences
-        widget.state("normal")
-        print(widget.get_state())
+    widget.pack(padx=40, pady=20)
+    widget1.pack(padx=40, pady=20)
 
-        # widget.set_alarm_state(True)
-        widget1.set_pressed(True)
+    # Test tracking loop sequences
+    widget.state("normal")
+    widget1.set_pressed(True)
 
-        # widget.state("normal")
-        # print(widget.get_state())
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
 
-        root.mainloop()
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
 
+    widget1.set_pressed(True)
+
+    root.mainloop()

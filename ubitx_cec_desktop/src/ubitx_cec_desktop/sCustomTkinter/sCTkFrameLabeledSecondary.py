@@ -9,6 +9,7 @@ UI source file: sCTkFrameLabeledSecondary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import os
 import sCTkFrameLabeledSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -20,26 +21,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkFrameLabeledSecondary(baseui.sCTkFrameLabeledSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 📐 Secondary visual metrics footprint
-            "border_width": 1,  # Thinner trace line profile tracking
-            "border_color": ("#64748B", "#94A3B8"),  # Soft, clean slate outer rings
-            "fg_color": ("#F3F4F6", "#111827"),  # Ambient recessed helper panel backdrops
-            "corner_radius": 6,
 
-            # 🔤 Secondary hierarchy text configuration profile
-            "label_font": ("Arial", 12, "normal"),
-            "label_text_color": ("#4B5563", "#D1D5DB"),  # Muted body gray typography layout
-
-            # ⛔ Muted Disabled Overlay for the container border/text
-            "disabled_map": {
-                "border_color": ("#CBD5E1", "#374151"),
-                "label_text_color": ("#94A3B8", "#64748B")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkFrameLabeledSecondary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -130,6 +113,7 @@ if __name__ == "__main__":
     widget = sCTkFrameLabeledSecondary(root, label_text="Metadata Filter Attributes")
     widget.pack(expand=True, fill="both", padx=30, pady=30)
 
+    # Injects multiple lines of sub-labels to trigger the camouflage limits beautifully
     from sCTkLabelTertiary import sCTkLabelTertiary
 
     for note_index in range(1, 16):
@@ -140,5 +124,16 @@ if __name__ == "__main__":
         )
         meta_note.pack(fill="x", padx=15, pady=4)
 
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Container Labeled Frame state =", widget.get_state())
+    print("Nested log line entry state   =", meta_note.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Container Labeled Frame state =", widget.get_state())
+    print("Nested log line entry state   =", meta_note.get_state())
+
     root.mainloop()

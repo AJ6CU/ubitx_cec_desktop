@@ -9,6 +9,7 @@ UI source file: sCTkSwitch.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkSwitchui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -18,37 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkSwitch(baseui.sCTkSwitchUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "font": ("Arial", 15, "normal"),
 
-            # 📐 Physical Geometry (Thin Pill Silhouette Alignment Metrics)
-            "width": 60,
-            "height": 24,
-            "switch_width": 42,
-            "switch_height": 14,
-            "corner_radius": 100,
-
-            # 🎨 Color Map (OFF / Resting State)
-            # 🔄 FIX: Darkened the Light Mode track line to #94A3B8 so it pops cleanly against white cards!
-            "fg_color": ("#94A3B8", "#4B5563"),
-            "text_color": ("#374151", "#D1D5DB"),
-
-            # 📈 Active Palette (ON / Checked State)
-            "progress_color": ("#1A4375", "#2471A3"),
-            "button_color": ("#2471A3", "#2471A3"),
-            "button_hover_color": ("#112A4B", "#1F618D"),
-
-            # ⛔ Muted Soft-Contrast Disabled Overlay
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B"),
-                "fg_color": ("#CBD5E1", "#374151"),
-                "progress_color": ("#CBD5E1", "#4B5563"),
-                "button_color": ("#475569", "#94A3B8")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkSwitch"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -106,12 +78,14 @@ if __name__ == "__main__":
     widget = sCTkSwitch(base, text="Lock Transceiver Pre-Amp Link")
     widget.pack(expand=True, fill="none", padx=10, pady=10)
 
-    # Force disabled check to immediately verify layout contrast bounds
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # 🔄 FIX: Added normal pass check to ensure fluid bi-directional transition flows
+    # FIX: Added normal pass check to ensure fluid bi-directional transition flows
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

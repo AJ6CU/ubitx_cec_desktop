@@ -8,6 +8,7 @@ UI source file: sCTkFrame.ui
 """
 import tkinter as tk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import tkinter.ttk as ttk
 import sCTkFrameui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -19,19 +20,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkFrame(baseui.sCTkFrameUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "border_width": 0,
-            "corner_radius": 0,
 
-            # Valid color tuple satisfies type validation checks safely
-            "border_color": ("gray", "gray"),
-
-            # Fully allows transparent fills to let background containers bleed through cleanly!
-            "fg_color": "transparent"
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkFrame"]
 
         # Run our shared theme logic first to sanitize parameters and build self.final_kw
         ThemeableWidget.__init__(self, theme_defaults, kw)

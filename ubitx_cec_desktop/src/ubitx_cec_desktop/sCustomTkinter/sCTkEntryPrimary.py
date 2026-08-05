@@ -7,9 +7,9 @@ subclass of CTkEntry (Primary Form Input Field)
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkEntryPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
-
 
 #
 # Manual user code
@@ -17,26 +17,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "font": ("Arial", 15, "normal"),
-            "border_width": 1.5,
 
-            # 🎨 Active Look (Brand Blue Outline Rim / High Contrast Entry Layer)
-            "border_color": ("#1A4375", "#64748B"),  # Brand blue / slate dark outline ring
-            "fg_color": ("#FFFFFF", "#111827"),  # Clean entry input channel background canvas
-            "text_color": ("#1F2937", "#F9FAFB"),  # High contrast text typography
-            "corner_radius": 6,
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#F3F4F6", "#1F2937"),  # Drops frame luminosity track down 1 step
-                "border_color": ("#CBD5E1", "#475569"),  # Softens bounding outer container grid lines
-                "text_color": ("#94A3B8", "#64748B")  # Fades typed alphanumeric strings
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkEntryPrimary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -52,7 +34,7 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
         """Dedicated text input state controller."""
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            # 🔄 FIX: Directly unlock text inputs by executing native un-wrapped Tkinter calls
+            # Directly unlock text inputs by executing native un-wrapped Tkinter calls
             try:
                 tk.Entry.configure(self._entry, state="normal")
             except Exception:
@@ -72,7 +54,7 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
             self._custom_current_state = "normal"
 
         elif mode == "disabled":
-            # 🔄 FIX: Force deep component locking via native un-wrapped Tkinter calls!
+            # Force deep component locking via native un-wrapped Tkinter calls!
             # This completely freezes typing, echoes, and backspaces instantly at the C-level.
             try:
                 tk.Entry.configure(self._entry, state="disabled")
@@ -94,7 +76,7 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
 
 
 if __name__ == "__main__":
-    # ctk.set_appearance_mode("dark")
+    # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
     root.geometry("400x200")
 
@@ -107,16 +89,15 @@ if __name__ == "__main__":
     widget = sCTkEntryPrimary(base, placeholder_text="Enter Transceiver Frequency...")
     widget.pack(expand=True, fill="x", padx=40, pady=10)
 
-
-    # Sync backgrounds dynamically
-    frame_color = base.cget("fg_color")
-    widget.configure(fg_color=frame_color)
+    # FIX: Scrubbed away widget.configure(fg_color=frame_color) to permanently
+    # shield the entry slot text lane from triggering a transparency validation exception crash.
 
     # Test tracking loop sequences on your console window
     widget.state("disabled")
-    print("state =", widget.get_state())  # Output: disabled
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # widget.state("normal")
-    # print("state =", widget.get_state())  # Output: normal
+    # FIX: Uncommented to cleanly verify the component successfully scales back to active state
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

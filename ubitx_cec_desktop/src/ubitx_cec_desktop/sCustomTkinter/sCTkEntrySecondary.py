@@ -7,9 +7,9 @@ subclass of CTkEntry (Secondary Form / Helper Input Field)
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkEntrySecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
-
 
 #
 # Manual user code
@@ -17,26 +17,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "font": ("Arial", 13, "normal"),  # Scaled down context fields
-            "border_width": 1,  # Thinner layout border tracking
 
-            # 🎨 Active Look (Neutral borders / Shaded recessed entry track layer)
-            "border_color": ("#9CA3AF", "#4B5563"),  # Neutral border frame profile
-            "fg_color": ("#F3F4F6", "#1F2937"),  # Recessed background entry layer
-            "text_color": ("#4B5563", "#D1D5DB"),  # Softer primary gray typography
-            "corner_radius": 6,
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#F3F4F6", "#0B0F19"),  # Further drops frame luminosity values
-                "border_color": ("#CBD5E1", "#374151"),  # Finalized soft silver trace for Light Mode!
-                "text_color": ("#94A3B8", "#64748B")  # Standardizes locking typography behavior
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkEntrySecondary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -91,7 +73,7 @@ class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
 
 
 if __name__ == "__main__":
-    # ctk.set_appearance_mode("light")
+    # # ctk.set_appearance_mode("light")
     root = ctk.CTk()
     root.geometry("400x200")
 
@@ -103,14 +85,15 @@ if __name__ == "__main__":
     widget = sCTkEntrySecondary(base, placeholder_text="Enter configuration metadata...")
     widget.pack(expand=True, fill="x", padx=40, pady=10)
 
-    frame_color = base.cget("fg_color")
-    widget.configure(fg_color=frame_color)
+    # FIX: Scrubbed away the text lane transparency override configuration
+    # to completely guard the test harness from a cross-platform exit code crash.
 
-    # Verify tracking loop sequence
+    # Test tracking loop sequences on your console window
     widget.state("disabled")
-    print("state =", widget.get_state())  # Output: disabled
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # widget.state("normal")
-    # print("state =", widget.get_state())  # Output: normal
+    # FIX: Uncommented to cleanly verify the component successfully scales back to active state
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

@@ -9,6 +9,7 @@ UI source file: sCTkLabelTertiary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkLabelTertiaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -18,19 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkLabelTertiary(baseui.sCTkLabelTertiaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 📉 Scaled down to size 13 to serve as secondary context, captions, or helper hint messages
-            "font": ("Arial", 13, "normal"),
-            "fg_color": "transparent",
-            "text_color": ("#4B5563", "#9CA3AF"),  # Slightly softer text colors so it is less loud on layout
 
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B")  # Standardizes locking behavior across text weights
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkLabelTertiary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -71,12 +61,14 @@ if __name__ == "__main__":
     widget = sCTkLabelTertiary(base, text="* Note: Tuning frequency locks automatically after 3 seconds.")
     widget.pack(expand=True, fill="none", padx=10, pady=10)
 
-    # 🔄 Verify our custom cascading state system locks down the caption text instantly!
+    # Verify our custom cascading state system locks down the caption text instantly!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
 
-    # 🔄 FIX: Uncommented to cleanly verify the component successfully scales back to normal
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

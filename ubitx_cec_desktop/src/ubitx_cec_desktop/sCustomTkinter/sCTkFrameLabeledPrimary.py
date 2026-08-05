@@ -9,6 +9,7 @@ UI source file: sCTkFrameLabeledPrimary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import os
 import sCTkFrameLabeledPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -20,26 +21,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkFrameLabeledPrimary(baseui.sCTkFrameLabeledPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            "border_width": 2,
-            # Crisp heavy branding accents matching your primary buttons palette
-            "border_color": ("#1A4375", "#2471A3"),
-            "fg_color": ("#FFFFFF", "#111827"),  # Solid interior card canvas panels
-            "corner_radius": 8,
 
-            # Custom sub-label parameters
-            "label_font": ("Arial", 15, "bold"),
-            "label_text_color": ("#111827", "#F9FAFB"),
-
-            # ⛔ Muted Disabled Overlay for the container border/text
-            "disabled_map": {
-                "border_color": ("#CBD5E1", "#374151"),
-                "label_text_color": ("#94A3B8", "#64748B")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkFrameLabeledPrimary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -48,7 +31,7 @@ class sCTkFrameLabeledPrimary(baseui.sCTkFrameLabeledPrimaryUI, ThemeableWidget)
         # Run our shared theme logic first to sanitize parameters and merge dictionaries
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
-        # 🔄 FIX: Pop out non-standard keys locally right here to prevent constructor crashes!
+        # FIX: Pop out non-standard keys locally right here to prevent constructor crashes!
         lbl_font = self.final_kw.pop("label_font", theme_defaults.get("label_font"))
         lbl_color = self.final_kw.pop("label_text_color", theme_defaults.get("label_text_color"))
 
@@ -141,5 +124,16 @@ if __name__ == "__main__":
         )
         log_line.pack(fill="x", padx=15, pady=4)
 
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Container Labeled Frame state =", widget.get_state())
+    print("Nested log line entry state   =", log_line.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Container Labeled Frame state =", widget.get_state())
+    print("Nested log line entry state   =", log_line.get_state())
+
     root.mainloop()

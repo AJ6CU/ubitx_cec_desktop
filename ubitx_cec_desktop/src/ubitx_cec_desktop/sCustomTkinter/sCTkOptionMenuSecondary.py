@@ -10,6 +10,7 @@ UI source file: sCTkOptionMenuSecondary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 from ThemeableWidget import ThemeableWidget
 
 #
@@ -23,37 +24,7 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         command = kw.pop("command", None)
         variable = kw.pop("variable", None)
 
-        theme_defaults = {
-            # 📐 Bounding geometry parameters
-            "border_width": 1.25,
-            "corner_radius": 6,
-
-            # 🎨 Border contrast rims (Slate ring / Light slate gray)
-            "border_color": ("#64748B", "#94A3B8"),
-
-            # 🎨 Widget container backgrounds (Soft light tint / Ultra-deep anthracite-black #0B0F19)
-            "fg_color": ("#F3F4F6", "#0B0F19"),
-
-            # 🔤 Font metrics
-            "font": ("Arial", 13, "normal"),
-            "dropdown_font": ("Arial", 13, "normal"),
-
-            # 📝 Aligned high-contrast typography
-            "text_color": ("#1F2937", "#F9FAFB"),
-            "button_hover_color": ("#94A3B8", "#374151"),
-
-            # 📋 Dropdown options panels
-            "dropdown_fg_color": ("#FFFFFF", "#1F2937"),
-            "dropdown_text_color": ("#1F2937", "#F9FAFB"),
-            "dropdown_hover_color": ("#E5E7EB", "#374151"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B"),
-                "border_color": ("#CBD5E1", "#374151"),
-                "fg_color": ("#E5E7EB", "#0B0F19")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkOptionMenuSecondary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -163,12 +134,14 @@ if __name__ == "__main__":
     print("Populating secondary parameters track values list...")
     widget.update_list(["Filter: Narrow", "Filter: Medium", "Filter: Wide"], default_index=0)
 
-    # 🔄 Verify our custom cascading state system locks down the composite selector!
+    # Verify our custom cascading state system locks down the composite selector!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
 
-    # 🔄 FIX: Uncommented to cleanly verify the component successfully scales back to active state
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
+    print("\n--- NORMAL PASS ---")
     print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

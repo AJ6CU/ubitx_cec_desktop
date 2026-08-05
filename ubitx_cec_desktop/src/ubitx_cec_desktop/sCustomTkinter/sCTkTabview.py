@@ -9,6 +9,7 @@ UI source file: sCTkTabview.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkTabviewui as baseui
 from ThemeableWidget import ThemeableWidget
 
@@ -18,32 +19,8 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkTabview(baseui.sCTkTabviewUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        theme_defaults = {
-            # 🔤 Global tab navigation font settings
-            "font": ("Arial", 15, "normal"),
 
-            # 🎨 Active Palette (Page Canvas & Outer Background Surface Layers)
-            # Light Mode: Pure white for card contrast
-            # Dark Mode: Charcoal Slate 900 matching your core container frames
-            "fg_color": ("#FFFFFF", "#111827"),
-            "text_color": ("#FFFFFF", "#FFFFFF"),
-
-            # 🎛️ Active Navigation Row Palette (Inner Segmented Button Customization)
-            "segmented_button_fg_color": ("#9E9E9E", "#111827"),
-            "segmented_button_selected_color": ("#1A4375", "#2471A3"),
-            "segmented_button_selected_hover_color": ("#112A4B", "#1F618D"),
-            "segmented_button_unselected_color": ("#9E9E9E", "#1F2937"),
-            "segmented_button_unselected_hover_color": ("#7D7D7D", "#374151"),
-
-            # ⛔ Muted Disabled Overlay (Locks page clicks and flattens nav row)
-            "disabled_map": {
-                # 🔄 FIX: Lightened the track background BEHIND the tab buttons completely to #FFFFFF for light mode!
-                "segmented_button_fg_color": ("#FFFFFF", "#111827"),
-                "segmented_button_selected_color": ("#CBD5E1", "#374151"),
-                "segmented_button_unselected_color": ("#CBD5E1", "#374151"),
-                "text_color": ("#94A3B8", "#64748B")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkTabview"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -134,12 +111,14 @@ if __name__ == "__main__":
     widget.add("Audio Filters")
     widget.add("System Logs")
 
-    # Test tracking loops directly on launch
+    # Verify our custom cascading state system locks down the multi-page deck layout container!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
-    # # 🔄 FIX: Corrected log label string helper token trace context details
-    # widget.state("normal")
-    # print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+    # FIX: Re-activated to verify fluid return-to-normal parameters tracking flows flawlessly
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
 
     root.mainloop()

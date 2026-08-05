@@ -9,44 +9,16 @@ UI source file: sCTkTextboxPrimary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+from sCTkThemes import THEME_DEFAULTS
 import sCTkTextboxPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
 from sCTkFrame import sCTkFrame
 
 
-#
-# Manual user code
-#
-
 class sCTkTextboxPrimary(baseui.sCTkTextboxPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        #
-        #   Defaults for this widget
-        #
-        theme_defaults = {
-            # 📐 Physical Sizing & Typography
-            "font": ("Arial", 13, "normal"),
-            "border_width": 1,
-            "corner_radius": 6,
 
-            # 🎨 Canvas Base Layers (Sage/Charcoal Palette Profile)
-            "border_color": ("#b5beb6", "#3d5242"),
-            "fg_color": ("#cbcfcb", "#1a1a1a"),
-            "text_color": ("#1c1d1c", "#e3ece4"),
-
-            # 🟢 Internal Native Scrollbar Map
-            "scrollbar_button_color": ("#64748B", "#4B5563"),
-            "scrollbar_button_hover_color": ("#1A4375", "#2471A3"),
-
-            # ⛔ Muted Disabled Overlay
-            "disabled_map": {
-                "fg_color": ("#E5E7EB", "#111827"),  # Lock container canvas back completely
-                "border_color": ("#CBD5E1", "#1F2937"),
-                "text_color": ("#94A3B8", "#64748B"),
-                "scrollbar_button_color": ("#E5E7EB", "#1F2937"),  # Mutes the inner handle tracking rails
-                "scrollbar_button_hover_color": ("#E5E7EB", "#1F2937")
-            }
-        }
+        theme_defaults = THEME_DEFAULTS["sCTkTextboxPrimary"]
 
         # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
@@ -58,7 +30,7 @@ class sCTkTextboxPrimary(baseui.sCTkTextboxPrimaryUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array securely
         super().__init__(master, **self.final_kw)
 
-        # 🔄 FIX: Self-correcting transparency workaround!
+        # FIX: Self-correcting transparency workaround!
         # If the text box lands on top of a transparent container panel, it dynamically
         # climbs up the layout tree to fetch the window's true underlying background colors,
         # perfectly matching your camouflage look without triggering a transparency error!
@@ -118,11 +90,14 @@ if __name__ == "__main__":
     # Pre-populate sample message streams to check text visibility metrics
     widget.insert("0.0", "System Telemetry Buffer Active...\nListening on COM-04 trace line...\n")
 
-    # Verify our custom cascading state system locks down the canvas and text elements instantly!
+    # Verify our custom cascading state system locks down the text box workspace!
     widget.state("disabled")
+    print("--- DISABLED PASS ---")
     print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
 
-    # widget.state("normal")
-    # print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
+    # FIX: Re-activated to verify fluid return-to-normal configurations tracking flows flawlessly
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
 
     root.mainloop()
