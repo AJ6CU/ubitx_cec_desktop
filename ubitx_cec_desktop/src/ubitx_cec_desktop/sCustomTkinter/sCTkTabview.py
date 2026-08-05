@@ -2,65 +2,144 @@
 """
 sCTkTabview
 
-Built on top of CTkTabview.
+subclass of CTkTabview (Multi-Page Dashboard Deck Layout Container)
 
 UI source file: sCTkTabview.ui
 """
-import os
 import tkinter as tk
 import tkinter.ttk as ttk
+import customtkinter as ctk
 import sCTkTabviewui as baseui
-
+from ThemeableWidget import ThemeableWidget
 
 #
 # Manual user code
 #
 
-class sCTkTabview(baseui.sCTkTabviewUI):
+class sCTkTabview(baseui.sCTkTabviewUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
         theme_defaults = {
-            # 🎨 Base Tabview Body Frame (The canvas area beneath the tabs)
-            "fg_color": ("#FFFFFF", "#111827"),
+            # 🔤 Global tab navigation font settings
+            "font": ("Arial", 15, "normal"),
 
-            # 📝 Active selected tab text color remains crisp white
+            # 🎨 Active Palette (Page Canvas & Outer Background Surface Layers)
+            # Light Mode: Pure white for card contrast
+            # Dark Mode: Charcoal Slate 900 matching your core container frames
+            "fg_color": ("#FFFFFF", "#111827"),
             "text_color": ("#FFFFFF", "#FFFFFF"),
 
-            # 📝 Unselected tab text color uses high-contrast charcoal for readability
-            "text_color_disabled": ("#112A4B", "#F9FAFB"),
-
-            # 🔤 FIX: Intercepts and assigns the correct typeface to the hidden inner button array
-            "segmented_button_font": ("Arial", 15, "normal"),
-
-            # 🎨 Base Tab Track Background (Your perfect mid-neutral gray)
+            # 🎛️ Active Navigation Row Palette (Inner Segmented Button Customization)
             "segmented_button_fg_color": ("#9E9E9E", "#111827"),
-
-            # 📈 Selected / Active Tab Segment (Your primary brand navy blues)
             "segmented_button_selected_color": ("#1A4375", "#2471A3"),
             "segmented_button_selected_hover_color": ("#112A4B", "#1F618D"),
-
-            # 🖱️ Unselected Tab Segments (Pure neutral gray—no blue undertone)
             "segmented_button_unselected_color": ("#9E9E9E", "#1F2937"),
-            "segmented_button_unselected_hover_color": ("#7D7D7D", "#374151")
+            "segmented_button_unselected_hover_color": ("#7D7D7D", "#374151"),
+
+            # ⛔ Muted Disabled Overlay (Locks page clicks and flattens nav row)
+            "disabled_map": {
+                # 🔄 FIX: Lightened the track background BEHIND the tab buttons completely to #FFFFFF for light mode!
+                "segmented_button_fg_color": ("#FFFFFF", "#111827"),
+                "segmented_button_selected_color": ("#CBD5E1", "#374151"),
+                "segmented_button_unselected_color": ("#CBD5E1", "#374151"),
+                "text_color": ("#94A3B8", "#64748B")
+            }
         }
 
-        #
-        #   Merge them into the kw
-        #
-        kw = theme_defaults | kw
+        # Store dictionary references safely onto instance memory
+        self._local_defaults = theme_defaults
+        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        super().__init__(master, **kw)
+        # Run standard shared dict parsing code
+        ThemeableWidget.__init__(self, theme_defaults, kw)
 
-    def bind(self, sequence=None, command=None, add=None):
-        if "PYGUBU_DESIGNER_RUNNING" in os.environ:
-            # Avoid error, do nothing.
-            pass
-        else:
-            # Send reques to parent class
-            return super().bind(sequence, command, add)
+        # Intercept the non-standard key locally just for this specific constructor signature pass
+        target_font = self.final_kw.pop("font", theme_defaults.get("font"))
+
+        # Initialize CustomTkinter with the clean final kwargs array securely
+        super().__init__(master, **self.final_kw)
+
+        # Forward the extracted font parameter down to the navigation bar layer safely
+        if hasattr(self, "_segmented_button"):
+            self._segmented_button.configure(font=target_font)
+
+    def state(self, mode: str):
+        """Dedicated Tabview composite state controller."""
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            if hasattr(self, "_segmented_button"):
+                self._segmented_button.configure(state="normal")
+
+                # Restore original dynamic color states from our theme dictionary pass
+                for key in ("fg_color", "selected_color", "unselected_color", "selected_hover_color",
+                            "unselected_hover_color"):
+                    mapped_key = f"segmented_button_{key}"
+                    active_val = self.final_kw.get(mapped_key, self._local_defaults.get(mapped_key))
+                    try:
+                        self._segmented_button.configure(**{key: active_val})
+                    except Exception:
+                        pass
+
+                # Re-apply sharp text color settings to the internal navigation label buttons
+                if hasattr(self._segmented_button, "_buttons_dict"):
+                    active_txt = self.final_kw.get("text_color", self._local_defaults.get("text_color"))
+                    for button in self._segmented_button._buttons_dict.values():
+                        button.configure(text_color=active_txt)
+
+            self._custom_current_state = "normal"
+
+        elif mode == "disabled":
+            if hasattr(self, "_segmented_button"):
+                self._segmented_button.configure(state="disabled")
+
+                # Flatten the background track tabs and the master backing row block frame cleanly
+                updates = {}
+                if "segmented_button_fg_color" in self._custom_disabled_map:
+                    updates["fg_color"] = self._custom_disabled_map["segmented_button_fg_color"]
+                if "segmented_button_selected_color" in self._custom_disabled_map:
+                    updates["selected_color"] = self._custom_disabled_map["segmented_button_selected_color"]
+                    updates["selected_hover_color"] = self._custom_disabled_map["segmented_button_selected_color"]
+                if "segmented_button_unselected_color" in self._custom_disabled_map:
+                    updates["unselected_color"] = self._custom_disabled_map["segmented_button_unselected_color"]
+                    updates["unselected_hover_color"] = self._custom_disabled_map["segmented_button_unselected_color"]
+
+                try:
+                    self._segmented_button.configure(**updates)
+                except Exception:
+                    pass
+
+                # Override and drop internal button label text contrast
+                if hasattr(self._segmented_button, "_buttons_dict"):
+                    disabled_txt = self._custom_disabled_map.get("text_color", ("#94A3B8", "#64748B"))
+                    for button in self._segmented_button._buttons_dict.values():
+                        button.configure(text_color=disabled_txt)
+
+            self._custom_current_state = "disabled"
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    widget = sCTkTabview(root)
-    widget.pack(expand=True, fill="both")
+    # # ctk.set_appearance_mode("dark")
+
+    root = ctk.CTk()
+    root.geometry("500x350")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    widget = sCTkTabview(base)
+    widget.pack(expand=True, fill="both", padx=10, pady=10)
+
+    widget.add("Transceiver Settings")
+    widget.add("Audio Filters")
+    widget.add("System Logs")
+
+    # Test tracking loops directly on launch
+    widget.state("disabled")
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
+
+    # # 🔄 FIX: Corrected log label string helper token trace context details
+    # widget.state("normal")
+    # print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+
     root.mainloop()

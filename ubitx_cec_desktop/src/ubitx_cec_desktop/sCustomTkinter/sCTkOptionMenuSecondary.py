@@ -1,72 +1,174 @@
 #!/usr/bin/python3
 """
-optionMenuSecondary
+sCTkOptionMenuSecondary
 
-Tailored version of the standard ctkOptionMenu for secondary
+subclass of CTkFrame acting as a cleanly bordered composite OptionMenu
+(Secondary / Helper Selection Controller Variant)
 
 UI source file: sCTkOptionMenuSecondary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-import sCTkOptionMenuSecondaryui as baseui
-
+import customtkinter as ctk
+from ThemeableWidget import ThemeableWidget
 
 #
 # Manual user code
 #
 
-class sCTkOptionMenuSecondary(baseui.sCTkOptionMenuSecondaryUI):
+class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
     def __init__(self, master=None, **kw):
+        # Capture drop-down specific string value arrays early
+        values = kw.pop("values", [""])
+        command = kw.pop("command", None)
+        variable = kw.pop("variable", None)
 
-        #
-        #   Defaults for this widget
-        #
         theme_defaults = {
-            # 🔤 Font scaled down to 13 for secondary hierarchy
+            # 📐 Bounding geometry parameters
+            "border_width": 1.25,
+            "corner_radius": 6,
+
+            # 🎨 Border contrast rims (Slate ring / Light slate gray)
+            "border_color": ("#64748B", "#94A3B8"),
+
+            # 🎨 Widget container backgrounds (Soft light tint / Ultra-deep anthracite-black #0B0F19)
+            "fg_color": ("#F3F4F6", "#0B0F19"),
+
+            # 🔤 Font metrics
             "font": ("Arial", 13, "normal"),
             "dropdown_font": ("Arial", 13, "normal"),
 
-            # 🎨 FIX: Max dark mode contrast. Uses deep charcoal (#111827) to match entry field backgrounds
-            "fg_color": ("#F3F4F6", "#111827"),
-            "button_color": ("#F3F4F6", "#111827"),
-
-            # 📝 High-contrast neutral text (Dark text in Light Mode, Light text in Dark Mode)
+            # 📝 Aligned high-contrast typography
             "text_color": ("#1F2937", "#F9FAFB"),
-
-            # 🖱️ Responsive Hover states (Dark mode now jumps significantly to #374151)
             "button_hover_color": ("#94A3B8", "#374151"),
 
-            # 📋 Dropdown options
+            # 📋 Dropdown options panels
             "dropdown_fg_color": ("#FFFFFF", "#1F2937"),
             "dropdown_text_color": ("#1F2937", "#F9FAFB"),
-            "dropdown_hover_color": ("#E5E7EB", "#374151")
+            "dropdown_hover_color": ("#E5E7EB", "#374151"),
+
+            # ⛔ Muted Disabled Overlay
+            "disabled_map": {
+                "text_color": ("#94A3B8", "#64748B"),
+                "border_color": ("#CBD5E1", "#374151"),
+                "fg_color": ("#E5E7EB", "#0B0F19")
+            }
         }
 
-        #
-        #   Merge them into the kw
-        #
-        kw = theme_defaults | kw
+        # Store dictionary references safely onto instance memory
+        self._local_defaults = theme_defaults
+        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        super().__init__(master, **kw)
+        # Run our shared theme logic first to sanitize parameters and merge dictionaries
+        ThemeableWidget.__init__(self, theme_defaults, kw)
+
+        # Initialize the outer bordered container frame layout natively
+        super().__init__(master,
+                         border_width=self.final_kw.get("border_width"),
+                         border_color=self.final_kw.get("border_color"),
+                         fg_color=self.final_kw.get("fg_color"),
+                         corner_radius=self.final_kw.get("corner_radius"))
+
+        # Pass solid dummy colors here to stop CustomTkinter from raising a ValueError!
+        self._menu = ctk.CTkOptionMenu(
+            self,
+            values=values,
+            command=command,
+            variable=variable,
+            font=self.final_kw.get("font"),
+            dropdown_font=self.final_kw.get("dropdown_font"),
+            text_color=self.final_kw.get("text_color"),
+            fg_color=("gray", "gray"),  # Dummy values to pass validation
+            button_color=("gray", "gray"),  # Dummy values to pass validation
+            button_hover_color=self.final_kw.get("button_hover_color"),
+            dropdown_fg_color=self.final_kw.get("dropdown_fg_color"),
+            dropdown_text_color=self.final_kw.get("dropdown_text_color"),
+            dropdown_hover_color=self.final_kw.get("dropdown_hover_color"),
+            corner_radius=0
+        )
+        self._menu.pack(expand=True, fill="both", padx=1, pady=1)
+
+        # Reach into the core canvas properties and strip colors post-creation!
+        # This gives us true transparency without triggering CustomTkinter's type checks.
+        try:
+            self._menu.configure(fg_color=self.final_kw.get("fg_color"), button_color=self.final_kw.get("fg_color"))
+        except Exception:
+            # Absolute raw fallback to force lookups
+            if hasattr(self._menu, "_canvas"):
+                self._menu._canvas.configure(background="")
+
+    def state(self, mode: str):
+        """Dedicated option menu composite state controller."""
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            self._menu.configure(state="normal")
+
+            # Apply border and frame card updates cleanly
+            self.configure(
+                border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
+                fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color"))
+            )
+            self._menu.configure(
+                text_color=self.final_kw.get("text_color", self._local_defaults.get("text_color"))
+            )
+            self._custom_current_state = "normal"
+
+        elif mode == "disabled":
+            self._menu.configure(state="disabled")
+
+            # Pull your customized high-contrast muted configurations out of your map
+            if "border_color" in self._custom_disabled_map:
+                self.configure(border_color=self._custom_disabled_map["border_color"])
+            if "fg_color" in self._custom_disabled_map:
+                self.configure(fg_color=self._custom_disabled_map["fg_color"])
+            if "text_color" in self._custom_disabled_map:
+                self._menu.configure(text_color=self._custom_disabled_map["text_color"])
+
+            self._custom_current_state = "disabled"
 
     def update_list(self, new_values: list, default_index: int = 0):
         """Safely updates the items list and resets the visible value."""
         if not new_values:
-            self.configure(values=[""])
-            self.set("")
+            self._menu.configure(values=[""])
+            self._menu.set("")
             return
 
-        self.configure(values=new_values)
+        self._menu.configure(values=new_values)
 
-        # Guard against index out of bounds errors
         if default_index < len(new_values):
-            self.set(new_values[default_index])
+            self._menu.set(new_values[default_index])
         else:
-            self.set(new_values[0])
+            self._menu.set(new_values[0])
+
+    def set(self, value: str):
+        self._menu.set(value)
+
+    def get(self) -> str:
+        return self._menu.get()
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    widget = sCTkOptionMenuSecondary(root)
-    widget.pack(expand=True, fill="both")
+    # # ctk.set_appearance_mode("dark")
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    widget = sCTkOptionMenuSecondary(base, values=["Helper Option A", "Helper Option B"])
+    widget.pack(expand=True, fill="x", padx=40, pady=10)
+
+    print("Populating secondary parameters track values list...")
+    widget.update_list(["Filter: Narrow", "Filter: Medium", "Filter: Wide"], default_index=0)
+
+    # 🔄 Verify our custom cascading state system locks down the composite selector!
+    widget.state("disabled")
+    print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
+
+    # 🔄 FIX: Uncommented to cleanly verify the component successfully scales back to active state
+    widget.state("normal")
+    print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
+
     root.mainloop()

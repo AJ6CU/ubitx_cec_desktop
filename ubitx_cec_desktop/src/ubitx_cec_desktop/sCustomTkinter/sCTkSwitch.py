@@ -1,59 +1,117 @@
 #!/usr/bin/python3
 """
-sCTKSwitch
+sCTkSwitch
 
-derived from ctk switch
+subclass of CTkSwitch
 
 UI source file: sCTkSwitch.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
+import customtkinter as ctk
 import sCTkSwitchui as baseui
-
+from ThemeableWidget import ThemeableWidget
 
 #
 # Manual user code
 #
 
-class sCTkSwitch(baseui.sCTkSwitchUI):
-    def init__(self, master=None, **kw):
+class sCTkSwitch(baseui.sCTkSwitchUI, ThemeableWidget):
+    def __init__(self, master=None, **kw):
+        #
+        #   Defaults for this widget
+        #
         theme_defaults = {
-            # 📐 Physical Geometry (Passed via **kwargs)
-            "width": 60,  # Total width of the switch box
-            "height": 24,  # Height matching your slider layout
-            "switch_width": 42,  # Horizontal length of the internal toggle track [1]
-            "switch_height": 14,  # FIX: Thins the track down for a modern, sleek look [1]
-            "corner_radius": 100,  # Fully rounds out the capsule pill track edges [1]
-
-            # 📝 Text layout matching your regular labels and checkboxes
             "font": ("Arial", 15, "normal"),
+
+            # 📐 Physical Geometry (Thin Pill Silhouette Alignment Metrics)
+            "width": 60,
+            "height": 24,
+            "switch_width": 42,
+            "switch_height": 14,
+            "corner_radius": 100,
+
+            # 🎨 Color Map (OFF / Resting State)
+            # 🔄 FIX: Darkened the Light Mode track line to #94A3B8 so it pops cleanly against white cards!
+            "fg_color": ("#94A3B8", "#4B5563"),
             "text_color": ("#374151", "#D1D5DB"),
-            "text_color_disabled": ("#94A3B8", "#64748B"),
 
-            # 🎨 Color Map (OFF State)
-            # Track background matches your high-contrast slider resting rail gray
-            "fg_color": ("#E5E7EB", "#4B5563"),
-
-            # 📈 Color Map (ON State)
-            # Track turns into your primary brand blue when flipped on
+            # 📈 Active Palette (ON / Checked State)
             "progress_color": ("#1A4375", "#2471A3"),
-
-            # 🎛️ The round interactive moving knob
-            # Base color uses your brighter blue; hovers with your darkest navy/rich blue tones
             "button_color": ("#2471A3", "#2471A3"),
-            "button_hover_color": ("#112A4B", "#1F618D")
+            "button_hover_color": ("#112A4B", "#1F618D"),
+
+            # ⛔ Muted Soft-Contrast Disabled Overlay
+            "disabled_map": {
+                "text_color": ("#94A3B8", "#64748B"),
+                "fg_color": ("#CBD5E1", "#374151"),
+                "progress_color": ("#CBD5E1", "#4B5563"),
+                "button_color": ("#475569", "#94A3B8")
+            }
         }
 
-        #
-        #   Merge them into the kw
-        #
-        kw = theme_defaults | kw
+        # Store dictionary references safely onto instance memory
+        self._local_defaults = theme_defaults
+        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        super().__init__(master, **kw)
+        # Run our shared theme logic first to sanitize parameters and merge dictionaries
+        ThemeableWidget.__init__(self, theme_defaults, kw)
+
+        # Initialize CustomTkinter with the clean final kwargs array securely
+        super().__init__(master, **self.final_kw)
+
+    def state(self, mode: str):
+        """Dedicated switch toggle state controller."""
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            # Natively unlock mouse clicking toggle interaction engines safely
+            self.configure(state="normal")
+
+            # Dynamically pull the exact active colors without hardwired strings
+            for key in ("text_color", "fg_color", "progress_color", "button_color"):
+                active_val = self.final_kw.get(key, self._local_defaults.get(key))
+                try:
+                    self.configure(**{key: active_val})
+                except Exception:
+                    pass
+
+            self._custom_current_state = "normal"
+
+        elif mode == "disabled":
+            # Natively lock toggle parameters down tightly to freeze state adjustments
+            self.configure(state="disabled")
+
+            # Pull your customized high-contrast muted configurations out of your map
+            for key in ("text_color", "fg_color", "progress_color", "button_color"):
+                if key in self._custom_disabled_map:
+                    try:
+                        self.configure(**{key: self._custom_disabled_map[key]})
+                    except Exception:
+                        pass
+
+            self._custom_current_state = "disabled"
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    widget = sCTkSwitch(root)
-    widget.pack(expand=True, fill="both")
+    # # ctk.set_appearance_mode("dark")
+
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    widget = sCTkSwitch(base, text="Lock Transceiver Pre-Amp Link")
+    widget.pack(expand=True, fill="none", padx=10, pady=10)
+
+    # Force disabled check to immediately verify layout contrast bounds
+    widget.state("disabled")
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
+
+    # 🔄 FIX: Added normal pass check to ensure fluid bi-directional transition flows
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+
     root.mainloop()

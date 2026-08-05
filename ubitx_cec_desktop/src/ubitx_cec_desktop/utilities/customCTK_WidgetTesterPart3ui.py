@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """
-customCTK_WidgetTesterPart2
+customCTK_WidgetTesterPart3
 
 just tests each widget
 
-UI source file: customCTK_WidgetTesterPart2.ui
+UI source file: customCTK_WidgetTesterPart3.ui
 """
 from customtkinter import (
     CTk,
@@ -12,28 +12,21 @@ from customtkinter import (
     CTkComboBox,
     CTkFrame,
     CTkLabel,
-    CTkOptionMenu,
     CTkProgressBar,
     CTkRadioButton,
-    CTkSegmentedButton,
     CTkSlider,
     CTkSwitch)
-from sCTkButtonSecondary import sCTkButtonSecondary
 from sCTkCheckBox import sCTkCheckBox
 from sCTkComboBox import sCTkComboBox
+from sCTkFrame import sCTkFrame
 from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
+from sCTkFrameOutlined import sCTkFrameOutlined
 from sCTkLabelPrimary import sCTkLabelPrimary
-from sCTkOptionMenuPrimary import sCTkOptionMenuPrimary
-from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
 from sCTkProgressBar import sCTkProgressBar
 from sCTkRadioButton import sCTkRadioButton
-from sCTkScrollbar import sCTkScrollbar
-from sCTkSegmentedButton import sCTkSegmentedButton
+from sCTkScrollableFrame import sCTkScrollableFrame
 from sCTkSlider import sCTkSlider
 from sCTkSwitch import sCTkSwitch
-from sCTkTabview import sCTkTabview
-from sCTkTextboxPrimary import sCTkTextboxPrimary
-from sCTkTextboxSecondary import sCTkTextboxSecondary
 
 
 def safe_i18n_translator(value):
@@ -56,7 +49,7 @@ def safe_image_loader(master, image_name: str):
     return img
 
 
-class customCTK_WidgetTesterPart2UI:
+class customCTK_WidgetTesterPart3UI:
     def __init__(
         self,
         master=None,
@@ -174,124 +167,55 @@ class customCTK_WidgetTesterPart2UI:
             row=0,
             sticky="ew")
         framelabeledprimary6.bind("<MouseWheel>", self.callback, add="")
-        framelabeledprimary2 = sCTkFrameLabeledPrimary(ctkframe1)
-        framelabeledprimary2.configure(
-            label_anchor="w", label_text="Segmented Button")
-        ctklabel13 = CTkLabel(framelabeledprimary2)
-        ctklabel13.configure(text='ctk:')
-        ctklabel13.grid(column=0, row=0)
-        ctksegmentedbutton1 = CTkSegmentedButton(framelabeledprimary2)
-        ctksegmentedbutton1.configure(
-            dynamic_resizing=False,
-            values=[
-                "apple",
-                "blueberry",
-                "orange",
-                "pear"],
-            width=300)
-        ctksegmentedbutton1.grid(column=0, columnspan=3, row=1, sticky="ew")
-        ctklabel14 = CTkLabel(framelabeledprimary2)
-        ctklabel14.configure(text='subctk:')
-        ctklabel14.grid(column=0, row=2)
-        segmentedbutton1 = sCTkSegmentedButton(framelabeledprimary2)
-        segmentedbutton1.configure(values=["VW", "Audi", "Porsche"])
-        segmentedbutton1.grid(column=0, row=3)
-        sctkscrollbar1 = sCTkScrollbar(framelabeledprimary2)
-        sctkscrollbar1.grid(column=1, row=0, rowspan=6)
-        framelabeledprimary2.grid(column=0, row=1)
-        framelabeledprimary4 = sCTkFrameLabeledPrimary(ctkframe1)
-        framelabeledprimary4.configure(
-            border_color="#2370a2",
-            label_anchor="w",
-            label_text="textboxes secondary")
-        tabview1 = sCTkTabview(framelabeledprimary4)
-        ctktabviewtab1 = tabview1.add("HI")
-        ctkframe2 = CTkFrame(ctktabviewtab1)
-        ctkframe2.configure(
-            bg_color="green",
-            border_color="yellow",
-            border_width=2)
-        sctkbuttonsecondary1 = sCTkButtonSecondary(ctkframe2)
-        sctkbuttonsecondary1.configure(text='sctkbuttonsecondary1')
-        sctkbuttonsecondary1.pack(side="top")
-        sctkbuttonsecondary2 = sCTkButtonSecondary(ctkframe2)
-        sctkbuttonsecondary2.configure(text='sctkbuttonsecondary2')
-        sctkbuttonsecondary2.pack(side="top")
-        ctkframe2.pack(side="top")
-        ctktabviewtab2 = tabview1.add("goodbye")
-        ctkframe3 = CTkFrame(ctktabviewtab2)
-        sctkcheckbox2 = sCTkCheckBox(ctkframe3)
+        sctkscrollableframe1 = sCTkScrollableFrame(
+            ctkframe1, orientation="vertical")
+        sctkcheckbox2 = sCTkCheckBox(sctkscrollableframe1)
         sctkcheckbox2.configure(text='sctkcheckbox2')
         sctkcheckbox2.pack(side="top")
-        sctkcheckbox3 = sCTkCheckBox(ctkframe3)
-        sctkcheckbox3.configure(text='sctkcheckbox3')
-        sctkcheckbox3.pack(side="top")
-        ctkframe3.pack(side="top")
-        ctktabviewtab3 = tabview1.add("no more")
-        ctkframe4 = CTkFrame(ctktabviewtab3)
-        sctklabelprimary1 = sCTkLabelPrimary(ctkframe4)
-        sctklabelprimary1.configure(text='sctklabelprimary1')
+        sctklabelprimary1 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary1.configure(
+            text='sctklabelprimary1sctklabelprimary1sctklabelprimary1')
         sctklabelprimary1.pack(side="top")
-        sctklabelprimary2 = sCTkLabelPrimary(ctkframe4)
-        sctklabelprimary2.configure(text='sctklabelprimary2')
+        sctklabelprimary2 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary2.configure(text='sctklabelprimary1')
         sctklabelprimary2.pack(side="top")
-        ctkframe4.pack(side="top")
-        tabview1.pack(side="top")
-        framelabeledprimary4.grid(column=1, row=1)
-        framelabeledprimary3 = sCTkFrameLabeledPrimary(ctkframe1)
-        framelabeledprimary3.configure(
-            label_anchor="w",
-            label_text="Outline Frame + OptionMenu")
-        ctklabel15 = CTkLabel(framelabeledprimary3)
-        ctklabel15.configure(text='ctk:')
-        ctklabel15.grid(column=0, row=0, sticky="e")
-        ctklabel18 = CTkLabel(framelabeledprimary3)
-        ctklabel18.configure(text='subCTk:')
-        ctklabel18.grid(column=0, pady="10 0", row=1)
-        sctkoptionmenuprimary1 = sCTkOptionMenuPrimary(framelabeledprimary3)
-        sctkoptionmenuprimary1.configure(values=["VW", "Audi", "Ford"])
-        sctkoptionmenuprimary1.grid(column=1, pady="10 0", row=1)
-        ctkoptionmenu1 = CTkOptionMenu(framelabeledprimary3)
-        ctkoptionmenu1.configure(values=["VW", "Audi", "Ford"])
-        ctkoptionmenu1.grid(column=1, row=0)
-        ctklabel19 = CTkLabel(framelabeledprimary3)
-        ctklabel19.configure(text='2ndCTk:')
-        ctklabel19.grid(column=0, pady="10 0", row=2)
-        sctkoptionmenusecondary1 = sCTkOptionMenuSecondary(
-            framelabeledprimary3)
-        sctkoptionmenusecondary1.configure(values=["VW", "Audi", "Ford"])
-        sctkoptionmenusecondary1.grid(column=1, pady="10 0", row=2)
-        framelabeledprimary3.grid(column=2, row=1)
-        sctkframelabeledprimary1 = sCTkFrameLabeledPrimary(ctkframe1)
-        sctkframelabeledprimary1.configure(
-            label_anchor="w", label_text="Scrollbars")
-        sctkscrollbar2 = sCTkScrollbar(sctkframelabeledprimary1)
-        sctkscrollbar2.grid(column=1, row=0, rowspan=6, sticky="e")
-        sctkscrollbar3 = sCTkScrollbar(
-            sctkframelabeledprimary1,
-            orientation="horizontal")
-        sctkscrollbar3.grid(column=1, row=1, rowspan=6, sticky="s")
-        sctkframelabeledprimary1.grid(column=0, row=2)
-        self.testlabelframe = sCTkFrameLabeledPrimary(ctkframe1)
-        self.testlabelframe.configure(label_text="Primary Textbox")
-        sctktextboxprimary2 = sCTkTextboxPrimary(self.testlabelframe)
-        sctktextboxprimary2.configure(wrap="none")
-        _text_ = 'sctktextboxprimary2'
-        sctktextboxprimary2.delete("0.0", "end")
-        sctktextboxprimary2.insert("0.0", _text_)
-        sctktextboxprimary2.pack(side="top")
-        self.testlabelframe.grid(column=1, row=2)
-        self.sctkframelabeledprimary3 = sCTkFrameLabeledPrimary(ctkframe1)
-        self.sctkframelabeledprimary3.configure(
-            label_text="Secondary Text Box")
-        sctktextboxsecondary1 = sCTkTextboxSecondary(
-            self.sctkframelabeledprimary3)
-        sctktextboxsecondary1.configure(wrap="none")
-        _text_ = 'sctktextboxsecondary1'
-        sctktextboxsecondary1.delete("0.0", "end")
-        sctktextboxsecondary1.insert("0.0", _text_)
-        sctktextboxsecondary1.pack(side="top")
-        self.sctkframelabeledprimary3.grid(column=2, row=2)
+        sctklabelprimary3 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary3.configure(text='sctklabelprimary1')
+        sctklabelprimary3.pack(side="top")
+        sctklabelprimary4 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary4.configure(text='sctklabelprimary1')
+        sctklabelprimary4.pack(side="top")
+        sctklabelprimary5 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary5.configure(text='sctklabelprimary1')
+        sctklabelprimary5.pack(side="top")
+        sctklabelprimary6 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary6.configure(text='sctklabelprimary1')
+        sctklabelprimary6.pack(side="top")
+        sctklabelprimary7 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary7.configure(text='sctklabelprimary1')
+        sctklabelprimary7.pack(side="top")
+        sctklabelprimary8 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary8.configure(text='sctklabelprimary1')
+        sctklabelprimary8.pack(side="top")
+        sctklabelprimary9 = sCTkLabelPrimary(sctkscrollableframe1)
+        sctklabelprimary9.configure(text='sctklabelprimary1')
+        sctklabelprimary9.pack(side="top")
+        sctkscrollableframe1.grid(column=0, row=1)
+        sctkframe1 = sCTkFrame(ctkframe1)
+        sctklabelprimary10 = sCTkLabelPrimary(sctkframe1)
+        sctklabelprimary10.configure(text='standard frame')
+        sctklabelprimary10.pack(side="top")
+        sctkcheckbox3 = sCTkCheckBox(sctkframe1)
+        sctkcheckbox3.configure(text='sctkcheckbox3')
+        sctkcheckbox3.pack(pady="10 30", side="top")
+        sctkframeoutlined1 = sCTkFrameOutlined(sctkframe1)
+        sctkcheckbox4 = sCTkCheckBox(sctkframeoutlined1)
+        sctkcheckbox4.configure(text='sctkcheckbox4')
+        sctkcheckbox4.pack(pady="5 30", side="top")
+        sctkcombobox2 = sCTkComboBox(sctkframeoutlined1)
+        sctkcombobox2.pack(side="top")
+        sctkframeoutlined1.pack(pady="20 0", side="top")
+        sctkframe1.grid(column=1, row=1)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget
@@ -305,5 +229,5 @@ class customCTK_WidgetTesterPart2UI:
 
 
 if __name__ == "__main__":
-    app = customCTK_WidgetTesterPart2UI()
+    app = customCTK_WidgetTesterPart3UI()
     app.run()

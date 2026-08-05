@@ -2,63 +2,144 @@
 """
 sCTkFrameLabeledPrimary
 
-Similer to ttk.labelframe built on ctkscrollableframe with scrollbars hidden
+Similar to ttk.labelframe built on ctkscrollableframe with scrollbars hidden
 
 UI source file: sCTkFrameLabeledPrimary.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
+import customtkinter as ctk
 import os
 import sCTkFrameLabeledPrimaryui as baseui
+from ThemeableWidget import ThemeableWidget
 
 
 #
 # Manual user code
 #
 
-class sCTkFrameLabeledPrimary(baseui.sCTkFrameLabeledPrimaryUI):
+class sCTkFrameLabeledPrimary(baseui.sCTkFrameLabeledPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-
         #
         #   Defaults for this widget
         #
         theme_defaults = {
-            "border_color": ("#2ed158", "#11802b"),
             "border_width": 2,
+            # Crisp heavy branding accents matching your primary buttons palette
+            "border_color": ("#1A4375", "#2471A3"),
+            "fg_color": ("#FFFFFF", "#111827"),  # Solid interior card canvas panels
+            "corner_radius": 8,
+
+            # Custom sub-label parameters
             "label_font": ("Arial", 15, "bold"),
             "label_text_color": ("#111827", "#F9FAFB"),
+
+            # ⛔ Muted Disabled Overlay for the container border/text
+            "disabled_map": {
+                "border_color": ("#CBD5E1", "#374151"),
+                "label_text_color": ("#94A3B8", "#64748B")
+            }
         }
-        #
-        #   Merge them into the kw
-        #
-        kw = theme_defaults | kw
 
-        super().__init__(master, **kw)
+        # Store dictionary references safely onto instance memory
+        self._local_defaults = theme_defaults
+        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
-        #
-        #   This allows us to hide the scrollbar by making it the same color as the background. We are doing
-        #   this to provide the equivalent to ttk.labelframe without having to create it from scratch
-        #
-        current_bg = self.cget("fg_color")
-        self.configure(
-            scrollbar_button_color=current_bg,
-            scrollbar_button_hover_color=current_bg,
-            scrollbar_fg_color=current_bg,
-        )
+        # Run our shared theme logic first to sanitize parameters and merge dictionaries
+        ThemeableWidget.__init__(self, theme_defaults, kw)
 
-        self._scrollbar.configure(height=0)
+        # 🔄 FIX: Pop out non-standard keys locally right here to prevent constructor crashes!
+        lbl_font = self.final_kw.pop("label_font", theme_defaults.get("label_font"))
+        lbl_color = self.final_kw.pop("label_text_color", theme_defaults.get("label_text_color"))
+
+        # Safely capture the exact solid active color tuple from our dict pass
+        current_bg = self.final_kw.get("fg_color", theme_defaults.get("fg_color"))
+
+        # Initialize the underlying CustomTkinter scrollable frame constructor natively
+        super().__init__(master, **self.final_kw)
+
+        # Forward the captured typography configuration attributes down to the header label cleanly
+        if hasattr(self, "_label") and self._label is not None:
+            self._label.configure(font=lbl_font, text_color=lbl_color)
+
+        # Safely camouflage the scrollbar tracking elements using your exact color matching rules!
+        try:
+            self.configure(
+                scrollbar_fg_color=current_bg,
+                scrollbar_button_color=current_bg,
+                scrollbar_button_hover_color=current_bg
+            )
+        except Exception:
+            pass
+
+        # Completely collapse the remaining scrollbar handles out of view
+        if hasattr(self, "_scrollbar") and self._scrollbar is not None:
+            try:
+                self._scrollbar.configure(width=0, border_width=0)
+            except Exception:
+                pass
+
+    def state(self, mode: str):
+        """Universal recursive container state controller."""
+        mode = mode.lower()
+
+        if mode in ("normal", "enabled", "active"):
+            self.configure(border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")))
+            if hasattr(self, "_label") and self._label is not None:
+                self._label.configure(
+                    text_color=self.final_kw.get("label_text_color", self._local_defaults.get("label_text_color")))
+
+            self._custom_current_state = "normal"
+
+        elif mode == "disabled":
+            if "border_color" in self._custom_disabled_map:
+                self.configure(border_color=self._custom_disabled_map["border_color"])
+            if "label_text_color" in self._custom_disabled_map and hasattr(self, "_label") and self._label is not None:
+                self._label.configure(text_color=self._custom_disabled_map["label_text_color"])
+
+            self._custom_current_state = "disabled"
+
+        # 🚀 CASCADING NODE DISCOVERY: Loop recursively over all children inside this container panel frame
+        for child in self.winfo_children():
+            if hasattr(child, "winfo_children"):
+                for inner_child in child.winfo_children():
+                    if hasattr(inner_child, "state") and callable(getattr(inner_child, "state")):
+                        try:
+                            inner_child.state(mode)
+                        except Exception:
+                            pass
+
+            if hasattr(child, "state") and callable(getattr(child, "state")):
+                try:
+                    child.state(mode)
+                except Exception:
+                    pass
 
     def bind(self, sequence=None, command=None, add=None):
         if "PYGUBU_DESIGNER_RUNNING" in os.environ:
-            # Avoid error, do nothing.
             pass
         else:
-            # Send request to parent class
             return super().bind(sequence, command, add)
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    widget = sCTkFrameLabeledPrimary(root)
-    widget.pack(expand=True, fill="both")
+    # # ctk.set_appearance_mode("dark")
+    root = ctk.CTk()
+    root.geometry("500x400")
+
+    widget = sCTkFrameLabeledPrimary(root, label_text="System Transceiver Configuration Logs")
+    widget.pack(expand=True, fill="both", padx=30, pady=30)
+
+    # Injects multiple lines of sub-labels to trigger the camouflage limits beautifully
+    from sCTkLabelSecondary import sCTkLabelSecondary
+
+    for row_index in range(1, 21):
+        log_line = sCTkLabelSecondary(
+            widget,
+            text=f"[{row_index:02d}] VFO A Tuning Sequence Status Code: 0x2A - Channel Active",
+            anchor="w"
+        )
+        log_line.pack(fill="x", padx=15, pady=4)
+
+    widget.state("normal")
     root.mainloop()
