@@ -4,14 +4,14 @@
     <settings>
       <setting id="name">deleteme</setting>
       <setting id="description">deleteme</setting>
-      <setting id="template">application</setting>
-      <setting id="main_widget">ctk1</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">sctkdialog1</setting>
       <setting id="module_namespace" />
       <setting id="module_name">deleteme</setting>
       <setting id="main_classname">deleteme</setting>
       <setting id="output_dir">.</setting>
       <setting id="builder_namespace">custom_widgets</setting>
-      <setting id="output_dir2" />
+      <setting id="output_dir2">.</setting>
       <setting id="generate_code_onsave">False</setting>
       <setting id="use_i18n">False</setting>
       <setting id="all_ids_attributes">False</setting>
@@ -21,13 +21,33 @@
       <setting id="ttk_style_definition_file" />
     </settings>
     <customwidgets>
-      <customwidget path="../../sCustomTkinter/sCTK.py" />
+      <customwidget path="../../sCustomTkinter/sCTkDialogbo.py" />
     </customwidgets>
     <resources />
   </project>
-  <object class="customtkinter.CTk" id="ctk1">
+  <object class="custom_widgets.sCTkDialog" id="sctkdialog1">
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
     <child>
-      <object class="customtkinter.CTkFrame" id="ctkframe1">
+      <object class="customtkinter.CTkButton" id="ctkbutton1">
+        <property name="text" translatable="yes">ctkbutton1</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="customtkinter.CTkButton" id="ctkbutton2">
+        <property name="text" translatable="yes">ctkbutton2</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="customtkinter.CTkButton" id="ctkbutton3">
+        <property name="text" translatable="yes">ctkbutton3</property>
         <layout manager="pack">
           <property name="side">top</property>
         </layout>

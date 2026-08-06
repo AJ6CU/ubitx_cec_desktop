@@ -22,6 +22,7 @@ from sCTkFrame import sCTkFrame
 from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
 from sCTkFrameOutlined import sCTkFrameOutlined
 from sCTkLabelPrimary import sCTkLabelPrimary
+from sCTkPathChooser import sCTkPathChooser
 from sCTkProgressBar import sCTkProgressBar
 from sCTkRadioButton import sCTkRadioButton
 from sCTkScrollableFrame import sCTkScrollableFrame
@@ -216,6 +217,17 @@ class customCTK_WidgetTesterPart3UI:
         sctkcombobox2.pack(side="top")
         sctkframeoutlined1.pack(pady="20 0", side="top")
         sctkframe1.grid(column=1, row=1)
+        sctkframe2 = sCTkFrame(ctkframe1)
+        sctkpathchooser1 = sCTkPathChooser(sctkframe2)
+        sctkpathchooser1.configure(
+            defaultextension="py",
+            initialdir="~/Documents/Arduino",
+            text='choose file',
+            title='hello new world',
+            type="file",
+            width=50)
+        sctkpathchooser1.pack(side="top")
+        sctkframe2.grid(column=2, row=1)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget

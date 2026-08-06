@@ -567,6 +567,30 @@ THEME_DEFAULTS = {
                 "scrollbar_button_color": ("#E5E7EB", "#1F2937"),  # Mutes the inner handle tracking rails
                 "scrollbar_button_hover_color": ("#E5E7EB", "#1F2937")
             }
-    }
+    },
+
+    "sCTkPathChooser": {
+        # 📐 Custom geometry and font styles drawn straight from primary entries/secondary buttons
+        "entry_font": ("Arial", 15, "normal"),
+        "entry_fg": ("#FFFFFF", "#111827"),
+        "entry_border_color": ("#1A4375", "#64748B"),
+        "entry_text_color": ("#1F2937", "#F9FAFB"),
+
+        "btn_font": ("Arial", 15, "normal"),
+        "btn_fg": ("#E5E7EB", "#374151"),
+        "btn_hover": ("#D1D5DB", "#4B5563"),
+        "btn_text_color": ("#1F2937", "#F9FAFB"),
+        "btn_border_color": ("#9CA3AF", "#4B5563"),
+
+        # ⛔ Muted Disabled Overlay mapping to prevent look leaks on white cards
+        "disabled_map": {
+            "entry_fg": ("#F3F4F6", "#1F2937"),
+            "entry_border_color": ("#CBD5E1", "#475569"),
+            "entry_text_color": ("#94A3B8", "#64748B"),
+            "btn_fg": ("#F3F4F6", "#1F2937"),
+            "btn_border_color": ("#E5E7EB", "#374151"),
+            "btn_text_color": ("#94A3B8", "#64748B")
+        }
+    },
 
 }

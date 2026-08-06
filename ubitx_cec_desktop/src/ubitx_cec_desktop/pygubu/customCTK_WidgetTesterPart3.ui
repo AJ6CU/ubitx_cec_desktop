@@ -22,7 +22,7 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../widgets/processed/checkBoxbo.py" />
+      <customwidget path="../sCustomTkinter/sCTkPathChooserbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -434,6 +434,27 @@
                     </layout>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe2">
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="row">1</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkPathChooser" id="sctkpathchooser1">
+                <property name="defaultextension">py</property>
+                <property name="initialdir">~/Documents/Arduino</property>
+                <property name="text" translatable="yes">choose directory</property>
+                <property name="title" translatable="yes">hello world</property>
+                <property name="type">file</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
               </object>
             </child>
           </object>
