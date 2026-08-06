@@ -32,37 +32,6 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array securely
         super().__init__(master, **self.final_kw)
 
-    def state(self, mode: str):
-        """Dedicated option menu state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            # Natively unlock mouse clicking expansion events safely
-            self.configure(state="normal")
-
-            # Dynamically pull the exact active colors without hardwired strings
-            for key in ("fg_color", "button_color", "text_color"):
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                try:
-                    self.configure(**{key: active_val})
-                except Exception:
-                    pass
-
-            self._custom_current_state = "normal"
-
-        elif mode == "disabled":
-            # Natively freeze popups and lock out user interaction parameters
-            self.configure(state="disabled")
-
-            # Pull your customized high-contrast muted configurations out of your map
-            for key in ("fg_color", "button_color", "text_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
-
-            self._custom_current_state = "disabled"
-
     def update_list(self, new_values: list, default_index: int = 0):
         """Safely updates the items list and resets the visible value."""
         if not new_values:

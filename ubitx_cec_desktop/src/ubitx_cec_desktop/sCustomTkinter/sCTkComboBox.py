@@ -32,37 +32,6 @@ class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array securely
         super().__init__(master, **self.final_kw)
 
-    def state(self, mode: str):
-        """Dedicated combo box state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            # Natively unlock typing input and list selection capabilities safely
-            self.configure(state="normal")
-
-            # Dynamically pull the exact active colors without hardwired strings
-            for key in ("fg_color", "border_color", "text_color", "button_color"):
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                try:
-                    self.configure(**{key: active_val})
-                except Exception:
-                    pass
-
-            self._custom_current_state = "normal"
-
-        elif mode == "disabled":
-            # Natively freeze list clicks and lock text entry parameters down tightly
-            self.configure(state="disabled")
-
-            # Pull your customized high-contrast muted configurations out of your map
-            for key in ("fg_color", "border_color", "text_color", "button_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
-
-            self._custom_current_state = "disabled"
-
 
 if __name__ == "__main__":
     # # ctk.set_appearance_mode("dark")

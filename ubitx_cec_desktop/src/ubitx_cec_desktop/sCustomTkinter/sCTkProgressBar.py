@@ -33,29 +33,6 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array securely
         super().__init__(master, **self.final_kw)
 
-    def state(self, mode: str):
-        """Dedicated progress bar state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            # Restore your original vibrant branding progress color configurations
-            for key in ("fg_color", "progress_color"):
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                try:
-                    self.configure(**{key: active_val})
-                except Exception:
-                    pass
-            self._custom_current_state = "normal"
-
-        elif mode == "disabled":
-            # Apply your custom muted slate/charcoal gray strings from your dictionary map
-            for key in ("fg_color", "progress_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
-            self._custom_current_state = "disabled"
-
     def bind(self, sequence=None, command=None, add=None):
         if "PYGUBU_DESIGNER_RUNNING" in os.environ:
             # Avoid error, do nothing.

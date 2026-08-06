@@ -29,36 +29,6 @@ class sCTkFrame(baseui.sCTkFrameUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
-    def state(self, mode: str):
-        """
-        Universal recursive layout container state controller.
-        Maintains complete panel transparency while cascading state
-        commands down to all nested child components dynamically.
-        """
-        mode = mode.lower()
-
-        if mode in ("normal", "enabled", "active"):
-            self._custom_current_state = "normal"
-        elif mode == "disabled":
-            self._custom_current_state = "disabled"
-
-        # 🚀 CASCADING NODE DISCOVERY: Discovers inner components at runtime
-        # and tunnels state instructions straight down through the transparent layer mesh
-        for child in self.winfo_children():
-            if hasattr(child, "winfo_children"):
-                for inner_child in child.winfo_children():
-                    if hasattr(inner_child, "state") and callable(getattr(inner_child, "state")):
-                        try:
-                            inner_child.state(mode)
-                        except Exception:
-                            pass
-
-            if hasattr(child, "state") and callable(getattr(child, "state")):
-                try:
-                    child.state(mode)
-                except Exception:
-                    pass
-
 
 if __name__ == "__main__":
     # # ctk.set_appearance_mode("dark")
@@ -75,9 +45,17 @@ if __name__ == "__main__":
     test_input = sCTkEntryPrimary(widget)
     test_input.pack(padx=20, pady=20, fill="x")
 
-    # Disabling the invisible layout frame now smoothly tunnels down to freeze the input!
+
+    # Verify our custom cascading state system locks down the container block!
     widget.state("disabled")
-    print("Transparent Panel tracker  =", widget.get_state())
-    print("Nested child Entry tracker =", test_input.get_state())
+    print("--- DISABLED PASS ---")
+    print("Outlined Card panel tracker =", widget.get_state())
+    print("Nested child Entry tracker  =", test_input.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Outlined Card panel tracker =", widget.get_state())
+    print("Nested child Entry tracker  =", test_input.get_state())
 
     root.mainloop()

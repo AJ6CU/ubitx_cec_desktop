@@ -32,21 +32,6 @@ class sCTkLabelPrimary(baseui.sCTkLabelPrimaryUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
-    def state(self, mode: str):
-        """Dedicated primary label state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            # Restore your original bold, high-contrast title look
-            active_fallback = self._local_defaults.get("text_color")
-            self.configure(text_color=self.final_kw.get("text_color", active_fallback))
-            self._custom_current_state = "normal"
-
-        elif mode == "disabled":
-            # Apply your custom muted slate gray strings from your dictionary map
-            if "text_color" in self._custom_disabled_map:
-                self.configure(text_color=self._custom_disabled_map["text_color"])
-            self._custom_current_state = "disabled"
-
 
 if __name__ == "__main__":
     # # ctk.set_appearance_mode("dark")
