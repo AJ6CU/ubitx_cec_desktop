@@ -12,6 +12,7 @@ from customtkinter import CTkFrame
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
+    register_custom_property
 )
 
 from pygubu.plugins.customtkinter import nsctk
@@ -51,7 +52,4 @@ register_widget(
 # nsctk is the customtkinter plugin namespace
 # nsctk.CTkFrame is the registered name for CTkFrameBO builder.
 for pname in CTkFrameBO.properties:
-    # try:
     copy_custom_property(nsctk.CTkFrame, pname, builder_id)
-# except:
-#     pass

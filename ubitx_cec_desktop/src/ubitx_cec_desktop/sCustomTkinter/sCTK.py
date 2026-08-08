@@ -24,3 +24,4 @@ import sCTkSwitchbo
 import sCTkTabviewbo
 import sCTkScrollableFramebo
 import sCTkFramebo
+import dialogBasebo

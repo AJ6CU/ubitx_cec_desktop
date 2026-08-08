@@ -6,6 +6,7 @@ just tests each widget
 
 UI source file: customCTK_WidgetTesterPart3.ui
 """
+import tkinter.ttk as ttk
 from customtkinter import (
     CTk,
     CTkCheckBox,
@@ -20,8 +21,11 @@ from sCTkCheckBox import sCTkCheckBox
 from sCTkComboBox import sCTkComboBox
 from sCTkFrame import sCTkFrame
 from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
+from sCTkFrameLabeledSecondary import sCTkFrameLabeledSecondary
 from sCTkFrameOutlined import sCTkFrameOutlined
 from sCTkLabelPrimary import sCTkLabelPrimary
+from sCTkLabelSecondary import sCTkLabelSecondary
+from sCTkLabelTertiary import sCTkLabelTertiary
 from sCTkPathChooser import sCTkPathChooser
 from sCTkProgressBar import sCTkProgressBar
 from sCTkRadioButton import sCTkRadioButton
@@ -76,9 +80,9 @@ class customCTK_WidgetTesterPart3UI:
         framelabeledprimary5 = sCTkFrameLabeledPrimary(ctkframe1)
         framelabeledprimary5.configure(
             label_anchor="w", label_text="CheckBox and ComboBox")
-        ctklabel1 = CTkLabel(framelabeledprimary5)
-        ctklabel1.configure(text='ctk:')
-        ctklabel1.grid(column=0, padx="0 5", row=0, sticky="e")
+        sctklabelsecondary1 = sCTkLabelSecondary(framelabeledprimary5)
+        sctklabelsecondary1.configure(state="disabled", text='ctk:')
+        sctklabelsecondary1.grid(column=0, padx="0 5", row=0, sticky="e")
         ctkcheckbox1 = CTkCheckBox(framelabeledprimary5)
         ctkcheckbox1.configure(text='ctkCheckbox')
         ctkcheckbox1.grid(column=1, row=0, sticky="w")
@@ -207,7 +211,7 @@ class customCTK_WidgetTesterPart3UI:
         sctklabelprimary10.configure(text='standard frame')
         sctklabelprimary10.pack(side="top")
         sctkcheckbox3 = sCTkCheckBox(sctkframe1)
-        sctkcheckbox3.configure(text='sctkcheckbox3')
+        sctkcheckbox3.configure(state="normal", text='sctkcheckbox3')
         sctkcheckbox3.pack(pady="10 30", side="top")
         sctkframeoutlined1 = sCTkFrameOutlined(sctkframe1)
         sctkcheckbox4 = sCTkCheckBox(sctkframeoutlined1)
@@ -220,14 +224,35 @@ class customCTK_WidgetTesterPart3UI:
         sctkframe2 = sCTkFrame(ctkframe1)
         sctkpathchooser1 = sCTkPathChooser(sctkframe2)
         sctkpathchooser1.configure(
-            defaultextension="py",
-            initialdir="~/Documents/Arduino",
-            text='choose file',
-            title='hello new world',
-            type="file",
-            width=50)
+            btn_width=5,
+            height=100,
+            state="disabled",
+            width=500)
         sctkpathchooser1.pack(side="top")
         sctkframe2.grid(column=2, row=1)
+        sctkframelabeledsecondary1 = sCTkFrameLabeledSecondary(ctkframe1)
+        sctkframelabeledsecondary1.configure(
+            label_anchor="e", label_text="Secondary Frame")
+        sctklabelprimary11 = sCTkLabelPrimary(sctkframelabeledsecondary1)
+        sctklabelprimary11.configure(text='sctklabelprimary11')
+        sctklabelprimary11.pack(side="top")
+        sctklabelsecondary2 = sCTkLabelSecondary(sctkframelabeledsecondary1)
+        sctklabelsecondary2.configure(
+            state="normal", text='sctklabelsecondary2')
+        sctklabelsecondary2.pack(side="top")
+        sctklabeltertiary1 = sCTkLabelTertiary(sctkframelabeledsecondary1)
+        sctklabeltertiary1.configure(state="normal", text='sctklabeltertiary1')
+        sctklabeltertiary1.pack(side="top")
+        sctkcheckbox5 = sCTkCheckBox(sctkframelabeledsecondary1)
+        sctkcheckbox5.configure(state="disabled", text='sctkcheckbox5')
+        sctkcheckbox5.pack(side="top")
+        label1 = ttk.Label(sctkframelabeledsecondary1)
+        label1.configure(text='label1')
+        label1.pack(side="top")
+        ctklabel1 = CTkLabel(sctkframelabeledsecondary1)
+        ctklabel1.configure(state="disabled", text='ctklabel1')
+        ctklabel1.pack(side="top")
+        sctkframelabeledsecondary1.grid(column=0, row=2)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget

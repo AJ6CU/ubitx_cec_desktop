@@ -1,230 +1,372 @@
 #!/usr/bin/python3
 """
-sCTkPathChooser
+sCTkPathChooser - Part 1: Initialization & Visual Layout
 
-Based on Pygubu Widgets, Stylized to fit into other sCustomTkinter widget set.
-
-UI source file: sCTkPathChooserButton.ui
+A custom, compound widget pairing a fluid layout entry field with a browse button.
+The outer frame controls the envelope geometry via standard width/height,
+while the inner text field stretches fluidly and manages its own alignment.
 """
 import os
+import sys
+import ast
 import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
+
+# Ensure sister scripts are visible inside the same package level space
+_local_dir = os.path.dirname(os.path.abspath(__file__))
+if _local_dir not in sys.path:
+    sys.path.insert(0, _local_dir)
+
 from sCTkThemes import THEME_DEFAULTS
-from sCTkEntryPrimary import sCTkEntryPrimary
-from sCTkButtonSecondary import sCTkButtonSecondary
-import sCTkPathChooserui as baseui
 from ThemeableWidget import ThemeableWidget
+from sCTkFileExplorer import sCTkFileExplorer
 
 
-class sCTkPathChooser(baseui.sCTkPathChooserUI, ThemeableWidget):
-    def __init__(self, master=None, **kw):
-        # 1. Parse incoming Pygubu initialization properties safely
-        self._type = str(kw.get("type", "directory") or "directory").lower()
-        self._title = kw.get("title", "Select System Path Location Target")
-        self._initialdir = kw.get("initialdir", os.getcwd())
-        self._filetypes = kw.get("filetypes", [("All Files", "*.*")])
-        self._defaultextension = kw.get("defaultextension", "")
-        self._state_callback = kw.get("command", None)
+class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
+    _MANAGED_PROPERTIES = frozenset({
+        "initialdir", "initialfile", "type", "title", "filetypes", "defaultextension",
+        "btn_width", "btn_height", "btn_text", "entry_height", "browser_width", "browser_height", "justify"
+    })
+
+    def __init__(self, master=None, **kwargs):
+        # Forcefully extract custom properties out so ctk.CTkFrame never throws a kwargs error
+        self.type = str(kwargs.pop("type", "directory") or "directory").lower()
+        self.title = str(kwargs.pop("title", "Select Path"))
+        self.command = kwargs.pop("command", None)
+
+        # Pull standard layout sizing constraints explicitly, cleansing them from kwargs pass
+        desired_width = kwargs.pop("width", 350)
+        desired_height = kwargs.pop("height", 32)
+
+        # Pop text alignment parameters or fall back to left orientation
+        self.justify = str(kwargs.pop("justify", "left")).lower()
+        if self.justify not in ("left", "right", "center"):
+            self.justify = "left"
+
+        # Pop entry custom height dimensions or fall back to global layout height
+        self.entry_height = int(kwargs.pop("entry_height", desired_height))
+
+        # Pop button custom dimensions or fall back to defaults
+        self.btn_width = int(kwargs.pop("btn_width", 110))
+        self.btn_height = int(kwargs.pop("btn_height", desired_height))
+
+        # Pop custom button label override text parameter
+        self.btn_text = kwargs.pop("btn_text", None)
+        if self.btn_text is not None:
+            self.btn_text = str(self.btn_text)
+
+        # Pop modal document viewer window geometry attributes safely
+        self.browser_width = int(kwargs.pop("browser_width", 500))
+        self.browser_height = int(kwargs.pop("browser_height", 450))
+
+        # SAFE INTERCEPTION FIX: Clean and extract state out of kwargs before calling base class constructor
+        self._initial_state_seed = str(kwargs.pop("state", "normal")).lower()
+
+        # Clean out other potential custom property parameter leaks
+        kwargs.pop("defaultextension", None)
+        kwargs.pop("entry_width", None)
+        kwargs.pop("initialdir", None)
+        kwargs.pop("initialfile", None)
+        kwargs.pop("filetypes", None)
+
+        raw_file = kwargs.get("initialfile", None)
+        raw_dir = kwargs.get("initialdir", None)
+
+        self.initialfile = os.path.normpath(os.path.expanduser(str(raw_file))) if raw_file else None
+        self.initialdir = os.path.normpath(os.path.expanduser(str(raw_dir))) if raw_dir else os.getcwd()
+
+        if self.type == "directory" and self.initialfile:
+            self.initialdir = os.path.dirname(self.initialfile)
+            self.initialfile = None
+
+        ft_raw = kwargs.get("filetypes", None)
+        self.filetypes = []
+        if ft_raw:
+            if self.type != "file":
+                raise ValueError("Cannot configure filetypes filter attributes when widget type matches 'directory'.")
+            if isinstance(ft_raw, str):
+                cleaned_ft = ft_raw.strip()
+                if not (cleaned_ft.startswith("[") and cleaned_ft.endswith("]")):
+                    raise ValueError(f"Malformed filetypes string array sequence: '{ft_raw}'.")
+                try:
+                    self.filetypes = ast.literal_eval(cleaned_ft)
+                except Exception as err:
+                    raise ValueError(f"Malformed syntax encountered processing filetypes configuration string: {err}")
+            else:
+                self.filetypes = ft_raw
+        else:
+            self.filetypes = None
 
         theme_defaults = THEME_DEFAULTS.get("sCTkPathChooser", {})
-        ThemeableWidget.__init__(self, theme_defaults, kw)
+        ThemeableWidget.__init__(self, theme_defaults, kwargs)
 
-        # Initialize base framework safely
-        super().__init__(master)
+        # Initialize base container passing standard frame parameters safely with no extra keyword arguments leaking
+        super().__init__(master, width=desired_width, height=desired_height, **kwargs)
 
-        # Snatch the initial string data layer right before clearing Pygubu's layouts
-        init_path = ""
-        if hasattr(super(), "get"):
-            try:
-                init_path = super().get()
-            except Exception:
-                pass
-        if not init_path and self._initialdir:
-            init_path = os.getcwd() if self._initialdir == "os.getcwd()" else self._initialdir
-
-        btn_txt = self._button.cget("text") if hasattr(self, "_button") and self._button else "Browse..."
-        if hasattr(self, "_button") and self._button:
-            self._button.destroy()
-
-        # Camouflage underlying Ttk Frame backing layers perfectly
-        try:
-            m_idx = 1 if ctk.get_appearance_mode().lower() == "dark" else 0
-            target_hex = THEME_DEFAULTS.get("sCTkEntryPrimary", {}).get("fg_color", ("#FFFFFF", "#111827"))[m_idx]
-            self.style = ttk.Style()
-            s_name = f"sCTkPath_{id(self)}.TFrame"
-            self.style.configure(s_name, background=target_hex, borderwidth=0, relief="flat")
-            self.configure(style=s_name)
-        except Exception:
-            pass
-
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=0)
+        # Enforce strict pixel dimensional footprints to withstand parent scale bounds
+        self.grid_propagate(False)
+        self.columnconfigure(0, weight=1)  # Column 0 (Entry) gets all available stretch space
+        self.columnconfigure(1, weight=0)  # Column 1 (Button) stays fixed to btn_width
         self.rowconfigure(0, weight=1)
 
-        # 📥 2. RE-INJECT CUSTOM CTK WIDGETS
-        self.s_entry = sCTkEntryPrimary(self, font=self.final_kw.get("entry_font"),
-                                        fg_color=self.final_kw.get("entry_fg"),
-                                        border_color=self.final_kw.get("entry_border_color"),
-                                        text_color=self.final_kw.get("entry_text_color"))
-        self.s_entry.grid(row=0, column=0, sticky="ew", padx=(0, 8))
+        self.entry = ctk.CTkEntry(
+            self,
+            font=self.final_kw.get("entry_font"),
+            fg_color=self.final_kw.get("entry_fg"),
+            border_color=self.final_kw.get("entry_border_color"),
+            text_color=self.final_kw.get("entry_text_color"),
+            justify=self.justify,
+            width=0,  # Base width is 0 so grid alignment stretching governs size fluidly
+            height=self.entry_height
+        )
+        entry_v_padding = max(0, (desired_height - self.entry_height) // 2)
+        self.entry.grid(row=0, column=0, sticky="ew", padx=(0, 8), pady=entry_v_padding)
 
-        self.s_btn = sCTkButtonSecondary(self, text=btn_txt, font=self.final_kw.get("btn_font"),
-                                         fg_color=self.final_kw.get("btn_fg"),
-                                         hover_color=self.final_kw.get("btn_hover"),
-                                         text_color=self.final_kw.get("btn_text_color"),
-                                         border_color=self.final_kw.get("btn_border_color"), border_width=2,
-                                         command=self._on_browse_clicked)
-        self.s_btn.grid(row=0, column=1, sticky="ns")
+        default_seed = self.initialfile if self.initialfile else self.initialdir
+        self.set(default_seed)
 
-        if init_path:
-            self.set(os.path.expanduser(init_path))
+        btn_txt = "Browse Folders..." if self.type == "directory" else "Browse Files..."
+        if self.btn_text is not None:
+            btn_txt = self.btn_text
+
+        self.btn = ctk.CTkButton(
+            self,
+            text=btn_txt,
+            font=self.final_kw.get("btn_font"),
+            fg_color=self.final_kw.get("btn_fg"),
+            hover_color=self.final_kw.get("btn_hover"),
+            text_color=self.final_kw.get("btn_text_color"),
+            border_color=self.final_kw.get("btn_border_color"),
+            width=self.btn_width,
+            height=self.btn_height,
+            command=self._launch_browser
+        )
+        btn_v_padding = max(0, (desired_height - self.btn_height) // 2)
+        self.btn.grid(row=0, column=1, sticky="ew", pady=btn_v_padding)
+
+        # Apply the initial tracking state configuration seed right at the end of setup
+        if self._initial_state_seed == "disabled":
+            self.configure(state="disabled")
 
     # =========================================================================
-    # 🔄 MASTER INTERCEPT CONFIGURE ROUTER FOR PYGUBU PIPELINE
+    # sCTkPathChooser - Part 2: Configuration Overrides
     # =========================================================================
     def configure(self, cnf=None, **kw):
-        """
-        Catches Pygubu's dictionary property updates at runtime
-        and routes them directly into your custom sCTk components.
-        """
+        """Extended configure to allow the main program/Pygubu to override geometry and justification."""
         if cnf is not None:
             kw = cnf | kw
 
-        # Process and route core path-chooser configurations immediately
-        if "initialdir" in kw:
-            val = kw.pop("initialdir")
-            if val:
-                self._initialdir = os.path.expanduser(str(val))
-                self.set(self._initialdir)
+        if "btn_text" in kw:
+            raw_txt = kw.pop("btn_text")
+            self.btn_text = str(raw_txt) if raw_txt is not None else None
+            if hasattr(self, "btn"):
+                if self.btn_text is not None:
+                    self.btn.configure(text=self.btn_text)
+                else:
+                    self.btn.configure(text="Browse Folders..." if self.type == "directory" else "Browse Files...")
 
         if "type" in kw:
-            self._type = str(kw.pop("type")).lower()
+            self.type = str(kw.pop("type")).lower()
+            if hasattr(self, "btn") and self.btn_text is None:
+                self.btn.configure(text="Browse Folders..." if self.type == "directory" else "Browse Files...")
 
-        if "title" in kw:
-            self._title = str(kw.pop("title"))
+        if "title" in kw: self.title = str(kw.pop("title"))
 
-        if "filetypes" in kw:
-            self._filetypes = kw.pop("filetypes")
+        if "justify" in kw:
+            self.justify = str(kw.pop("justify")).lower()
+            if self.justify not in ("left", "right", "center"):
+                self.justify = "left"
+            if hasattr(self, "entry"):
+                self.entry.configure(justify=self.justify)
+                self.set(self.entry.get())
 
-        if "defaultextension" in kw:
-            self._defaultextension = str(kw.pop("defaultextension"))
+        if "entry_height" in kw:
+            self.entry_height = int(kw.pop("entry_height"))
+            if hasattr(self, "entry"):
+                self.entry.configure(height=self.entry_height)
+                current_h = self.cget("height")
+                v_pad = max(0, (current_h - self.entry_height) // 2)
+                self.entry.grid_configure(pady=v_pad)
 
-        if "command" in kw:
-            self._state_callback = kw.pop("command")
+        if "btn_width" in kw:
+            self.btn_width = int(kw.pop("btn_width"))
+            if hasattr(self, "btn"): self.btn.configure(width=self.btn_width)
 
-        # 🔄 FIX: Capture button text properties and dynamically apply it to your custom s_btn layout face!
-        if "text" in kw:
-            btn_label_txt = kw.pop("text")
-            if hasattr(self, "s_btn"):
-                try:
-                    self.s_btn.configure(text=btn_label_txt)
-                except Exception:
-                    pass
+        if "btn_height" in kw:
+            self.btn_height = int(kw.pop("btn_height"))
+            if hasattr(self, "btn"):
+                self.btn.configure(height=self.btn_height)
+                current_h = self.cget("height")
+                v_pad = max(0, (current_h - self.btn_height) // 2)
+                self.btn.grid_configure(pady=v_pad)
 
-        # Pass any leftover standard framework keyword attributes safely up to the base class
+        if "browser_width" in kw: self.browser_width = int(kw.pop("browser_width"))
+        if "browser_height" in kw: self.browser_height = int(kw.pop("browser_height"))
+
+        if "width" in kw:
+            w_val = int(kw.pop("width"))
+            super().configure(width=w_val)
+
+        if "height" in kw:
+            h_val = int(kw.pop("height"))
+            super().configure(height=h_val)
+
+            if hasattr(self, "entry"):
+                target_entry_h = self.entry_height if ("entry_height" not in kw) else min(self.entry_height, h_val)
+                self.entry.configure(height=target_entry_h)
+                v_pad_entry = max(0, (h_val - target_entry_h) // 2)
+                self.entry.grid_configure(pady=v_pad_entry)
+
+            if hasattr(self, "btn"):
+                target_btn_h = self.btn_height if ("btn_height" not in kw) else min(self.btn_height, h_val)
+                self.btn.configure(height=target_btn_h)
+                v_pad_btn = max(0, (h_val - target_btn_h) // 2)
+                self.btn.grid_configure(pady=v_pad_btn)
+
+        self.grid_propagate(False)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=0)
+
+        kw.pop("defaultextension", None)
+        kw.pop("entry_width", None)
+
+        if "state" in kw:
+            state_val = str(kw.pop("state")).lower()
+            theme = self.final_kw
+
+            if state_val == "disabled":
+                # Pull state colors directly from the isolated private class property map
+                d_map = getattr(self, "_widget_disabled_map", {})
+                self.entry.configure(state="disabled", fg_color=d_map.get("entry_fg"),
+                                     border_color=d_map.get("entry_border_color"),
+                                     text_color=d_map.get("entry_text_color"))
+                self.btn.configure(state="disabled", fg_color=d_map.get("btn_fg"),
+                                   border_color=d_map.get("btn_border_color"), text_color=d_map.get("btn_text_color"))
+            else:
+                self.entry.configure(state="normal", fg_color=theme.get("entry_fg"),
+                                     border_color=theme.get("entry_border_color"),
+                                     text_color=theme.get("entry_text_color"))
+                self.btn.configure(state="normal", fg_color=theme.get("btn_fg"),
+                                   border_color=theme.get("btn_border_color"), text_color=theme.get("btn_text_color"))
+
         if kw:
-            try:
-                super().configure(**kw)
-            except Exception:
-                pass
+            return super().configure(**kw)
 
     config = configure
 
     # =========================================================================
-
-    @property
-    def initialdir(self) -> str:
-        return self._initialdir
-
-    @initialdir.setter
-    def initialdir(self, v: str):
-        self.configure(initialdir=v)
-
-    @property
-    def type(self) -> str:
-        return self._type
-
-    @type.setter
-    def type(self, v: str):
-        self.configure(type=v)
-
-    @property
-    def title(self) -> str:
-        return self._title
-
-    @title.setter
-    def title(self, v: str):
-        self.configure(title=v)
-
-    @property
-    def filetypes(self):
-        return self._filetypes
-
-    @filetypes.setter
-    def filetypes(self, v):
-        self.configure(filetypes=v)
-
-    @property
-    def defaultextension(self) -> str:
-        return self._defaultextension
-
-    @defaultextension.setter
-    def defaultextension(self, v: str):
-        self.configure(defaultextension=v)
-
+    # sCTkPathChooser - Part 3: Modal Controllers & Test Suite
     # =========================================================================
+    def _launch_browser(self):
+        popup = ctk.CTkToplevel(self.winfo_toplevel())
 
-    def _on_browse_clicked(self):
-        if getattr(self, "_custom_current_state", "normal") == "disabled": return
+        final_title = self.title
+        if self.type == "file" and self.filetypes:
+            formatted_exts = [f"*{ext}" for ext in self.filetypes] if isinstance(self.filetypes, list) else [
+                f"*{self.filetypes}"]
+            ext_suffix = f" ({', '.join(formatted_exts)})"
+            final_title = f"{self.title}{ext_suffix}"
 
-        # 🔄 FIX: Securely pass the updated local title, initialdir, and default extension variables into the dialog loop
-        if self._type == "directory":
-            chosen = ctk.filedialog.askdirectory(
-                title=self._title,
-                initialdir=self._initialdir
-            )
-        else:
-            chosen = ctk.filedialog.askopenfilename(
-                title=self._title,
-                initialdir=self._initialdir,
-                filetypes=self._filetypes,
-                defaultextension=self._defaultextension
-            )
+        popup.title(final_title)
+        popup.geometry(f"{self.browser_width}x{self.browser_height}")
 
-        if chosen:
+        popup.transient(self.winfo_toplevel())
+        popup.grab_set()
+
+        popup.columnconfigure(0, weight=1)
+        popup.rowconfigure(0, weight=1)
+
+        entry_val = self.entry.get().strip()
+        seed_dir = self.initialdir
+        seed_file = self.initialfile
+
+        if entry_val:
+            entry_val = os.path.normpath(os.path.expanduser(entry_val))
+        if entry_val and os.path.exists(entry_val):
+            if os.path.isdir(entry_val):
+                seed_dir = entry_val
+                seed_file = None
+            else:
+                seed_dir = os.path.dirname(entry_val)
+                seed_file = entry_val
+
+        explorer = sCTkFileExplorer(
+            popup,
+            type=self.type,
+            filetypes=self.filetypes,
+            initialdir=seed_dir,
+            initialfile=seed_file,
+            width=self.browser_width - 25,
+            height=self.browser_height,
+            command=self.set,
+            double_click_command=lambda p: (self.set(p), popup.grab_release(), popup.destroy())
+        )
+        explorer.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+        bottom_bar = ctk.CTkFrame(popup, fg_color="transparent")
+        bottom_bar.grid(row=1, column=0, sticky="ew", padx=10, pady=(0, 10))
+
+        def submit():
+            chosen = explorer.selected_path.get()
+            if self.type == "file" and os.path.isdir(chosen):
+                return
             self.set(chosen)
-            try:
-                if hasattr(super(), "set"): super().set(chosen)
-            except Exception:
-                pass
-            if self._state_callback and callable(self._state_callback):
-                try:
-                    self._state_callback(chosen)
-                except Exception:
-                    pass
+            close()
+
+        def close():
+            popup.grab_release()
+            popup.destroy()
+
+        ctk.CTkButton(bottom_bar, text="Cancel", fg_color="transparent", border_width=2, command=close).pack(
+            side="left")
+        ctk.CTkButton(bottom_bar, text="Select", command=submit).pack(side="right")
 
     def set(self, path_string: str):
-        if not hasattr(self, "s_entry"): return
-        cur = self.s_entry.cget("state")
-        self.s_entry.configure(state="normal")
-        self.s_entry.delete(0, tk.END)
-        self.s_entry.insert(0, path_string)
-        self.s_entry.configure(state=cur)
+        self.entry.configure(state="normal")
+        self.entry.delete(0, tk.END)
+        self.entry.insert(0, os.path.normpath(path_string))
+
+        if self.justify == "right":
+            self.entry.xview_moveto(1.0)
+        else:
+            self.entry.xview_moveto(0.0)
+
+        if self.command and callable(self.command):
+            try:
+                self.command(path_string)
+            except TypeError:
+                self.command()
 
     def get(self) -> str:
-        if not hasattr(self, "s_entry"): return self._initialdir
-        return self.s_entry.get()
+        return self.entry.get()
 
 
 if __name__ == "__main__":
-    root = ctk.CTk()
-    root.geometry("500x200")
-    from sCTkFrame import sCTkFrame
+    app = ctk.CTk()
+    app.title("Compound Component Test Suite")
+    app.geometry("700x200")
 
-    base_layer = sCTkFrame(root)
-    base_layer.pack(expand=True, fill="both", padx=20, pady=20)
-    widget = sCTkPathChooser(base_layer, type="file", title="Select Config Log Target", text="Select File...")
-    widget.pack(expand=True, fill="x", padx=20, pady=10)
-    root.mainloop()
 
+    def print_result(path):
+        print(f"MAIN CONSOLE PATH SELECTION -> {path}")
+
+
+    chooser = sCTkPathChooser(
+        app,
+        type="file",
+        title="Select Log Target",
+        filetypes=[".py"],
+        command=print_result,
+        justify="right",
+        width=550,
+        height=50,
+        state="normal",
+        entry_height=40,
+        btn_width=40,
+        btn_height=40,
+        btn_text="▶",
+        browser_width=550,
+        browser_height=500
+    )
+    chooser.pack(padx=20, pady=50)
+    app.mainloop()

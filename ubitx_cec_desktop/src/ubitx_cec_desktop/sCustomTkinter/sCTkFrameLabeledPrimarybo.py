@@ -12,7 +12,7 @@ from customtkinter import CTkScrollableFrame
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
-)
+    register_custom_property)
 
 from pygubu.plugins.customtkinter import nsctk
 from pygubu.plugins.customtkinter.scrollableframe import CTkScrollableFrameBO
@@ -39,13 +39,13 @@ container_layout = False
 class sCTkFrameLabeledPrimaryBO(CTkScrollableFrameBO):
     class_ = sCTkFrameLabeledPrimary
 
-    def code_imports(self):
-        # should return an iterable of (module, classname/function) to import
-        # or None
-        imports = [(widget_namespace, widget_classname)]
-        imports.extend(self.code_extra_imports())
-        return imports
 
+    def code_imports(self):
+            # should return an iterable of (module, classname/function) to import
+            # or None
+            imports = [(widget_namespace, widget_classname)]
+            imports.extend(self.code_extra_imports())
+            return imports
 
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(

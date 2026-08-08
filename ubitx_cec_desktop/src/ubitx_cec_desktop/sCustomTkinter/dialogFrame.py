@@ -1,26 +1,28 @@
 #!/usr/bin/python3
 """
-sCTkDialog
+dialogCommand
 
-a special widget deciated to making popup dialogs consistent
+test
 
-UI source file: sCTkDialog.ui
+UI source file: dialogCommand.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-import sCTkDialogui as baseui
+import dialogFrameui as baseui
 
 
 #
 # Manual user code
 #
 
-class sCTkDialog(baseui.sCTkDialogUI):
+class dialogFrame(baseui.dialogFrameUI):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
+        self.pack(expand=True, fill="both")
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = sCTkDialog(root)
+    widget = dialogFrame(root)
+    widget.pack(expand=True, fill="both")
     root.mainloop()

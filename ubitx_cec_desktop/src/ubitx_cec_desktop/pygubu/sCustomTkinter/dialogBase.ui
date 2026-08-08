@@ -7,8 +7,8 @@
       <setting id="template">widget</setting>
       <setting id="main_widget">sctkframe3</setting>
       <setting id="module_namespace" />
-      <setting id="module_name">sCTkDialog</setting>
-      <setting id="main_classname">sCTkDialog</setting>
+      <setting id="module_name">dialogBase</setting>
+      <setting id="main_classname">dialogBase</setting>
       <setting id="output_dir">../../sCustomTkinter</setting>
       <setting id="builder_namespace">custom_widgets</setting>
       <setting id="output_dir2">../../sCustomTkinter</setting>

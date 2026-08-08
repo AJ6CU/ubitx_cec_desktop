@@ -18,6 +18,9 @@ class customCTK_WidgetTesterPart3(baseui.customCTK_WidgetTesterPart3UI):
     def callback(self, event=None):
         pass
 
+    def easyCB(self, filename):
+        print("filename", filename)
+
 
 if __name__ == "__main__":
     app = customCTK_WidgetTesterPart3()

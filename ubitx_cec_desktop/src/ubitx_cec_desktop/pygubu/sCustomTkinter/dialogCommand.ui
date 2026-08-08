@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">dialogCommand</setting>
+      <setting id="description">test</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">dialogbase1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">dialogFrame</setting>
+      <setting id="main_classname">dialogFrame</setting>
+      <setting id="output_dir">../../sCustomTkinter</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">../../sCustomTkinter</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+      <customwidget path="../../sCustomTkinter/dialogBasebo.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="custom_widgets.dialogBase" id="dialogbase1">
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="frame2">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="customtkinter.CTkLabel" id="ctklabel1">
+            <property name="text" translatable="yes">Test Label</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="customtkinter.CTkEntry" id="ctkentry1">
+            <property name="text" translatable="yes">enter data</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

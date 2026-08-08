@@ -2,58 +2,56 @@
 """
 sCTkLabelTertiary
 
-3rd level Label used for notes
-
-UI source file: sCTkLabelTertiary.ui
+A custom, theme-compliant inline description label widget.
+Natively intercepts state assignments to swap active vs dimmed text colors.
 """
-import tkinter as tk
-import tkinter.ttk as ttk
+import os
+import sys
 import customtkinter as ctk
+
+_local_dir = os.path.dirname(os.path.abspath(__file__))
+if _local_dir not in sys.path:
+    sys.path.insert(0, _local_dir)
+
 from sCTkThemes import THEME_DEFAULTS
-import sCTkLabelTertiaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
-#
-# Manual user code
-#
 
-class sCTkLabelTertiary(baseui.sCTkLabelTertiaryUI, ThemeableWidget):
-    def __init__(self, master=None, **kw):
+class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
+    _MANAGED_PROPERTIES = frozenset({"state"})
 
-        theme_defaults = THEME_DEFAULTS["sCTkLabelTertiary"]
+    def __init__(self, master=None, **kwargs):
+        self._current_state = str(kwargs.pop("state", "normal")).lower()
+        if self._current_state not in ("normal", "disabled"):
+            self._current_state = "normal"
 
-        # Store dictionary references safely onto instance memory
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
+        theme_defaults = THEME_DEFAULTS.get("sCTkLabelTertiary", {})
+        if not theme_defaults:
+            theme_defaults = THEME_DEFAULTS.get("sCTkLabelPrimary", {})
 
-        # Aligned parameters to pass exactly TWO dictionary objects up to the base theme class
-        ThemeableWidget.__init__(self, theme_defaults, kw)
-
-        # Initialize CustomTkinter with the clean final kwargs array safely
+        ThemeableWidget.__init__(self, theme_defaults, kwargs)
         super().__init__(master, **self.final_kw)
+        self.configure(state=self._current_state)
 
+    def configure(self, cnf=None, **kw):
+        """Extended configure to handle state text dimming passes."""
+        if cnf is not None:
+            kw = cnf | kw
 
-if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
-    root = ctk.CTk()
-    root.geometry("400x150")
+        if "state" in kw:
+            self._current_state = str(kw.pop("state")).lower()
+            theme = self.final_kw
 
-    from sCTkFrame import sCTkFrame
+            if self._current_state == "disabled":
+                d_map = getattr(self, "_widget_disabled_map", theme.get("disabled_map", {}))
+                target_color = d_map.get("text_color") or d_map.get("row_text_color") or "gray50"
+                super().configure(text_color=target_color)
+            else:
+                target_color = theme.get("text_color") or self._apply_appearance_mode(
+                    ctk.ThemeManager.theme["CTkLabel"]["text_color"])
+                super().configure(text_color=target_color)
 
-    base = sCTkFrame(root)
-    base.pack(expand=True, fill="both", padx=20, pady=20)
+        if kw:
+            return super().configure(**kw)
 
-    widget = sCTkLabelTertiary(base, text="* Note: Tuning frequency locks automatically after 3 seconds.")
-    widget.pack(expand=True, fill="none", padx=10, pady=10)
-
-    # Verify our custom cascading state system locks down the caption text instantly!
-    widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
-
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
-    widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
-
-    root.mainloop()
+    config = configure

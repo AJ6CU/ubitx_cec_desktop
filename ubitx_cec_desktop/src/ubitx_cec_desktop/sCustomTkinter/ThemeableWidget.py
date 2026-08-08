@@ -1,104 +1,74 @@
 #!/usr/bin/python3
 """
-ThemeableWidget
-
-The primary base structural abstraction class supporting dynamic dictionary property injections.
-Handles initialization property filtering and universal state cascades automatically.
+ThemeableWidget - Centralized Theme Management and Global Structural Enforcement
 """
-import tkinter as tk
-import customtkinter as ctk
+import os
+
+try:
+    from sCTkThemes import THEME_DEFAULTS
+except (ImportError, ModuleNotFoundError) as err:
+    # Stop execution loops immediately if the shared theme config module cannot be resolved
+    raise FileNotFoundError(
+        f"CRITICAL SYSTEM BREAKDOWN: The mandatory theme stylesheet tracking file "
+        f"'sCTkThemes.py' could not be found or resolved within the local python path space. "
+        f"Underlying tracking loop error feed: {err}. Please restore this module to your "
+        f"active project utilities folder to re-enable custom widgets compilation blocks."
+    )
 
 
 class ThemeableWidget:
-    def __init__(self, theme_defaults: dict, component_kw: dict):
+    def __init__(self, theme_defaults: dict, kwargs: dict):
         """
-        Sanitizes constructor argument dictionaries dynamically against
-        incoming overrides using the merge pipeline operator.
+        Shared base mixin that resolves global theme dictionary lookups,
+        extracts styling options, and aggressively enforces complete key configurations.
         """
-        # Combine the user arguments and defaults
-        combined = theme_defaults | component_kw
+        # GLOBAL CORRUPTION GUARD
+        # Intercept and block initialization immediately if a widget's core dictionary map
+        # is missing or evaluates to an empty object.
+        if not theme_defaults or not isinstance(theme_defaults, dict):
+            class_name = self.__class__.__name__
+            raise KeyError(
+                f"CRITICAL STYLING EXCEPTION: The sCTkThemes configuration registry is corrupted. "
+                f"Could not locate a valid section or mapping entry dictionary for widget type: '{class_name}'. "
+                f"Please verify your 'THEME_DEFAULTS' definition properties."
+            )
 
-        # Pop out non-standard map configurations globally so they NEVER leak down to CTk widgets!
-        self._custom_disabled_map = combined.pop("disabled_map", theme_defaults.get("disabled_map", {}))
-        self._custom_pressed_map = combined.pop("pressed_map", theme_defaults.get("pressed_map", {}))
-        self._custom_alarm_map = combined.pop("alarm_map", theme_defaults.get("alarm_map", {}))
+        # GLOBAL UNRESOLVED NULL TRAFFIC INTERCEPTOR
+        # Aggressively scan the targeted theme dictionary section. If any configuration field
+        # resolves to 'None', throw a structured exception right now to protect the application UI.
+        for style_key, style_value in theme_defaults.items():
+            if isinstance(style_value, dict):
+                for sub_key, sub_value in style_value.items():
+                    if sub_value is None:
+                        class_name = self.__class__.__name__
+                        raise ValueError(
+                            f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
+                            f"Inside sCTkThemes.py -> ['{class_name}']['{style_key}']['{sub_key}'] evaluates to None. "
+                            f"Every structural custom theme parameter property must contain an explicit hexadecimal, "
+                            f"string, or list mapping profile token before initialization passes can execute."
+                        )
+            elif style_value is None:
+                class_name = self.__class__.__name__
+                raise ValueError(
+                    f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
+                    f"Inside sCTkThemes.py -> ['{class_name}']['{style_key}'] evaluates to None. "
+                    f"Every structural custom theme parameter property must contain an explicit hexadecimal, "
+                    f"string, or list mapping profile token before initialization passes can execute."
+                )
 
-        # Capture a clean reference of the defaults for fallback tracking
-        self._local_defaults = theme_defaults
+        # 🛡️ GLOBAL SANITIZATION RESCUE
+        # We store the private disabled mapping layer separately, then strip it completely
+        # from final_kw so it can never leak into any native CustomTkinter base constructor passes.
+        self._widget_disabled_map = theme_defaults.get("disabled_map") or {}
 
-        # Store the sanitized keywords array safely for super().__init__() passes
-        self.final_kw = combined
-        self._custom_current_state = "normal"
+        self.final_kw = {}
 
-    def get_state(self) -> str:
-        """Universal layout state validation variable lookup track token."""
-        return getattr(self, "_custom_current_state", "normal")
+        # Load the global theme mapping defaults first (filtering out internal tracking keys)
+        for key, value in theme_defaults.items():
+            if key != "disabled_map":
+                self.final_kw[key] = value
 
-    def state(self, mode: str):
-        """
-        UNIVERSAL STATE CONTROLLER fallback loop engine.
-        Natively handles basic widget locks, rotates dynamically through supported color properties,
-        and cascades execution paths recursively down to child nodes automatically via duck typing.
-        """
-        mode = mode.lower()
-        is_disabled = mode == "disabled"
-        target_state = "disabled" if is_disabled else "normal"
-
-        # 🔄 1. EXCEPTION BUILD: Force deep component locking via native unwrapped tk.Entry calls!
-        # This completely freezes typing, echoes, and backspaces instantly at the core layer.
-        if hasattr(self, "_entry"):
-            try:
-                tk.Entry.configure(self._entry, state=target_state)
-            except Exception:
-                pass
-
-        # 2. Update native interactive widget state safely (only on items supporting interactive blocks)
-        # We explicitly skip basic text tags or structural cards to prevent configuration lockouts
-        if hasattr(self, "configure") and self.__class__.__name__ not in ("sCTkLabelPrimary", "sCTkLabelSecondary",
-                                                                          "sCTkLabelTertiary", "sCTkFrame",
-                                                                          "sCTkFrameOutlined"):
-            try:
-                self.configure(state=target_state)
-            except Exception:
-                pass
-
-        # Core color key target catalog track paths
-        color_keys = ("fg_color", "border_color", "text_color", "button_color",
-                      "hover_color", "button_hover_color", "scrollbar_button_color", "scrollbar_button_hover_color")
-
-        # 3. Dynamic Reflection Loop: Apply look changes securely without hardcoded class-specific dependencies
-        if is_disabled:
-            for key in color_keys:
-                if key in self._custom_disabled_map:
-                    try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
-            self._custom_current_state = "disabled"
-        else:
-            for key in color_keys:
-                # Check for active custom values fed via runtime constructor overrides first, then class defaults
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                if active_val is not None:
-                    try:
-                        self.configure(**{key: active_val})
-                    except Exception:
-                        pass
-            self._custom_current_state = "normal"
-
-        # 🚀 4. RECURSIVE CASCADING: Loop over all widgets inside this layout node via duck typing
-        if hasattr(self, "winfo_children"):
-            for child in self.winfo_children():
-                if hasattr(child, "winfo_children"):
-                    for inner_child in child.winfo_children():
-                        if hasattr(inner_child, "state") and callable(getattr(inner_child, "state")):
-                            try:
-                                inner_child.state(mode)
-                            except Exception:
-                                pass
-
-                if hasattr(child, "state") and callable(getattr(child, "state")):
-                    try:
-                        child.state(mode)
-                    except Exception:
-                        pass
+        # Layer any direct inline runtime configuration overrides over the top
+        for key, value in kwargs.items():
+            if value is not None and key != "disabled_map":
+                self.final_kw[key] = value

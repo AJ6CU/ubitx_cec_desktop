@@ -4,11 +4,10 @@ sCTkDialog
 
 a special widget deciated to making popup dialogs consistent
 
-UI source file: sCTkDialog.ui
+UI source file: dialogBase.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import CTkToplevel
 from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkButtonSecondary import sCTkButtonSecondary
 from sCTkFrame import sCTkFrame
@@ -38,7 +37,7 @@ def safe_image_loader(master, image_name: str):
 #
 # Base class definition
 #
-class sCTkDialogUI(CTkToplevel):
+class dialogBaseUI(sCTkFrame):
     def __init__(
         self,
         master=None,
@@ -59,22 +58,18 @@ class sCTkDialogUI(CTkToplevel):
 
         super().__init__(master, **kw)
 
-        sctkframe3 = sCTkFrame(self)
+        self.titleFrame = sCTkFrame(self)
         # First object created
-        on_first_object_cb(sctkframe3)
+        on_first_object_cb(self.titleFrame)
 
-        self.titleFrame = sCTkFrame(sctkframe3)
         self.titleLabel = sCTkLabelPrimary(self.titleFrame)
         self.titleLabel.configure(text='Settings Title')
         self.titleLabel.pack(side="top")
         self.titleFrame.grid(column=0, row=0)
-        self.contentFrame = sCTkFrame(sctkframe3)
+        self.contentFrame = sCTkFrame(self)
         self.contentFrame.configure(width=500)
-        sctkbuttonprimary2 = sCTkButtonPrimary(self.contentFrame)
-        sctkbuttonprimary2.configure(text='sctkbuttonprimary2')
-        sctkbuttonprimary2.pack(side="top")
         self.contentFrame.grid(column=0, row=1)
-        self.actionFrame = sCTkFrame(sctkframe3)
+        self.actionFrame = sCTkFrame(self)
         sctkbuttonprimary1 = sCTkButtonPrimary(self.actionFrame)
         sctkbuttonprimary1.configure(text='Apply')
         sctkbuttonprimary1.grid(column=0, padx=10, row=0)
@@ -89,9 +84,7 @@ class sCTkDialogUI(CTkToplevel):
         sctkbuttonsecondary2.configure(command=self.reset_CB)
         self.actionFrame.grid(column=0, row=2)
         self.actionFrame.grid_anchor("s")
-        sctkframe3.pack(side="top")
-        self.title("settings window title")
-        # Layout for 'ctktoplevel1' skipped in custom widget template.
+        # Layout for 'sctkframe3' skipped in custom widget template.
 
     def apply_CB(self):
         pass
@@ -105,5 +98,6 @@ class sCTkDialogUI(CTkToplevel):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = sCTkDialogUI(root)
+    widget = dialogBaseUI(root)
+    widget.pack(expand=True, fill="both")
     root.mainloop()

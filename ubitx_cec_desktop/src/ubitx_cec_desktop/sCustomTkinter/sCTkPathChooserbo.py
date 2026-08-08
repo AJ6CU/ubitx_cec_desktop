@@ -1,77 +1,168 @@
 #!/usr/bin/python3
 """
-sCTkPathChooserbo
+sCTkPathChooserBuilder
 
-Pygubu-Designer Build Object (BO) plugin for sCTkPathChooser.
-Registers custom properties natively to keep Pygubu's code generator fully operational.
+Pygubu Builder Object for the compound sCTkPathChooser entry widget row.
 """
-import tkinter as tk
-import tkinter.ttk as ttk
-from pygubu.widgets.pathchooserinput import PathChooserButton
+import ast
+import pygubu
+
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
-    copy_custom_property
+    register_custom_property
 )
-from pygubu.plugins.pygubu.pathchooserinput_bo import PathChooserButtonBO
+
+# Import the native custom class
+from sCTkPathChooser import sCTkPathChooser
 
 #
 # Builder definition section
 #
 widget_namespace = "sCTkPathChooser"
 widget_classname = "sCTkPathChooser"
-builder_namespace = "custom_widgets"
+builder_namespace = "sCTkPathChooser"
 section_name = "sCustomTkinter"
 
-class sCTkPathChooserBO(PathChooserButtonBO):
-    # 🔄 FIX: Map your sCTkPathChooser class explicitly so Pygubu can inspect its runtime footprint
-    from sCTkPathChooser import sCTkPathChooser
+
+class sCTkPathChooserBuilder(BuilderObject):
     class_ = sCTkPathChooser
 
-    def code_imports(self):
-        """
-        Master Import Generation Hook: Instructs Pygubu's code exporter
-        exactly what string paths to write in your main script headers.
-        """
-        imports = [(widget_namespace, widget_classname)]
-        # Safely pull additional layout dependencies if present
-        extra = self.code_extra_imports()
-        if extra:
-            imports.extend(extra)
-        return imports
+    # Expose custom compound parameters alongside theme state configurations
+    OPTIONS_CUSTOM = ("width", "height", "type", "title", "initialdir", "initialfile", "filetypes", "state", "command", "btn_width", "btn_height", "btn_text", "entry_height", "browser_width", "browser_height", "justify")
+    properties = OPTIONS_CUSTOM
 
-    def code_extra_imports(self):
-        """Standard explicit fallback loop array."""
-        return []
+    command_properties = ("command",)
 
-    def _code_get_init_args(self, code_generator):
-        """
-        🔄 FIX: Pygubu's core generator checks this helper method when building
-        code blocks. Intercepting it and filtering layout values ensures it outputs
-        clean constructor initialization rows cleanly without silent generation stalls!
-        """
-        try:
-            # First, fetch standard arguments that Pygubu expects out of the base class
-            args = super()._code_get_init_args(code_generator)
-            return args
-        except Exception:
-            # Safe layout array fallback wrapper to keep code generation fully operational
-            return []
+    def _process_property_value(self, pname, value):
+        """Passes values directly to allow core widget validations to handle exceptions."""
+        return super()._process_property_value(pname, value)
 
-# Build the complete specific target string identification key token
+
+# Register the widget into Pygubu's parsing engine
 builder_id = f"{builder_namespace}.{widget_classname}"
 
-# 🚀 REGISTER: Inform Pygubu Designer's master parser that this custom widget is open for business!
-register_widget(
-    builder_id, sCTkPathChooserBO, widget_classname, ("ttk", section_name)
+register_widget(builder_id, sCTkPathChooserBuilder, 'sCTkPathChooser', ('sCustomTkinter', 'My Widgets'))
+
+
+# Map the 'command' option directly to Pygubu's native callback editor panel
+register_custom_property(
+    builder_id,
+    "command",
+    "commandentry",
+    help="Method callback string triggered on path confirmation"
 )
 
-# 🔄 Restore your original base source lookup since it successfully clones
-# the underlying properties database map safely!
-base_source_id = "nspygubu.widgets.PathChooserButton"
 
-for pname in PathChooserButtonBO.properties:
-    try:
-        copy_custom_property(base_source_id, pname, builder_id)
-    except Exception:
-        pass
+# Register custom attribute fields to display inside the Designer properties panel
+
+register_custom_property(
+    builder_id,
+    "width",
+    "naturalnumber",
+    help="Set total width in pixels of file entry and button. File path width = width - button width"
+)
+
+register_custom_property(
+    builder_id,
+    "height",
+    "naturalnumber",
+    help="Set height in pixels allocated to file path and button frame. Button and file path height set separately."
+)
+
+register_custom_property(
+    builder_id,
+    "type",
+    "choice",
+    values=("", "file", "directory"),
+    state="readonly",
+    help="Select file or directory selection mode"
+)
+
+register_custom_property(
+    builder_id,
+    "justify",
+    "choice",
+    values=("", "left", "right", "center"),
+    state="readonly",
+    help="Align long path strings to prioritize viewing starting roots or trailing filenames"
+)
+
+register_custom_property(
+    builder_id,
+    "title",
+    "entry",
+    help="Window header title string text"
+)
+
+register_custom_property(
+    builder_id,
+    "initialdir",
+    "entry",
+    help="Starting directory path location string"
+)
+
+register_custom_property(
+    builder_id,
+    "initialfile",
+    "entry",
+    help="Starting target highlight file path string"
+)
+
+register_custom_property(
+    builder_id,
+    "filetypes",
+    "entry",
+    help="Filter by file extension - formats list array format: ['.py', '.txt']"
+)
+
+register_custom_property(
+    builder_id,
+    "entry_height",
+    "naturalnumber",
+    help="Set height in pixels of the file path field widget"
+)
+
+register_custom_property(
+    builder_id,
+    "btn_width",
+    "naturalnumber",
+    help="Set width in pixels of the button"
+)
+
+register_custom_property(
+    builder_id,
+    "btn_height",
+    "naturalnumber",
+    help="Set height in pixels of the button"
+)
+
+register_custom_property(
+    builder_id,
+    "btn_text",
+    "entry",
+    help="Override default button text (e.g. 'Select', '▶' or '>')"
+)
+
+register_custom_property(
+    builder_id,
+    "browser_width",
+    "naturalnumber",
+    help="Set width of the pop-up file browser window in pixels"
+)
+
+register_custom_property(
+    builder_id,
+    "browser_height",
+    "naturalnumber",
+    help="Set height of the pop-up file browser window in pixels"
+)
+
+register_custom_property(
+    builder_id,
+    "state",
+    "choice",
+    values=("", "normal", "disabled"),
+    state="readonly",
+    help="Set widget interaction state"
+)

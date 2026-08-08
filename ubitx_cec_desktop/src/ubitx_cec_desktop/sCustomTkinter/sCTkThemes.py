@@ -570,27 +570,48 @@ THEME_DEFAULTS = {
     },
 
     "sCTkPathChooser": {
-        # 📐 Custom geometry and font styles drawn straight from primary entries/secondary buttons
-        "entry_font": ("Arial", 15, "normal"),
-        "entry_fg": ("#FFFFFF", "#111827"),
-        "entry_border_color": ("#1A4375", "#64748B"),
-        "entry_text_color": ("#1F2937", "#F9FAFB"),
-
-        "btn_font": ("Arial", 15, "normal"),
-        "btn_fg": ("#E5E7EB", "#374151"),
-        "btn_hover": ("#D1D5DB", "#4B5563"),
-        "btn_text_color": ("#1F2937", "#F9FAFB"),
-        "btn_border_color": ("#9CA3AF", "#4B5563"),
-
-        # ⛔ Muted Disabled Overlay mapping to prevent look leaks on white cards
+        "entry_font": ("Arial", 13),
+        "entry_fg": ("#F9F9FA", "#343638"),
+        "entry_border_color": ("#979DA2", "#565B5E"),
+        "entry_text_color": ("#000000", "#FFFFFF"),
+        "btn_font": ("Arial", 13, "bold"),
+        "btn_fg": ("#3B8ED0", "#1F6AA5"),
+        "btn_hover": ("#2C74B3", "#144E75"),
+        "btn_text_color": ("#DCE4EE", "#F9F9FA"),
+        "btn_border_color": ("#3B8ED0", "#1F6AA5"),
         "disabled_map": {
-            "entry_fg": ("#F3F4F6", "#1F2937"),
-            "entry_border_color": ("#CBD5E1", "#475569"),
-            "entry_text_color": ("#94A3B8", "#64748B"),
-            "btn_fg": ("#F3F4F6", "#1F2937"),
-            "btn_border_color": ("#E5E7EB", "#374151"),
-            "btn_text_color": ("#94A3B8", "#64748B")
+            "entry_fg": ("#EAEAEA", "#2B2B2C"),
+            "entry_border_color": ("#D3D3D3", "#3A3A3C"),
+            "entry_text_color": ("#A0A0A0", "#7C7C7C"),
+            "btn_fg": ("#D3D3D3", "#2D2F31"),
+            "btn_border_color": ("#D3D3D3", "#2D2F31"),
+            "btn_text_color": ("#A0A0A0", "#5A5C5E")
         }
+    },
+    "sCTkFileExplorer": {
+        "entry_font": ("Arial", 12),
+        "entry_fg": ("#F9F9FA", "#343638"),
+        "entry_border_color": ("#979DA2", "#565B5E"),
+        "entry_text_color": ("#000000", "#FFFFFF"),
+        "btn_font": ("Arial", 12),
+        "btn_fg": ("#3B8ED0", "#1F6AA5"),
+        "btn_hover": ("#2C74B3", "#144E75"),
+        "btn_text_color": ("#DCE4EE", "#F9F9FA"),
+        "btn_border_color": ("#3B8ED0", "#1F6AA5"),
+        "row_active_text": ("#1F6AA5", "#3B8ED0"),
+        "row_dimmed_text": ("#A0A0A0", "#606060"),
     },
 
 }
+# 🔒 CENTRALIZED MODULE ENFORCEMENT GUARD
+# Enforce absolute structural integrity validations instantly on module compilation
+mandatory_keys = {"sCTkPathChooser", "sCTkFileExplorer"}
+current_keys = set(THEME_DEFAULTS.keys())
+
+missing_keys = mandatory_keys - current_keys
+if missing_keys:
+    raise KeyError(
+        f"CRITICAL LAYOUT STATE EXCEPTION: The sCTkThemes configuration profile registry map "
+        f"is severely corrupted. Missing mandatory custom widget dictionary structures: {list(missing_keys)}. "
+        f"Please verify your package assets deployment loops immediately."
+    )

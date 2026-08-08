@@ -12,6 +12,7 @@ from customtkinter import CTkFrame
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
+    register_custom_property
 )
 
 from pygubu.plugins.customtkinter import nsctk
