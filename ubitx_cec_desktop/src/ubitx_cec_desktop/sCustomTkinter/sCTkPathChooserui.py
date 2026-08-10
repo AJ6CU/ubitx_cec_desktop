@@ -55,8 +55,8 @@ class sCTkPathChooserUI(PathChooserButton):
 
         super().__init__(master, **kw)
 
-        self.configure(text='pathchooserbutton2')
-        # Layout for 'pathchooserbutton2' skipped in custom widget template.
+        # self.configure(text='pathchooserbutton2')
+        # # Layout for 'pathchooserbutton2' skipped in custom widget template.
 
 
 if __name__ == "__main__":

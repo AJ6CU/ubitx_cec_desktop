@@ -55,8 +55,8 @@ class sCTkLabelTertiaryUI(CTkLabel):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctklabel1')
-        # Layout for 'labelTertiaryTemplate' skipped in custom widget template.
+        # self.configure(text='ctklabel1')
+        # # Layout for 'labelTertiaryTemplate' skipped in custom widget template.
 
 
 if __name__ == "__main__":

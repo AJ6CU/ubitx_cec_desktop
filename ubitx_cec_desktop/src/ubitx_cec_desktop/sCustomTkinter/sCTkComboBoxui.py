@@ -55,7 +55,6 @@ class sCTkComboBoxUI(CTkComboBox):
 
         super().__init__(master, **kw)
 
-        # Layout for 'comboBoxTemplate' skipped in custom widget template.
 
 
 if __name__ == "__main__":

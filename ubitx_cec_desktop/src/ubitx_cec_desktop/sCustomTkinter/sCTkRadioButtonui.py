@@ -55,7 +55,7 @@ class sCTkRadioButtonUI(CTkRadioButton):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctkradiobutton1')
+        # self.configure(text='ctkradiobutton1')
         # Layout for 'radioButtonTemplate' skipped in custom widget template.
 
 

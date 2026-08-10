@@ -55,9 +55,9 @@ class sCTkButtonTertiaryUI(CTkButton):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctkbutton4')
-        # Layout for 'buttonTertiaryTemplate' skipped in custom widget
-        # template.
+        # self.configure(text='ctkbutton4')
+        # # Layout for 'buttonTertiaryTemplate' skipped in custom widget
+        # # template.
 
 
 if __name__ == "__main__":

@@ -54,10 +54,10 @@ class sCTkLabelSecondaryUI(CTkLabel):
             on_first_object_cb = safe_fo_callback
 
         super().__init__(master, **kw)
-
-        self.configure(text='ctklabel1')
-        # Layout for 'labelSecondaryTemplate' skipped in custom widget
-        # template.
+        #
+        # self.configure(text='ctklabel1')
+        # # Layout for 'labelSecondaryTemplate' skipped in custom widget
+        # # template.
 
 
 if __name__ == "__main__":

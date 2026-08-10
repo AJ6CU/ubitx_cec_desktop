@@ -55,7 +55,7 @@ class sCTkCheckBoxUI(CTkCheckBox):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctkcheckbox1')
+        # self.configure(text='ctkcheckbox1')
         # Layout for 'checkBoxTemplate' skipped in custom widget template.
 
 

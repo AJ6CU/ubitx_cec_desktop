@@ -165,6 +165,10 @@ class customCTK_WidgetTesterPart3UI:
         switch1 = sCTkSwitch(framelabeledprimary6)
         switch1.configure(text='subswitch')
         switch1.grid(column=1, row=3, sticky="w")
+        sctkcheckbox6 = sCTkCheckBox(framelabeledprimary6)
+        sctkcheckbox6.grid(column=0, row=4)
+        ctkcheckbox2 = CTkCheckBox(framelabeledprimary6)
+        ctkcheckbox2.grid(column=0, row=5)
         framelabeledprimary6.grid(
             column=2,
             padx="20 10",
