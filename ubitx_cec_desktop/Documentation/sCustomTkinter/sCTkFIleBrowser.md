@@ -1,104 +1,170 @@
-# `sCustomTkinter` File Browser Technical Documentation
+# sCustomTkinter Technical Components Reference - Part 1
 
-This document contains the complete developer reference for the **`sCTkPathChooser`** compound widget row and the standalone **`sCTkFileExplorer`** directory panel. 
+This document contains the complete developer reference documentation for the specialized sCTk CustomTkinter layout toolkit. 
 
-Both components are built natively using CustomTkinter vector elements, ensuring complete theme compliance (Light/Dark mode) and eliminating standard Tcl/Tk native focus loops and multi-click window bugs on macOS. Unselectable file formats are gracefully dimmed, disabled, and locked from clicks in real time.
-
----
-
-## 🎨 Theme & Style Integration
-
-Both components inherit natively from `ThemeableWidget` and automatically map styling configurations from the global dictionary registry **`THEME_DEFAULTS`** inside **`sCTkThemes.py`**.
-
-### Centralized Integrity Guard Lockout
-The widgets utilize an aggressive validation loop on startup inside `ThemeableWidget`. If `sCTkThemes.py` is entirely missing, or if any layout parameters resolve to `None`, the application halts immediately and outputs a highly descriptive error on the terminal tracking exactly which widget class configuration broke.
+All modules are built natively using CustomTkinter vector elements, ensuring clean scaling across high-DPI panels, full dual-profile theme compliance (Light/Dark mode), and complete freedom from standard Tcl/Tk focus bugs on macOS. Unselectable file parameters are dynamically dimmed, disabled, and locked from mouse clicks in real time.
 
 ---
 
-## 📥 1. `sCTkPathChooser` (Compound Widget)
+## Centralized Theme & Integrity Guard Lockout
 
-The `sCTkPathChooser` is an advanced entry-based path selection row designed for settings forms and parameter configuration panels. It pairs a fluid layout text entry field with a stylized browse button. 
+All custom layout components inherit properties and configuration data from ThemeableWidget and pull values out of the shared style sheet registry THEME_DEFAULTS inside sCTkThemes.py.
 
-The text entry acts like an accordion: it automatically stretches or contracts to occupy whatever layout room is left over after accounting for the browse button's fixed metrics. By using a single vector character character token (such as `"▶"` or `">"`) combined with a narrow button width constraint, you can maximize the horizontal space available for viewing deep system directory text paths.
+### Core Safety Exception Interceptors
+To protect your production scripts from CustomTkinter's strict initialization checks (such as dropping a ValueError: color is None or throwing a TypeError for unexpected dictionary arguments), the suite implements two severe global validation traps straight inside ThemeableWidget.py:
+1. Critical File Guard: If sCTkThemes.py is entirely missing or cannot be imported at boot, the application halts immediately and outputs a detailed FileNotFoundError on the terminal.
+2. Null-Traffic Interceptor: If a component section exists inside sCTkThemes.py but has empty placeholder properties (None), the application stops compiling and raises a clear ValueError specifying exactly which widget and key path is broken.
+3. Contamination Filter: The mixin isolates the disabled_map tracking sub-dictionary into a private class property (self._widget_disabled_map), stripping it completely from self.final_kw. This guarantees that forwarding **self.final_kw straight into native CustomTkinter base class constructors never leaks tracking keys or crashes your screens.
+
+---
+
+## 1. sCTkPathChooser (Compound Input Row)
+
+The sCTkPathChooser is an advanced entry-based path selection row designed for settings forms and configuration columns. It pairs a fluid layout text entry field with a square or wide descriptive browse button.
+
+The text entry field acts like an accordion: it is assigned an initial layout width of 0 inside a column weighted to 1, meaning it automatically stretches or contracts to fill 100% of whatever horizontal space remains after the browse button claims its fixed btn_width. By using a single vector character character token (such as "▶" or ">") combined with a narrow btn_width=36, you maximize the screen real estate for nested file strings.
 
 ### Constructor Signature
 ```python
-sCTkPathChooser(master=None, width=350, height=32, type="directory", justify="left", title="Select Path", initialdir=None, initialfile=None, filetypes=None, btn_width=110, btn_height=32, btn_text=None, entry_height=32, browser_width=500, browser_height=450, command=None, **kwargs)
+sCTkPathChooser(master=None, width=350, height=32, type="directory", justify="left", title="Select Path", initialdir=None, initialfile=None, filetypes=None, btn_width=110, btn_height=32, btn_text=None, entry_height=32, browser_width=500, browser_height=450, state="normal", command=None, **kwargs)
 ```
 
-### Available Arguments
+### Available Properties & Arguments
 
 | Argument | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| **`master`** | `Widget` | `None` | The parent container context (e.g., `CTk`, `CTkFrame`, or `sCTkFrame`). |
-| **`width`** | `int` | `350` | Total horizontal width in pixels of file entry and button combined. File path width = total width - button width. |
-| **`height`** | `int` | `32` | Total vertical space allocated to the file path and button frame container. Children heights are set separately. |
-| **`type`** | `Literal["file", "directory"]` | `"directory"` | Determines whether lookups target specific file extension targets or structural system directory folder locations. (Case-insensitive) |
-| **`justify`** | `Literal["left", "right", "center"]` | `"left"` | Aligns path string text. Set to `"right"` to anchor long system paths on the trailing file/folder component names. |
-| **`title`** | `str` | `"Select Path"` | Base title text printed at the top of the browser popup window modal. For files, allowed tracking suffixes are generated and appended automatically. |
-| **`initialdir`** | `str` | `None` | The default directory path folder to focus on when opening the explorer. Resolves system home directories (`~`) natively. |
-| **`initialfile`** | `str` | `None` | A seed absolute path string to a file or directory that populates the entry field bar natively on startup. Forces a directory fallback if `type="directory"`. |
-| **`filetypes`** | `list[str]` | `None` | A list array of string extension masks (e.g., `[".py", ".txt"]`). Non-matching elements are dimmed out and locked from clicks. Ignored if `type="directory"`. |
-| **`entry_height`** | `int` | `32` | Explicit thickness height in pixels assigned directly to the text entry field sub-widget. |
-| **`btn_width`** | `int` | `110` | Explicit width in pixels assigned directly to the browse button element. |
-| **`btn_height`** | `int` | `32` | Explicit thickness height in pixels assigned directly to the browse button element. |
-| **`btn_text`** | `str` | `None` | Custom character text string mapped directly to the browse button face. If left as `None`, it automatically falls back to wide desktop-style phrases like `"Browse Folders..."`. Supports Unicode strings natively (e.g. `"▶"`). |
-| **`browser_width`** | `int` | `500` | Target pop-up file browser window horizontal frame size in pixels. |
-| **`browser_height`** | `int` | `450` | Target pop-up file browser window vertical frame size in pixels. |
-| **`command`** | `Callable` | `None` | Callback method triggered instantly upon confirming and selecting a path location string. Forwards the path as its first positional parameter. |
+| **width** | int | 350 | Total horizontal width in pixels of file entry and button combined. File path width = total width - button width. |
+| **height** | int | 32 | Total vertical space allocated to the frame container block envelope. Children padding loops center them inside this space. |
+| **type** | str | "directory" | Determines file picking or directory selection ("file" or "directory"). (Case-insensitive) |
+| **justify** | str | "left" | Aligns path text orientation ("left", "right", "center"). Set to "right" to anchor long strings on the trailing directory folder names. |
+| **btn_text** | str | None | Custom character text string mapped directly to the button face (e.g. "▶"). If left as None, it falls back to wide descriptive phrases like "Browse Folders...". |
+| **entry_height** | int | 32 | Explicit thickness height in pixels assigned directly to the text entry field sub-widget. |
+| **btn_width** | int | 110 | Explicit width in pixels assigned directly to the browse button element. |
+| **btn_height** | int | 32 | Explicit thickness height in pixels assigned directly to the browse button element. |
+| **browser_width** | int | 500 | Width of the pop-up modal file browser window in pixels. |
+| **browser_height** | int | 450 | Height of the pop-up modal file browser window in pixels. |
+| **state** | str | "normal" | Set whether row is interactive ("normal" or "disabled"). Toggling to disabled locks fields and dims colors using disabled_map. |
 
 ### Public API Methods
-
-*   **`set(path_string: str) -> None`**  
-    Rewrites the location text printed inside the widget entry canvas box, running system normalization strings automatically. Dispatches your registered `command` callback.
-*   **`get() -> str`**  
-    Extracts the absolute normalized string path currently written inside the input field canvas box.
+*   **set(path_string: str) -> None** – Rewrites the input box location string, executing system normalization rules automatically. Triggers your command callback.
+*   **get() -> str** – Extracts the absolute normalized path string currently written inside the input field.
+# sCustomTkinter Technical Components Reference - Part 2
 
 ---
 
-## 🛠️ 2. `sCTkFileExplorer` (Embedded Panel View)
+## 2. Structural Passive Containers (sCTkFrame variants)
 
-The `sCTkFileExplorer` is the underlying modular viewport layout engine. It is isolated into its own Python file and class, meaning it can be instantiated as a **permanent, open, scrollable panel grid** right inside your dashboards, sidebar frames, or wide administrative tabs without spawning popup top-level screens. 
+To follow native Tkinter conventions and avoid fragile timer overrides or initialization race conditions, all structural container classes behave as **passive geometry layout groups**. They do not actively monitor, police, or block incoming children on arrival. 
 
-Because it operates inside modal conditions or distinct dashboard views, it does not manage its own recursive disabled state layer, letting parent forms manage container freezes cleanly instead.
+Toggling states on an entry group is handled cleanly at the application controller level using runtime children iterations (winfo_children()).
 
-### Constructor Signature
+### sCTkFrame / sCTkFrameOutlined / sCTkScrollableFrame
+Standard direct subclasses of native CustomTkinter frame elements wrapped in ThemeableWidget parameters. They pass arguments up to their parent layers cleanly.
 ```python
-sCTkFileExplorer(master, type="directory", filetypes=None, initialdir=None, initialfile=None, command=None, double_click_command=None, width=400, height=300, **kwargs)
+# Pure initialization layout pass
+my_group = sCTkFrameOutlined(parent_window, border_width=2)
+my_group.pack(fill="both", expand=True)
+```
+
+### sCTkFrameLabeledPrimary / sCTkFrameLabeledSecondary
+Custom scrollable viewport containers that natively hide their vertical scrollbar paths by retrieving their active frame fg_color and painting the inner self._scrollbar parameters to match invisibly while setting track width to 0. 
+
+They preserve complete compatibility with Pygubu Designer because they inherit directly from ctk.CTkScrollableFrame—allowing you to drag, drop, and pack elements inside them with native properties (label_text and label_anchor) working perfectly out of the box.
+```python
+# Native configurations compile fluidly inside Pygubu Designer trees
+labeled_scroll_pane = sCTkFrameLabeledPrimary(
+    master=app,
+    label_text="System Network Configurations",
+    label_anchor="w"
+)
 ```
 
 ---
 
-## 🔬 3. Pure Python Implementation Examples
+## 3. Visual Static Labels (sCTkLabel variants)
 
-### Configuration A: Wide Descriptive Desktop Layout
+Because standard CustomTkinter CTkLabel components do not feature a native state property, running a generic form-disabling loop over a container normally leaves label descriptions fully bright, breaking your UI aesthetic.
+
+The **sCTkLabelPrimary**, **sCTkLabelSecondary**, and **sCTkLabelTertiary** components natively intercept the .configure(state="...") property key. When set to "disabled", they gracefully intercept the command, bypass standard Tkinter attribute rejections, and look up the exact dimming colors assigned to the "text_color" row inside your style sheets to match your frozen fields.
+
+### Global Controller Disabling Pattern
+To cleanly freeze a passive container frame group and all of its interior fields and custom labels at runtime, apply this standard loop pattern inside your controller file:
+
 ```python
-# Wide envelope with high-visibility descriptive text instructions
-chooser_desktop = sCTkPathChooser(
-    master=app,
-    type="directory",
-    width=550,
-    height=45,
-    btn_width=130,
-    btn_text=None # Defaults to "Browse Folders..." phrase based on type variable
-)
-chooser_desktop.pack(pady=10)
+def set_form_group_state(container_widget, target_state: str):
+    """Recursively walks down the layout group to toggle states on all input controls and labels."""
+    for child in container_widget.winfo_children():
+        if hasattr(child, "configure"):
+            try:
+                child.configure(state=target_state)
+            except Exception:
+                pass
 ```
 
-### Configuration B: Compact Accordion Vector Layout (Pygubu/Native Style)
-```python
-# Minimal footprint maximize data viewing row space for nested system folders
-chooser_compact = sCTkPathChooser(
-    master=app,
-    type="file",
-    justify="right",
-    filetypes=[".json", ".txt"],
-    width=550,
-    height=45,
-    entry_height=36,
-    btn_width=36,       # Square geometry dimensions
-    btn_height=36,      # Square geometry dimensions
-    btn_text="▶"        # Standard right arrow vector text character code mapping
-)
-chooser_compact.pack(pady=10)
-```
+---
+
+## 4. Creating Standardized Dialogs With sCTkDialogCore
+
+The creation of an advanced user dialogue panel is a structured, multi-step process in the sCustomTkinter system. This flow decouples structural layouts from operational code.
+
+### Step-by-Step Implementation Workflow
+
+#### Step 1: Initialization inside Pygubu-Designer
+1. Open Pygubu-Designer and create a new clean project space (e.g., settingMachine).
+2. Add a standard **CTkToplevel** widget into your visual workspace canvas.
+3. Open the **Settings** panel, select the **Compound Subclass** choice option, and fill out your specific values for both the object name and your desired file package destination folder. 
+4. *Note:* Leave the **Styles** option entirely blank. If custom components are missing from your layout pane options, register them via the **Custom Widget** setup tab first.
+5. **Important:** Now, delete the placeholder CTkToplevel element you just generated from the design tree hierarchy.
+6. Add the **sCTkDialogCore** custom component widget straight into your design workspace canvas (rename the instance label identifier token if desired).
+7. Return to the visual **Settings** pane and assign your main layout widget reference target to lock onto the **sCTkDialogCore** element you just added.
+8. Save your visual designer tree.
+
+#### Step 2: Adding Content to the Dialog
+1. With your active Pygubu-Designer project open, drag and direct additional custom sCTk input widgets directly onto the dialog canvas shell.
+2. All inputs will align and organize themselves natively within the designated **Content Area**.
+3. Customize your layout properties freely, setting row grid parameters, cell constraints, or pixel padding metrics (padx / pady).
+4. Operational buttons, titles, and confirmation click handlers can be configured or swapped later via built-in convenience methods.
+5. Save your work and select **Generate Code**.
+
+#### Step 3: Customizing Generated Class Code
+1. Open your top-level operational class file in your script editor space. Focus on **classname.py** (do NOT modify the structural baseline file classnameui.py).
+2. Inject the following import declaration line at the absolute top of the module file structure:
+   ```python
+   from sCTkDialogMixin import sCTkDialogMixin
+   ```
+3. Inject the dialog mixin token straight into your class definition inheritance chain. Your original generated definition line will look like this:
+   ```python
+   class classname(baseui.classnameUI):
+   ```
+   Modify it to include the helper mixin parameter like this:
+   ```python
+   class classname(sCTkDialogMixin, baseui.classnameUI):
+   ```
+
+---
+
+### Built-in Convenience Functions Reference
+
+#### Dialogue & Window Management
+
+*   **self.onDeleteWindow()**  
+    Trigger hook bound to handle standard system Window Manager intercept close requests (e.g. clicking the top title bar "X" close circle).
+*   **self.dialogClose()**  
+    Call programmatically anywhere inside your controller script functions to instantly dismiss, unbind, and destroy the open dialog modal screen.
+*   **self.runAndWait()**  
+    Locks focus onto the window and forces the dialog into a strict **Modal (Blocking)** interaction state. The script will halt execution on that thread until the window closes. If this method is not explicitly called, the dialog window remains **Non-Modal (Fluid)**.
+*   **self.setTitle(title: str)**  
+    Dynamically rewrites the text string displayed at the top left of the native operating system window header shell wrapper.
+
+#### Viewport & Button Content Management
+
+*   **self.setHeading(heading=None, anchor=None)**  
+    Modifies the core header label text printed above the content grid. The anchor string input accepts standard parameters: "w", "e", or "center". All alternative anchor inputs are ignored. Passing None to either argument results in no modification to that specific layout parameter.
+*   **self.setTwoButton()**  
+    Configures the window button row to display exactly two functional controls: an **Apply** action button and a **Cancel** shortcut button.
+*   **self.setApplyButton(buttonName=None, ButtonCommand=None)**  
+    Configures the label text string and click callback function pointer for the primary validation button. Passing None preserves current settings. Returns True.
+*   **self.setCancelButton(buttonName=None, ButtonCommand=None)**  
+    Configures the label text string and click callback function pointer for the exit shortcut button. Passing None preserves current settings. Returns True.
+*   **self.setResetButton(buttonName=None, ButtonCommand=None)**  
+    Configures the label text string and click callback function pointer for the secondary option button. Passing None preserves current settings. If the internal reset button component has been previously destroyed or unmapped, no updates occur and it returns False. Otherwise, parameters align and it returns True.

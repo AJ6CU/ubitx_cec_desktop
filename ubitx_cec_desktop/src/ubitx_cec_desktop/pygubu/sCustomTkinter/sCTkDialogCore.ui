@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">sCTkDialogCore</setting>
+      <setting id="description">a special widget deciated to making popup dialogs consistent</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">sCTkDialogCoreFrame</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">sCTkDialogCore</setting>
+      <setting id="main_classname">sCTkDialogCore</setting>
+      <setting id="output_dir">../../sCustomTkinter</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">../../sCustomTkinter</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+      <customwidget path="../../sCustomTkinter/sCTK.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="custom_widgets.sCTkFrame" id="sCTkDialogCoreFrame" named="True">
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="titleFrame" named="True">
+        <layout manager="pack">
+          <property name="anchor">n</property>
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">10</property>
+          <property name="pady">20 10</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkLabelPrimary" id="heading_Label" named="True">
+            <property name="anchor">center</property>
+            <property name="text" translatable="yes">Heading Title</property>
+            <property name="textvariable">string:heading_VAR</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="contentFrame" named="True">
+        <property name="width">500</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="actionFrame" named="True">
+        <layout manager="pack">
+          <property name="anchor">s</property>
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">10 20</property>
+          <property name="side">top</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property name="anchor">s</property>
+        </containerlayout>
+        <child>
+          <object class="custom_widgets.sCTkButtonPrimary" id="apply_Button" named="True">
+            <property name="command" type="command" cbtype="simple">apply_CB</property>
+            <property name="text" translatable="yes">Apply</property>
+            <property name="textvariable">string:applyText_VAR</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkButtonSecondary" id="cancel_Button" named="True">
+            <property name="command" type="command" cbtype="simple">cancel_CB</property>
+            <property name="text" translatable="yes">Cancel</property>
+            <property name="textvariable">string:cancelText_VAR</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkButtonSecondary" id="reset_Button" named="True">
+            <property name="command" type="command" cbtype="simple">reset_CB</property>
+            <property name="text" translatable="yes">Reset</property>
+            <property name="textvariable">string:resetText_VAR</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="padx">10</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

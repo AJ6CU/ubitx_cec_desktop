@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">starterTemplate</setting>
+      <setting id="description">just a dumb starter template to make my life easier</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">ctktoplevel1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">starterTemplate</setting>
+      <setting id="main_classname">starterTemplate</setting>
+      <setting id="output_dir">.</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">.</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+    </customwidgets>
+    <resources />
+  </project>
+</interface>

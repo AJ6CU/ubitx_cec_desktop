@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 """
-dialogCommand
+generalSettings_sCTk
 
-test
+first try at settings dialog
 
-UI source file: dialogCommand.ui
+UI source file: generalSettings_sCTk.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import (CTkEntry, CTkLabel)
-from dialogBase import dialogBase
+from sCTkCheckBox import sCTkCheckBox
+from sCTkComboBox import sCTkComboBox
+from sCTkDialogCore import sCTkDialogCore
+from sCTkLabelPrimary import sCTkLabelPrimary
 
 
 def safe_i18n_translator(value):
@@ -35,7 +37,7 @@ def safe_image_loader(master, image_name: str):
 #
 # Base class definition
 #
-class dialogFrameUI(dialogBase):
+class generalSettings_sCTkUI(sCTkDialogCore):
     def __init__(
         self,
         master=None,
@@ -56,24 +58,33 @@ class dialogFrameUI(dialogBase):
 
         super().__init__(master, **kw)
 
-        frame2 = ttk.Frame(self.contentFrame)
-        frame2.configure(height=200, width=200)
+        sctkcheckbox1 = sCTkCheckBox(self.contentFrame)
+        sctkcheckbox1.configure(text='sctkcheckbox1')
         # First object created
-        on_first_object_cb(frame2)
+        on_first_object_cb(sctkcheckbox1)
 
-        ctklabel1 = CTkLabel(frame2)
-        ctklabel1.configure(text='Test Label')
-        ctklabel1.pack(side="top")
-        ctkentry1 = CTkEntry(frame2)
-        ctkentry1.delete(0, "end")
-        ctkentry1.insert(0, 'enter data')
-        ctkentry1.pack(side="top")
-        frame2.pack(side="top")
-        # Layout for 'dialogbase1' skipped in custom widget template.
+        sctkcheckbox1.grid(column=0, row=0)
+        sctkcheckbox1.configure(command=self.checked_CB)
+        sctkcombobox1 = sCTkComboBox(self.contentFrame)
+        sctkcombobox1.grid(column=1, row=0)
+        sctkcombobox1.configure(command=self.selected_CB)
+        sctklabelprimary1 = sCTkLabelPrimary(self.contentFrame)
+        self.test_label_VAR = tk.StringVar(value='sctklabelprimary1')
+        sctklabelprimary1.configure(
+            text='sctklabelprimary1',
+            textvariable=self.test_label_VAR)
+        sctklabelprimary1.grid(column=0, row=1)
+        # Layout for 'sctkdialogcore1' skipped in custom widget template.
+
+    def checked_CB(self):
+        pass
+
+    def selected_CB(self, value):
+        pass
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    widget = dialogFrameUI(root)
+    widget = generalSettings_sCTkUI(root)
     widget.pack(expand=True, fill="both")
     root.mainloop()

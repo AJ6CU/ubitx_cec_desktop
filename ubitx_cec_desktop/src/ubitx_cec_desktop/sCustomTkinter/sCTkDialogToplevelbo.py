@@ -1,33 +1,32 @@
 #!/usr/bin/python3
 """
-dialogCommand
+sCTkDialogToplevel
 
-test
+the top level for a sCTkDialogToplevel
 
-UI source file: dialogCommand.ui
+UI source file: sCTkDialogToplevel.ui
 """
 import tkinter as tk
 import tkinter.ttk as ttk
-from customtkinter import (CTkEntry, CTkLabel)
-from dialogBase import dialogBase
+from customtkinter import CTkToplevel
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from dialogFrame import dialogFrame
+from sCTkDialogToplevel import sCTkDialogToplevel
 
 
 #
 # Builder definition section
 #
-widget_namespace = "dialogFrame"
-widget_classname = "dialogFrame"
+widget_namespace = "sCTkDialogToplevel"
+widget_classname = "sCTkDialogToplevel"
 builder_namespace = "custom_widgets"
 section_name = "Project Widgets"
 
 
-class dialogFrameBO(BuilderObject):
-    class_ = dialogFrame
+class sCTkDialogToplevelBO(BuilderObject):
+    class_ = sCTkDialogToplevel
 
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
@@ -37,5 +36,5 @@ class dialogFrameBO(BuilderObject):
 
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
-    builder_id, dialogFrameBO, widget_classname, ("ttk", section_name)
+    builder_id, sCTkDialogToplevelBO, widget_classname, ("ttk", section_name)
 )

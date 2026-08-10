@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">sCTkDialogBase</setting>
+      <setting id="description">core building block for dialog</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">sctkframe1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">sCTkDialogBase</setting>
+      <setting id="main_classname">sCTkDialogBase</setting>
+      <setting id="output_dir">../../sCustomTkinter</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2">../../sCustomTkinter</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+      <customwidget path="../../sCustomTkinter/sCTK.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="custom_widgets.sCTkFrame" id="sctkframe1">
+    <property name="height">400</property>
+    <property name="width">400</property>
+    <layout manager="pack">
+      <property name="expand">true</property>
+      <property name="fill">both</property>
+      <property name="side">top</property>
+    </layout>
+    <containerlayout manager="grid">
+      <property type="row" id="1" name="weight">1</property>
+    </containerlayout>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="titleFrame" named="True">
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">0</property>
+          <property name="sticky">ew</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkFrameLabeledPrimary" id="sctkframelabeledprimary1">
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="contentFrame" named="True">
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">1</property>
+          <property name="sticky">ew</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="actioFrame" named="True">
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">2</property>
+          <property name="sticky">ew</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkButtonPrimary" id="sctkbuttonprimary1">
+            <property name="text" translatable="yes">sctkbuttonprimary1</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkButtonSecondary" id="sctkbuttonsecondary1">
+            <property name="text" translatable="yes">sctkbuttonsecondary1</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkButtonSecondary" id="sctkbuttonsecondary2">
+            <property name="text" translatable="yes">sctkbuttonsecondary2</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

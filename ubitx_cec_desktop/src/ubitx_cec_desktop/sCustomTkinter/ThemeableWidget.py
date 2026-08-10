@@ -57,18 +57,23 @@ class ThemeableWidget:
                 )
 
         # 🛡️ GLOBAL SANITIZATION RESCUE
-        # We store the private disabled mapping layer separately, then strip it completely
-        # from final_kw so it can never leak into any native CustomTkinter base constructor passes.
+        # Isolate special tracking layers into private class properties, then strip them completely
+        # from final_kw so they can never contaminate native CustomTkinter base constructor passes.
         self._widget_disabled_map = theme_defaults.get("disabled_map") or {}
+        self._widget_pressed_map = theme_defaults.get("pressed_map") or {}
+        self._widget_alarm_map = theme_defaults.get("alarm_map") or {}
+
+        # Define internal forbidden key tags to strip automatically
+        forbidden_keys = {"disabled_map", "pressed_map", "alarm_map"}
 
         self.final_kw = {}
 
         # Load the global theme mapping defaults first (filtering out internal tracking keys)
         for key, value in theme_defaults.items():
-            if key != "disabled_map":
+            if key not in forbidden_keys:
                 self.final_kw[key] = value
 
         # Layer any direct inline runtime configuration overrides over the top
         for key, value in kwargs.items():
-            if value is not None and key != "disabled_map":
+            if value is not None and key not in forbidden_keys:
                 self.final_kw[key] = value
