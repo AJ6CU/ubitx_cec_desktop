@@ -29,12 +29,9 @@ class Selector(sCTkFrame):
         self.checkboxes = []
         self.selected_indexes = []
         self.multiple_choices = multiple_choices
-        print(items)
         if len(set(items)) == len(items):  # not 2 times the same item
             for index in range(len(items)):
                 self.checkboxes.append(sCTkCheckBox(self.checkboxes_frame, text=items[index], command=lambda a=index: self._selection(a)))
-                # # self.checkboxes[index].configure(text=items[index])
-                # print("appending", items[index],self.checkboxes[index].cget("text"))
             self._search_modified()
         else:
             raise ValueError("There is two times or more the same item in the given items list")
@@ -112,68 +109,35 @@ class Selector(sCTkFrame):
         """
         return [self.checkboxes[index].cget("text") for index in self.selected_indexes]
 
-
-class SelectorDialog(ctk.CTkToplevel):
-    def __init__(self, master, items: list[str], multiple_choices=True, title="Select Options"):
-        super().__init__(master)
-
-        self.title(title)
-        self.geometry("350x450")
-
-        # Variable to hold the final selection
-        self.result = []
-
-        # 1. Embed the Selector frame
-        self.selector = Selector(self, items=items, multiple_choices=multiple_choices)
-        self.selector.pack(expand=True, fill="both", padx=10, pady=10)
-
-        # 2. Add a Confirm/OK button
-        self.confirm_btn = sCTkButtonPrimary(self, text="Confirm", command=self._on_confirm)
-        self.confirm_btn.pack(pady=(0, 10))
-
-        # 3. Intercept the window 'X' close button
-        self.protocol("WM_DELETE_WINDOW", self._on_close)
-
-        # Make the dialog modal (stays on top & blocks interaction with main window)
-        self.transient(master)
-        self.grab_set()
-
-    def _on_confirm(self):
-        # Save selections before closing
-        self.result = self.selector.get_selections()
-        self.destroy()
-
-    def _on_close(self):
-        # If user closes via 'X', you can decide to save selections or leave empty
-        self.result = self.selector.get_selections()
-        self.destroy()
-
-    def get_result(self) -> list:
-        """Helper method to wait for the window to close and return the result."""
-        self.master.wait_window(self)  # Pauses execution here until self.destroy() is called
-        return self.result
-
-
 if __name__ == "__main__":
+
+    def on_confirm():
+        # Save selections before closing
+        print(theSelector.get_selections())
+
+    def on_close():
+        # Save selections before closing
+        print(theSelector.get_selections())
+        root.destroy()
+
     root = ctk.CTk()
     root.geometry("400x300")
-    root.title("Main Window")
+    root.title("sCTkSelector Test")
+    root.protocol("WM_DELETE_WINDOW", on_close)
 
+    result = []
 
-    def open_selector():
-        options = ["vw", "porsche", "roadster", "tesla"]
+    items=["vw", "porsche", "roadster", "tesla"]
 
-        # Create dialog
-        dialog = SelectorDialog(root, options, multiple_choices=True)
+    # 1. Embed the Selector frame
+    theSelector = Selector(root, items=items, multiple_choices=True)
+    theSelector.pack(expand=True, fill="both", padx=10, pady=10)
 
-        # This line blocks until the dialog is closed:
-        selected_items = dialog.get_result()
-
-        # Output result after window closure
-        print("Captured selections:", selected_items)
-
-
-    btn = sCTkButtonPrimary(root, text="Open Selector", command=open_selector)
-    btn.pack(expand=True)
+    # 2. Add a Confirm/OK button
+    confirm_btn = sCTkButtonPrimary(root, text="Confirm", command=on_confirm)
+    confirm_btn.pack(pady=(0, 10))
 
     root.mainloop()
+
+
+

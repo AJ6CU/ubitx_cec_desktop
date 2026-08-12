@@ -55,8 +55,8 @@ class sCTkEntrySecondaryUI(CTkEntry):
 
         super().__init__(master, **kw)
 
-        self.delete(0, "end")
-        self.insert(0, 'ctkentry1')
+        # self.delete(0, "end")
+        # self.insert(0, 'ctkentry1')
         # Layout for 'entrySecondaryTemplate' skipped in custom widget
         # template.
 

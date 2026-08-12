@@ -55,7 +55,7 @@ class sCTkSwitchUI(CTkSwitch):
 
         super().__init__(master, **kw)
 
-        self.configure(text='ctkswitch1')
+        # self.configure(text='ctkswitch1')
         # Layout for 'switchTemplate' skipped in custom widget template.
 
 
