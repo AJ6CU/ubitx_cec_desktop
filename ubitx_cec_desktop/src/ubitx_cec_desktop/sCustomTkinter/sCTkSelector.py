@@ -1,3 +1,7 @@
+# Derived from Selector class by Fastattack, 2024).
+# https://github.com/fastattackv/MoreCustomTkinterWidgets
+#
+#
 import customtkinter as ctk
 from sCTkFrame import sCTkFrame
 from sCTkCheckBox import sCTkCheckBox
@@ -5,33 +9,56 @@ from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkScrollableFrame import sCTkScrollableFrame
 from sCTkEntryPrimary import sCTkEntryPrimary
 
+# Import your theme manager structures
+from ThemeableWidget import ThemeableWidget
+from sCTkThemes import THEME_DEFAULTS
+from typing import Optional
 
-class Selector(sCTkFrame):
-    def __init__(self, master, items: list[str], multiple_choices=True, *args, **kwargs):
-        """Selector widgets to select options in a list of options. Includes a search bar to find different elements faster.
 
-        :param master: master window for the widget
-        :param items: list of the possible options, they should all be different
-        :param multiple_choices: Optional: if set to False, the user will be allowed to select only one item (default=True)
-        :param args: args for the CTkFrame widget
-        :param kwargs: kwargs for the CTkFrame widget
+class sCTkSelector(sCTkFrame, ThemeableWidget):
+    def __init__(self, master, items: Optional[list[list[str]]] = None, multiple_choices=True, **kwargs):
+        """Selector widgets to select options in a list of options.
+        Includes a search bar to find different elements faster.
         """
-        super().__init__(master, *args, **kwargs)
+        # 1. Initialize the ThemeableWidget mixin first to build self.final_kw
+        # It scans THEME_DEFAULTS["Selector"] and runs corruption guards
+        theme_config = THEME_DEFAULTS.get("sCTkSelector", {})
+        ThemeableWidget.__init__(self, theme_config, kwargs)
+
+        # 2. Extract configuration arguments intended for child components
+        # so they do not contaminate the base CTkFrame constructor.
+        # Example: fallback to transparent if no fg_color is defined in your theme
+        fg_color = self.final_kw.get("fg_color", "transparent")
+
+        # 3. Call the parent sCTkFrame constructor using the sanitized final_kw map
+        super().__init__(master, **self.final_kw)
 
         self.search_var = ctk.StringVar(self)
         self.search_var.trace_add("write", self._search_modified)
+
+        # 4. Pass down the theme settings to the composite parts
         self.search_bar = sCTkEntryPrimary(self, textvariable=self.search_var)
-        color = kwargs.pop("fg_color") if "fg_color" in kwargs else "transparent"
-        self.checkboxes_frame = sCTkScrollableFrame(self, fg_color=color, *args, **kwargs)
+
+        # Ensure the scrollable sub-frame respects the primary widget color
+        self.checkboxes_frame = sCTkScrollableFrame(self, fg_color=fg_color)
+
         self.search_bar.pack(anchor="n", fill="x")
         self.checkboxes_frame.pack(expand=True, fill="both", side="bottom")
 
         self.checkboxes = []
         self.selected_indexes = []
         self.multiple_choices = multiple_choices
-        if len(set(items)) == len(items):  # not 2 times the same item
+
+        if items is None:
+            items =[]
+
+        if len(set(items)) == len(items):
             for index in range(len(items)):
-                self.checkboxes.append(sCTkCheckBox(self.checkboxes_frame, text=items[index], command=lambda a=index: self._selection(a)))
+                self.checkboxes.append(sCTkCheckBox(
+                    self.checkboxes_frame,
+                    text=items[index],
+                    command=lambda a=index: self._selection(a)
+                ))
             self._search_modified()
         else:
             raise ValueError("There is two times or more the same item in the given items list")
@@ -72,29 +99,61 @@ class Selector(sCTkFrame):
         """ Returns all the items in the selector """
         return [checkbox.cget("text") for checkbox in self.checkboxes]
 
-    def configure_selector(self, items: list = None, multiple_choices: bool = None):
-        """Changes the given arguments
-
-        :param items: new items to show, if [] is given: deletes all old items
-        :param multiple_choices: if set to False, the user will be allowed to select only one item
+    def configure(self, cnf=None, **kwargs):
         """
-        if items is not None:
-            if len(set(items)) == len(items):  # not 2 times the same item
-                # destroy old widgets
-                for checkbox in self.checkboxes:
-                    checkbox.destroy()
-                self.checkboxes.clear()
-                self.selected_indexes.clear()
+        Processes both custom widget collections and standard frame attributes
+        simultaneously, resolving layout configuration ignore errors.
+        """
+        import ast
 
-                # create new ones
-                for index in range(len(items)):
-                    self.checkboxes.append(sCTkCheckBox(self.checkboxes_frame, text=items[index], command=lambda a=index: self._selection(a)))
-                self._search_modified()
-            else:
-                raise ValueError("There is two times or more the same item in the given items list")
+        # 1. Intercept and route list modifications cleanly
+        if "items" in kwargs:
+            items_val = kwargs.pop("items")
+            # Safely handle string parsing if an unparsed literal leaks through
+            if isinstance(items_val, str):
+                try:
+                    items_val = ast.literal_eval(items_val)
+                except Exception:
+                    items_val = []
 
-        if multiple_choices is not None:
-            self.multiple_choices = multiple_choices
+            if items_val is not None:
+                if len(set(items_val)) == len(items_val):
+                    # Destroy old layout checkboxes
+                    for checkbox in self.checkboxes:
+                        checkbox.destroy()
+                    self.checkboxes.clear()
+                    self.selected_indexes.clear()
+
+                    # Dynamically instantiate the updated checklist block
+                    for index in range(len(items_val)):
+                        self.checkboxes.append(sCTkCheckBox(
+                            self.checkboxes_frame,
+                            text=items_val[index],
+                            command=lambda a=index: self._selection(a)
+                        ))
+                    self._search_modified()
+                else:
+                    raise ValueError("There is two times or more the same item in the given items list")
+
+        # 2. Intercept and assign the multiple choices boolean flag
+        if "multiple_choices" in kwargs:
+            mult_val = kwargs.pop("multiple_choices")
+            if isinstance(mult_val, str):
+                mult_val = str(mult_val).lower() in ['true', '1', 'yes']
+            self.multiple_choices = mult_val
+
+        # 3. Synchronize your CustomTkinter theme layers against remaining variables
+        theme_config = THEME_DEFAULTS.get("sCTkSelector", {})
+        ThemeableWidget.__init__(self, theme_config, kwargs)
+
+        # Keep background coloring synchronized across the sub-scroller canvas layer
+        if "fg_color" in self.final_kw:
+            new_fg = self.final_kw.get("fg_color")
+            if hasattr(self, "checkboxes_frame"):
+                self.checkboxes_frame.configure(fg_color=new_fg)
+
+        # 4. Route remaining layout keys (width, height, etc.) safely down to the base Frame
+        return super().configure(cnf, **self.final_kw)
 
     def clear_selections(self):
         """ Clears the selections """
@@ -121,7 +180,7 @@ if __name__ == "__main__":
         root.destroy()
 
     root = ctk.CTk()
-    root.geometry("400x300")
+    root.geometry("400x350")
     root.title("sCTkSelector Test")
     root.protocol("WM_DELETE_WINDOW", on_close)
 
@@ -130,7 +189,7 @@ if __name__ == "__main__":
     items=["vw", "porsche", "roadster", "tesla"]
 
     # 1. Embed the Selector frame
-    theSelector = Selector(root, items=items, multiple_choices=True)
+    theSelector = sCTkSelector(root, items=items, multiple_choices=True)
     theSelector.pack(expand=True, fill="both", padx=10, pady=10)
 
     # 2. Add a Confirm/OK button

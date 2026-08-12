@@ -602,6 +602,12 @@ THEME_DEFAULTS = {
         "row_dimmed_text": ("#A0A0A0", "#606060"),
     },
 
+    "sCTkSelector": {
+        "fg_color": "transparent",  # or a specific tuple like ("#light", "#dark")
+        "corner_radius": 6,
+        # Ensure no values are left as None to satisfy your script's guard logic
+    },
+
 }
 # 🔒 CENTRALIZED MODULE ENFORCEMENT GUARD
 # Enforce absolute structural integrity validations instantly on module compilation

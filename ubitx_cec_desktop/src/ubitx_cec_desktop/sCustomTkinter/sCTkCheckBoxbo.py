@@ -20,6 +20,7 @@ from pygubu.plugins.customtkinter.widgets import CTkCheckBoxBO
 from pygubu.api.v1 import copy_custom_property
 
 from sCTkCheckBox import sCTkCheckBox
+from sCTkSelector import sCTkSelector
 
 
 #

@@ -30,6 +30,7 @@ from sCTkPathChooser import sCTkPathChooser
 from sCTkProgressBar import sCTkProgressBar
 from sCTkRadioButton import sCTkRadioButton
 from sCTkScrollableFrame import sCTkScrollableFrame
+from sCTkSelector import sCTkSelector
 from sCTkSlider import sCTkSlider
 from sCTkSwitch import sCTkSwitch
 
@@ -165,10 +166,6 @@ class customCTK_WidgetTesterPart3UI:
         switch1 = sCTkSwitch(framelabeledprimary6)
         switch1.configure(text='subswitch')
         switch1.grid(column=1, row=3, sticky="w")
-        sctkcheckbox6 = sCTkCheckBox(framelabeledprimary6)
-        sctkcheckbox6.grid(column=0, row=4)
-        ctkcheckbox2 = CTkCheckBox(framelabeledprimary6)
-        ctkcheckbox2.grid(column=0, row=5)
         framelabeledprimary6.grid(
             column=2,
             padx="20 10",
@@ -257,6 +254,18 @@ class customCTK_WidgetTesterPart3UI:
         ctklabel1.configure(state="disabled", text='ctklabel1')
         ctklabel1.pack(side="top")
         sctkframelabeledsecondary1.grid(column=0, row=2)
+        sctkframe3 = sCTkFrame(ctkframe1)
+        sctkselector1 = sCTkSelector(sctkframe3)
+        sctkselector1.configure(
+            items=[
+                'apple',
+                'pear',
+                'orange'],
+            multiple_choices=True,
+            width=500)
+        sctkselector1.pack(expand=True, fill="x", side="top")
+        sctkframe3.grid(column=1, row=2)
+        sctkframe3.pack_propagate(0)
         ctkframe1.grid(column=0, row=0)
 
         # Main widget

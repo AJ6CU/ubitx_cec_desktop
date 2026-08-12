@@ -22,7 +22,7 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkPathChooserbo.py" />
+      <customwidget path="../sCustomTkinter/sCTkSelectorbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -514,6 +514,23 @@
               <object class="customtkinter.CTkLabel" id="ctklabel1">
                 <property name="state">disabled</property>
                 <property name="text" translatable="yes">ctklabel1</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe3">
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkSelector" id="sctkselector1">
+                <property name="items">['apple','pear','orange']</property>
+                <property name="multiple_choices">True</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
