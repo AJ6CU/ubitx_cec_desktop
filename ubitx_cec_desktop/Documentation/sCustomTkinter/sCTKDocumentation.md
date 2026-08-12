@@ -168,3 +168,162 @@ The creation of an advanced user dialogue panel is a structured, multi-step proc
     Configures the label text string and click callback function pointer for the exit shortcut button. Passing None preserves current settings. Returns True.
 *   **self.setResetButton(buttonName=None, ButtonCommand=None)**  
     Configures the label text string and click callback function pointer for the secondary option button. Passing None preserves current settings. If the internal reset button component has been previously destroyed or unmapped, no updates occur and it returns False. Otherwise, parameters align and it returns True.
+
+# sCTkSelector
+
+# Derived from Selector class by Fastattack, 2024.
+# Source Repository: [MoreCustomTkinterWidgets](https://github.com/fastattackv/MoreCustomTkinterWidgets)
+
+
+An advanced, thematic, multi-choice selection frame component derived from Fastattack's `Selector` utility framework. This component features responsive layout management, an instant alphanumeric search filter, strict element uniqueness constraint handling, and dark/light mode asset harmonization via `ThemeableWidget`.
+
+## Class Signature
+
+```python
+class sCTkSelector(sCTkFrame, ThemeableWidget):
+    def __init__(
+        self, 
+        master, 
+        items: Optional[list[str]] = None, 
+        multiple_choices: bool = True, 
+        **kwargs
+    ):
+```
+
+---
+
+## Core Operational Parameters
+
+| Attribute | Data Type | Default | Operational Profile Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `list[str]` | `[]` | An array containing option strings. Elements must be unique to pass structural consistency layout parsing checks. |
+| `multiple_choices` | `bool` | `True` | Toggles selection modes. When `False`, choosing a checkbox auto-clears all prior checklist options. |
+| `state` | `str` | `"normal"` | Accepts `"normal"` or `"disabled"`. Switching to `"disabled"` blocks input to the search entry and grays out list items based on theme settings. |
+| `pack_propagate` | `bool` | `True` | Layout configuration rule option. Set to `False` to prevent the container from collapsing around sub-elements. |
+| `grid_propagate` | `bool` | `True` | Layout configuration rule option. Set to `False` to lock exact geometric size grid allocations. |
+
+---
+
+## Programmatic API Reference
+
+### Primary API Methods
+
+#### `.get_selections() -> list[str]`
+Returns a list containing the text string names of all currently selected checklist entries.
+* **Return Format:** `['vw', 'roadster']`
+
+#### `.get_all_items() -> list[str]`
+Returns an active lookup list of all items registered in the picker frame.
+* **Return Format:** `['vw', 'porsche', 'roadster', 'tesla']`
+
+#### `.clear_selections()`
+Clears all active option checkmarks across the entire visibility tree, safely updating tracking variables.
+
+#### `.configure(**kwargs)`
+The master runtime routing pipeline. Safely typecasts layout entries from text fields, intercepting custom parameters before passing geometry attributes downward to CustomTkinter's base frame layout module.
+
+---
+
+### Internal Helper Methods
+
+The following methods manage internal callback parsing loops, view transitions, and interface layout mutations. They are executed automatically by the widget framework, but can be invoked manually or extended to handle specialized interactions.
+
+#### `._selection(index: int)`
+The master selection controller logic. Fired automatically when a user toggles any checkmark option.
+* **Functional Profile:** Manages list indices within `self.selected_indexes`. If `self.multiple_choices` evaluates to `False`, it iteratively sweeps all alternative widgets, triggering their `.deselect()` events to enforce a strict radio-button style selection state.
+
+#### `._search_modified(*args)`
+The instant-filter validation scanner callback. Monitored continuously via a write trace on `self.search_var`.
+* **Functional Profile:** Automatically reads string strings inside the search entry bar. It loops through `self.checkboxes`, matching substrings using `.startswith()`. Matching choices are packed inside a grid list array via `.grid()`, while non-matching rows are cleanly stripped from layout rows via `.grid_forget()`. Calls `._reset_scroll()` instantly at completion.
+
+#### `._reset_scroll()`
+Resets scroll tracking bounds whenever filters adapt.
+* **Functional Profile:** Directs the hidden nested canvas mapping engine of the scrollable frame wrapper container, using its internal y-axis view modifier function (`self.checkboxes_frame._parent_canvas.yview_moveto(0)`) to snap the view coordinates back to index `0` instantly.
+
+---
+
+## Pygubu-Designer Inspector Integration Layout
+
+To display and modify parameters within Pygubu-Designer's visual editor panel without breaking code generation arrays, format your inspector parameters exactly as follows:
+
+### 1. Visual Configuration Fields
+
+* **`items` Field Format (Use Single Quotes Inside):**
+  ```text
+  ['apple', 'pear', 'orange', 'banana']
+  ```
+  *Note: Always use single quotes surrounding internal string strings within the entry field text box to ensure safe generation compilation without double quote nesting syntax issues.*
+
+* **`multiple_choices` Dropdown Options:**
+  * `True` *(Enables checklist multi-selection checks)*
+  * `False` *(Enables radio-button style single selection mode)*
+
+* **`state` Dropdown Options:**
+  * `normal` *(Active element state operations color tracking)*
+  * `disabled` *(Grayed out visual interface mode bounds)*
+
+* **`pack_propagate` / `grid_propagate` Options:**
+  * `True` *(Auto shrink-wraps to fit the child checklist elements)*
+  * `False` *(Locks layout parameters explicitly to designated width/height rules)*
+
+---
+
+## Centralized Theme Mapping Rules (`sCTkThemes.py`)
+
+To prevent the global framework corruption guards or null value traffic interceptors from triggering an application startup crash exception, format your `sCTkSelector` node within your theme asset dictionary file exactly as follows:
+
+```python
+THEME_DEFAULTS = {
+    "sCTkSelector": {
+        "fg_color": "transparent",
+        "corner_radius": 6,
+        
+        # Centralized color settings for the disabled mode state block
+        "disabled_map": {
+            "text_color": ("#808080", "#666666"),  # Light Mode / Dark Mode text colors
+            "fg_color": "transparent"
+        },
+        
+        # Placeholder dictionary tags to satisfy strict initialization loop checks
+        "pressed_map": {
+            "state_placeholder": "none"
+        },
+        "alarm_map": {
+            "state_placeholder": "none"
+        }
+    }
+}
+```
+
+---
+
+## Production Integration Example
+
+```python
+import customtkinter as ctk
+from sCTkSelector import sCTkSelector
+
+def fetch_data():
+    # Retrieve current option list array selections
+    active_picks = selector_widget.get_selections()
+    print(f"Active dashboard criteria flags: {active_picks}")
+
+root = ctk.CTk()
+root.geometry("400x450")
+
+# Instantiate layout component with propagation guards locked to sizing constraints
+selector_widget = sCTkSelector(
+    root, 
+    items=["Radio Node A", "Radio Node B", "Radio Node C"],
+    multiple_choices=False,
+    width=350,
+    height=200,
+    pack_propagate=False
+)
+selector_widget.pack(expand=True, fill="both", padx=20, pady=20)
+
+confirm_btn = ctk.CTkButton(root, text="Capture Selections", command=fetch_data)
+confirm_btn.pack(pady=15)
+
+root.mainloop()
+```

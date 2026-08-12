@@ -603,9 +603,22 @@ THEME_DEFAULTS = {
     },
 
     "sCTkSelector": {
-        "fg_color": "transparent",  # or a specific tuple like ("#light", "#dark")
+        "fg_color": "transparent",
         "corner_radius": 6,
-        # Ensure no values are left as None to satisfy your script's guard logic
+
+        # 1. Provide an explicit map tracking structure for the disabled state
+        "disabled_map": {
+            "text_color": ("#808080", "#666666"),  # Light/Dark mode gray hex tokens
+            "fg_color": "transparent"
+        },
+
+        # 2. Add empty structural placeholders to satisfy the unresolved NULL interceptor guard
+        "pressed_map": {
+            "state_placeholder": "none"
+        },
+        "alarm_map": {
+            "state_placeholder": "none"
+        }
     },
 
 }

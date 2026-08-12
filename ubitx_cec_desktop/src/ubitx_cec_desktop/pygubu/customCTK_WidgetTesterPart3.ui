@@ -422,6 +422,7 @@
                 </layout>
                 <child>
                   <object class="custom_widgets.sCTkCheckBox" id="sctkcheckbox4">
+                    <property name="state">disabled</property>
                     <property name="text" translatable="yes">sctkcheckbox4</property>
                     <layout manager="pack">
                       <property name="pady">5 30</property>
@@ -525,13 +526,17 @@
           <object class="custom_widgets.sCTkFrame" id="sctkframe3">
             <layout manager="grid">
               <property name="column">1</property>
+              <property name="columnspan">3</property>
               <property name="row">2</property>
             </layout>
             <child>
               <object class="custom_widgets.sCTkSelector" id="sctkselector1">
                 <property name="items">['apple','pear','orange']</property>
                 <property name="multiple_choices">True</property>
+                <property name="state">disabled</property>
                 <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
                   <property name="side">top</property>
                 </layout>
               </object>
