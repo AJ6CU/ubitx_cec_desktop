@@ -22,16 +22,15 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkSelectorbo.py" />
+      <customwidget path="../sCustomTkinter/sCTkSeparatorbo.py" />
     </customwidgets>
     <resources />
   </project>
   <object class="customtkinter.CTk" id="ctk1">
     <child>
       <object class="customtkinter.CTkFrame" id="ctkframe1">
-        <layout manager="grid">
-          <property name="column">0</property>
-          <property name="row">0</property>
+        <layout manager="pack">
+          <property name="side">top</property>
         </layout>
         <child>
           <object class="custom_widgets.sCTkFrameLabeledPrimary" id="framelabeledprimary5">
@@ -551,16 +550,28 @@
             <child>
               <object class="custom_widgets.sCTkButtonPrimary" id="sctkbuttonprimary1">
                 <property name="text" translatable="yes">sctkbuttonprimary1</property>
-                <layout manager="pack">
-                  <property name="side">top</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="sCTkSeparator.sCTkSeparator" id="sctkseparator1">
+                <property name="orientation">horizontal</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">10</property>
+                  <property name="row">0</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="custom_widgets.sCTkButtonPrimary" id="sctkbuttonprimary2">
                 <property name="text" translatable="yes">sctkbuttonprimary2</property>
-                <layout manager="pack">
-                  <property name="side">top</property>
+                <layout manager="grid">
+                  <property name="column">2</property>
+                  <property name="row">0</property>
                 </layout>
               </object>
             </child>
