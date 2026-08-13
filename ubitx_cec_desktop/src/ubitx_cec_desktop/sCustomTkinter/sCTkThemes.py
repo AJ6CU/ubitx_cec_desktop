@@ -631,6 +631,13 @@ THEME_DEFAULTS = {
         "text_color": ("#1A1A1A", "#FFFFFF")  # Crisp high-contrast header text labels
     },
 
+    "sCTkMessage": {
+            # Centralized typography management
+            "font": ("Arial", 14),
+            # Stark charcoal for bright mode / Crisp off-white for slate dark mode
+            "text_color": ("#1A1A1A", "#E5E5E5")
+        },
+
 }
 # 🔒 CENTRALIZED MODULE ENFORCEMENT GUARD
 # Enforce absolute structural integrity validations instantly on module compilation
