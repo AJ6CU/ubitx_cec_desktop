@@ -21,7 +21,7 @@ from sCTkPathChooser import sCTkPathChooser
 #
 widget_namespace = "sCTkPathChooser"
 widget_classname = "sCTkPathChooser"
-builder_namespace = "sCTkPathChooser"
+builder_namespace = "custom_widgets"
 section_name = "sCustomTkinter"
 
 
@@ -42,7 +42,7 @@ class sCTkPathChooserBuilder(BuilderObject):
 # Register the widget into Pygubu's parsing engine
 builder_id = f"{builder_namespace}.{widget_classname}"
 
-register_widget(builder_id, sCTkPathChooserBuilder, 'sCTkPathChooser', ('sCustomTkinter', 'My Widgets'))
+register_widget(builder_id, sCTkPathChooserBuilder, 'sCTkPathChooser', ("ttk", section_name))
 
 
 # Map the 'command' option directly to Pygubu's native callback editor panel

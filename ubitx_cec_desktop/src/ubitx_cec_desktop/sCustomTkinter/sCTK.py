@@ -26,3 +26,4 @@ import sCTkScrollableFramebo
 import sCTkFramebo
 import sCTkPathChooserbo
 import sCTkDialogCorebo
+import sCTkSelectorbo

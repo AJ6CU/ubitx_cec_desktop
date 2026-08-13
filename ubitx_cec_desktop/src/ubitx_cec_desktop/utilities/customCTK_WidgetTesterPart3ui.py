@@ -216,7 +216,7 @@ class customCTK_WidgetTesterPart3UI:
         sctkcheckbox3.pack(pady="10 30", side="top")
         sctkframeoutlined1 = sCTkFrameOutlined(sctkframe1)
         sctkcheckbox4 = sCTkCheckBox(sctkframeoutlined1)
-        sctkcheckbox4.configure(state="disabled", text='sctkcheckbox4')
+        sctkcheckbox4.configure(state="normal", text='sctkcheckbox4')
         sctkcheckbox4.pack(pady="5 30", side="top")
         sctkcombobox2 = sCTkComboBox(sctkframeoutlined1)
         sctkcombobox2.pack(side="top")
@@ -262,7 +262,7 @@ class customCTK_WidgetTesterPart3UI:
                 'pear',
                 'orange'],
             multiple_choices=True,
-            state='disabled')
+            state='normal')
         sctkselector1.pack(expand=True, fill="x", side="top")
         sctkframe3.grid(column=1, columnspan=3, row=2)
         ctkframe1.grid(column=0, row=0)

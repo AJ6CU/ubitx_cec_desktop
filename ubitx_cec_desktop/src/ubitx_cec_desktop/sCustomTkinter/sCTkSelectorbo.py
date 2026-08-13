@@ -14,6 +14,7 @@ from sCTkSelector import sCTkSelector
 widget_namespace = "sCTkSelector"
 widget_classname = "sCTkSelector"
 builder_namespace = "custom_widgets"
+section_name = "sCustomTkinter"
 
 
 class sCTkSelectorBO(BuilderObject):
@@ -95,7 +96,7 @@ class sCTkSelectorBO(BuilderObject):
 builder_id = f"{builder_namespace}.{widget_classname}"
 
 register_widget(
-    builder_id, sCTkSelectorBO, widget_classname, ('sCustomTkinter', 'My Widgets')
+    builder_id, sCTkSelectorBO, widget_classname, ("ttk", section_name)
 )
 
 register_custom_property(

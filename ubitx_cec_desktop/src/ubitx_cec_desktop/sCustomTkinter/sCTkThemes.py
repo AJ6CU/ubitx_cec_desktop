@@ -612,13 +612,19 @@ THEME_DEFAULTS = {
             "fg_color": "transparent"
         },
 
-        # 2. Add empty structural placeholders to satisfy the unresolved NULL interceptor guard
-        "pressed_map": {
-            "state_placeholder": "none"
-        },
-        "alarm_map": {
-            "state_placeholder": "none"
-        }
+        # # 2. Add empty structural placeholders to satisfy the unresolved NULL interceptor guard
+        # "pressed_map": {
+        #     "state_placeholder": "none"
+        # },
+        # "alarm_map": {
+        #     "state_placeholder": "none"
+        # }
+    },
+
+    "sCTkSeparator": {
+        "fg_color": ("#BABABA", "#565B5E"),
+        "bg_color": "transparent",
+        "corner_radius": 6
     },
 
 }
