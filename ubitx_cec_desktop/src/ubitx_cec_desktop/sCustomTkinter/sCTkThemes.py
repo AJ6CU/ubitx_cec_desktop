@@ -622,9 +622,13 @@ THEME_DEFAULTS = {
     },
 
     "sCTkSeparator": {
-        "fg_color": ("#BABABA", "#565B5E"),
+        # Format: (Light Mode Hex, Dark Mode Hex)
+        # Softer mid-tones changed to robust crisp outlines for sharp visual separation
+        "fg_color": ("#808080", "#8A9296"),
         "bg_color": "transparent",
-        "corner_radius": 6
+        "corner_radius": 6,
+        "font": ("Arial", 11, "bold"),
+        "text_color": ("#1A1A1A", "#FFFFFF")  # Crisp high-contrast header text labels
     },
 
 }

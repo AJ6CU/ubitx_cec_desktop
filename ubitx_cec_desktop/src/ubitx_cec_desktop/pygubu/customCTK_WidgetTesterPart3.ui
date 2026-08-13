@@ -558,11 +558,16 @@
             </child>
             <child>
               <object class="sCTkSeparator.sCTkSeparator" id="sctkseparator1">
+                <property name="dash">1,1</property>
                 <property name="orientation">horizontal</property>
+                <property name="text" translatable="yes">hello2</property>
+                <property name="width">20</property>
                 <layout manager="grid">
                   <property name="column">1</property>
                   <property name="padx">10</property>
+                  <property name="pady">20</property>
                   <property name="row">0</property>
+                  <property name="sticky">ew</property>
                 </layout>
               </object>
             </child>

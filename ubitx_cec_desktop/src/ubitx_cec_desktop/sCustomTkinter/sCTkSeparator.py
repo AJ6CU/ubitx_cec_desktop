@@ -1,24 +1,18 @@
+#
 # Derived from Selector class by Fastattack, 2024).
 # https://github.com/fastattackv/MoreCustomTkinterWidgets
 #
 
 import customtkinter as ctk
 from typing import Literal, Union, Tuple, Optional
-
-# ==========================================
-#   Themeable / Project Custom Fallbacks
-#   (Remove or adjust these based on your absolute import paths)
-# ==========================================
-from ThemeableWidget import ThemeableWidget
 from sCTkThemes import THEME_DEFAULTS
 from ThemeableWidget import ThemeableWidget
 
 
 class sCTkSeparator(ctk.CTkBaseClass, ThemeableWidget):
     """
-    Separator widget to mark a separation between 2 other widgets.
-    Fully integrated with centralized theme tracking (ThemeableWidget)
-    and smooth dynamic scaling support.
+    Advanced Separator widget supporting custom section header text,
+    dashed line patterns, corner roundness, and responsive orientation modes.
     """
 
     def __init__(self,
@@ -28,7 +22,11 @@ class sCTkSeparator(ctk.CTkBaseClass, ThemeableWidget):
                  corner_radius: Optional[int] = None,
                  bg_color: Optional[Union[str, Tuple[str, str]]] = None,
                  fg_color: Optional[Union[str, Tuple[str, str]]] = None,
-                 orientation: Literal["vertical", "horizontal"] = "vertical"
+                 orientation: Literal["vertical", "horizontal"] = "vertical",
+                 text: str = "",
+                 font: Optional[Union[tuple, ctk.CTkFont]] = None,
+                 text_color: Optional[Union[str, Tuple[str, str]]] = None,
+                 dash: Optional[Tuple[int, ...]] = None
                  ):
 
         # 1. Capture initialization parameters into a localized dictionary for processing
@@ -46,6 +44,7 @@ class sCTkSeparator(ctk.CTkBaseClass, ThemeableWidget):
         )
 
         # 3. Orient layout dimension profiles safely
+        self._orientation = orientation
         if orientation == "vertical":
             height = length
         elif orientation == "horizontal":
@@ -67,198 +66,212 @@ class sCTkSeparator(ctk.CTkBaseClass, ThemeableWidget):
         # 5. Extract finalized properties out of the sanitized theme dictionary layer
         self._corner_radius = self.final_kw.get("corner_radius", 6)
         self._fg_color = self._check_color_type(self.final_kw.get("fg_color"))
-        self._orientation = orientation
 
-        # 6. Canvas and render configurations
+        # 6. Extract font and text styling attributes directly from the ThemeableWidget dictionary output layer
+        self._text = text
+        self._font = font if font is not None else self.final_kw.get("font", ("Arial", 11, "bold"))
+
+        if text_color is not None:
+            self._text_color = self._check_color_type(text_color)
+        else:
+            fallback_text_color = self.final_kw.get("text_color", ctk.ThemeManager.theme["CTkLabel"]["text_color"])
+            self._text_color = self._check_color_type(fallback_text_color)
+
+        self._dash = dash
+
+        # 7. Canvas and render configurations
         self._canvas = ctk.CTkCanvas(self, highlightthickness=0)
         self._canvas.place(x=0, y=0, relwidth=1, relheight=1)
-
-        self._canvas.configure(bg=self._apply_appearance_mode(self._detect_color_of_master()))
         self._draw_engine = ctk.DrawEngine(self._canvas)
 
-        # 7. Bind layout adjustments to bypass CTkBaseClass strict bind filters safely
-        super(ctk.CTkBaseClass, self).bind("<Configure>", self._on_resize, add="+")
+        # 8. Bind layout adjustments to bypass CTkBaseClass strict bind filters safely
+        super(ctk.CTkBaseClass, self).bind("<Configure>", lambda e: self._draw(), add="+")
+
+        # 9. Trigger the initial render loop pass
         self._draw(no_color_updates=True)
-
-    def _on_resize(self, event):
-        """Callback to handle dynamic physical frame adjustments."""
-        self._draw()
-
-    def _set_scaling(self, *args, **kwargs):
-        super()._set_scaling(*args, **kwargs)
-        self._draw()
-
-    def _set_dimensions(self, width=None, height=None):
-        super()._set_dimensions(width, height)
-        self._draw()
 
     def _draw(self, no_color_updates=False):
         super()._draw(no_color_updates)
-
-        # Read layout panel allocations explicitly to adapt seamlessly during resize actions
         current_w = self.winfo_width() if self.winfo_width() > 1 else self._current_width
         current_h = self.winfo_height() if self.winfo_height() > 1 else self._current_height
+        self._canvas.delete("all")
 
-        requires_recoloring = self._draw_engine.draw_rounded_rect_with_border(
-            current_w,
-            current_h,
-            self._apply_widget_scaling(self._corner_radius),
-            0
-        )
+        detected_bg = self._detect_color_of_master()
+        if detected_bg == "transparent" or detected_bg is None:
+            detected_bg = ctk.ThemeManager.theme["CTk"]["fg_color"]
 
-        if no_color_updates is False or requires_recoloring:
-            self._canvas.itemconfig("inner_parts",
-                                    outline=self._apply_appearance_mode(self._fg_color),
-                                    fill=self._apply_appearance_mode(self._fg_color))
+        fg_rendered = self._apply_appearance_mode(self._fg_color)
+        self._canvas.configure(bg=self._apply_appearance_mode(detected_bg))
+
+        # FIX: Explicitly clamp the baseline dash line thickness to the intended 4px / 6px configuration.
+        # This completely strips out the inflated text window dimensions inside Pygubu's editor view.
+        if self._orientation == "horizontal":
+            # For a horizontal line, thickness is the true minimal vertical allocation height profile
+            line_thickness = self._current_height if self._current_height < current_h else 4
+            if line_thickness > 10:  # Safety guard if Pygubu hardcoded the widget height attributes
+                line_thickness = 4
+        else:
+            # For a vertical line, thickness is the true minimal horizontal allocation width profile
+            line_thickness = self._current_width if self._current_width < current_w else 4
+            if line_thickness > 10:
+                line_thickness = 4
+
+        if self._text:
+            t_id = self._canvas.create_text(
+                current_w / 2, current_h / 2,
+                text=self._text,
+                font=self._font,
+                fill=self._apply_appearance_mode(self._text_color)
+            )
+            bbox = self._canvas.bbox(t_id)
+            if bbox:
+                text_width = bbox[2] - bbox[0]
+                text_height = bbox[3] - bbox[1]
+
+                # Apply safe padding buffers around the text block
+                tw, th = text_width + 16, text_height + 8
+
+                # Calculate the exact center bounding box coordinates for the text frame capsule
+                x1 = (current_w / 2) - (tw / 2)
+                x2 = (current_w / 2) + (tw / 2)
+
+                if self._orientation == "horizontal":
+                    y1 = 1
+                    y2 = current_h - 1
+
+                    # Draw vertical left and right brackets bounding the horizontal text split
+                    self._canvas.create_line(x1, y1, x1, y2, fill=fg_rendered, width=2)
+                    self._canvas.create_line(x2, y1, x2, y2, fill=fg_rendered, width=2)
+
+                    mid_y = current_h / 2
+                    # Use the isolated, safe line_thickness to force thin dashes
+                    self._canvas.create_line(0, mid_y, x1, mid_y, fill=fg_rendered, width=line_thickness,
+                                             dash=self._dash)
+                    self._canvas.create_line(x2, mid_y, current_w, mid_y, fill=fg_rendered, width=line_thickness,
+                                             dash=self._dash)
+                else:
+                    # Vertical mode capsule coordinates
+                    y1 = (current_h / 2) - (th / 2)
+                    y2 = (current_h / 2) + (th / 2)
+
+                    self._canvas.create_line(x1, y1, x2, y1, fill=fg_rendered, width=2)  # Top border cap line
+                    self._canvas.create_line(x1, y2, x2, y2, fill=fg_rendered, width=2)  # Bottom border cap line
+
+                    mid_x = current_w / 2
+                    self._canvas.create_line(mid_x, 0, mid_x, y1, fill=fg_rendered, width=line_thickness,
+                                             dash=self._dash)
+                    self._canvas.create_line(mid_x, y2, mid_x, current_h, fill=fg_rendered, width=line_thickness,
+                                             dash=self._dash)
+        else:
+            if self._dash:
+                if self._orientation == "horizontal":
+                    self._canvas.create_line(0, current_h / 2, current_w, current_h / 2, fill=fg_rendered,
+                                             width=line_thickness, dash=self._dash)
+                else:
+                    self._canvas.create_line(current_w / 2, 0, current_w / 2, current_h, fill=fg_rendered,
+                                             width=line_thickness, dash=self._dash)
+            else:
+                self._draw_engine.draw_rounded_rect_with_border(current_w, current_h,
+                                                                self._apply_widget_scaling(self._corner_radius), 0)
+                self._canvas.itemconfig("inner_parts", outline=fg_rendered, fill=fg_rendered)
 
     def configure(self, require_redraw=False, **kwargs):
-        """ Reconfigures structural/theming elements (length, width, corner_radius, bg_color, fg_color) """
-        if "height" in kwargs:
-            raise ValueError("Cannot modify directly the height of the widget. Use length and width arguments instead.")
+        if "height" in kwargs: raise ValueError("Modify length/width arguments instead of height.")
+        if "text" in kwargs: self._text, require_redraw = kwargs.pop("text"), True
+        if "dash" in kwargs:
+            v = kwargs.pop("dash")
+            self._dash = tuple(
+                int(x.strip()) for x in v.replace("(", "").replace(")", "").split(",") if x.strip()) if isinstance(v,
+                                                                                                                   str) else v
+            require_redraw = True
 
-        if "length" in kwargs or "width" in kwargs:
-            width, height = None, None
+        t_orient = kwargs.pop("orientation", self._orientation)
+        l_val = kwargs.pop("length", self._desired_height if self._orientation == "vertical" else self._desired_width)
+        w_val = kwargs.pop("width", self._desired_width if self._orientation == "vertical" else self._desired_height)
 
-            if "length" in kwargs:
-                if self._orientation == "vertical":
-                    height = kwargs.pop("length")
-                else:
-                    width = kwargs.pop("length")
-            if "width" in kwargs:
-                if self._orientation == "vertical":
-                    width = kwargs.pop("width")
-                else:
-                    height = kwargs.pop("width")
+        if t_orient != self._orientation:
+            self._orientation = t_orient
+            kwargs["width"], kwargs["height"] = (w_val, l_val) if self._orientation == "vertical" else (l_val, w_val)
+            require_redraw = True
+        else:
+            kwargs["width"], kwargs["height"] = (w_val, l_val) if self._orientation == "vertical" else (l_val, w_val)
+            if kwargs["width"] != self._desired_width or kwargs["height"] != self._desired_height: require_redraw = True
 
-            if width is not None:
-                kwargs["width"] = width
-            if height is not None:
-                kwargs["height"] = height
-
-        if "corner_radius" in kwargs:
-            corner_radius = kwargs.pop("corner_radius")
-            if type(corner_radius) is int:
-                self._corner_radius = corner_radius
-                require_redraw = True
-            elif corner_radius is None:
-                self._corner_radius = 1000
-                require_redraw = True
-            else:
-                raise ValueError(f"corner_radius should be int or NoneType, not {type(corner_radius)}")
-
-        if "fg_color" in kwargs:
-            fg_color = kwargs.pop("fg_color")
-            if isinstance(fg_color, (str, Tuple[str, str])):
-                self._fg_color = self._check_color_type(fg_color)
-                require_redraw = True
-            elif fg_color is None:
-                # Re-fetch default theme settings upon null request
-                default_fg = THEME_DEFAULTS.get("sCTkSeparator", {}).get("fg_color")
-                self._fg_color = self._check_color_type(default_fg)
-                require_redraw = True
-            else:
-                raise ValueError(f"fg_color should be str, Tuple[str, str] or NoneType, not {type(fg_color)}")
+        if "corner_radius" in kwargs: self._corner_radius, require_redraw = kwargs.pop("corner_radius") or 1000, True
+        if "fg_color" in kwargs: self._fg_color, require_redraw = self._check_color_type(
+            kwargs.pop("fg_color") or THEME_DEFAULTS.get("sCTkSeparator", {}).get("fg_color")), True
 
         super().configure(require_redraw=require_redraw, **kwargs)
 
     def cget(self, attribute_name: str):
-        """ Returns structural or styling custom attributes """
-        if attribute_name == "height":
-            raise ValueError("Cannot directly get height of the widget. Use length and width arguments instead.")
-        elif attribute_name == "length":
-            return self._desired_height if self._orientation == "vertical" else self._desired_width
-        elif attribute_name == "width":
-            return self._desired_width if self._orientation == "vertical" else self._desired_height
-        elif attribute_name == "corner_radius":
-            return self._corner_radius
-        elif attribute_name == "fg_color":
-            return self._fg_color
-        elif attribute_name == "orientation":
-            return self._orientation
-        else:
-            return super().cget(attribute_name)
+        if attribute_name == "height": raise ValueError("Use length and width arguments instead.")
+        mapping = {"length": self._desired_height if self._orientation == "vertical" else self._desired_width,
+                   "width": self._desired_width if self._orientation == "vertical" else self._desired_height,
+                   "corner_radius": self._corner_radius, "fg_color": self._fg_color, "orientation": self._orientation,
+                   "text": self._text, "dash": self._dash}
+        return mapping.get(attribute_name, super().cget(attribute_name))
 
+    # =========================================================================
+    #   FIX: BIND & UNBIND ROUTING FOR PYGUBU PREVIEW SELECTION SAFETY
+    # =========================================================================
     def bind(self, sequence=None, command=None, add=True):
+        """ Redirects event hooks safely to the canvas to satisfy Pygubu click selections. """
         if not (add == "+" or add is True):
             raise ValueError("'add' argument can only be '+' or True to preserve internal callbacks")
         self._canvas.bind(sequence, command, add=True)
 
     def unbind(self, sequence=None, funcid=None):
+        """ Redirects unbind hooks safely down to the inner canvas instance. """
         if funcid is not None:
             raise ValueError("'funcid' argument can only be None")
         self._canvas.unbind(sequence, None)
 
 
-from sCTkFrame import sCTkFrame
-from sCTkButtonPrimary import sCTkButtonPrimary
-
 # ==========================================
-#   Main Execution Entry Point
+#   MAIN TESTING RUNNER CODE BLOCK
 # ==========================================
 if __name__ == "__main__":
-    root = ctk.CTk()
-    root.title("sCTkSeparator (System Themed Build)")
-    root.geometry("600x500")
+    if "sCTkSeparator" not in THEME_DEFAULTS:
+        THEME_DEFAULTS["sCTkSeparator"] = {
+            "fg_color": ("#BABABA", "#565B5E"),
+            "bg_color": "transparent",
+            "corner_radius": 6
+        }
 
-    # ------------------------------------------
-    #   Grid Layout Panel
-    # ------------------------------------------
-    grid_Frame = sCTkFrame(root)
-    grid_Frame.pack(side="top", fill="both", expand=True, padx=25, pady=(15, 0))
+    root = ctk.CTk()
+    root.title("sCTkSeparator Feature Test Environment")
+    root.geometry("600x450")
+
+    grid_Frame = ctk.CTkFrame(root)
+    grid_Frame.pack(side="top", fill="both", expand=True, padx=20, pady=15)
 
     grid_Frame.grid_columnconfigure(0, weight=1)
     grid_Frame.grid_columnconfigure(1, weight=0)
     grid_Frame.grid_columnconfigure(2, weight=1)
-
     grid_Frame.grid_rowconfigure(0, weight=1)
-    grid_Frame.grid_rowconfigure(1, weight=1)
 
-    b1 = sCTkButtonPrimary(grid_Frame, text="First Grid button", width=200)
-    b1.grid(row=0, column=0, padx=5, pady=5, sticky="nswe")
+    lbl_left = ctk.CTkLabel(grid_Frame, text="Left Sub-Panel Group Data")
+    lbl_left.grid(row=0, column=0, sticky="nswe")
 
-    b3 = sCTkButtonPrimary(grid_Frame, text="Third Grid button", width=200)
-    b3.grid(row=1, column=0, padx=5, pady=5, sticky="nswe")
+    sep_vertical_text = sCTkSeparator(grid_Frame, orientation="vertical", text="CORE API", width=4)
+    sep_vertical_text.grid(row=0, column=1, sticky="ns", padx=10, pady=10)
 
-    sep = sCTkSeparator(grid_Frame, orientation="vertical", width=4)
-    sep.grid(row=0, column=1, padx=8, rowspan=2, sticky="ns", pady=5)
+    lbl_right = ctk.CTkLabel(grid_Frame, text="Right Sub-Panel Group Data")
+    lbl_right.grid(row=0, column=2, sticky="nswe")
 
-    b2 = sCTkButtonPrimary(grid_Frame, text="Second Grid Button", width=200)
-    b2.grid(row=0, column=2, padx=5, pady=5, sticky="nswe")
+    sep_horizontal_text = sCTkSeparator(root, orientation="horizontal", text="SYSTEM DASH SEPARATOR SECTION", width=4)
+    sep_horizontal_text.pack(side="top", fill="x", padx=20, pady=10)
 
-    b4 = sCTkButtonPrimary(grid_Frame, text="Fourth Grid Button", width=200)
-    b4.grid(row=1, column=2, padx=5, pady=5, sticky="nswe")
+    pack_frame = ctk.CTkFrame(root)
+    pack_frame.pack(side="bottom", fill="both", expand=True, padx=20, pady=(5, 20))
 
-    # ------------------------------------------
-    #   Horizontal Middle Divider Line
-    # ------------------------------------------
-    sepHorizontal = sCTkSeparator(root, orientation="horizontal", width=4)
-    sepHorizontal.pack(side="top", fill="x", pady=15, padx=25)
+    panel_a = ctk.CTkLabel(pack_frame, text="System Input Options")
+    panel_a.pack(side="left", fill="both", expand=True)
 
-    # ------------------------------------------
-    #   Pack Layout Panel
-    # ------------------------------------------
-    pack_frame = sCTkFrame(root)
-    pack_frame.pack(side="bottom", fill="both", expand=True, pady=(0, 25), padx=25)
+    sep_dashed = sCTkSeparator(pack_frame, orientation="vertical", width=4, dash=(4, 4))
+    sep_dashed.pack(side="left", fill="y", padx=10, pady=15)
 
-    left_column = sCTkFrame(pack_frame)
-    left_column.pack(side="left", fill="both", expand=True)
-
-    sep2 = sCTkSeparator(pack_frame, orientation="vertical", width=4)
-    sep2.pack(side="left", fill="y", padx=5, pady=5)
-
-    right_column = sCTkFrame(pack_frame)
-    right_column.pack(side="right", fill="both", expand=True)
-
-    b1_pack = sCTkButtonPrimary(left_column, text="First Pack Button", width=200)
-    b1_pack.pack(side="top", fill="both", expand=True, padx=5, pady=5)
-
-    b3_pack = sCTkButtonPrimary(right_column, text="Third Pack Button", width=200)
-    b3_pack.pack(side="top", fill="both", expand=True, padx=5, pady=5)
-
-    b2_pack = ctk.CTkButton(left_column, text="Second Pack Button", width=200)
-    b2_pack.pack(side="bottom", fill="both", expand=True, padx=5, pady=5)
-
-    b4_pack = sCTkButtonPrimary(right_column, text="Fourth Pack Button", width=200)
-    b4_pack.pack(side="bottom", fill="both", expand=True, padx=5, pady=5)
+    panel_b = ctk.CTkLabel(pack_frame, text="System Output Channels")
+    panel_b.pack(side="right", fill="both", expand=True)
 
     root.mainloop()

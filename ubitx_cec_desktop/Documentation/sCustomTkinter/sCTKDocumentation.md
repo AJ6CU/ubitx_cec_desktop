@@ -327,3 +327,85 @@ confirm_btn.pack(pady=15)
 
 root.mainloop()
 ```
+# sCTkSeparator
+
+The `sCTkSeparator` is an advanced, themeable divider widget for CustomTkinter that extends `ctk.CTkBaseClass` and implements multiple inheritance with `ThemeableWidget`. It provides dynamic scaling via layout managers, vector-drawn customizable corner radiuses, dashed/dotted line styles, and automated line-splitting centered section text headers with bounding capsule brackets.
+
+---
+
+## 🛠️ System Architecture Overview
+
+The subsystem relies on a clean decoupling architecture distributed across two primary codebase assets:
+
+1. **`sCTkSeparator.py`**: The core runtime component that manages canvas vectors, multiple-inheritance initialization tracking hooks, and order-independent orientation configurations.
+2. **`sCTkSeparatorbo.py`**: The Pygubu Designer Builder Object module plugin that seamlessly integrates configuration fields into the visual editing canvas workspace without leaking or warping layout frame dimensions.
+
+---
+
+## 📋 API Property Reference
+
+| Property Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `any` | *Required* | Parent container instance (e.g., `sCTkFrame` or `ctk.CTk`). |
+| `length` | `int` | `100` | The total span length of the line track in pixels (corresponds to widget height if vertical, width if horizontal). |
+| `width` | `float` | `4` | The visual thickness profile of the divider line in pixels. |
+| `corner_radius` | `int` or `None` | `6` (from theme) | Defines roundness sharpness of divider line endpoints (defaults to stylesheet configuration). |
+| `orientation` | `str` | `"vertical"` | Sets spatial directional positioning alignment. Accepts `"vertical"` or `"horizontal"`. |
+| `text` | `str` | `""` | Appends a centered section header label text directly inside a computed line split zone. |
+| `font` | `tuple` or `CTkFont` | `("Arial", 11, "bold")` | Text font profile style parameters for the embedded header tag. |
+| `text_color` | `str` or `Tuple[str, str]` | Central theme default | Font hex palette token string mapping. Supports appearance mode tuples. |
+| `dash` | `tuple` or `None` | `None` | Integer stroke sequence array tuple mapping out dashed/dotted rendering rules (e.g., `(5, 5)`). |
+
+---
+
+## 🎨 Centralized Stylesheet Setup (`sCTkThemes.py`)
+
+To guarantee high-contrast translation states across light and dark system transitions without populating Pygubu with inline overrides, ensure your central configuration mapping dictionary contains the following node:
+
+```python
+THEME_DEFAULTS = {
+    "sCTkSeparator": {
+        "fg_color": ("#808080", "#8A9296"), # (Light Mode Mid-Grey, Dark Mode Silver-Slate)
+        "bg_color": "transparent",
+        "corner_radius": 6,
+        "font": ("Arial", 11, "bold"),
+        "text_color": ("#1A1A1A", "#FFFFFF")  # (Stark Charcoal, Pure White)
+    },
+    # ... your other widget entries
+}
+```
+
+---
+
+## 📐 Layout Manager Integration Requirements
+
+Mixing layout manager tracking loops within the same immediate frame layer is completely blocked. When handling automated expansion parameters across scaling monitor resolutions, enforce the following geometry behaviors:
+
+### Grid Configurations (`.grid()`)
+* **Horizontal Mode Line**: Must use **`sticky="ew"`** to allow the vector path to grow horizontally.
+* **Vertical Mode Line**: Must use **`sticky="ns"`** to stretch the line across rows.
+* **Parent Frame Setup**: The container frame track columns/rows **must** have their weights configured to let the engine allocate expanding window real estate:
+  ```python
+  # Column 0 and Column 2 hold widgets and expand; Column 1 isolates the separator line track
+  grid_Frame.grid_columnconfigure(0, weight=1)
+  grid_Frame.grid_columnconfigure(1, weight=0)
+  grid_Frame.grid_columnconfigure(2, weight=1)
+  ```
+
+### Pack Configurations (`.pack()`)
+* **Horizontal Mode Line**: Must use **`fill="x"`** alongside `expand=False` so it hugs adjacent frames tightly instead of expanding into empty background rows.
+* **Vertical Mode Line**: Must use **`fill="y"`** inside layout columns.
+
+---
+
+## 💻 Pygubu Designer Properties Guide
+
+When configuring layouts visually within the Pygubu Designer editing workspace panel strip, observe these property formatting rules:
+
+1. **`orientation`**: Select `vertical` or `horizontal` from the choice dropdown list pane. The preview canvas will immediately adjust orientations without flattening.
+2. **`text`**: Type any section title banner sequence string directly into the entry field (e.g., `AUDIO CONTROLS`). The line will cleanly break around the text boundaries.
+3. **`dash`**: Enter raw comma-separated lists of numerical values directly into the input strip **without using quote symbols or brackets**.
+   * Type `5,5` for standard clean dash blocks.
+   * Type `2,6` for clean dotted layout maps.
+   * Leave blank or type `None` to restore solid rounded vector shapes.
+4. **Dimensions with Headers**: When utilizing `text` headers on a `vertical` orientation alignment track line, remember to increase the designer **`width`** attribute setting from `4` to a larger size (e.g., `20` or `24`) to give the vertical top and bottom capsule framing lines physical canvas clearance to draw.
