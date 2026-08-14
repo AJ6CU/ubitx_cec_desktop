@@ -31,7 +31,10 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
 
         ThemeableWidget.__init__(self, theme_defaults, kwargs)
         super().__init__(master, **self.final_kw)
-        self.configure(state=self._current_state)
+        # FIXED: Removed the redundant duplicate self._current_state configuration line
+
+        # Ensure ThemeableWidget's interceptor runs immediately at the end of creation
+        self.configure(state=kwargs.get("state", getattr(self, "_current_state", "normal")))
 
     def configure(self, cnf=None, **kw):
         """Extended configure to handle state text dimming passes."""

@@ -492,3 +492,113 @@ Observe these implementation traits:
 * **Horizontal Capsule Brackets**: When `buttons="yes_no"` is active, Column 0 and Column 1 utilize an interlocking `uniform="dialog_buttons"` constraint map. This completely locks both buttons to an identical layout grid pixel width, regardless of text length mismatches.
 * **Vertical Safety Gutter**: Text layout nodes use `padx=(10, 35)` paired alongside a calculated character width subtraction map. This forces word bounds to drop downwards well before interacting with the physical window frame margin boundary.
 * **Autonomous Resizing**: The `_center_window` geometry calculations lock your custom manual `width` pixel profile constraint, but query the active required widget layout height parameters dynamically via `winfo_reqheight()`. This allows window frames to expand or shrink vertically based on your text content volume requirements automatically.
+
+# 📊 sCTkTableView Widget Component Reference Guide
+
+The `sCTkTableView` is an advanced, high-performance, 100% themeable custom spreadsheet matrix widget engineered specifically for the `sCustomTkinter` desktop suite. Subclassed directly from `sCTkScrollableFrame`, it maps a 2D data matrix grid layout using theme-synchronized `sCTkLabelPrimary` elements for column category headings and `sCTkLabelSecondary` elements for text data lines.
+
+---
+
+## ✨ Key Features & Enhancements
+* **Autonomous Viewport Self-Sizing**: Automatically calculates absolute pixel bounding dimensions on dataset load to eliminate right-side gaps and bottom padding artifacts.
+* **Capsule Frame Outline Wrapping**: Packs cells snugly within a dedicated inner frame structure (`table_outline_frame`) supporting adjustable corner radii and distinct boundary widths.
+* **Typographic Gutter Margin Padding**: Injects internal text indentation spaces automatically on Left (`"w"`) and Right (`"e"`) alignments to prevent text strings from crowding cell borders.
+* **Per-Column Data Validation Interceptors**: Hooks data validator routines downstream to screen string entry values *before* allowing writes to database memory matrices.
+* **Unified Component State Cascading**: Supports full `.configure(state="disabled")` parameters passes, recursively locking cell interactivity while updating fonts to match stylesheet disabled gray color maps.
+
+---
+
+## 🛠️ Public Constructor API Signatures
+
+```python
+table = sCTkTableView(
+    master,
+    columns=["Col 1", "Col 2", "Col 3"],
+    grid_mode="zebra",
+    header_line_width=3,
+    outline_width=1.5,
+    outline_radius=6,
+    state="normal"
+)
+```
+
+### 📋 Parameter Property Profiles
+
+| Argument Parameter | Type Mapping Profile | Default Assignment | Structural Layout Property Role |
+| :--- | :--- | :--- | :--- |
+| `master` | `any` | *Mandatory* | Parent Tkinter window container canvas frame. |
+| `columns` | `List[str]` | *Mandatory* | Structured collection list containing top heading title names. |
+| `grid_mode` | `Literal["zebra", "grid", "none"]` | `"zebra"` | Toggles alternating rows background coloring rules or solid box grid border panels. |
+| `header_line_width` | `int` | `2` | Configures pixel thickness for the structural separator line beneath headers. |
+| `outline_width` | `float` | `1.0` | Sets line thickness for the custom capsule border framing outline. |
+| `outline_radius` | `int` | `4` | Determines corner rounding option parameters for the inner layout frame chassis. |
+| `state` | `Literal["normal", "disabled"]` | `"normal"` | Dictates starting interactivity constraints and global text color palettes. |
+
+---
+
+## 📈 Public Interface Methods Reference
+
+### `set_column_properties(column_index, width, anchor="center")`
+Configures explicit horizontal constraints and text alignment rules for individual grid columns.
+* **`column_index`** (`int`): Target lane layout tracker position index.
+* **`width`** (`int`): Mandatory pixel limitation width for the cell widgets lane block.
+* **`anchor`** (`Literal["w", "center", "e"]`): Structural layout font positioning tracker.
+
+### `load_dataset(dataset)`
+Clears previous widget references out of active memory arrays, maps new text data records line-by-line, and forces dynamic view sizing metrics.
+* **`dataset`** (`List[List[Any]]`): The 2D matrix collection rows to parse down inside grid coordinates.
+
+### `get_row_data(row_index)`
+Queries the underlying active memory matrix to fetch the current values array of a row slot.
+* **`row_index`** (`int`): Target row position. Returns `List[Any]` or `None`.
+
+### `get_total_matrix_data()`
+Returns the entire underlying spreadsheet dataset memory matrix layer unhindered.
+* **Returns**: `List[List[Any]]`
+
+### `configure(**kwargs)`
+Alters component properties dynamically at runtime. Natively processes `state` transitions to lock interaction lanes and switch text gray maps.
+* **Usage**: `table.configure(state="disabled")`
+
+---
+
+## 🔄 System Callbacks Functional Hooks
+
+### `bind_selection_callback(callback)`
+Registers a functional rule routine to trigger instantly whenever a user performs a standard left mouse single-click event over any row cell lane.
+* **Callback Signature Expectation**: `def on_clicked(row_index: int, row_values: List[Any]) -> None`
+
+### `bind_edit_callback(callback)`
+Registers a data persistence tracker callback that fires automatically after an inline double-click cell text entry editing phase concludes successfully.
+* **Callback Signature Expectation**: `def on_saved(row_index: int, col_index: int, saved_value: Any) -> None`
+
+### `bind_validation_callback(callback)`
+Hooks a validation checker onto the text editor loop. The rule function **must return a boolean validation state flag** (`True` to write changes or `False` to abort and restore original data values).
+* **Callback Signature Expectation**: `def check_rules(col_index: int, fresh_input_string: str) -> bool`
+
+---
+
+## 🎨 Centralized Themes Mapping Definition Sheets (`sCTkThemes.py`)
+
+Add this exact configuration block definition within your global style registry dictionary to drive lookups:
+
+```python
+THEME_DEFAULTS["sCTkTableView"] = {
+    # Main backing frame canvas backdrop
+    "bg_color": "transparent",
+    
+    # Primary top headers bar styling profile properties
+    "header_bg_color": ("#E2E8F0", "#1E293B"),
+    "header_text_color": ("#0F172A", "#F8FAFC"),
+    "header_font": ("Arial", 14, "bold"),
+    
+    # Secondary data cells grid lanes styling parameters
+    "cell_bg_color": ("#FFFFFF", "#111827"),
+    "cell_alt_bg_color": ("#F1F5F9", "#1D2433"),
+    "cell_text_color": ("#1E293B", "#E2E8F0"),
+    "cell_font": ("Arial", 13, "normal"),
+    
+    # Framework line separation markers and capsule borders configurations
+    "grid_line_color": ("#CBD5E1", "#334155")
+}
+```

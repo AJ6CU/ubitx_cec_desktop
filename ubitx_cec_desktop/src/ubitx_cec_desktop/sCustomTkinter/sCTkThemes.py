@@ -240,15 +240,18 @@ THEME_DEFAULTS = {
     },
 
     "sCTkLabelSecondary": {
-            # Standard body size 15 to match checkbox and option menu labels on a uniform baseline
-            "font": ("Arial", 15, "normal"),
-            "fg_color": "transparent",
-            "text_color": ("#374151", "#D1D5DB"),
+        # Standard body size 15 to match checkbox and option menu labels on a uniform baseline
+        "font": ("Arial", 15, "normal"),
+        "fg_color": "transparent",
+        "text_color": ("#374151", "#D1D5DB"),
 
-            "disabled_map": {
-                "text_color": ("#94A3B8", "#64748B")  # Soft slate tone across both modes uniformly
-            }
+        # FIXED: Remove the top-level 'disabled_text_color' string parameter completely.
+        # Place it strictly within the isolated 'disabled_map' layout dictionary object track instead!
+        "disabled_map": {
+            "text_color": ("#94A3B8", "#64748B")  # Your theme engine extracts this automatically
+        }
     },
+
 
     "sCTkLabelTertiary": {
             # Scaled down to size 13 to serve as secondary context, captions, or helper hint messages
@@ -368,13 +371,16 @@ THEME_DEFAULTS = {
     "sCTkScrollableFrame": {
             # Outer Container Framework
             "border_width": 1.5,
-            "border_color": ("#64748B", "#94A3B8"),  # Light Mode: Solid Slate | Dark Mode: High-Contrast Light Slate
-            "corner_radius": 8,  # Smoothly rounded outer container edges
+            "border_color": ("#64748B", "#94A3B8"),
+            "corner_radius": 8,
 
             # Base Canvas Surface Layers
-            # Matches your clean Entry field values for structural symmetry
             "fg_color": ("#FFFFFF", "#111827"),
-            "label_fg_color": "transparent",  # Hides inner header label blocks if utilized
+            "label_fg_color": "transparent",
+
+            # 🎨 FIX: Sync the track channel background directly to your core surface tuple
+            # This completely matches your row colors, removing the wide gray background stripe!
+            "scrollbar_fg_color": ("#FFFFFF", "#111827"),
 
             # Internal Scrollbar Track Synchronization
             "scrollbar_button_color": ("#64748B", "#4B5563"),
@@ -636,9 +642,50 @@ THEME_DEFAULTS = {
             "font": ("Arial", 14),
             # Stark charcoal for bright mode / Crisp off-white for slate dark mode
             "text_color": ("#1A1A1A", "#E5E5E5")
-        },
+    },
+    "sCTkTreeview": {
+        "bg_color": "transparent",
 
+        # Heading bar style profiles
+        "header_bg_color": ("#E2E8F0", "#1E293B"),
+        "header_text_color": ("#0F172A", "#F8FAFC"),
+        "header_font": ("Arial", 11, "bold"),
+
+        # 🎨 OPTIMIZED ROW STRIPING THEME PARAMETERS
+        # Light mode alternates white/light-blue. Dark mode alternates deep obsidian/slate.
+        "row_bg_color": ("#FFFFFF", "#111827"),     # Main background [3]
+        "row_alt_bg_color": ("#F1F5F9", "#1E293B"), # Alternating background stripe [3]
+
+        "text_color": ("#1E293B", "#F1F5F9"),
+        "font": ("Arial", 11),
+
+        # Selected high-contrast indicator tracks
+        "selected_bg_color": ("#3B82F6", "#2563EB"),
+        "selected_text_color": ("#FFFFFF", "#FFFFFF")
+    },
+
+    "sCTkTableview": {
+        # Header Styling Container Mappings (Light Mode, Dark Mode)
+        "header_bg_color": ("#E2E8F0", "#0F172A"),       # Slate-200 / Slate-900
+        "header_text_color": ("#0F172A", "#F8FAFC"),     # Deep Charcoal / Snow White
+        "header_font": ("Arial", 14, "bold"),
+
+        # 🦓 Strengthened High-Contrast Zebra Striping Color Profiles
+        # Enhanced Light Mode Alternate Row to an explicit, high-contrast Steel Blue Tint (#D1DCEE)
+        # so it remains punchy and highly visible across all ambient cockpit display conditions!
+        "cell_bg_color": ("#FFFFFF", "#111827"),         # Row A: Pure White / Deep Charcoal-950
+        "cell_alt_bg_color": ("#D1DCEE", "#222C3A"),     # Row B: Punchy Steel Blue / Aligned Deep Slate Blue
+
+        # Typography & Data Matrix Font Mapping
+        "cell_text_color": ("#1E293B", "#E2E8F0"),       # Charcoal Gray / Off-White
+        "cell_font": ("Arial", 13, "normal"),
+
+        # Structural Framework Separators
+        "grid_line_color": ("#CBD5E1", "#334155")        # Light Border Slate / Dark Border Slate
+    },
+    # ... your other widget entries
 }
+
 # 🔒 CENTRALIZED MODULE ENFORCEMENT GUARD
 # Enforce absolute structural integrity validations instantly on module compilation
 mandatory_keys = {"sCTkPathChooser", "sCTkFileExplorer"}

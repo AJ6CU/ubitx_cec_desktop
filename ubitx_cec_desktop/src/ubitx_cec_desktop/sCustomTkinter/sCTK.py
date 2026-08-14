@@ -27,3 +27,4 @@ import sCTkFramebo
 import sCTkPathChooserbo
 import sCTkDialogCorebo
 import sCTkSelectorbo
+import sCTkSeparatorbo

@@ -11,6 +11,7 @@ from customtkinter import (
     CTk,
     CTkCheckBox,
     CTkComboBox,
+    CTkEntry,
     CTkFrame,
     CTkLabel,
     CTkProgressBar,
@@ -35,6 +36,7 @@ from sCTkSelector import sCTkSelector
 from sCTkSeparator import sCTkSeparator
 from sCTkSlider import sCTkSlider
 from sCTkSwitch import sCTkSwitch
+from sCTkTableview import sCTkTableview
 
 
 def safe_i18n_translator(value):
@@ -237,14 +239,16 @@ class customCTK_WidgetTesterPart3UI:
         sctkframelabeledsecondary1.configure(
             label_anchor="e", label_text="Secondary Frame")
         sctklabelprimary11 = sCTkLabelPrimary(sctkframelabeledsecondary1)
-        sctklabelprimary11.configure(text='sctklabelprimary11')
+        sctklabelprimary11.configure(
+            state="disabled", text='sctklabelprimary11')
         sctklabelprimary11.pack(side="top")
         sctklabelsecondary2 = sCTkLabelSecondary(sctkframelabeledsecondary1)
         sctklabelsecondary2.configure(
-            state="normal", text='sctklabelsecondary2')
+            state="disabled", text='sctklabelsecondary2')
         sctklabelsecondary2.pack(side="top")
         sctklabeltertiary1 = sCTkLabelTertiary(sctkframelabeledsecondary1)
-        sctklabeltertiary1.configure(state="normal", text='sctklabeltertiary1')
+        sctklabeltertiary1.configure(
+            state="disabled", text='sctklabeltertiary1')
         sctklabeltertiary1.pack(side="top")
         sctkcheckbox5 = sCTkCheckBox(sctkframelabeledsecondary1)
         sctkcheckbox5.configure(state="disabled", text='sctkcheckbox5')
@@ -282,6 +286,37 @@ class customCTK_WidgetTesterPart3UI:
         sctkbuttonprimary2.configure(text='sctkbuttonprimary2')
         sctkbuttonprimary2.grid(column=2, row=0)
         sctkframe4.grid(column=2, row=2)
+        sctkframe5 = sCTkFrame(ctkframe1)
+        sctktableview1 = sCTkTableview(sctkframe5)
+        sctktableview1.configure(
+            columns="AJ6CU, Frequency, Mode, Power",
+            grid_mode="zebra",
+            header_line_width=4,
+            num_columns=4,
+            num_rows=8,
+            show_headers=True)
+        sctktableview1.pack(side="top")
+        sctkframe5.grid(column=0, row=3)
+        ctkframe2 = CTkFrame(ctkframe1)
+        ctkframe2.configure(height=200, width=200)
+        ctkentry1 = CTkEntry(ctkframe2)
+        ctkentry1.delete(0, "end")
+        ctkentry1.insert(0, 'ctkentry1')
+        ctkentry1.pack(side="top")
+        ctkcombobox2 = CTkComboBox(ctkframe2)
+        ctkcombobox2.pack(side="top")
+        ctkframe2.grid(column=1, row=3)
+        ctkframe2.pack_propagate(0)
+        sctkframe6 = sCTkFrame(ctkframe1)
+        sctkframe6.configure(bg_color="green", height=200, width=200)
+        ctkentry2 = CTkEntry(sctkframe6)
+        ctkentry2.delete(0, "end")
+        ctkentry2.insert(0, 'ctkentry2')
+        ctkentry2.pack(side="top")
+        ctkcombobox3 = CTkComboBox(sctkframe6)
+        ctkcombobox3.pack(side="top")
+        sctkframe6.grid(column=2, row=3)
+        sctkframe6.pack_propagate(0)
         ctkframe1.pack(side="top")
 
         # Main widget
