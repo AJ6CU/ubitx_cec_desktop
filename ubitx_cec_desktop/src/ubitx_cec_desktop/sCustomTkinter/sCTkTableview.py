@@ -26,7 +26,7 @@ class sCTkTableview(sCTkScrollableFrame):
         self._grid_line_color = self.final_kw.get("grid_line_color", ("#CBD5E1", "#334155"))
 
         self._grid_mode = str(grid_mode).replace("'", "").replace('"', "").strip().lower()
-        self._header_line_width = int(header_line_width) if header_line_width else 2
+        self._header_line_width = int(header_line_width) if header_line_width is not None else 2
         self._outline_width = float(outline_width) if outline_width else 1.0
         self._outline_radius = int(outline_radius) if outline_radius else 4
         self._state = state
@@ -54,6 +54,7 @@ class sCTkTableview(sCTkScrollableFrame):
         else:
             self.columns_list = [""] * self._num_columns
 
+        # ✅ FIXED CONSTRUCTOR LIST INITIALIZATION ARRAYS
         self._column_widths = [120] * self._num_columns
         self._column_anchors = ["center"] * self._num_columns
         self._click_callback, self._edit_callback, self._validation_callback = None, None, None
@@ -73,13 +74,20 @@ class sCTkTableview(sCTkScrollableFrame):
                 self.header_separator.destroy()
             except Exception:
                 pass
+        self.header_separator = None
 
         if not self._show_headers:
             return
 
-        self.header_separator = ctk.CTkFrame(self.table_outline_frame, height=self._header_line_width,
-                                             fg_color=self._grid_line_color, corner_radius=0)
-        self.header_separator.grid(row=1, column=0, columnspan=self._num_columns, sticky="ew", padx=(2, 3), pady=(0, 2))
+        is_none_mode = (self._grid_mode == "none")
+        gap_size = 0 if is_none_mode else 1
+        edge_size = 0 if is_none_mode else 2
+
+        if self._header_line_width > 0:
+            self.header_separator = ctk.CTkFrame(self.table_outline_frame, height=self._header_line_width,
+                                                 fg_color=self._grid_line_color, corner_radius=0)
+            self.header_separator.grid(row=1, column=0, columnspan=self._num_columns, sticky="ew",
+                                       padx=(edge_size, edge_size + gap_size), pady=(0, edge_size))
 
         render_labels = list(self.columns_list)
         if len(render_labels) < self._num_columns:
@@ -92,8 +100,10 @@ class sCTkTableview(sCTkScrollableFrame):
             header_cell = sCTkLabelPrimary(self.table_outline_frame, text=col_name, font=self._header_font,
                                            text_color=self._header_fg, fg_color=self._header_bg, corner_radius=0,
                                            height=28, width=w_limit)
-            left_pad, right_pad = (2, 0) if col_idx == 0 else ((1, 2) if col_idx == len(render_labels) - 1 else (1, 0))
-            header_cell.grid(row=0, column=col_idx, sticky="ew", padx=(left_pad, right_pad), pady=(2, 0))
+
+            left_pad = edge_size if col_idx == 0 else gap_size
+            right_pad = edge_size if col_idx == len(render_labels) - 1 else 0
+            header_cell.grid(row=0, column=col_idx, sticky="ew", padx=(left_pad, right_pad), pady=(edge_size, 0))
             self.table_outline_frame.grid_columnconfigure(col_idx, weight=0)
 
             try:
@@ -106,7 +116,19 @@ class sCTkTableview(sCTkScrollableFrame):
         for cell in [c for row in self._cell_widgets for c in row]: cell.destroy()
         self._data_matrix, self._cell_widgets = [list(row) for row in dataset], []
         super().configure(width=0, height=0)
-        row_offset = 2 if self._show_headers else 0
+
+        # 🚀 SAFE SEAM ROW STITCHER:
+        # If headers are visible but the divider line is 0, row 1 is completely empty.
+        # If grid_mode is 'none', we dynamically push the cells up into row_offset = 1
+        # to close the 1-pixel gap cleanly without using illegal negative padding values!
+        if self._show_headers:
+            row_offset = 1 if (self._grid_mode == "none" and self._header_line_width == 0) else 2
+        else:
+            row_offset = 0
+
+        is_none_mode = (self._grid_mode == "none")
+        gap_size = 0 if is_none_mode else 1
+        edge_size = 0 if is_none_mode else 2
 
         for r_idx, r_data in enumerate(self._data_matrix):
             if len(r_data) < self._num_columns:
@@ -134,10 +156,12 @@ class sCTkTableview(sCTkScrollableFrame):
                 if self._state == "disabled":
                     cell_label.configure(state="disabled")
 
-                top_pad = 2 if r_idx == 0 else 1
-                bot_pad = 2 if r_idx == len(self._data_matrix) - 1 else 0
-                left_pad = 2 if c_idx == 0 else 1
-                right_pad = 2 if c_idx == self._num_columns - 1 else 0
+                # All grid padding integers remain explicitly positive or zero to prevent TclErrors
+                top_pad = edge_size if r_idx == 0 else gap_size
+                bot_pad = edge_size if r_idx == len(self._data_matrix) - 1 else 0
+                left_pad = edge_size if c_idx == 0 else gap_size
+                right_pad = edge_size if c_idx == self._num_columns - 1 else 0
+
                 cell_label.grid(row=r_idx + row_offset, column=c_idx, sticky="ew", padx=(left_pad, right_pad),
                                 pady=(top_pad, bot_pad))
 
@@ -164,7 +188,11 @@ class sCTkTableview(sCTkScrollableFrame):
                           height=self.table_outline_frame.winfo_reqheight() + 18)
 
     def _spawn_editor(self, r_idx: int, c_idx: int):
-        row_offset = 2 if self._show_headers else 0
+        if self._show_headers:
+            row_offset = 1 if (self._grid_mode == "none" and self._header_line_width == 0) else 2
+        else:
+            row_offset = 0
+
         entry = ctk.CTkEntry(self.table_outline_frame, font=self._cell_font, width=self._column_widths[c_idx],
                              height=24, corner_radius=0)
         entry.insert(0, str(self._data_matrix[r_idx][c_idx]))
@@ -233,7 +261,6 @@ class sCTkTableview(sCTkScrollableFrame):
             elif not hasattr(self, "columns_list") or not self.columns_list:
                 self.columns_list = [""] * self._num_columns
 
-            # Align tracking length configuration helper arrays securely
             if len(self._column_widths) < self._num_columns:
                 self._column_widths += [120] * (self._num_columns - len(self._column_widths))
                 self._column_anchors += ["center"] * (self._num_columns - len(self._column_anchors))
@@ -251,6 +278,16 @@ class sCTkTableview(sCTkScrollableFrame):
             self.load_dataset([[""] * self._num_columns for _ in range(target_rows)])
 
         super().configure(require_redraw=require_redraw, **kwargs)
+
+    def get_num_rows(self) -> int:
+        if hasattr(self, "_cell_widgets") and self._cell_widgets:
+            return len(self._cell_widgets)
+        return self._num_rows
+
+    def get_num_columns(self) -> int:
+        if hasattr(self, "_cell_widgets") and self._cell_widgets and self._cell_widgets:
+            return len(self._cell_widgets[0]) if self._cell_widgets and self._cell_widgets[0] else self._num_columns
+        return self._num_columns
 
     def set_column_properties(self, column_index: int, width: int, anchor: Literal["w", "center", "e"] = "center"):
         if 0 <= column_index < len(self._column_widths):
