@@ -21,7 +21,6 @@ class sCTkTableview(sCTkScrollableFrame):
                                                                                           ("#FFFFFF", "#111827"))
         self._cell_alt_bg = cell_alt_bg_color if cell_alt_bg_color is not None else self.final_kw.get(
             "cell_alt_bg_color", ("#D1DCEE", "#222C3A"))
-
         self._cell_fg = self.final_kw.get("cell_text_color", ("#1E293B", "#E2E8F0"))
         self._cell_font = self.final_kw.get("cell_font", ("Arial", 13, "normal"))
         self._grid_line_color = self.final_kw.get("grid_line_color", ("#CBD5E1", "#334155"))
@@ -34,9 +33,7 @@ class sCTkTableview(sCTkScrollableFrame):
 
         self._num_columns = int(num_columns)
         self._num_rows = int(num_rows)
-
-        clean_show = str(show_headers).replace("'", "").replace('"', "").strip().lower()
-        self._show_headers = True if clean_show in ("true", "1", "yes") else False
+        self._show_headers = str(show_headers).replace("'", "").replace('"', "").strip().lower() in ("true", "1", "yes")
 
         self._data_matrix, self._cell_widgets, self._header_widgets = [], [], []
         kwargs["border_width"], kwargs["corner_radius"], kwargs["scrollbar_fg_color"] = 0, 0, self._cell_bg
@@ -53,19 +50,16 @@ class sCTkTableview(sCTkScrollableFrame):
             columns = [c.strip() for c in clean_str.split(',') if c.strip()]
 
         if columns and isinstance(columns, list) and len(columns) > 0:
-            self.columns_list = columns
-            self._num_columns = len(columns)
+            self.columns_list = list(columns)
         else:
-            self.columns_list = [f"Column {i + 1}" for i in range(self._num_columns)]
+            self.columns_list = [""] * self._num_columns
 
-        self._column_widths = (120,) * self._num_columns
+        self._column_widths = [120] * self._num_columns
         self._column_anchors = ["center"] * self._num_columns
         self._click_callback, self._edit_callback, self._validation_callback = None, None, None
 
         self._create_header_bar()
-        target_rows = self._num_rows if self._num_rows > 1 else 4
-        blank_dataset = [["   ---   "] * self._num_columns for _ in range(target_rows)]
-        self.load_dataset(blank_dataset)
+        self.load_dataset([[""] * self._num_columns for _ in range(self._num_rows)])
 
     def _create_header_bar(self):
         for w in self._header_widgets:
@@ -83,34 +77,29 @@ class sCTkTableview(sCTkScrollableFrame):
         if not self._show_headers:
             return
 
-        self.table_outline_frame.rowconfigure(0, minsize=28, weight=0)
-
         self.header_separator = ctk.CTkFrame(self.table_outline_frame, height=self._header_line_width,
                                              fg_color=self._grid_line_color, corner_radius=0)
-        self.header_separator.grid(row=1, column=0, columnspan=len(self.columns_list), sticky="ew", padx=(2, 3),
-                                   pady=(0, 2))
-        try:
-            self.header_separator.lift()
-        except Exception:
-            pass
+        self.header_separator.grid(row=1, column=0, columnspan=self._num_columns, sticky="ew", padx=(2, 3), pady=(0, 2))
 
-        for col_idx, col_name in enumerate(self.columns_list):
+        render_labels = list(self.columns_list)
+        if len(render_labels) < self._num_columns:
+            render_labels += [""] * (self._num_columns - len(render_labels))
+        elif len(render_labels) > self._num_columns:
+            render_labels = render_labels[:self._num_columns]
+
+        for col_idx, col_name in enumerate(render_labels):
+            w_limit = self._column_widths[col_idx] if col_idx < len(self._column_widths) else 120
             header_cell = sCTkLabelPrimary(self.table_outline_frame, text=col_name, font=self._header_font,
                                            text_color=self._header_fg, fg_color=self._header_bg, corner_radius=0,
-                                           height=28, width=self._column_widths[col_idx])
-            left_pad, right_pad = (2, 0) if col_idx == 0 else (
-                (1, 2) if col_idx == len(self.columns_list) - 1 else (1, 0))
+                                           height=28, width=w_limit)
+            left_pad, right_pad = (2, 0) if col_idx == 0 else ((1, 2) if col_idx == len(render_labels) - 1 else (1, 0))
             header_cell.grid(row=0, column=col_idx, sticky="ew", padx=(left_pad, right_pad), pady=(2, 0))
             self.table_outline_frame.grid_columnconfigure(col_idx, weight=0)
 
-            # 🚀 FIXED Z-INDEX MASKING:
-            # Forcefully lift the header text label instances to the top of Tkinter's stacking deck.
-            # This completely stops newly generated text rows from sliding over or hiding the labels!
             try:
                 header_cell.lift()
             except Exception:
                 pass
-
             self._header_widgets.append(header_cell)
 
     def load_dataset(self, dataset: List[List[Any]]):
@@ -120,18 +109,30 @@ class sCTkTableview(sCTkScrollableFrame):
         row_offset = 2 if self._show_headers else 0
 
         for r_idx, r_data in enumerate(self._data_matrix):
+            if len(r_data) < self._num_columns:
+                r_data += [""] * (self._num_columns - len(r_data))
+                self._data_matrix[r_idx] = r_data
+            elif len(r_data) > self._num_columns:
+                r_data = r_data[:self._num_columns]
+                self._data_matrix[r_idx] = r_data
+
             current_row_bg = self._cell_alt_bg if (self._grid_mode == "zebra" and r_idx % 2 != 0) else self._cell_bg
             r_cells = []
             for c_idx in range(self._num_columns):
-                val = r_data[c_idx] if c_idx < len(r_data) else ""
-                w_limit, h_limit = self._column_widths[c_idx], 26
-                txt_anchor = self._column_anchors[c_idx]
+                val = r_data[c_idx]
+                w_limit = self._column_widths[c_idx] if c_idx < len(self._column_widths) else 120
+                h_limit = 26
+                txt_anchor = self._column_anchors[c_idx] if c_idx < len(self._column_anchors) else "center"
                 display_val = "    " + str(val) if txt_anchor == "w" else (
                     str(val) + "    " if txt_anchor == "e" else str(val))
+
                 cell_label = sCTkLabelSecondary(self.table_outline_frame, text=display_val, font=self._cell_font,
                                                 text_color=self._cell_fg, width=w_limit, height=h_limit,
                                                 corner_radius=0, anchor=txt_anchor, fg_color="transparent")
                 cell_label.configure(fg_color=current_row_bg)
+
+                if self._state == "disabled":
+                    cell_label.configure(state="disabled")
 
                 top_pad = 2 if r_idx == 0 else 1
                 bot_pad = 2 if r_idx == len(self._data_matrix) - 1 else 0
@@ -139,10 +140,14 @@ class sCTkTableview(sCTkScrollableFrame):
                 right_pad = 2 if c_idx == self._num_columns - 1 else 0
                 cell_label.grid(row=r_idx + row_offset, column=c_idx, sticky="ew", padx=(left_pad, right_pad),
                                 pady=(top_pad, bot_pad))
+
+                cell_label.bind("<Button-1>", lambda e, r=r_idx: self._click_callback(r, self._data_matrix[r]) if (
+                            self._click_callback and self._state == "normal") else None)
+                cell_label.bind("<Double-Button-1>", lambda e, r=r_idx, c=c_idx: self._spawn_editor(r,
+                                                                                                    c) if self._state == "normal" else None)
                 r_cells.append(cell_label)
             self._cell_widgets.append(r_cells)
 
-        # Firmly push the header bar elements to the absolute front layer of the Z-stack deck
         for hw in self._header_widgets:
             try:
                 hw.lift()
@@ -158,103 +163,102 @@ class sCTkTableview(sCTkScrollableFrame):
         super().configure(width=self.table_outline_frame.winfo_reqwidth() + 14,
                           height=self.table_outline_frame.winfo_reqheight() + 18)
 
+    def _spawn_editor(self, r_idx: int, c_idx: int):
+        row_offset = 2 if self._show_headers else 0
+        entry = ctk.CTkEntry(self.table_outline_frame, font=self._cell_font, width=self._column_widths[c_idx],
+                             height=24, corner_radius=0)
+        entry.insert(0, str(self._data_matrix[r_idx][c_idx]))
+        entry.grid(row=r_idx + row_offset, column=c_idx, sticky="ew", padx=1, pady=1)
+        entry.focus_set()
+        entry.select_range(0, "end")
+        entry.bind("<Return>", lambda e: self._save_edit(r_idx, c_idx, entry))
+        entry.bind("<FocusOut>", lambda e: self._save_edit(r_idx, c_idx, entry))
+
+    def _save_edit(self, r_idx: int, c_idx: int, entry: ctk.CTkEntry):
+        if not entry.winfo_exists(): return
+        val = entry.get()
+        entry.destroy()
+        if self._validation_callback and not self._validation_callback(c_idx, val): val = self._data_matrix[r_idx][
+            c_idx]
+
+        self._data_matrix[r_idx][c_idx] = val
+        txt_anchor = self._column_anchors[c_idx]
+        display_val = "    " + str(val) if txt_anchor == "w" else (str(val) + "    " if txt_anchor == "e" else str(val))
+
+        self._cell_widgets[r_idx][c_idx].configure(text=display_val)
+        if self._edit_callback and self._data_matrix[r_idx][c_idx] == val: self._edit_callback(r_idx, c_idx, val)
+
     def configure(self, require_redraw=False, **kwargs):
-        size_changed = False
+        rebuild_layout = False
+
         if "cell_bg_color" in kwargs:
-            val = kwargs.pop("cell_bg_color")
-            if isinstance(val, str) and val.startswith("(") and val.endswith(")"):
-                try:
-                    self._cell_bg = eval(val)
-                except Exception:
-                    pass
-            elif val:
-                self._cell_bg = val
-            size_changed = True
-
+            self._cell_bg = kwargs.pop("cell_bg_color")
+            rebuild_layout = True
         if "cell_alt_bg_color" in kwargs:
-            val = kwargs.pop("cell_alt_bg_color")
-            if isinstance(val, str) and val.startswith("(") and val.endswith(")"):
-                try:
-                    self._cell_alt_bg = eval(val)
-                except Exception:
-                    pass
-            elif val:
-                self._cell_alt_bg = val
-            size_changed = True
-
+            self._cell_alt_bg = kwargs.pop("cell_alt_bg_color")
+            rebuild_layout = True
         if "num_columns" in kwargs:
             self._num_columns = int(kwargs.pop("num_columns"))
-            size_changed = True
+            rebuild_layout = True
         if "num_rows" in kwargs:
             self._num_rows = int(kwargs.pop("num_rows"))
-            size_changed = True
+            rebuild_layout = True
         if "show_headers" in kwargs:
             val = kwargs.pop("show_headers")
-            clean_show = str(val).replace("'", "").replace('"', "").strip().lower()
-            self._show_headers = True if clean_show in ("true", "1", "yes") else False
-            size_changed = True
+            self._show_headers = val if isinstance(val, bool) else (str(val).lower() in ("true", "1", "yes"))
+            rebuild_layout = True
         if "grid_mode" in kwargs:
             self._grid_mode = str(kwargs.pop("grid_mode") or "zebra").replace("'", "").replace('"', "").strip().lower()
-            size_changed = True
+            rebuild_layout = True
+        if "header_line_width" in kwargs:
+            self._header_line_width = int(kwargs.pop("header_line_width"))
+            rebuild_layout = True
 
-        if "columns" in kwargs or "columns_list" in kwargs or size_changed:
+        if "outline_width" in kwargs:
+            self._outline_width = float(kwargs.pop("outline_width"))
+            if hasattr(self, "table_outline_frame"):
+                self.table_outline_frame.configure(border_width=self._outline_width)
+        if "outline_radius" in kwargs:
+            self._outline_radius = int(kwargs.pop("outline_radius"))
+            if hasattr(self, "table_outline_frame"):
+                self.table_outline_frame.configure(corner_radius=self._outline_radius)
+
+        if "columns" in kwargs or "columns_list" in kwargs or rebuild_layout:
             raw_cols = kwargs.pop("columns", kwargs.pop("columns_list", None))
             if isinstance(raw_cols, str):
                 raw_cols = [c.strip() for c in raw_cols.split(',') if c.strip()]
 
             if raw_cols and len(raw_cols) > 0:
-                self.columns_list = raw_cols
-                self._num_columns = len(raw_cols)
-            else:
-                # 🚀 SMART RETENTION FIX:
-                # Check if columns_list already has custom user text names inside it.
-                # If it doesn't (or contains empty placeholder items), ONLY THEN generate defaults!
-                is_currently_blank = not hasattr(self, "columns_list") or all(
-                    str(c).strip() in ("", " ") for c in self.columns_list)
-                if is_currently_blank or len(self.columns_list) != self._num_columns:
-                    self.columns_list = [f"Column {i + 1}" for i in range(self._num_columns)]
+                self.columns_list = list(raw_cols)
+            elif not hasattr(self, "columns_list") or not self.columns_list:
+                self.columns_list = [""] * self._num_columns
 
-            self._column_widths = (120,) * self._num_columns
-            self._column_anchors = ["center"] * self._num_columns
+            # Align tracking length configuration helper arrays securely
+            if len(self._column_widths) < self._num_columns:
+                self._column_widths += [120] * (self._num_columns - len(self._column_widths))
+                self._column_anchors += ["center"] * (self._num_columns - len(self._column_anchors))
+            elif len(self._column_widths) > self._num_columns:
+                self._column_widths = self._column_widths[:self._num_columns]
+                self._column_anchors = self._column_anchors[:self._num_columns]
 
             self._create_header_bar()
-            target_rows = self._num_rows if self._num_rows > 1 else 4
-            self.load_dataset([["   ---   "] * self._num_columns for _ in range(target_rows)])
 
-            try:
-                self.update()
-            except Exception:
-                pass
+            target_rows = len(self._data_matrix) if (
+                        hasattr(self, "_data_matrix") and len(self._data_matrix) > 0) else self._num_rows
+            if target_rows < self._num_rows:
+                target_rows = self._num_rows
 
-        if "header_line_width" in kwargs:
-            val = kwargs.pop("header_line_width")
-            self._header_line_width = int(val) if (val is not None and str(val).strip() != "") else 2
-            if hasattr(self, "header_separator") and self._show_headers:
-                self.header_separator.configure(height=self._header_line_width)
-
-        if "outline_width" in kwargs:
-            val = kwargs.pop("outline_width")
-            self._outline_width = float(val) if (val is not None and str(val).strip() != "") else 1.0
-            if hasattr(self, "table_outline_frame"):
-                self.table_outline_frame.configure(border_width=self._outline_width)
-
-        if "outline_radius" in kwargs:
-            val = kwargs.pop("outline_radius")
-            self._outline_radius = int(val) if (val is not None and str(val).strip() != "") else 4
-            if hasattr(self, "table_outline_frame"):
-                self.table_outline_frame.configure(corner_radius=self._outline_radius)
-
-        if "state" in kwargs:
-            self._state = kwargs.pop("state") or "normal"
-            for row in self._cell_widgets:
-                for cell in row:
-                    if hasattr(cell, "configure"): cell.configure(state=self._state)
-            require_redraw = True
+            self.load_dataset([[""] * self._num_columns for _ in range(target_rows)])
 
         super().configure(require_redraw=require_redraw, **kwargs)
 
-    def cget(self, attribute_name: str) -> Any:
-        return self._state if attribute_name == "state" else super().cget(attribute_name)
+    def set_column_properties(self, column_index: int, width: int, anchor: Literal["w", "center", "e"] = "center"):
+        if 0 <= column_index < len(self._column_widths):
+            self._column_widths[column_index], self._column_anchors[column_index] = width, anchor
+            if column_index < len(self._header_widgets) and self._show_headers:
+                txt = self.columns_list[column_index] if column_index < len(self.columns_list) else ""
+                display_text = "   " + txt if anchor == "w" else (txt + "   " if anchor == "e" else txt)
+                self._header_widgets[column_index].configure(width=width, anchor=anchor, text=display_text)
 
     def bind_selection_callback(self, callback: Callable):
         self._click_callback = callback

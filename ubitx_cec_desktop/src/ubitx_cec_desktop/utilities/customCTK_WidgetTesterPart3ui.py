@@ -289,10 +289,10 @@ class customCTK_WidgetTesterPart3UI:
         sctkframe5 = sCTkFrame(ctkframe1)
         sctktableview1 = sCTkTableview(sctkframe5)
         sctktableview1.configure(
-            columns="AJ6CU, Frequency, Mode, Power",
+            columns="AJ6CU, Frequency, Mode, Power, Station",
             grid_mode="zebra",
             header_line_width=4,
-            num_columns=4,
+            num_columns=6,
             num_rows=8,
             show_headers=True)
         sctktableview1.pack(side="top")

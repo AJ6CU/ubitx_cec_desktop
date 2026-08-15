@@ -591,7 +591,7 @@
             </layout>
             <child>
               <object class="sCTkTableview" id="sctktableview1">
-                <property name="columns">AJ6CU, Frequency, Mode, Power</property>
+                <property name="columns">AJ6CU, Frequency, Mode, Power, Station</property>
                 <property name="grid_mode">zebra</property>
                 <property name="header_line_width">4</property>
                 <property name="num_columns">4</property>
