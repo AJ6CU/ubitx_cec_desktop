@@ -1,6 +1,6 @@
 import sCTkFrameLabeledPrimarybo
 import sCTkFrameLabeledSecondarybo
-import sCTkFrameOutlinedbo
+# import sCTkFrameOutlinedbo
 import sCTkButtonPrimarybo
 import sCTkButtonSecondarybo
 import sCTkButtonTertiarybo
@@ -23,7 +23,8 @@ import sCTkSliderbo
 import sCTkSwitchbo
 import sCTkTabviewbo
 import sCTkScrollableFramebo
-import sCTkFramebo
+import sCTkWidgetSetPlugin
+# import sCTkFramebo
 import sCTkPathChooserbo
 import sCTkDialogCorebo
 import sCTkSelectorbo
