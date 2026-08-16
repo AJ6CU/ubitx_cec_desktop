@@ -412,8 +412,9 @@ if __name__ == "__main__":
     # Fade out SWR scale elements entirely while keeping Power active
     # led_bar_gauge.configure_visibility(swr_visible=False, pwr_visible=False)
     #
-    # # Remove the entire bottom row cleanly from the screen panel asset
-    # led_bar_gauge.configure_visibility(hide_lower_row=True)
+    # Remove the entire bottom row cleanly from the screen panel asset
+    led_bar_gauge.configure_visibility(hide_lower_row=False)
+
     #
     app.mainloop()
 

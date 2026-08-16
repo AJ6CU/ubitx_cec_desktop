@@ -853,6 +853,195 @@ THEME_DEFAULTS = {
     # ... your other widget entries
 }
 ```
+# `sCTkDial` — Tactical Machined Rotary Encoder Widget
+
+The `sCTkDial` is a premium, theme-adaptive mechanical rotary tuning dial widget engineered explicitly for ham radio desktop console interfaces (like VFO tuning wheels, volume potentiometers, or RF gain attenuators). It features native cross-platform multi-touch gesture normalizers, localized fast-tuning overrides, and a photo-realistic 3D scooped matte finger dimple.
+
+---
+
+## 🎛️ Key Architectural Features
+
+* **macOS Magic Mouse Native Fix:** Intercepts modern Aqua-Tkinter high-precision `TouchpadScroll` events and decodes compressed 32-bit binary data arrays. This completely unblocks smooth scrolling on Apple Silicon/Intel hardware without global `bind_all` interference.
+* **Cross-Platform Delivery Loop:** Coexists seamlessly with traditional Windows integer multiples of 120 and Linux X11 discrete button-4/button-5 notch server packets.
+* **3D Photographic Surface Engine:** Modeled directly after physical radio equipment knobs. Dops artificial neon bright borders in favor of deep 3D relief using dense vertical side-knurling texture mappings and a multi-layered reversed-gradient scoop dimple.
+* **Unified State Machine:** Supports native standard `.configure(state="disabled")` and `.cget("state")` controllers. When locked, it automatically maps the active face elements to an inactive palette and rejects cursor momentum tracking.
+
+---
+
+## 📋 API Constructor Reference
+
+```python
+sCTkDial(master=None, min_value=0.0, max_value=24.0, step=1.0, divisions=24, command=None, left_click_callback=None, right_click_callback=None, diameter=None, state="normal", width=120, height=120, **kw)
+```
+
+### Parameters Matrix
+
+| Parameter Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `Widget` | `None` | Reference pointer tracking the parent parent `sCTkFrame` or root context window layout layer. |
+| `min_value` | `float` | `0.0` | The floor tracking boundary offset initializing the rotation origin baseline. |
+| `max_value` | `float` | `24.0` | The ceiling wrap boundary tracking offset representing full 360-degree rotation. |
+| `step` | `float` | `1.0` | The mathematical index unit advanced upon every discrete notch event impulse. |
+| `divisions` | `int` | `24` | The physical number of graduation calibration tick marks drawn uniformly around the dial perimeter. |
+| `command` | `callable` | `None` | **Primary Event Callback:** Triggered instantly on any real scroll or drag modification. Passes a signed integer parameter tracking the tick change delta (`1`, `-1`, `2`, etc.). |
+| `left_click_callback` | `callable` | `None` | Optional override callback channel for single Left Mouse Button clicks. If `None`, defaults to advancing the dial left by 1 builtin step. |
+| `right_click_callback` | `callable` | `None` | Optional override callback channel for single Right Mouse Button clicks. If `None`, defaults to advancing the dial right by 1 builtin step. |
+| `diameter` | `int` | `None` | **Geometric Sizing Constraint:** If specified, forces a strict 1:1 width-to-height ratio, guaranteeing a perfect circle on the grid. |
+| `state` | `str` | `"normal"` | Set to `"normal"` for interactive tuning or `"disabled"` to freeze the widget and gray-out graphics. |
+
+---
+
+## ⚡ Public Instance Methods
+
+### Modifying Operational States Live
+```python
+# Mute inputs and snap graphics to your disabled theme token colors
+tuning_dial.configure(state="disabled")
+
+# Re-activate all mouse wheel handlers and click callbacks on the fly
+tuning_dial.configure(state="normal")
+```
+
+### Live Sizing Constraints Shift
+```python
+# Dynamically re-scales width, height, and core circle calculations instantly
+tuning_dial.configure(diameter=150)
+```
+
+### Adjust Swipe Velocity Filter
+```python
+# Sets a software debouncing cooldown clock track measured in milliseconds.
+# Slows down tracking for hyper-sensitive Apple touch devices (Default baseline: 60ms).
+tuning_dial.set_scroll_cooldown(120)
+```
+
+### Manual Position Overrides
+```python
+# Manually forces the physical dimple location to index notch 12. 
+# Handles structural infinite circular wrap-around math automatically.
+tuning_dial.set(12.0)
+```
+
+---
+
+## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
+
+The widget fully complies with standard design systems and loads its parameters dynamically from your central dictionary theme registry. Make sure your shared configuration entry contains these exact multi-state tokens to maintain absolute layout unity:
+
+```python
+THEME_DEFAULTS = {
+    "sCTkDial": {
+        # Light Mode Frame Base Panel | Dark Mode Cockpit Obsidian Base Panel
+        "fg_color": ("#F1F5F9", "#0A0A0A"),       
+        
+        # Perimeter calibration ticks and typography labels (Brand Primary Accents)
+        "text_color": ("#1A4375", "#FF9100"),     
+        
+        # Main Knob Cap Body Face: Harmonized Segmented Button Gray (Light) / Heavy Gunmetal Graphite (Dark)
+        "dial_color": ("#9E9E9E", "#2A2F3D"),     
+        
+        # Light Mode soft shadow wash | Dark Mode absolute deep matte void background
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        
+        # Encapsulated Multi-State Disabled Colors (Safe from constructor crashes)
+        "disabled_text_color": ("#94A3B8", "#4B5563"),  # Muted inactive tick marks
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),  # Faded matte knob cap face plate
+        "disabled_dimple_glow": ("#CBD5E1", "#334155")  # Softened finger pocket reflection ring
+    },
+    # ... your other widget configurations
+}
+```
+# sCTkSpinbox — Advanced Numerical Entry Component
+
+The `sCTkSpinbox` is a premium, theme-adaptive numerical spinbox component that fully replicates traditional `ttk.Spinbox` behaviors. It stacks vertical adjustment arrows on the side and natively embeds your design system's `sCTkEntryPrimary` module. This ensures absolute typography continuity, proper border weights, and seamless, automatic light/dark theme adaptations across your panel grid layouts.
+
+---
+
+## 🎛️ Key Architectural Features
+
+* **Strict sCTkEntryPrimary Inheritance:** By wrapping your custom entry element instead of a raw `ctk.CTkEntry`, it instantly grabs your specific font weights, outline rings, and precise background fill states.
+* **Full Ttk Feature Mapping:** Replicates the core parameter ecosystem of `ttk.Spinbox`, adding direct pass-through support for text justification variables, password character masking, and explicit Tkinter tracking variables.
+* **Cascading State Machine:** Toggling `.configure(state="disabled")` cleanly drops sub-component text colors, border highlights, and micro-arrow vectors down to your muted disabled stylesheet tokens.
+* **Automatic Input Validation:** Automatically sanitizes and hard-clamps human typing entries within your defined boundary limits upon `FocusOut` or `<Return>` keystrokes, completely isolating the core radio VFO buffer from corrupted string data.
+
+---
+
+## 📋 API Constructor Reference
+
+```python
+sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state="normal", wrap=False, justify="left", show=None, textvariable=None, placeholder_text=None, exportselection=True, width=140, height=32, **kw)
+```
+
+### Parameters Matrix
+
+| Parameter Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `Widget` | `None` | Reference pointer tracking your root window or parent `sCTkFrame` container layout layer. |
+| `from_` | `float` | `0.0` | **Ttk Spec Mapping:** The absolute minimum numerical value limit floor of the counter tracking register. |
+| `to` | `float` | `100.0` | **Ttk Spec Mapping:** The absolute maximum numerical value limit ceiling of the counter tracking register. |
+| `step_size` | `float` | `1.0` | **Ttk Spec Mapping (`increment`):** The quantitative value delta indexed up/down upon clicking a vertical arrow key. |
+| `command` | `callable` | `None` | **Primary Event Hook:** Callback function executed automatically upon any click adjustment or validation sync step. |
+| `state` | `str` | `"normal"` | Set to `"normal"` for interactive adjustments or `"disabled"` to lock fields and freeze sub-widget controls. |
+| `wrap` | `bool` | `False` | **Ttk Spec Mapping:** Toggles infinite loop boundary wrapping when incrementing past max/min thresholds. |
+| `justify` | `str` | `"left"` | **Entry Mapping:** Controls input text positioning inside the field (`"left"`, `"center"`, `"right"`). |
+| `show` | `str` | `None` | **Entry Mapping:** Enforces alphanumeric character masking for passwords (e.g., `show="*"`). |
+| `textvariable` | `Variable` | `None` | **Entry Mapping:** Binds an active Tkinter `StringVar` / `DoubleVar` tracking register directly to the field text. |
+| `placeholder_text` | `str` | `None` | **Entry Mapping:** Text string displayed inside the field whenever the value register is wiped completely blank. |
+| `exportselection` | `bool` | `True` | **Entry Mapping:** Toggles clipboard text selection exporting. |
+
+---
+
+## ⚡ Unified Instance Methods
+
+### Get Active Floating-Point Digit Indices
+```python
+# Returns the active input value formatted cleanly as a float. 
+# Automatically catches formatting errors and returns None if text string entries are scrambled.
+current_val = spinbox.get()
+```
+
+### Manual Counter Overrides
+```python
+# Clears active fields and inserts the new index (Performs automatic floating-point sanitizing)
+spinbox.set(14.25)
+```
+
+### Update Properties on the Fly
+```python
+# Dynamic configure hook cascades settings down through the internal sCTkEntryPrimary module instantly
+spinbox.configure(from_=5.0, to=50.0, step_size=0.5, justify="center")
+```
+
+---
+
+## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
+
+The component matches the typography of your primary data inputs, while matching arrow vectors to your standard neutral gray button tracks. Ensure your registry shared array contains this block:
+
+```python
+THEME_DEFAULTS = {
+    "sCTkSpinbox": {
+        # Sourced precisely from your sCTkEntryPrimary specifications!
+        "font": ("Arial", 15, "normal"),
+        "border_width": 1.5,
+        "border_color": ("#1A4375", "#64748B"),  
+        "entry_color": ("#FFFFFF", "#111827"),       
+        "text_color": ("#1F2937", "#F9FAFB"),     
+        "corner_radius": 6,
+
+        # Standard vertical stacked micro-arrow styling tracks
+        "button_color": ("#9E9E9E", "#2A2F3D"),
+        "button_hover_color": ("#7D7D7D", "#374151"),
+
+        # Direct cascading mapping for the locked disabled state machine
+        "disabled_entry_color": ("#F3F4F6", "#1F2937"),
+        "disabled_border_color": ("#CBD5E1", "#475569"),
+        "disabled_text_color": ("#94A3B8", "#64748B"),
+        "disabled_button_color": ("#CBD5E1", "#334155")
+    },
+    # ... your other widget entries
+}
+```
 
 
 
