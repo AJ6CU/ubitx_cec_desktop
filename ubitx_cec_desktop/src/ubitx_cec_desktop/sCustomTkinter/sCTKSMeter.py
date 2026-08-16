@@ -14,7 +14,7 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
     Supports fixed explicit hardware width and height constraint arguments.
     """
 
-    def __init__(self, master=None, min_value=0, max_value=15, width=340, height=130, **kw):
+    def __init__(self, master=None, sig_min_value=0, sig_max_value=15, width=340, height=130, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkSMeter"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -30,12 +30,12 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self.final_kw.pop("needle_color", None)
 
         # 4. Pass the custom width and height parameters directly down to the frame core.
-        # This locks the widget dimensions down uniformly regardless of parent layout states.
         super().__init__(master, width=width, height=height, fg_color=theme_bg_raw, **self.final_kw)
 
-        self.min_value = min_value
-        self.max_value = max_value
-        self._current_value = min_value
+        # FIXED: Updated parameters to follow prefixed naming patterns natively
+        self.sig_min_value = float(sig_min_value)
+        self.sig_max_value = float(sig_max_value)
+        self._current_value = self.sig_min_value
 
         # Exact mathematical arc bounds to match the layout curve signature perfectly
         self.start_angle = 38
@@ -81,8 +81,6 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         theme_map = THEME_DEFAULTS["sCTkSMeter"]
         bg_color = self._resolve_color(theme_map.get("fg_color"))
 
-        # FIXED: Routed variables strictly through your framework's resolve method
-        # to ensure light/dark mode tuple formats are translated into clean individual strings.
         amber_color = self._resolve_color(theme_map.get("text_color", ("#FF9100", "#FF9100")))
         red_color = self._resolve_color(theme_map.get("alarm_color", ("#FF2200", "#FF2200")))
 
@@ -102,7 +100,7 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         radius_po = radius_sig - 16
 
         # -----------------------------------------------------------------
-        # Panel Title Indicators (RECALIBRATED RF OUTPUT LOWERED)
+        # Panel Title Indicators
         # -----------------------------------------------------------------
         self.canvas.create_text(center_x, height * 0.12, text="SIGNAL", fill=amber_color, font=("Arial", 11, "bold"))
         self.canvas.create_text(center_x, height * 0.80, text="RF OUTPUT", fill=amber_color, font=("Arial", 11, "bold"))
@@ -116,10 +114,10 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         split_fraction = 9 / 15
         split_angle = self.start_angle + (self.extent_angle * (1 - split_fraction))
 
-        # Segment 1: S to S9 (Dynamic Mode Track)
+        # Segment 1: S to S9 (Locked Amber Track)
         self.canvas.create_arc(bbox_sig, start=split_angle, extent=self.start_angle + self.extent_angle - split_angle,
                                style="arc", outline=amber_color, width=2)
-        # Segment 2: S9 to +60dB (Dynamic Mode Warning Track)
+        # Segment 2: S9 to +60dB (Locked Red warning Zone Track)
         self.canvas.create_arc(bbox_sig, start=self.start_angle, extent=split_angle - self.start_angle,
                                style="arc", outline=red_color, width=2)
 
@@ -192,8 +190,8 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self._draw_needle(center_x, center_y, radius_sig)
 
     def _draw_needle(self, center_x, center_y, radius_sig):
-        val_range = self.max_value - self.min_value
-        fraction = (self._current_value - self.min_value) / val_range if val_range != 0 else 0
+        val_range = self.sig_max_value - self.sig_min_value
+        fraction = (self._current_value - self.sig_min_value) / val_range if val_range != 0 else 0
         fraction = max(0.0, min(1.0, fraction))
 
         angle_deg = self.start_angle + (self.extent_angle * (1 - fraction))
@@ -213,14 +211,14 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self.canvas.create_line(bx, by, nx, ny, fill=needle_color, width=2, tags="needle")
 
     def set(self, value):
-        """Update the indicator positions (Expects ranges between 0.0 and 15.0)"""
+        """Update the indicator positions (Expects ranges between sig_min_value and sig_max_value)"""
         self._current_value = value
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
         if width > 10 and height > 10:
             radius_sig = min(width * 0.52, height * 1.20)
 
-            # Match the fresh structural coordinate shifts inside position vector tracks
+            # Match the structural coordinate shifts inside position vector tracks
             center_x = width * 0.44
             center_y = height * 0.35 + radius_sig
             self._draw_needle(center_x, center_y, radius_sig)

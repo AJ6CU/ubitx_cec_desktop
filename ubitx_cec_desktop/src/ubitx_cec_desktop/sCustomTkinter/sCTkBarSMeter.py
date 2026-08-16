@@ -6,13 +6,17 @@ from sCTkFrame import sCTkFrame
 from ThemeableWidget import ThemeableWidget
 from sCTkThemes import THEME_DEFAULTS
 
+
 class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
     """
     A standalone, low-profile horizontal discrete LED segment bar widget displaying
     simultaneous, independent tracks for incoming S-Units and transmitter SWR ratio levels.
     Inherits geometry patterns from sCTkFrame and style definitions from ThemeableWidget.
+    Supports complete runtime visibility toggles and fading states for lower instrument clusters.
     """
-    def __init__(self, master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0, width=340, height=110, **kw):
+
+    def __init__(self, master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0,
+                 swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkBarSMeter"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -35,6 +39,11 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         self.sig_min_value = float(sig_min_value)
         self.sig_max_value = float(sig_max_value)
         self.swr_max_value = float(swr_max_value)
+
+        # Dynamic visibility state parameters
+        self._swr_visible = bool(swr_visible)
+        self._pwr_visible = bool(pwr_visible)
+        self._hide_lower_row = bool(hide_lower_row)
 
         # Independent live telemetry storage parameters
         self._current_s_value = self.sig_min_value
@@ -74,6 +83,18 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         self.canvas.configure(bg=bg_color)
         self._draw_meter()
 
+    def configure_visibility(self, swr_visible=None, pwr_visible=None, hide_lower_row=None):
+        """Public configuration mapping hook to alter the lower row layout matrix states live."""
+        if swr_visible is not None:
+            self._swr_visible = bool(swr_visible)
+        if pwr_visible is not None:
+            self._pwr_visible = bool(pwr_visible)
+        if hide_lower_row is not None:
+            self._hide_lower_row = bool(hide_lower_row)
+
+        if self.canvas.winfo_exists():
+            self._draw_meter()
+
     def _draw_meter(self):
         self.canvas.delete("all")
 
@@ -89,6 +110,10 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         led_on_color = self._resolve_color(theme_map.get("led_on_color"))
         led_off_color = self._resolve_color(theme_map.get("led_off_color"))
 
+        # Muted disabled palette color string profile (Adapts cleanly to dark/light backgrounds)
+        disabled_faded_color = ("#94A3B8", "#334155")
+        disabled_color = self._resolve_color(disabled_faded_color)
+
         self.canvas.configure(bg=bg_color)
 
         # Horizontal layout boundaries
@@ -96,8 +121,13 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         end_x = width - 42
         total_length = end_x - start_x
 
-        # Vertical alignment anchors
-        sig_y = int(height * 0.28)
+        # RECALIBRATED VERTICAL AXIS: If the lower row is toggled off completely,
+        # push the SIG track down to the direct vertical center of the card area.
+        if self._hide_lower_row:
+            sig_y = int(height * 0.50)
+        else:
+            sig_y = int(height * 0.28)
+
         lower_y = int(height * 0.70)
 
         # Granular display block metrics definitions
@@ -137,10 +167,17 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
             self.canvas.create_text(tx, text_offset_y, text=sig_labels[tick_idx], fill=color, font=("Arial", 9, "bold"),
                                     anchor="center")
 
-        # FIXED: "SIG" is now exactly matching the lower font sizes and is centered directly in the middle of its track layout
+        # "SIG" label centered directly in the middle of its track layout
         sig_mid_x = start_x + (total_length * 0.5)
-        self.canvas.create_text(sig_mid_x, sig_y + 12, text="SIG", fill=amber_color, font=("Arial", 10, "bold"),
+        self.canvas.create_text(sig_mid_x, sig_y + 6, text="SIG", fill=amber_color, font=("Arial", 10, "bold"),
                                 anchor="n")
+
+        # =====================================================================
+        # THIRD OPTION ACTION CONTROL GUARD: STOP DRAWING AND RETURN IMMEDIATELY
+        # IF HIDE_LOWER_ROW IS REGISTERED ACTIVE
+        # =====================================================================
+        if self._hide_lower_row:
+            return
 
         # -----------------------------------------------------------------
         # 2. GENERATE SPLIT LOWER ROW TRACK (LEFT: SWR | RIGHT: RF POWER)
@@ -180,7 +217,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
                 else:
                     is_swr_redzone = False
 
-                if i < active_swr_segments:
+                if i < active_swr_segments and self._swr_visible:  # Force fade out color if flagged off
                     fill_color = red_color if is_swr_redzone else led_on_color
                 else:
                     fill_color = led_off_color
@@ -188,7 +225,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
             else:
                 pwr_index = i - mid_gap_end
                 is_pwr_redzone = pwr_index >= int(pwr_total_segments * 0.8)
-                if pwr_index < active_pwr_segments:
+                if pwr_index < active_pwr_segments and self._pwr_visible:  # Force fade out color if flagged off
                     fill_color = red_color if is_pwr_redzone else led_on_color
                 else:
                     fill_color = led_off_color
@@ -196,20 +233,21 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
             self.canvas.create_rectangle(seg_start_x, lower_y - 4, seg_end_x, lower_y + 1, fill=fill_color, outline="")
 
         # --- C. DRAW CONSOLIDATED LABELS & MARKS ABOVE TRACKS ---
-        # FIXED: SWR header label centered horizontally over the left track span area (Index 0 to mid_gap_start)
+        swr_label_color = amber_color if self._swr_visible else disabled_color
+        pwr_label_color = amber_color if self._pwr_visible else disabled_color
+
         swr_length_fraction = mid_gap_start / num_led_segments
         swr_mid_x = start_x + (total_length * (swr_length_fraction * 0.5))
-        self.canvas.create_text(swr_mid_x, lower_y - 14, text="SWR", fill=amber_color, font=("Arial", 10, "bold"),
+        self.canvas.create_text(swr_mid_x, lower_y - 20, text="SWR", fill=swr_label_color, font=("Arial", 10, "bold"),
                                 anchor="n")
 
-        # FIXED: PWR header label centered horizontally over the right track span area (mid_gap_end to index 30)
         pwr_start_fraction = mid_gap_end / num_led_segments
         pwr_length_fraction = 1.0 - pwr_start_fraction
         pwr_mid_x = start_x + (total_length * (pwr_start_fraction + (pwr_length_fraction * 0.5)))
-        self.canvas.create_text(pwr_mid_x, lower_y - 14, text="PWR", fill=amber_color, font=("Arial", 10, "bold"),
+        self.canvas.create_text(pwr_mid_x, lower_y - 20, text="PWR", fill=pwr_label_color, font=("Arial", 10, "bold"),
                                 anchor="n")
 
-        # SWR Scale markers (Extended with Logarithmic Compression)
+        # SWR Scale markers
         swr_ticks = [1.0, 1.5, 2.0]
         if self.swr_max_value > 2.0:
             step = (self.swr_max_value - 2.0) / 2.0
@@ -219,7 +257,12 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         for val in swr_ticks:
             fraction = get_swr_fraction(val) * swr_length_fraction
             tx = start_x + (total_length * fraction)
-            color = red_color if val >= 2.0 else amber_color
+
+            # Select color based on layout warning threshold or faded override state
+            if self._swr_visible:
+                color = red_color if val >= 2.0 else amber_color
+            else:
+                color = disabled_color
 
             label_str = str(int(val)) if val.is_integer() else str(val)
             if val == self.swr_max_value:
@@ -228,13 +271,19 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
             self.canvas.create_line(tx, lower_y, tx, lower_y + 6, fill=color, width=1)
             self.canvas.create_text(tx, lower_y + 12, text=label_str, fill=color, font=("Arial", 9, "bold"), anchor="n")
 
-        # RF Power Scale markers (Right Half - Scales from mid_gap_end to end_x)
+        # RF Power Scale markers
         pwr_ticks = [(0, "0"), (50, "50"), (100, "100%")]
 
         for val, label in pwr_ticks:
             fraction = pwr_start_fraction + ((val / 100.0) * pwr_length_fraction)
             tx = start_x + (total_length * fraction)
-            color = red_color if val >= 80 else amber_color
+
+            # Select color based on layout warning threshold or faded override state
+            if self._pwr_visible:
+                color = red_color if val >= 80 else amber_color
+            else:
+                color = disabled_color
+
             self.canvas.create_line(tx, lower_y, tx, lower_y + 6, fill=color, width=1)
 
             if val == 100:
@@ -242,10 +291,6 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
                                         anchor="n")
             else:
                 self.canvas.create_text(tx, lower_y + 12, text=label, fill=color, font=("Arial", 9, "bold"), anchor="n")
-
-    def set(self, value):
-        # Fallback tracking routing rules
-        pass
 
     def set(self, s_value=None, swr_value=None, pwr_value=None):
         """Update any telemetry channel row independently."""
@@ -364,5 +409,11 @@ if __name__ == "__main__":
     simulator.process_fast_physics_tick()
     simulator.slow_vfo_tuning_cycle()
 
+    # Fade out SWR scale elements entirely while keeping Power active
+    # led_bar_gauge.configure_visibility(swr_visible=False, pwr_visible=False)
+    #
+    # # Remove the entire bottom row cleanly from the screen panel asset
+    # led_bar_gauge.configure_visibility(hide_lower_row=True)
+    #
     app.mainloop()
 

@@ -729,21 +729,21 @@ app.mainloop()
 
 # sCTkSMeter Component Documentation
 
-The `sCTkSMeter` is a classical analog S-Meter/Output for a Ham Radio Tansceiver. Like all sCTK widgets it is theme-adaptive.
+The `sCTkSMeter` is a classical analog S-Meter/Output for a Ham Radio Transceiver. Like all sCTk widgets, it is theme-adaptive.
 
 ---
 
 ## 📋 API Constructor Reference
 
 ```python
-sCTkSMeter(master=None, min_value=0, max_value=15, width=340, height=130, **kw)
+sCTkSMeter(master=None, sig_min_value=0, sig_max_value=15, width=340, height=130, **kw)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
 | `master` | `any` | `None` | Reference pointer tracking your root window or parent `sCTkFrame` container layout layer. |
-| `min_value` | `int` / `float` | `0` | The absolute minimum metric boundary representing the far left edge floor of the track scale matrix. |
-| `max_value` | `int` / `float` | `15` | The absolute maximum metric boundary representing the far right edge ceiling (+60dB) of the track scale matrix. |
+| `sig_min_value` | `int` / `float` | `0` | The raw input number mapping to the absolute left floor (**S0**) of the upper `SIGNAL` arc track. |
+| `sig_max_value` | `int` / `float` | `15` | The raw input number mapping to the absolute right ceiling (**+60dB**) of the upper `SIGNAL` arc track. |
 | `width` | `int` | `340` | Manual hardware panel horizontal width boundary tracking profile measured in pixels. |
 | `height` | `int` | `130` | Manual hardware panel vertical height boundary tracking profile measured in pixels. |
 
@@ -751,32 +751,32 @@ sCTkSMeter(master=None, min_value=0, max_value=15, width=340, height=130, **kw)
 
 ## ⚡ Global Object Instance Methods
 
-To drive needle positioning dynamics smoothly inside continuous background serial streaming hooks, callback loops, or frequency parsing updates, utilize this core instance tracking setter:
+To drive the meter pointer sweep dynamics smoothly inside background tracking threads, frequency scanning routines, or telemetry stream updates, utilize this core value setter:
 
-### Update Meter Needle Value
+### Update Instrument Needle Value
 ```python
-# Updates indicator positions (Expects numeric ranges between min_value and max_value)
+# Updates pointer positioning (Expects numeric ranges between sig_min_value and sig_max_value)
 smeter.set(value)
 ```
 
-* **Note:** Passing values below `min_value` or exceeding `max_value` will automatically be clamped tightly to the track edges to shield the canvas geometric arrays from boundary clipping faults.
+* **Note:** Values dropping below `sig_min_value` or crossing past `sig_max_value` will automatically be clamped tightly to the track minimum/maximum thresholds to safeguard the visual rendering matrix from canvas clipping errors.
 
 ---
 
 ## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
 
-The component relies heavily on your centralized style dictionary system. To prevent the mixin parser tracking structures from raising runtime verification faults during initialization cycles, verify your shared stylesheet contains this asset configuration block:
+The component relies heavily on your centralized style dictionary system. To prevent the mixin parser tracking structures from raising runtime validation faults during initialization cycles, verify your shared stylesheet contains this asset configuration block:
 
 ```python
 THEME_DEFAULTS = {
     "sCTkSMeter": {
         # Light Mode: Clean White Face | Dark Mode: Deep Obsidian Cockpit Black
-        "fg_color": ("#F4F7FA", "#0A0A0A"),       
+        "fg_color": ("#FFFFFF", "#0A0A0A"),       
         
         # High-Contrast Brand Blue for bright rooms / Illuminated Glowing Neon Amber for dark setups
         "text_color": ("#1A4375", "#FF9100"),     
         
-        # Solid High-Contrast Crimson / Intense Mechanical Redline warning trace
+        # Solid High-Contrast Crimson / Intense Mechanical Redline alert arc warning zone
         "alarm_color": ("#990000", "#FF2200"),    
         
         # Deep Cobalt-Navy Slate indicator pointer / Blazing Orange needle tracking sweep
@@ -785,6 +785,7 @@ THEME_DEFAULTS = {
     # ... your other widget entries
 }
 ```
+
 # sCTkBarSMeter Component Documentation
 
 The `sCTkBarSMeter` is a standalone, low-profile horizontal discrete LED segment bar widget displaying simultaneous, independent tracks for incoming S-Units, transmitter SWR ratio levels, and forward RF Power output percentage. Like all sCTk widgets, it is theme-adaptive.
@@ -794,7 +795,7 @@ The `sCTkBarSMeter` is a standalone, low-profile horizontal discrete LED segment
 ## 📋 API Constructor Reference
 
 ```python
-sCTkBarSMeter(master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0, width=340, height=110, **kw)
+sCTkBarSMeter(master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0, swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
@@ -803,6 +804,9 @@ sCTkBarSMeter(master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0,
 | `sig_min_value` | `int` / `float` | `0` | The raw input number mapping to the absolute left floor (**S0**) of the upper `SIG` (Signal Strength) track. |
 | `sig_max_value` | `int` / `float` | `15` | The raw input number mapping to the absolute right ceiling (**+60dB**) of the upper `SIG` (Signal Strength) track. |
 | `swr_max_value` | `int` / `float` | `5.0` | The explicit maximum scale boundary representing the far right edge limit tracking your transmitter's SWR track. |
+| `swr_visible` | `bool` | `True` | Visibility flag for the SWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |
+| `pwr_visible` | `bool` | `True` | Visibility flag for the PWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |
+| `hide_lower_row` | `bool` | `False` | Layout override command. When `True`, the entire lower instrumentation cluster collapses and vanishes, pushing the `SIG` bar to the true vertical center of the card footprint. |
 | `width` | `int` | `340` | Manual hardware panel horizontal width boundary tracking profile measured in pixels. |
 | `height` | `int` | `110` | Manual hardware panel vertical height boundary tracking profile measured in pixels. |
 
@@ -810,15 +814,17 @@ sCTkBarSMeter(master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0,
 
 ## ⚡ Global Object Instance Methods
 
-To drive multi-channel segment grouping updates smoothly inside background thread structures, PTT tracking hooks, or telemetry polling streams, utilize this unified multi-argument instance setter:
-
 ### Update Instrument Telemetry Channels
 ```python
 # Pass parameters to update any of the 3 telemetry rows independently on the fly
 led_bar_gauge.set(s_value=9.2, swr_value=1.4, pwr_value=45.0)
 ```
 
-* **Note:** SWR math scales automatically along a customizable logarithmic mapping profile extending from `1.0` through your defined `swr_max_value` to preserve fine layout resolution within the safe operating spectrum, while Power values accept a linear `0` to `100` percentage track input.
+### Live Layout Configuration Modifier
+```python
+# Updates layout presentation properties on the fly without reconstruction overhead
+led_bar_gauge.configure_visibility(swr_visible=False, pwr_visible=True, hide_lower_row=False)
+```
 
 ---
 
@@ -847,5 +853,6 @@ THEME_DEFAULTS = {
     # ... your other widget entries
 }
 ```
+
 
 
