@@ -3,6 +3,7 @@
 ThemeableWidget - Centralized Theme Management and Global Structural Enforcement
 """
 import os
+import customtkinter as ctk
 
 try:
     from sCTkThemes import THEME_DEFAULTS
@@ -111,3 +112,15 @@ class ThemeableWidget:
         if hasattr(super(), "cget"):
             return super().cget(attribute_name)
         return None
+
+    def _resolve_color(self, color_value):
+        """
+        Helper method to safely pull the singular valid string hex color
+        from a CustomTkinter (Light, Dark) mode theme tuple.
+        """
+        if isinstance(color_value, (tuple, list)):
+            # 0 for Light Mode, 1 for Dark Mode
+            mode_idx = 1 if ctk.get_appearance_mode() == "Dark" else 0
+            return color_value[mode_idx]
+        return color_value
+

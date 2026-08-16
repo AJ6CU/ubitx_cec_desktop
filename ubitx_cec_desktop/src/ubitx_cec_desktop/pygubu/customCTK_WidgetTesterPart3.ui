@@ -22,7 +22,6 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkTableviewbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -590,7 +589,7 @@
               <property name="row">3</property>
             </layout>
             <child>
-              <object class="sCTkTableview" id="sctktableview1">
+              <object class="custom_widgets.sCTkTableview" id="sctktableview1">
                 <property name="columns">AJ6CU, Frequency, Mode, Power, Station</property>
                 <property name="grid_mode">none</property>
                 <property name="header_line_width">4</property>

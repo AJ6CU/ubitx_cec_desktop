@@ -5,8 +5,11 @@ from pygubu.api.v1 import (
     register_custom_property
 )
 from sCTkTableview import sCTkTableview
+# RACKING_ID = "sCTkTableview"
 
-TRACKING_ID = "sCTkTableview"
+widget_namespace = "sCTkTableview"
+widget_classname = "sCTkTableview"
+builder_namespace = "custom_widgets"
 section_name = "sCustomTkinter"
 
 
@@ -17,8 +20,13 @@ class sCTkTableviewBO(BuilderObject):
     load and evaluate BEFORE the string column parser executes!
     """
     class_ = sCTkTableview
-    WIDGET_TAG = TRACKING_ID
-    import_modules = ['sCTkTableview']
+    # WIDGET_TAG = builder_id
+    # import_modules = ['sCTkTableview']
+    # builder_id = builder_id
+    #
+    # Builder definition section
+    #
+
 
     # 📐 Structural options declared first, layout payload definitions placed dead last!
     OPTIONS_CUSTOM = ('num_columns', 'num_rows', 'grid_mode', 'show_headers', 'header_line_width', 'outline_width',
@@ -103,18 +111,20 @@ class sCTkTableviewBO(BuilderObject):
 # =============================================================================
 #   🎨 INSPECTOR PANEL PROPERTY REGISTRATION (ORDER ENFORCED)
 # =============================================================================
-register_custom_property(TRACKING_ID, 'num_columns', 'naturalnumber')
-register_custom_property(TRACKING_ID, 'num_rows', 'naturalnumber')
-register_custom_property(TRACKING_ID, 'grid_mode', 'choice', values=('zebra', 'grid', 'none'))
-register_custom_property(TRACKING_ID, 'show_headers', 'choice', values=('True', 'False'))
-register_custom_property(TRACKING_ID, 'header_line_width', 'naturalnumber')
-register_custom_property(TRACKING_ID, 'outline_width', 'integernumber')
-register_custom_property(TRACKING_ID, 'outline_radius', 'naturalnumber')
-register_custom_property(TRACKING_ID, 'state', 'choice', values=('normal', 'disabled'))
-register_custom_property(TRACKING_ID, 'cell_bg_color', 'entry')
-register_custom_property(TRACKING_ID, 'cell_alt_bg_color', 'entry')
+builder_id = f"{builder_namespace}.{widget_classname}"
+
+register_custom_property(builder_id, 'num_columns', 'naturalnumber')
+register_custom_property(builder_id, 'num_rows', 'naturalnumber')
+register_custom_property(builder_id, 'grid_mode', 'choice', values=('zebra', 'grid', 'none'))
+register_custom_property(builder_id, 'show_headers', 'choice', values=('True', 'False'))
+register_custom_property(builder_id, 'header_line_width', 'naturalnumber')
+register_custom_property(builder_id, 'outline_width', 'integernumber')
+register_custom_property(builder_id, 'outline_radius', 'naturalnumber')
+register_custom_property(builder_id, 'state', 'choice', values=('normal', 'disabled'))
+register_custom_property(builder_id, 'cell_bg_color', 'entry')
+register_custom_property(builder_id, 'cell_alt_bg_color', 'entry')
 
 # 👑 Columns text registration placed dead last!
-register_custom_property(TRACKING_ID, 'columns', 'entry')
+register_custom_property(builder_id, 'columns', 'entry')
 
-register_widget(TRACKING_ID, sCTkTableviewBO, 'sCTkTableview', ("ttk", section_name))
+register_widget(builder_id, sCTkTableviewBO, 'sCTkTableview', ("ttk", section_name))

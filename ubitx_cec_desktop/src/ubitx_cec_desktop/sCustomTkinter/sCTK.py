@@ -21,11 +21,11 @@ import sCTkScrollbarbo
 import sCTkSegmentedButtonbo
 import sCTkSliderbo
 import sCTkSwitchbo
-import sCTkTabviewbo
+# import sCTkTabviewbo
 import sCTkScrollableFramebo
-import sCTkWidgetSetPlugin
 # import sCTkFramebo
-import sCTkPathChooserbo
+# import sCTkPathChooserbo
 import sCTkDialogCorebo
-import sCTkSelectorbo
+# import sCTkSelectorbo
 import sCTkSeparatorbo
+import sCTkWidgetSetPlugin

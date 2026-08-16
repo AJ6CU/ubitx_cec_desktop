@@ -683,6 +683,31 @@ THEME_DEFAULTS = {
         # Structural Framework Separators
         "grid_line_color": ("#CBD5E1", "#334155")        # Light Border Slate / Dark Border Slate
     },
+
+    "sCTkSMeter": {
+        "fg_color": ("#F4F7FA", "#0A0A0A"),       # Off-White Base / True Cockpit Black
+        "text_color": ("#1A4375", "#FF9100"),     # High-Visibility Brand Blue / Glowing Neon Amber
+        "alarm_color": ("#990000", "#FF2200"),    # Sharp Crimson Red / Blazing Mechanical Warning Red
+        "needle_color": ("#112A4B", "#FF9100")    # Deep Navy Pointer / Glowing Orange Pointer
+    },
+
+    "sCTkBarSMeter": {
+        # Light Mode: Clean White Face | Dark Mode: Deep Cockpit Black
+        "fg_color": ("#FFFFFF", "#0A0A0A"),
+
+        # Scale Labels & Ticks
+        "text_color": ("#1A4375", "#FF9100"),  # Deep Navy Steel / Glowing Neon Amber
+
+        # High-attenuation / High SWR Warning LED zones
+        "alarm_color": ("#DC2626", "#FF2200"),  # Solid Crimson / Intense Redline Warning
+
+        # Active illuminated LED blocks below thresholds
+        "led_on_color": ("#2471A3", "#FF9100"),  # Active Brand Blue / Glowing Segment Orange
+
+        # Unlit background block tracks visible behind active segments
+        "led_off_color": ("#E2E8F0", "#1A1D20")  # Softer Gray / Muted Recessed Charcoal Slots
+    },
+
     # ... your other widget entries
 }
 
