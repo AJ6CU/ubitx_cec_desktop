@@ -105,10 +105,15 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
         styles depending on whether a Selector, Range, or Continuous module is calling it.
         """
         self.canvas.delete("all")
-
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
-        if width < 10 or height < 10: return
+
+        # FIXED DESIGNER FALLBACK:
+        # If running inside Pygubu's preview manager loops and winfo returns zero,
+        # fallback directly to the diameter layout property setting to force rendering visible!
+        if width < 10 or height < 10:
+            width = int(getattr(self, "width", 120))
+            height = width
 
         child_classname = self.__class__.__name__
         theme_map = THEME_DEFAULTS.get(child_classname, THEME_DEFAULTS["sCTkDial"])

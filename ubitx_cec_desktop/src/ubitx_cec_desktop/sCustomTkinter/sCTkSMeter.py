@@ -15,7 +15,6 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
     """
 
     def __init__(self, master=None, sig_min_value=0, sig_max_value=60, width=340, height=130, **kw):
-        print("input kw=", kw)
         theme_defaults = THEME_DEFAULTS["sCTkSMeter"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -23,15 +22,12 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
 
         # 2. Map standard compatible configuration fields from registry records
         theme_bg_raw = theme_defaults.get("fg_color", ("#111827", "#0A0A0A"))
-        print("final KW", self.final_kw)
 
         # 3. Clean custom variables out of the keyword dictionary to shield the frame layer
         self.final_kw.pop("fg_color", None)
         self.final_kw.pop("text_color", None)
         self.final_kw.pop("alarm_color", None)
         self.final_kw.pop("needle_color", None)
-
-        print("after pop", self.final_kw)
 
         # 4. Pass the custom width and height parameters directly down to the frame core.
         super().__init__(master, width=width, height=height, fg_color=theme_bg_raw, **self.final_kw)

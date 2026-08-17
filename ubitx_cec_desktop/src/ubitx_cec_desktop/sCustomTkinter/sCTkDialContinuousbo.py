@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 """
-sCTkDialContinuous Pygubu Builder Object
+sCTkDialContinuousbo
 
-Fully calibrated layout compliance mapping script. Decouples the properties
-panel selection loops inside Pygubu-Designer, forcing custom radio attributes
-to display cleanly instead of falling back to a generic container Frame mask.
+Optimized Pygubu Builder Object for the sCTkDialContinuous custom widget.
+Provides lightweight, high-utility metadata mappings for Pygubu Designer layout setups.
 """
 import pygubu
 from pygubu.api.v1 import (
@@ -13,109 +12,101 @@ from pygubu.api.v1 import (
     register_custom_property
 )
 
-# Import the native custom class
-from sCTkDialContinuous import sCTkDialContinuous
+# Import the native custom child class directly out of your unified file
+from sCTkDial import sCTkDialContinuous
 
 widget_namespace = "sCTkDialContinuous"
 widget_classname = "sCTkDialContinuous"
 builder_namespace = "custom_widgets"
 section_name = "sCustomTkinter"
+builder_id = f"{builder_namespace}.{widget_classname}"
 
 
 class sCTkDialContinuousBO(BuilderObject):
-    # Bind the class reference directly to the concrete continuous dial module
     class_ = sCTkDialContinuous
 
-    # FIXED: Explicitly register standard frame bounds alongside custom parameters
-    # This prevents Pygubu from treating this class as a generic container frame!
+    # Enforce class parameters to preserve inspector selection focus tree links
+    classname = widget_classname
+    _code_classname = widget_classname
+    container = False
+
+    # Combined configuration registry arrays
     OPTIONS_STANDARD = ("width", "height", "state")
     OPTIONS_CUSTOM = ("divisions", "diameter")
-
     properties = OPTIONS_STANDARD + OPTIONS_CUSTOM
 
-    def realize(self, parent):
-        """
-        Pygubu Lifecycle Realize Intercept.
-        Explicitly binds and constraints CustomTkinter's invisible internal composition
-        layers before fluid window manager weights can blow out the display.
-        """
-        diameter_val = self.wproperty_dict.get("diameter", None)
-        divisions_val = self.wproperty_dict.get("divisions", 24)
+    def realize(self, parent, *args, **kwargs):
+        """Pygubu Lifecycle Realize Intercept."""
+        props_map = self.wmeta.properties if hasattr(self, "wmeta") else {}
 
-        # Force a baseline structural size if unassigned to keep Pygubu stable
-        w = int(diameter_val) if (diameter_val and str(diameter_val).strip() != "") else 120
-        h = w
+        diameter_val = props_map.get("diameter", None)
+        divisions_val = props_map.get("divisions", 24)
 
-        self.wproperty_dict["width"] = w
-        self.wproperty_dict["height"] = h
+        # Calculate target boundary sizes with an active layout fallback threshold
+        w = int(diameter_val) if (diameter_val and str(diameter_val).strip()) else 120
 
-        # Create the widget instance through the standard builder engine
-        widget = super().realize(parent)
+        # Hard-inject safe parameters into the layout manager registers before boot
+        if hasattr(self, "wmeta") and self.wmeta:
+            self.wmeta.properties["width"] = str(w)
+            self.wmeta.properties["height"] = str(w)
+
+        # Instantiate the custom component chassis forwarding all positioning parameters
+        widget = super().realize(parent, *args, **kwargs)
 
         if widget:
-            # 1. Map custom properties into your active widget attributes
-            widget.configure(divisions=int(divisions_val))
-            if diameter_val and str(diameter_val).strip() != "":
+            widget._divisions = int(divisions_val) if divisions_val else 24
+            if diameter_val and str(diameter_val).strip():
                 widget.configure(diameter=int(diameter_val))
 
-            # 2. INTERNAL OVERRIDE: Prevent the invisible CTk composition frames from collapsing
-            # or blowing out by hard-locking their inner grid weight propagation states.
-            if hasattr(widget, "pack_propagate"):
-                widget.pack_propagate(False)
-            if hasattr(widget, "grid_propagate"):
-                widget.grid_propagate(False)
+            # Freeze propagation weights inside Pygubu's editor preview layout panels
+            widget.pack_propagate(False)
+            widget.grid_propagate(False)
 
-            # 3. FIXED INVISIBLE LAYER CLAMP: Force CustomTkinter's private internal canvas rounding
-            # frame layer to strictly lock onto your structural pixel width/height constraints!
+            # Clamp CustomTkinter's private internal canvas layer to freeze empty box blowouts
             if hasattr(widget, "_canvas") and widget._canvas is not None:
-                widget._canvas.configure(width=w, height=h)
+                widget._canvas.configure(width=w, height=w)
+
+            # Force an explicit final vector graph layout repaint pass to guarantee visibility
+            widget._draw_dial_base()
 
         return widget
 
-    def _code_get_kw(self):
-        """Safely maps parameters out to clean outbound Python source generation scripts."""
-        kw = super()._code_get_kw()
-        for prop in self.OPTIONS_CUSTOM:
-            if prop in self.wproperty_dict:
-                kw[prop] = self.wproperty_dict[prop]
-        return kw
-
 
 # =====================================================================
-# SYSTEM REGISTRATION SCHEMATICS
+# RAW MODULE-LEVEL PYGUBU REGISTRATION LEDGER
+# Matches your working sCTkBarSMeterbo module registration blueprint.
 # =====================================================================
-builder_id = f"{builder_namespace}.{widget_classname}"
 
-# Mount component directly into Pygubu's designer layout tree selection panel
+# 1. Register the builder class object explicitly into Pygubu's workspace parsing tree
 register_widget(builder_id, sCTkDialContinuousBO, widget_classname, ("ttk", section_name))
 
-# Register Custom Properties panel elements to show up inside the Designer tray window
+# 2. Register Custom Properties panel elements to display in the Designer tray panel
 register_custom_property(
     builder_id,
     "width",
     "naturalnumber",
-    help="Fallback custom width boundary box layout constraints."
+    # help="Set total width in pixels of the canvas boundary box viewport frame."
 )
 
 register_custom_property(
     builder_id,
     "height",
     "naturalnumber",
-    help="Fallback custom height boundary box layout constraints."
+    # help="Set total height in pixels of the canvas boundary box viewport frame."
 )
 
 register_custom_property(
     builder_id,
     "divisions",
     "naturalnumber",
-    default_value=24,
-    help="Number of detented visual tracking indices inside a single 360-degree rotation turn."
+    # default_value=24,
+    # help="Number of detented visual tracking indices inside a single 360-degree rotation turn."
 )
 
 register_custom_property(
     builder_id,
     "diameter",
     "naturalnumber",
-    default_value=120,
-    help="Symmetrical diameter size constraint in pixels forcing a perfect 1:1 circle."
+    # default_value=120,
+    # help="Symmetrical diameter size constraint in pixels forcing a perfect 1:1 circle."
 )

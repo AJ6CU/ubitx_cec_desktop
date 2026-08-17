@@ -8,6 +8,7 @@ UI source file: customCTK_WidgetTesterPart4.ui
 """
 from customtkinter import (CTk, CTkFrame)
 from sCTkBarSMeter import sCTkBarSMeter
+from sCTkDial import (sCTkDialContinuous, sCTkDialRange, sCTkDialSelector)
 from sCTkFrame import sCTkFrame
 from sCTkSMeter import sCTkSMeter
 from sCTkTableview import sCTkTableview
@@ -84,6 +85,21 @@ class customCTK_WidgetTesterPart4UI:
         sctksmeter1.configure(sig_max_value=60, sig_min_value=0)
         sctksmeter1.pack(side="top")
         sctkframe1.grid(column=2, row=0)
+        sctkframe2 = sCTkFrame(ctkframe1)
+        sctkdialcontinuous2 = sCTkDialContinuous(sctkframe2)
+        sctkdialcontinuous2.configure(diameter=150)
+        sctkdialcontinuous2.pack(side="top")
+        sctkframe2.grid(column=0, row=1)
+        sctkframe3 = sCTkFrame(ctkframe1)
+        sctkdialselector1 = sCTkDialSelector(sctkframe3)
+        sctkdialselector1.configure(diameter=150)
+        sctkdialselector1.pack(side="top")
+        sctkframe3.grid(column=1, row=1)
+        sctkframe4 = sCTkFrame(ctkframe1)
+        sctkdialrange1 = sCTkDialRange(sctkframe4)
+        sctkdialrange1.configure(arc_angle=180, diameter=150)
+        sctkdialrange1.pack(side="top")
+        sctkframe4.grid(column=2, row=1)
         ctkframe1.pack(expand=True, fill="x", side="top")
 
         # Main widget
