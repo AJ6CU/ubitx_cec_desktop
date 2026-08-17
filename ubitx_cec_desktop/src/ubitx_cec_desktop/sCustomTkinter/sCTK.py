@@ -28,4 +28,7 @@ import sCTkScrollableFramebo
 import sCTkDialogCorebo
 # import sCTkSelectorbo
 import sCTkSeparatorbo
+import sCTkSMeterbo
+
+
 import sCTkWidgetSetPlugin

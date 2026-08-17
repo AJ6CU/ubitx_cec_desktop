@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">customCTK_WidgetTesterPart4</setting>
+      <setting id="description">just tests each widget</setting>
+      <setting id="template">codescript</setting>
+      <setting id="main_widget">ctk1</setting>
+      <setting id="module_namespace" />
+      <setting id="module_name">customCTK_WidgetTesterPart4</setting>
+      <setting id="main_classname">customCTK_WidgetTesterPart4</setting>
+      <setting id="output_dir">../utilities</setting>
+      <setting id="builder_namespace">custom_widgets</setting>
+      <setting id="output_dir2" />
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets>
+      <customwidget path="../sCustomTkinter/sCTK.py" />
+      <customwidget path="../sCustomTkinter/sCTkBarSMeterbo.py" />
+    </customwidgets>
+    <resources />
+  </project>
+  <object class="customtkinter.CTk" id="ctk1">
+    <child>
+      <object class="customtkinter.CTkFrame" id="ctkframe1">
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe5">
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkTableview" id="sctktableview1">
+                <property name="columns">AJ6CU, Frequency, Mode, Power, Station</property>
+                <property name="grid_mode">zebra</property>
+                <property name="header_line_width">4</property>
+                <property name="num_columns">3</property>
+                <property name="num_rows">8</property>
+                <property name="show_headers">True</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe6">
+            <property name="bg_color">green</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkBarSMeter" id="sctkbarsmeter1">
+                <property name="hide_lower_row">False</property>
+                <property name="pwr_visible">True</property>
+                <property name="sig_max_value">60</property>
+                <property name="sig_min_value">0</property>
+                <property name="swr_max_value">5</property>
+                <property name="swr_visible">True</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe1">
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkSMeter" id="sctksmeter1">
+                <property name="sig_max_value">60</property>
+                <property name="sig_min_value">0</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
