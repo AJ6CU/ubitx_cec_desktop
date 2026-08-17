@@ -6,7 +6,8 @@ just tests each widget
 
 UI source file: customCTK_WidgetTesterPart4.ui
 """
-from customtkinter import (CTk, CTkComboBox, CTkEntry, CTkFrame)
+from customtkinter import (CTk, CTkFrame)
+from sCTkBarSMeter import sCTkBarSMeter
 from sCTkFrame import sCTkFrame
 from sCTkSMeter import sCTkSMeter
 from sCTkTableview import sCTkTableview
@@ -67,21 +68,23 @@ class customCTK_WidgetTesterPart4UI:
         sctktableview1.pack(side="top")
         sctkframe5.grid(column=0, row=0)
         sctkframe6 = sCTkFrame(ctkframe1)
-        sctkframe6.configure(bg_color="green", height=200, width=200)
-        ctkentry2 = CTkEntry(sctkframe6)
-        ctkentry2.delete(0, "end")
-        ctkentry2.insert(0, 'ctkentry2')
-        ctkentry2.pack(side="top")
-        ctkcombobox3 = CTkComboBox(sctkframe6)
-        ctkcombobox3.pack(side="top")
+        sctkframe6.configure(bg_color="green")
+        sctkbarsmeter1 = sCTkBarSMeter(sctkframe6)
+        sctkbarsmeter1.configure(
+            hide_lower_row=False,
+            pwr_visible=True,
+            sig_max_value=60,
+            sig_min_value=0,
+            swr_max_value=5,
+            swr_visible=True)
+        sctkbarsmeter1.pack(expand=True, fill="x", side="top")
         sctkframe6.grid(column=1, row=0)
-        sctkframe6.pack_propagate(0)
         sctkframe1 = sCTkFrame(ctkframe1)
         sctksmeter1 = sCTkSMeter(sctkframe1)
         sctksmeter1.configure(sig_max_value=60, sig_min_value=0)
         sctksmeter1.pack(side="top")
         sctkframe1.grid(column=2, row=0)
-        ctkframe1.pack(side="top")
+        ctkframe1.pack(expand=True, fill="x", side="top")
 
         # Main widget
         self.mainwindow = ctk1

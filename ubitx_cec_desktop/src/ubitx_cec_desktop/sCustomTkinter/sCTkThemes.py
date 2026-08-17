@@ -708,22 +708,41 @@ THEME_DEFAULTS = {
         "led_off_color": ("#E2E8F0", "#1A1D20")  # Softer Gray / Muted Recessed Charcoal Slots
     },
     "sCTkDial": {
-        # Light Mode Frame Base Panel | Dark Mode Cockpit Obsidian Base Panel
         "fg_color": ("#F1F5F9", "#0A0A0A"),
-
-        # Perimeter calibration ticks: Brand Navy Blue (Light) / Neon Orange-Amber (Dark)
         "text_color": ("#1A4375", "#FF9100"),
-
-        # Main Knob Cap Body Face: Harmonized Segmented Button Gray (Light) / Heavy Gunmetal Graphite (Dark)
         "dial_color": ("#9E9E9E", "#2A2F3D"),
-
-        # Light Mode soft shadow bleed wash | Dark Mode absolute deep matte void background
         "shadow_color": ("#CBD5E1", "#02040A"),
-
-        # Centralized multi-state disabled parameters (Completely removed from class code)
-        "disabled_text_color": ("#94A3B8", "#4B5563"),  # Muted inactive tick marks
-        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),  # Faded matte knob cap face plate
-        "disabled_dimple_glow": ("#CBD5E1", "#334155")  # Softened finger pocket reflection ring
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
+        "disabled_dimple_glow": ("#CBD5E1", "#334155")
+    },
+    "sCTkDialSelector": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),
+        "text_color": ("#1A4375", "#FF9100"),
+        "dial_color": ("#9E9E9E", "#2A2F3D"),
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_color": ("#1A4375", "#FF9100"),
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24")
+    },
+    "sCTkDialRange": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),
+        "text_color": ("#1A4375", "#64748B"),
+        "dial_color": ("#9E9E9E", "#2A2F3D"),
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_color": ("#1A4375", "#FF9100"),
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24")
+    },
+    "sCTkDialContinuous": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),
+        "text_color": ("#1A4375", "#FF9100"),
+        "dial_color": ("#1E293B", "#181E2B"),
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_glow_color": ("#CBD5E1", "#3A455C"),
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
+        "disabled_dimple_glow": ("#CBD5E1", "#334155")
     },
     "sCTkSpinbox": {
         # Sourced precisely from your sCTkEntryPrimary specifications!

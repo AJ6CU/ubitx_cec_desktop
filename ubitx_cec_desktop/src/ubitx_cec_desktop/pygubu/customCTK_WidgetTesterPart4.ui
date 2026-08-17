@@ -22,7 +22,6 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkBarSMeterbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -94,6 +93,14 @@
                 </layout>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe2">
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">1</property>
+            </layout>
           </object>
         </child>
       </object>

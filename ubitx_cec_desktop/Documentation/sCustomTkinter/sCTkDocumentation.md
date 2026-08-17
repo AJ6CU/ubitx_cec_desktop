@@ -853,9 +853,15 @@ THEME_DEFAULTS = {
     # ... your other widget entries
 }
 ```
-# `sCTkDial` — Tactical Machined Rotary Encoder Widget
+# `sCTkDial` — Rotary Dial Suite
 
-The `sCTkDial` is a premium, theme-adaptive mechanical rotary tuning dial widget engineered explicitly for ham radio desktop console interfaces (like VFO tuning wheels, volume potentiometers, or RF gain attenuators). It features native cross-platform multi-touch gesture normalizers, localized fast-tuning overrides, and a photo-realistic 3D scooped matte finger dimple.
+The `sCTkDial` suite provides a premium group of theme-adaptive, object-oriented mechanical rotary tuning widgets engineered explicitly for ham radio desktop console interfaces. Derived from an abstract base core (`sCTkDialBase`), each distinct child class utilizes specialized vector graphics rendering paths and distinct input damping to mimic authentic radio console hardware while translating telemetry arrays into strict, application-friendly integers.
+
+---
+
+## 📸 Interface Preview
+
+![sCTk Dial Control Console Interface](images/sCTkDial.png)
 
 ---
 
@@ -863,94 +869,187 @@ The `sCTkDial` is a premium, theme-adaptive mechanical rotary tuning dial widget
 
 * **macOS Magic Mouse Native Fix:** Intercepts modern Aqua-Tkinter high-precision `TouchpadScroll` events and decodes compressed 32-bit binary data arrays. This completely unblocks smooth scrolling on Apple Silicon/Intel hardware without global `bind_all` interference.
 * **Cross-Platform Delivery Loop:** Coexists seamlessly with traditional Windows integer multiples of 120 and Linux X11 discrete button-4/button-5 notch server packets.
-* **3D Photographic Surface Engine:** Modeled directly after physical radio equipment knobs. Dops artificial neon bright borders in favor of deep 3D relief using dense vertical side-knurling texture mappings and a multi-layered reversed-gradient scoop dimple.
+* **Semantic Polymorphic Modeling:** Dynamically alters layout shapes based on class types—rendering sharp raised mechanical switch pointer lines for Selectors and Ranged pots, or infinite heavy flywheel faces with multi-layered 3D reversed-gradient finger scoops for VFO continuous wheels.
+* **Zero-Subdivision Selection Masking:** Eliminates intermediate tick marks and knurling bleeding artifacts on Selector and Range panels, leaving an authentic, smooth matte face plate with markings drawn exclusively at operational steps.
 * **Unified State Machine:** Supports native standard `.configure(state="disabled")` and `.cget("state")` controllers. When locked, it automatically maps the active face elements to an inactive palette and rejects cursor momentum tracking.
 
 ---
 
-## 📋 API Constructor Reference
+## 🎛️ 1. Discrete Mode Switch Selector (`sCTkDialSelector`)
 
+Designed to mimic a physical multi-position rotary band or mode selection switch. It restricts pointer operations to fixed angular arcs, strips out all distracting intermediate tick subdivisions, and loops infinitely past boundary edges.
+
+### Constructor
 ```python
-sCTkDial(master=None, min_value=0.0, max_value=24.0, step=1.0, divisions=24, command=None, left_click_callback=None, right_click_callback=None, diameter=None, state="normal", width=120, height=120, **kw)
+sCTkDialSelector(master=None, labels=None, arc_angle=270, command=None, diameter=120, width=120, height=120, **kw)
 ```
 
-### Parameters Matrix
+### Parameter Reference Matrix
 
 | Parameter Name | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
 | `master` | `Widget` | `None` | Reference pointer tracking the parent parent `sCTkFrame` or root context window layout layer. |
-| `min_value` | `float` | `0.0` | The floor tracking boundary offset initializing the rotation origin baseline. |
-| `max_value` | `float` | `24.0` | The ceiling wrap boundary tracking offset representing full 360-degree rotation. |
-| `step` | `float` | `1.0` | The mathematical index unit advanced upon every discrete notch event impulse. |
-| `divisions` | `int` | `24` | The physical number of graduation calibration tick marks drawn uniformly around the dial perimeter. |
-| `command` | `callable` | `None` | **Primary Event Callback:** Triggered instantly on any real scroll or drag modification. Passes a signed integer parameter tracking the tick change delta (`1`, `-1`, `2`, etc.). |
-| `left_click_callback` | `callable` | `None` | Optional override callback channel for single Left Mouse Button clicks. If `None`, defaults to advancing the dial left by 1 builtin step. |
-| `right_click_callback` | `callable` | `None` | Optional override callback channel for single Right Mouse Button clicks. If `None`, defaults to advancing the dial right by 1 builtin step. |
-| `diameter` | `int` | `None` | **Geometric Sizing Constraint:** If specified, forces a strict 1:1 width-to-height ratio, guaranteeing a perfect circle on the grid. |
-| `state` | `str` | `"normal"` | Set to `"normal"` for interactive tuning or `"disabled"` to freeze the widget and gray-out graphics. |
+| `labels` | `List[str / int]` | `["POS 1", "POS 2", "POS 3"]` | Explicit array of text choice options to map uniformly around the configured arc sweep. |
+| `arc_angle` | `int / float` | `270` | Total active angular sweep area in degrees, automatically centered symmetrically at the top. |
+| `command` | `callable` | `None` | **Primary Event Callback:** Fired instantly on rotation. Passes a strict, positive 0-based index integer matching the position in your labels list array. |
+| `diameter` | `int` | `120` | **Geometric Sizing Constraint:** If specified, forces a strict 1:1 square canvas container, overriding structural box parameters to guarantee a perfect circle. |
+| `width` | `int` | `120` | The explicit fallback horizontal pixel boundary box width for the widget container frame. |
+| `height` | `int` | `120` | The explicit fallback vertical pixel boundary box height for the widget container frame. |
+| `state` | `str` | `"normal"` | Set to `"normal"` for interactive tuning or `"disabled"` to freeze inputs and gray-out graphics. |
+
+### Callback Signature & Usage
+```python
+# Emits strict 0-based item index integers
+def on_mode_switch_rotated(active_index: int):
+    operating_modes = ["CW", "USB", "LSB", "AM", "FM", "RTTY"]
+    mode_string = operating_modes[active_index]
+    print(f"Swapped transceiver mode to: {mode_string} (Index: {active_index})")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Change the list options and arc sweep on the fly
+dial_selector.configure(labels=["160M", "80M", "40M", "20M", "10M"], arc_angle=240)
+
+# Manually snap the switch pointer directly to index notch 2
+dial_selector.set(2)
+```
 
 ---
 
-## ⚡ Public Instance Methods
+## 🎛️ 2. Hard End-Stop Potentiometer (`sCTkDialRange`)
 
-### Modifying Operational States Live
+Designed for continuous absolute attenuations like Volume, Mic Gain, or RF Attenuation. It enforces hard structural end-stops (blocks wrap-around) and decouples physical graduation markings from internal tracking values.
+
+### Constructor
 ```python
-# Mute inputs and snap graphics to your disabled theme token colors
-tuning_dial.configure(state="disabled")
-
-# Re-activate all mouse wheel handlers and click callbacks on the fly
-tuning_dial.configure(state="normal")
+sCTkDialRange(master=None, from_=0, to=100, arc_angle=270, command=None, diameter=120, width=120, height=120, divisions=5, **kw)
 ```
 
-### Live Sizing Constraints Shift
+### Parameter Reference Matrix
+
+| Parameter Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `Widget` | `None` | Reference pointer tracking the parent parent `sCTkFrame` or root context window layout layer. |
+| `from_` | `int` | `0` | The lower absolute mathematical limit boundary offset initializing the rotation origin baseline. |
+| `to` | `int` | `100` | The upper absolute mathematical limit boundary offset representing the maximum end-stop value. |
+| `divisions` | `int` | `5` | The physical number of graduation calibration tick marks drawn uniformly around the dial perimeter. |
+| `arc_angle` | `int / float` | `270` | Total active angular sweep area in degrees, automatically centered symmetrically at the top. |
+| `command` | `callable` | `None` | **Primary Event Callback:** Fired instantly on rotation. Passes the current absolute position integer clamped between `from_` and `to`. |
+| `diameter` | `int` | `120` | **Geometric Sizing Constraint:** If specified, forces a strict 1:1 square canvas container, overriding structural box parameters to guarantee a perfect circle. |
+| `width` | `int` | `120` | The explicit fallback horizontal pixel boundary box width for the widget container frame. |
+| `height` | `int` | `120` | The explicit fallback vertical pixel boundary box height for the widget container frame. |
+| `state` | `str` | `"normal"` | Set to `"normal"` for interactive tuning or `"disabled"` to freeze inputs and gray-out graphics. |
+
+### Callback Signature & Usage
 ```python
-# Dynamically re-scales width, height, and core circle calculations instantly
-tuning_dial.configure(diameter=150)
+# Emits absolute tracking value integers
+def on_volume_pot_rotated(absolute_value: int):
+    # Wheel impulses step by 5 units automatically to keep the potentiometer fast and snappy
+    print(f"Transceiver Audio Gain updated to: {absolute_value}%")
 ```
 
-### Adjust Swipe Velocity Filter
+### Dynamic Property Modifiers Live
 ```python
-# Sets a software debouncing cooldown clock track measured in milliseconds.
-# Slows down tracking for hyper-sensitive Apple touch devices (Default baseline: 60ms).
-tuning_dial.set_scroll_cooldown(120)
+# Re-calibrate a volume pot into a coarse squelch attenuator with 2 ticks
+dial_range.configure(from_=0, to=10, divisions=2)
+
+# Manually force the potentiometer value to absolute index 50
+dial_range.set(50)
+
+---
+
+## 🎛️ 3. Infinite Flywheel Tuning Wheel (`sCTkDialContinuous`)
+
+Designed exclusively for Variable Frequency Oscillators and rapid continuous menu rolling. It spins infinitely in 360-degree vectors, ignoring absolute limit boundaries completely.
+
+### Constructor
+```python
+sCTkDialContinuous(master=None, divisions=24, command=None, left_click_callback=None, right_click_callback=None, diameter=120, width=120, height=120, **kw)
 ```
 
-### Manual Position Overrides
+### Parameter Reference Matrix
+
+| Parameter Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `Widget` | `None` | Reference pointer tracking the parent parent `sCTkFrame` or root context window layout layer. |
+| `divisions` | `int` | `24` | Number of detented layout index points tracked inside a single 360° visual turn of the dimple indicator. |
+| `command` | `callable` | `None` | **Primary Event Callback:** Fired instantly on rotation. Passes a signed step velocity delta integer (`+1` for CW, `-1` for CCW). |
+| `left_click_callback` | `callable` | `None` | Custom macro callback triggered on canvas Left Mouse Button clicks (e.g., handles accelerated jumps like `-2`). |
+| `right_click_callback` | `callable` | `None` | Custom macro callback triggered on canvas Right Mouse Button clicks (e.g., handles accelerated jumps like `+2`). |
+| `diameter` | `int` | `120` | **Geometric Sizing Constraint:** If specified, forces a strict 1:1 square canvas container, overriding structural box parameters to guarantee a perfect circle. |
+| `width` | `int` | `120` | The explicit fallback horizontal pixel boundary box width for the widget container frame. |
+| `height` | `int` | `120` | The explicit fallback vertical pixel boundary box height for the widget container frame. |
+| `state` | `str` | `"normal"` | Set to `"normal"` for interactive tuning or `"disabled"` to freeze inputs and gray-out graphics. |
+
+### Callback Signature & Usage
 ```python
-# Manually forces the physical dimple location to index notch 12. 
-# Handles structural infinite circular wrap-around math automatically.
-tuning_dial.set(12.0)
+# Emits signed directional step velocity deltas (+1, -1, +2, -2)
+def on_vfo_wheel_rotated(signed_step_delta: int):
+    global current_frequency_hz
+    # Multiply raw step increments by a simulated 100 Hz tuning channel step
+    current_frequency_hz += signed_step_delta * 100
+    refresh_frequency_display()
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Dynamically re-scale the heavy VFO flywheel container box size instantly at runtime
+tuning_dial.configure(diameter=140)
+
+# Manually advance the 3D visual dimple layout coordinates by an integer tracking step delta
+tuning_dial.set_position_index(1)
 ```
 
 ---
 
 ## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
 
-The widget fully complies with standard design systems and loads its parameters dynamically from your central dictionary theme registry. Make sure your shared configuration entry contains these exact multi-state tokens to maintain absolute layout unity:
+The suite fully complies with standard design systems and loads its parameters dynamically from your central dictionary theme registry based on active child class names. Make sure your shared configuration entries contain these exact tokens to maintain layout unity:
 
 ```python
 THEME_DEFAULTS = {
     "sCTkDial": {
-        # Light Mode Frame Base Panel | Dark Mode Cockpit Obsidian Base Panel
         "fg_color": ("#F1F5F9", "#0A0A0A"),       
-        
-        # Perimeter calibration ticks and typography labels (Brand Primary Accents)
         "text_color": ("#1A4375", "#FF9100"),     
-        
-        # Main Knob Cap Body Face: Harmonized Segmented Button Gray (Light) / Heavy Gunmetal Graphite (Dark)
         "dial_color": ("#9E9E9E", "#2A2F3D"),     
-        
-        # Light Mode soft shadow wash | Dark Mode absolute deep matte void background
         "shadow_color": ("#CBD5E1", "#02040A"),
-        
-        # Encapsulated Multi-State Disabled Colors (Safe from constructor crashes)
-        "disabled_text_color": ("#94A3B8", "#4B5563"),  # Muted inactive tick marks
-        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),  # Faded matte knob cap face plate
-        "disabled_dimple_glow": ("#CBD5E1", "#334155")  # Softened finger pocket reflection ring
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
+        "disabled_dimple_glow": ("#CBD5E1", "#334155")
     },
-    # ... your other widget configurations
+    "sCTkDialSelector": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),       
+        "text_color": ("#1A4375", "#FF9100"),     
+        "dial_color": ("#9E9E9E", "#2A2F3D"),     
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_color": ("#1A4375", "#FF9100"),   
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24")
+    },
+    "sCTkDialRange": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),       
+        "text_color": ("#1A4375", "#64748B"),     
+        "dial_color": ("#9E9E9E", "#2A2F3D"),     
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_color": ("#1A4375", "#FF9100"),   
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24")
+    },
+    "sCTkDialContinuous": {
+        "fg_color": ("#F1F5F9", "#0A0A0A"),       
+        "text_color": ("#1A4375", "#FF9100"),     
+        "dial_color": ("#1E293B", "#181E2B"),     
+        "shadow_color": ("#CBD5E1", "#02040A"),
+        "pointer_glow_color": ("#CBD5E1", "#3A455C"), 
+        "disabled_text_color": ("#94A3B8", "#4B5563"),
+        "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
+        "disabled_dimple_glow": ("#CBD5E1", "#334155")
+    }
 }
 ```
+
+
 # sCTkSpinbox — Advanced Numerical Entry Component
 
 The `sCTkSpinbox` is a premium, theme-adaptive numerical spinbox component that fully replicates traditional `ttk.Spinbox` behaviors. It stacks vertical adjustment arrows on the side and natively embeds your design system's `sCTkEntryPrimary` module. This ensures absolute typography continuity, proper border weights, and seamless, automatic light/dark theme adaptations across your panel grid layouts.

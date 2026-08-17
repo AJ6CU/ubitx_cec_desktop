@@ -35,10 +35,19 @@ from sCTkTableviewbo import (
 )
 
 from sCTkSelector import sCTkSelector
+from sCTkCheckBox import sCTkCheckBox
+
 from sCTkSelectorbo import (
     sCTkSelectorBO,
     builder_id as sCTkSelector_builder_id
 )
+
+
+# from sCTkDial import sCTkDialContinuous
+# from sCTkDialbo import (
+#     sCTkDialContinuousBO,
+#     builder_id as sCTkDialContinuous_builder_id
+# )
 
 #
 # Preview class for sCTkFrame
@@ -70,12 +79,37 @@ class sCTkPathChooserForPreview(sCTkPathChooser):
 
 class sCTkTableviewForPreview(sCTkTableview):
     def winfo_children(self):
-        return super(tk.Frame, self).winfo_children()
+        internal = []
+        internal.extend(self._header_widgets)
+        for row in self._cell_widgets:
+            internal.extend(row)
+        clist = [self._scrollbar]
+        for widget in internal:
+            for cwidget in widget.winfo_children():
+                clist.append(cwidget)
+        return clist
 
 
 class sCTkSelectorForPreview(sCTkSelector):
     def winfo_children(self):
-        return super(tk.Frame, self).winfo_children()
+        internal = [
+            self.search_bar,
+            self.checkboxes_frame,
+            self.checkboxes_frame._parent_frame,
+            self.checkboxes_frame._parent_canvas,
+        ]
+        clist = []
+        for widget in internal:
+            for cwidget in widget.winfo_children():
+                clist.append(cwidget)
+                if isinstance(cwidget, sCTkCheckBox):
+                    clist.append(cwidget._text_label)
+                    clist.append(cwidget._canvas)
+        return clist
+
+# class sCTkDialContinuousForPreview(sCTkDialContinuous):
+#     def winfo_children(self):
+#         return super(tk.Frame, self).winfo_children()
 
 #
 # Builder for Preview
@@ -97,6 +131,9 @@ class sCTkTableviewForPreviewBO(sCTkTableviewBO):
 
 class sCTkSelectorForPreviewBO(sCTkSelectorBO):
     class_ = sCTkSelectorForPreview
+#
+# class sCTkDialContinuousForPreviewBO(sCTkSelectorBO):
+#     class_ = sCTkDialContinuousForPreview
 
 
 #
@@ -120,6 +157,8 @@ class sCTkPlugin(IDesignerPlugin):
             return sCTkTableviewForPreviewBO
         elif builder_uid == sCTkSelector_builder_id:
             return sCTkSelectorForPreviewBO
+        # elif builder_uid == sCTkDialContinuous_builder_id:
+        #     return sCTkDialContinuousForPreviewBO
         return None
 
 
