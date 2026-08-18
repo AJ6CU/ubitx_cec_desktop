@@ -156,5 +156,5 @@ register_custom_property(id_selector, "arc_angle", "naturalnumber", default_valu
 register_custom_property(id_selector, "command", "commandentry", help="Callback for knob turn by mousewheel.")
 register_custom_property(id_selector, "left_click_callback", "commandentry", help="Callback for left mouse click.")
 register_custom_property(id_selector, "right_click_callback", "commandentry", help="Callback for right mouse click.")
-register_custom_property(id_selector, "labels", "entry", help="Labels for dial in format 'label1', 'label2' ")
+register_custom_property(id_selector, "labels", "entry", help="Labels for dial in format label1, label2, label3... ")
 
