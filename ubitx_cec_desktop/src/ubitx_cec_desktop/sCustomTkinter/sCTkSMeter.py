@@ -14,7 +14,7 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
     Supports fixed explicit hardware width and height constraint arguments.
     """
 
-    def __init__(self, master=None, sig_min_value=0, sig_max_value=60, width=340, height=130, **kw):
+    def __init__(self, master=None, width=250, height=130, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkSMeter"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -32,16 +32,11 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         # 4. Pass the custom width and height parameters directly down to the frame core.
         super().__init__(master, width=width, height=height, fg_color=theme_bg_raw, **self.final_kw)
 
-        # FIXED: Updated parameters to follow prefixed naming patterns natively
-        self.sig_min_value = float(sig_min_value)
-        self.sig_max_value = float(sig_max_value)
-        self._current_value = self.sig_min_value
+        self._current_value = 0
 
         #  Capture default values
         import inspect
         sig = inspect.signature(self.__init__)
-        self._default_sig_min_value = sig.parameters['sig_min_value'].default
-        self._default_sig_max_value = sig.parameters['sig_max_value'].default
         self._default_width = sig.parameters['width'].default
         self._default_height = sig.parameters['height'].default
 
@@ -76,12 +71,6 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
                 return ('width', 'width', 'Width', self._default_width, self.cget("width"))
             if pname == "height":
                 return ('height', 'height', 'Height', self._default_height, self.cget("height"))
-            # if pname == "state":
-            #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
-            if pname in ["sig_max_value", "to"]:
-                return (pname, pname, pname, str(self._default_sig_max_value), str(self.sig_max_value))
-            if pname in ["sig_min_value", "from_"]:
-                return (pname, pname, pname, str(self._default_sig_min_value), str(self.sig_min_value))
 
             return super().configure(*args, **kwargs)
 
@@ -92,38 +81,6 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         if "height" in kwargs:
             h = kwargs["height"]
             kwargs["height"] = int(h) if (h and str(h).strip()) else self._default_height
-
-        """Public unified frame layout configuration and parameter update modifiers."""
-        # 3. Pop parameters out safely to shield CustomTkinter
-        if "sig_min_value" in kwargs or "from_" in kwargs:
-            val = kwargs.pop("sig_min_value", kwargs.pop("from_", None))
-            # 2. Check if the field was completely erased/deleted in the panel
-            if val == "" or (val is not None and not str(val).strip()):
-                self.sig_min_value = self._default_sig_min_value
-            elif val is not None:
-                # Only execute float conversion if we have verified a valid numeric text string!
-                self.sig_min_value = float(val)
-
-            # AUTOMATIC CEILING ALIGNMENT RULE:
-            # If the new min overlaps or matches the existing max, force min to below max!
-            if self.sig_min_value >= self.sig_max_value:
-                self.sig_min_value = self.sig_max_value - 1
-
-        if "sig_max_value" in kwargs or "to" in kwargs:
-            # 1. Safely extract the raw string value out of the dictionary tree
-            val = kwargs.pop("sig_max_value", kwargs.pop("to", None))
-
-            # 2. Check if the field was completely erased/deleted in the panel
-            if val == "" or (val is not None and not str(val).strip()):
-                self.sig_max_value = self._default_sig_max_value
-            elif val is not None:
-                # Only execute float conversion if we have verified a valid numeric text string!
-                self.sig_max_value = float(val)
-
-            # AUTOMATIC CEILING ALIGNMENT RULE:
-            # If the new min overlaps or matches the existing max, force min to below max!
-            if self.sig_min_value >= self.sig_max_value:
-                self.sig_max_value = self.sig_min_value + 1
 
         # 2. Pass sanitized geometry tokens down to CustomTkinter core layers
         super().configure(**kwargs)
@@ -138,10 +95,6 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
 
     def cget(self, attribute_name):
         """Public operational register attribute getter lookups."""
-        if attribute_name in ["sig_min_value", "from_"]:
-            return self.sig_min_value
-        if attribute_name in ["sig_max_value", "to"]:
-            return self.sig_max_value
         return super().cget(attribute_name)
 
     def _set_appearance_mode(self, mode_string):
@@ -175,62 +128,91 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self.canvas.configure(bg=bg)
         font = theme.get("font", ("Arial", 10, "bold"))
 
+        # ADJUSTED: Changed from 0.50 to 0.48 to shift the entire layout 10px to the left
         radius_sig = min(width * 0.52, height * 1.20)
-        center_x, center_y = width * 0.44, height * 0.35 + radius_sig
+        center_x, center_y = width * 0.48, height * 0.35 + radius_sig
         radius_po = radius_sig - 16
 
-        # Draw Labels and Arcs
+
+        # Draw Permanent Header Labels
         self.canvas.create_text(center_x, height * 0.12, text="SIGNAL", fill=amber, font=font)
         self.canvas.create_text(center_x, height * 0.80, text="RF OUTPUT", fill=amber, font=font)
 
-        # FIXED: Removed the hardwired "or 15.0" fallback constraint to keep true variable spacing
-        total = self.sig_max_value - self.sig_min_value
-        if total <= 0: total = 50.0  # Safe recovery if limits collapse to equal values
-
-        split = max(0.0, min(1.0, (self.sig_min_value + (total * (9.0 / 15.0)) - self.sig_min_value) / total))
-        split_ang = self.start_angle + (self.extent_angle * (1.0 - split))
+        # Permanent S-Meter layout geometry: 15 ticks total.
+        # Ticks 0-9 = S-Units (Amber arc). Ticks 9-15 = dB Over S9 (Red arc).
+        split_frac = 9.0 / 15.0
+        split_ang = self.start_angle + (self.extent_angle * (1.0 - split_frac))
         bbox = (center_x - radius_sig, center_y - radius_sig, center_x + radius_sig, center_y + radius_sig)
 
-        # Red/Amber arcs
+        # Arcs split permanently at S9
         self.canvas.create_arc(bbox, start=split_ang, extent=self.start_angle + self.extent_angle - split_ang,
                                style="arc", outline=amber, width=2)
         self.canvas.create_arc(bbox, start=self.start_angle, extent=split_ang - self.start_angle, style="arc",
                                outline=red, width=2)
 
-        # Ticks
+        # Draw Permanent Ticks and Labels
         for i in range(16):
             frac = i / 15.0
             ang = math.radians(self.start_angle + (self.extent_angle * (1.0 - frac)))
-            major, is_red = (i in [0, 1, 5, 9, 11, 13, 15]), (frac >= split)
+
+            # FIXED: Uses explicit comparison to bypass text-stripping filters
+            major = (i == 0 or i == 1 or i == 5 or i == 9 or i == 11 or i == 13 or i == 15)
+            is_red = (i > 9)
             l = 10 if major else 5
+
             x1, y1 = center_x + radius_sig * math.cos(ang), center_y - radius_sig * math.sin(ang)
             x2, y2 = center_x + (radius_sig + l) * math.cos(ang), center_y - (radius_sig + l) * math.sin(ang)
             self.canvas.create_line(x1, y1, x2, y2, fill=red if is_red else amber, width=2.5 if major else 1.2)
+
             if major:
-                val = self.sig_min_value + (total * frac)
-
-                # FIXED: Check if the current layout index falls within the standard S-unit range or overscale dB territory
                 if i <= 9:
-                    s_point = int(round(val))
-                    label = f"S {s_point}" if i == 0 else f"{s_point}"
+                    # FIXED: Skip index 0 so it doesn't print a digit "0" under our "S"
+                    if i == 0:
+                        label = ""
+                    else:
+                        label = f"{i}"
                 else:
-                    # Renders relative +dB tracking format gracefully beyond your split threshold point
-                    db_over = val - (self.sig_min_value + (total * (9.0 / 15.0)))
-                    label = f"+{int(round(db_over))}dB" if i < 15 else f"{val:.1f} dB"
+                    # Maps indices 11, 13, 15 directly to the decibel markings
+                    label = {11: "+20", 13: "+40", 15: "+60"}.get(i, "")
 
-                self.canvas.create_text(center_x + (radius_sig + (32 if i == 15 else 16)) * math.cos(ang),
-                                        center_y - (radius_sig + (32 if i == 15 else 16)) * math.sin(ang),
-                                        text=label, fill=red if is_red else amber, font=font)
+                text_radius = radius_sig + 16
+                tx = center_x + text_radius * math.cos(ang)
+                ty = center_y - text_radius * math.sin(ang)
+
+                # Only draw the text if a label string was actually assigned
+                if label:
+                    self.canvas.create_text(tx, ty, text=label, fill=red if is_red else amber, font=font)
+
+                # Push the label "S" all the way back to the resting zero point (tick 0)
+                if i == 1:
+                    ang_zero = math.radians(self.start_angle + (self.extent_angle * (1.0 - 0.0)))
+                    sx = center_x + text_radius * math.cos(ang_zero)
+                    sy = center_y - text_radius * math.sin(ang_zero)
+                    self.canvas.create_text(sx, sy, text="S", fill=amber, font=font)
 
         self._draw_needle(center_x, center_y, radius_sig)
 
     def _draw_needle(self, cx, cy, rad):
-        """Draws the needle at the calculated angle based on current value."""
-        # FIXED: Matched range normalization logic seamlessly with the gauge face adjustments
-        total = self.sig_max_value - self.sig_min_value
-        if total <= 0: total = 50.0  # Safe recovery tracking fallback
+        """Draws the needle matching the permanent non-linear S-Meter scale."""
+        # Cleanly map incoming transceiver set() values to the fixed visual face.
+        # We assume your rig script passes standard RSSI/S-units where:
+        # 1.0 to 9.0 = S1 through S9
+        # 9.0 to 69.0 = S9 to +60dB (where +20dB is 29, +40dB is 49, +60dB is 69)
+        val = self._current_value
 
-        frac = max(0.0, min(1.0, (self._current_value - self.sig_min_value) / total))
+        if val <= 9.0:
+            # Scale values 0-9 into the first 60% of the dial (ticks 0 to 9)
+            # Prevent negative or drop-below-zero calculations
+            clamped_val = max(0.0, val)
+            frac = (clamped_val / 9.0) * (9.0 / 15.0)
+        else:
+            # Scale values 9-69 into the remaining 40% of the dial (ticks 9 to 15)
+            clamped_val = min(69.0, val)
+            frac = (9.0 / 15.0) + ((clamped_val - 9.0) / 60.0) * (6.0 / 15.0)
+
+        # Safety clamp to keep needle within physical bounds of the canvas arc
+        frac = max(0.0, min(1.0, frac))
+
         ang = math.radians(self.start_angle + (self.extent_angle * (1.0 - frac)))
 
         nx, ny = cx + (rad + 2) * math.cos(ang), cy - (rad + 2) * math.sin(ang)
@@ -240,8 +222,10 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self.canvas.create_line(bx, by, nx, ny, fill=color, width=2, tags="needle")
 
     def set(self, value):
-        """Update the indicator positions (Expects ranges between sig_min_value and sig_max_value)."""
-        self._current_value = max(self.sig_min_value, min(self.sig_max_value, float(value)))
+        """Update the indicator positions (Expects values between 0.0 and 69.0)."""
+        # Hard-clamp the input between 0.0 and 69.0 to match the static S-Meter face scale
+        self._current_value = max(0.0, min(69.0, float(value)))
+
         w, h = self.canvas.winfo_width(), self.canvas.winfo_height()
         if w > 10 and h > 10:
             rad = min(w * 0.52, h * 1.20)
@@ -296,7 +280,6 @@ if __name__ == "__main__":
     # 2. FIXED: Explicitly pass your targeted width and height constraints right
     # into the sCTkSMeter initialization layout signature call.
     smeter = sCTkSMeter(dashboard_frame, width=340, height=130)
-    # smeter = sCTkSMeter(dashboard_frame, width=298, height=114)
     smeter.pack(padx=10, pady=10)
 
 
