@@ -23,7 +23,7 @@ class sCTkSlider(baseui.sCTkSliderUI, ThemeableWidget):
 
         theme_defaults = THEME_DEFAULTS["sCTkSlider"]
 
-        # Store dictionary references safely onto instance memory
+        # # Store dictionary references safely onto instance memory
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
@@ -33,6 +33,50 @@ class sCTkSlider(baseui.sCTkSliderUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
+    def configure(self, *args, **kwargs):
+        """Handles both standard keyword configurations and Pygubu inspector queries."""
+        # 1. POSITION INTERCEPT LOOP: Synchronizes the live Pygubu workspace preview
+        if args and len(args) == 1:
+            pname = args[0]
+
+            # If Pygubu is inspecting the state, dynamically return colors based on that state
+            if pname == "state":
+                return ("state", "state", "state", "normal", super().cget("state"))
+
+            if pname in ["fg_color", "progress_color", "button_color", "button_hover_color"]:
+                current_state = str(super().cget("state")).lower()
+                if current_state == "disabled" and self._custom_disabled_map:
+                    # Feed the disabled theme metrics straight back into Pygubu's live canvas drawer
+                    val = self._custom_disabled_map.get(pname)
+                else:
+                    val = self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+
+            return super().configure(*args, **kwargs)
+
+        # 2. KEYWORD SANITIZATION: Handles runtime code-driven transitions
+        if "state" in kwargs:
+            target_state = str(kwargs["state"]).lower()
+
+            if target_state == "disabled" and self._custom_disabled_map:
+                kwargs["fg_color"] = self._custom_disabled_map.get("fg_color")
+                kwargs["progress_color"] = self._custom_disabled_map.get("progress_color")
+                kwargs["button_color"] = self._custom_disabled_map.get("button_color")
+                kwargs["button_hover_color"] = kwargs["button_color"]
+
+            elif target_state in ["normal", "active"]:
+                kwargs["fg_color"] = self._local_defaults.get("fg_color")
+                kwargs["progress_color"] = self._local_defaults.get("progress_color")
+                kwargs["button_color"] = self._local_defaults.get("button_color")
+                kwargs["button_hover_color"] = self._local_defaults.get("button_hover_color")
+
+        return super().configure(*args, **kwargs)
+
+    def state(self, state_string=None):
+        """Standard Tkinter state management mapping."""
+        if state_string is not None:
+            self.configure(state=state_string)
+        return super().cget("state")
 
 if __name__ == "__main__":
     # # ctk.set_appearance_mode("dark")

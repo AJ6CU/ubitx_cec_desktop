@@ -132,11 +132,13 @@ class customCTK_WidgetTesterPart3UI:
         ctklabel7.configure(text='ctk:')
         ctklabel7.pack(pady="20 0")
         ctkslider1 = CTkSlider(framelabeled1)
+        ctkslider1.configure(state="disabled")
         ctkslider1.pack(side="top")
         ctklabel8 = CTkLabel(framelabeled1)
         ctklabel8.configure(text='subCTk:')
         ctklabel8.pack()
         slider1 = sCTkSlider(framelabeled1)
+        slider1.configure(from_=0, state="disabled", to=100)
         slider1.pack(side="top")
         framelabeled1.grid(column=1, padx="20 10", pady=20, row=0, sticky="ew")
         framelabeled1.bind("<MouseWheel>", self.callback, add="")
@@ -271,7 +273,8 @@ class customCTK_WidgetTesterPart3UI:
         sctkframe3.grid(column=1, row=2)
         sctkframe4 = sCTkFrame(ctkframe1)
         sctkbuttonprimary1 = sCTkButtonPrimary(sctkframe4)
-        sctkbuttonprimary1.configure(text='sctkbuttonprimary1')
+        sctkbuttonprimary1.configure(
+            state="disabled", text='sctkbuttonprimary1')
         sctkbuttonprimary1.grid(column=0, row=0)
         sctkseparator1 = sCTkSeparator(sctkframe4)
         sctkseparator1.configure(

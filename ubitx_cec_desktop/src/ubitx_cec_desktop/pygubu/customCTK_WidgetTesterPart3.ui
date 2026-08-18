@@ -179,6 +179,7 @@
             </child>
             <child>
               <object class="customtkinter.CTkSlider" id="ctkslider1">
+                <property name="state">disabled</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -192,6 +193,9 @@
             </child>
             <child>
               <object class="custom_widgets.sCTkSlider" id="slider1">
+                <property name="from_">0</property>
+                <property name="state">disabled</property>
+                <property name="to">100</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -549,6 +553,7 @@
             </layout>
             <child>
               <object class="custom_widgets.sCTkButtonPrimary" id="sctkbuttonprimary1">
+                <property name="state">disabled</property>
                 <property name="text" translatable="yes">sctkbuttonprimary1</property>
                 <layout manager="grid">
                   <property name="column">0</property>
