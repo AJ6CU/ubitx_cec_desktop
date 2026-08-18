@@ -15,8 +15,8 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
     Supports complete runtime visibility toggles and fading states for lower instrument clusters.
     """
 
-    def __init__(self, master=None, sig_min_value=0, sig_max_value=60, swr_max_value=5.0,
-                 swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw):
+    def __init__(self, master=None, swr_max_value=5.0,
+                 swr_visible=True, pwr_visible=True, hide_lower_row=False, width=320, height=110, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkSMeterBar"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -36,15 +36,11 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
         super().__init__(master, width=width, height=height, fg_color=theme_bg_raw, **self.final_kw)
 
         # Prefixed scaling boundary constraints assignment variables
-        self.sig_min_value = float(sig_min_value)
-        self.sig_max_value = float(sig_max_value)
         self.swr_max_value = float(swr_max_value)
 
         #  Capture default values
         import inspect
         sig = inspect.signature(self.__init__)
-        self._default_sig_min_value = sig.parameters['sig_min_value'].default
-        self._default_sig_max_value = sig.parameters['sig_max_value'].default
         self._default_swr_max_value = sig.parameters['swr_max_value'].default
         self._default_swr_visible = bool(sig.parameters['swr_visible'].default)
         self._default_pwr_visible = bool(sig.parameters['pwr_visible'].default)
@@ -58,7 +54,7 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
         self._hide_lower_row = bool(hide_lower_row)
 
         # Independent live telemetry storage parameters
-        self._current_s_value = self.sig_min_value
+        self._current_s_value = 0.0
         self._current_swr_value = 1.0
         self._current_pwr_value = 0.0
 
@@ -70,9 +66,10 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
         bg_resolved_string = ThemeableWidget._resolve_color(self, theme_bg_raw)
 
         self.canvas = ctk.CTkCanvas(self, highlightthickness=0, bd=0, bg=bg_resolved_string)
-        self.canvas.pack(fill="both", expand=True, padx=0, pady=0)
+        self.canvas.pack()
+        # self.canvas.pack(fill="both", expand=True, padx=0, pady=0)
 
-        # Prevent layout shrinkage if nested loosely
+        # # Prevent layout shrinkage if nested loosely
         self.pack_propagate(False)
         self.grid_propagate(False)
 
@@ -123,11 +120,6 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
             # if pname == "state":
             #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
 
-            # Map every custom specialized parameter to return a safe baseline tuple
-            if pname in ["sig_max_value", "to"]:
-                return (pname, pname, pname, str(self._default_sig_max_value), str(self.sig_max_value))
-            if pname in ["sig_min_value", "from_"]:
-                return (pname, pname, pname, str(self._default_sig_min_value), str(self.sig_min_value))
             if pname in ["swr_max_value"]:
                 return (pname, pname, pname, str(self._default_swr_max_value), str(self.swr_max_value))
 
@@ -147,38 +139,6 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
         #     self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
 
         """Public configuration modifier mapping live updates directly into active variables."""
-        if "sig_min_value" in kwargs or "from_" in kwargs:
-            # 1. Safely extract the raw string value out of the dictionary tree
-            val = kwargs.pop("sig_min_value", kwargs.pop("from_", None))
-
-            # 2. Check if the field was completely erased/deleted in the panel
-            if val == "" or (val is not None and not str(val).strip()):
-                self.sig_min_value = self._default_sig_min_value
-            elif val is not None:
-                # Only execute float conversion if we have verified a valid numeric text string!
-                self.sig_min_value = float(val)
-
-            # AUTOMATIC CEILING ALIGNMENT RULE:
-            # If the new min overlaps or matches the existing max, force min to below max!
-            if self.sig_min_value >= self.sig_max_value:
-                self.sig_min_value = self.sig_max_value - 1
-
-        if "sig_max_value" in kwargs or "to" in kwargs:
-            # 1. Safely extract the raw string value out of the dictionary tree
-            val = kwargs.pop("sig_max_value", kwargs.pop("to", None))
-
-            # 2. Check if the field was completely erased/deleted in the panel
-            if val == "" or (val is not None and not str(val).strip()):
-                self.sig_max_value = self._default_sig_max_value
-            elif val is not None:
-                # Only execute float conversion if we have verified a valid numeric text string!
-                self.sig_max_value = float(val)
-
-            # AUTOMATIC CEILING ALIGNMENT RULE:
-            # If the new min overlaps or matches the existing max, force min to below max!
-            if self.sig_min_value >= self.sig_max_value:
-                self.sig_max_value = self.sig_min_value + 1
-
 
         if "swr_max_value" in kwargs:
             # 1. Safely extract the raw string value out of the dictionary tree
@@ -230,8 +190,6 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
 
     def cget(self, attribute_name):
         """Public register parameter property getter lookup."""
-        if attribute_name in ["sig_min_value", "from_"]: return self.sig_min_value
-        if attribute_name in ["sig_max_value", "to"]: return self.sig_max_value
         if attribute_name == "swr_max_value": return self.swr_max_value
         if attribute_name == "swr_visible": return self._swr_visible
         if attribute_name == "pwr_visible": return self._pwr_visible
@@ -240,11 +198,9 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
 
     def _draw_meter(self):
         self.canvas.delete("all")
-
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
-        if width < 10 or height < 10:
-            return
+        if width < 10 or height < 10: return
 
         theme_map = THEME_DEFAULTS["sCTkSMeterBar"]
         bg_color = self._resolve_color(theme_map.get("fg_color"))
@@ -259,9 +215,11 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
 
         self.canvas.configure(bg=bg_color)
 
+        num_led_segments = 30
+
         # Horizontal layout boundaries
-        start_x = 42
-        end_x = width - 42
+        start_x = 10           # Changed from 28 to 18 (Cuts 10pt off left space)
+        end_x = width - 30       # Changed from 46 to 56 (Cuts 10pt off right space)
         total_length = end_x - start_x
 
         if self._hide_lower_row:
@@ -275,11 +233,17 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
         segment_width = (total_length / num_led_segments) - 1.5
 
         # -----------------------------------------------------------------
-        # 1. GENERATE SIG TRACK LED DISPLAY MATRIX
+        # 1. GENERATE FIXED S-METER LED DISPLAY MATRIX
         # -----------------------------------------------------------------
-        sig_range = self.sig_max_value - self.sig_min_value
-        s_fraction = (max(self.sig_min_value, min(self.sig_max_value,
-                                                  self._current_s_value)) - self.sig_min_value) / sig_range if sig_range != 0 else 0.0
+        # Maps 0-9 to 60% of bar, 9-69dB to remaining 40%
+        val = self._current_s_value
+        if val <= 9.0:
+            clamped_val = max(0.0, val)
+            s_fraction = (clamped_val / 9.0) * 0.60
+        else:
+            clamped_val = min(69.0, val)
+            s_fraction = 0.60 + ((clamped_val - 9.0) / 60.0) * 0.40
+
         active_sig_segments = int(num_led_segments * s_fraction)
 
         for i in range(num_led_segments):
@@ -295,30 +259,31 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
             self.canvas.create_rectangle(seg_start_x, sig_y - 4, seg_end_x, sig_y + 1, fill=fill_color, outline="")
 
         # -----------------------------------------------------------------
-        # FIXED: DYNAMIC TICK GEOMETRY & MATH-DRIVEN SCALE LABELS
-        # Discards static text arrays, generating scale labels relative to min/max
+        # FIXED: AUTHENTIC RADIO SCALE LABELS (S1, S3, S5, S7, S9, +20, +40, +60)
+        # Discards dynamic properties to match the hardware dial layout
         # -----------------------------------------------------------------
-        sig_ticks = [0.0, 0.13, 0.26, 0.40, 0.53, 0.66, 0.80, 1.0]
+        bar_scale_mappings = [
+            (0.0, ""), (0.066, "1"), (0.20, "3"), (0.333, "5"), (0.466, "7"),
+            (0.60, "9"), (0.733, "+20"), (0.866, "+40"), (1.0, "+60 dB")
+        ]
 
-        for tick_idx, pct in enumerate(sig_ticks):
+        for pct, label_str in bar_scale_mappings:
             tx = start_x + (total_length * pct)
-            color = red_color if pct >= 0.53 else amber_color
+            color = red_color if pct >= 0.60 else amber_color
+
+            # Draw the little vertical tick line above the segment track
             self.canvas.create_line(tx, sig_y, tx, sig_y - 6, fill=color, width=1)
 
-            # Compute actual numerical scale values dynamically at each fraction tick step
-            calculated_value = self.sig_min_value + (sig_range * pct)
+            # Render the permanent label text strings at their fixed spots
+            if label_str:
+                text_offset_y = sig_y - 14
+                self.canvas.create_text(tx, text_offset_y, text=label_str, fill=color,
+                                        font=("Arial", 9, "bold"), anchor="center")
 
-            # Formats first label to "S [val]", mid labels to rounded floats, and end label to "[val]dB"
-            if tick_idx == 0:
-                label_str = f"S{int(round(calculated_value))}"
-            elif tick_idx == len(sig_ticks) - 1:
-                label_str = f"{int(round(calculated_value))}dB"
-            else:
-                label_str = f"{calculated_value:.1f}".rstrip('0').rstrip('.')
-
-            text_offset_y = sig_y - 14
-            self.canvas.create_text(tx, text_offset_y, text=label_str, fill=color, font=("Arial", 9, "bold"),
-                                    anchor="center")
+        # Independent placement of the "S" baseline unit header to left of "1"
+        s_anchor_x = start_x + (total_length * 0.0)
+        self.canvas.create_text(s_anchor_x, sig_y - 14, text="S", fill=amber_color,
+                                font=("Arial", 9, "bold"), anchor="center")
 
         # "SIG" label centered directly in the middle of its track layout
         sig_mid_x = start_x + (total_length * 0.5)
@@ -534,7 +499,7 @@ if __name__ == "__main__":
 
     # Mount Core Piece: The Custom Horizontal LED Bar Segment S/SWR/PWR-Meter
     led_bar_gauge = sCTkSMeterBar(panel_container, width=340, height=110)
-    led_bar_gauge.pack(pady=15)
+    led_bar_gauge.pack()
 
 
     # Add an on-the-fly theme switcher button to check color inversion states live

@@ -30,13 +30,13 @@ class sCTkSMeterBarBO(BuilderObject):
     class_ = sCTkSMeterBar
 
     # Expose custom compound parameters alongside theme state configurations
-    OPTIONS_CUSTOM = ("width", "height", "sig_min_value", "sig_max_value", "swr_max_value", "swr_visible", "pwr_visible", "hide_lower_row")
+    OPTIONS_CUSTOM = ("width", "height", "swr_max_value", "swr_visible", "pwr_visible", "hide_lower_row")
     properties = OPTIONS_CUSTOM
 
     def _process_property_value(self, pname, value):
         if pname in ("width", "height"):
             return int(value)
-        elif pname in ("sig_min_value", "sig_max_value", "swr_max_value"):
+        elif pname == "swr_max_value":
             return float(value)
         elif pname in ("swr_visible", "pwr_visible", "hide_lower_row"):
             if value == "True":
@@ -70,20 +70,6 @@ register_custom_property(
     help="Set height in pixels of the meter"
 )
 
-
-register_custom_property(
-    builder_id,
-    "sig_min_value",
-    "realnumber",
-    help="Smallest value for signal on scale"
-)
-
-register_custom_property(
-    builder_id,
-    "sig_max_value",
-    "realnumber",
-    help="largest value for signal on scale"
-)
 
 register_custom_property(
     builder_id,
