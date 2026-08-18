@@ -22,6 +22,7 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
+      <customwidget path="../sCustomTkinter/sCTkDialbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -101,6 +102,50 @@
               <property name="column">0</property>
               <property name="row">1</property>
             </layout>
+            <child>
+              <object class="custom_widgets.sCTkDialContinuous" id="sctkdialcontinuous2">
+                <property name="diameter">150</property>
+                <property name="right_click_callback" type="command" cbtype="simple">test</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe3">
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">1</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkDialSelector" id="sctkdialselector1">
+                <property name="command" type="command" cbtype="simple">selector_CB</property>
+                <property name="diameter">150</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkFrame" id="sctkframe4">
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="row">1</property>
+            </layout>
+            <child>
+              <object class="custom_widgets.sCTkDialRange" id="sctkdialrange1">
+                <property name="arc_angle">180</property>
+                <property name="command" type="command" cbtype="simple">pot</property>
+                <property name="diameter">150</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
       </object>

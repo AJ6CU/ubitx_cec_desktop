@@ -30,35 +30,22 @@ class sCTkDialContinuousBO(BuilderObject):
     container = False
 
     OPTIONS_STANDARD = ("width", "height", "state")
-    OPTIONS_CUSTOM = ("divisions", "diameter")
+    OPTIONS_CUSTOM = ("divisions", "diameter", "command", "left_click_callback", "right_click_callback")
     properties = OPTIONS_STANDARD + OPTIONS_CUSTOM
+    command_properties = ("command", "left_click_callback", "right_click_callback")
 
     def realize(self, parent, *args, **kwargs):
+        """Streamlined Pygubu Flywheel Tuning Wheel Lifecycle Intercept."""
         props_map = self.wmeta.properties if hasattr(self, "wmeta") else {}
         diameter_val = props_map.get("diameter", None)
-        divisions_val = props_map.get("divisions", 24)
 
+        # Calculate target boundary box footprint with design fallbacks
         w = int(diameter_val) if (diameter_val and str(diameter_val).strip()) else 120
+        self.wmeta.properties["width"] = str(w)
+        self.wmeta.properties["height"] = str(w)
 
-        if hasattr(self, "wmeta") and self.wmeta:
-            self.wmeta.properties["width"] = str(w)
-            self.wmeta.properties["height"] = str(w)
-
+        # Call the core engine to instantiate the widget using standard xml properties
         widget = super().realize(parent, *args, **kwargs)
-
-        if widget:
-            widget._divisions = int(divisions_val) if divisions_val else 24
-            if diameter_val and str(diameter_val).strip():
-                widget.configure(diameter=int(diameter_val))
-
-            widget.pack_propagate(False)
-            widget.grid_propagate(False)
-
-            if hasattr(widget, "_canvas") and widget._canvas is not None:
-                widget._canvas.configure(width=w, height=w)
-
-            widget._draw_dial_base()
-
         return widget
 
 
@@ -72,42 +59,22 @@ class sCTkDialRangeBO(BuilderObject):
     container = False
 
     OPTIONS_STANDARD = ("width", "height", "state")
-    OPTIONS_CUSTOM = ("from_", "to", "divisions", "diameter", "arc_angle")
+    OPTIONS_CUSTOM = ("from_", "to", "divisions", "diameter", "arc_angle","command", "left_click_callback", "right_click_callback")
     properties = OPTIONS_STANDARD + OPTIONS_CUSTOM
+    command_properties = ("command", "left_click_callback", "right_click_callback")
 
     def realize(self, parent, *args, **kwargs):
+        """Streamlined Pygubu Potentiometer Lifecycle Intercept."""
         props_map = self.wmeta.properties if hasattr(self, "wmeta") else {}
         diameter_val = props_map.get("diameter", None)
-        divisions_val = props_map.get("divisions", 5)
-        from_val = props_map.get("from_", 0)
-        to_val = props_map.get("to", 100)
-        arc_val = props_map.get("arc_angle", 270)
 
+        # Calculate target boundary box footprint with design fallbacks
         w = int(diameter_val) if (diameter_val and str(diameter_val).strip()) else 120
+        self.wmeta.properties["width"] = str(w)
+        self.wmeta.properties["height"] = str(w)
 
-        if hasattr(self, "wmeta") and self.wmeta:
-            self.wmeta.properties["width"] = str(w)
-            self.wmeta.properties["height"] = str(w)
-
+        # Call the core engine to instantiate the widget using standard xml properties
         widget = super().realize(parent, *args, **kwargs)
-
-        if widget:
-            widget._from = int(from_val)
-            widget._to = int(to_val)
-            widget._divisions = int(divisions_val) if divisions_val else 5
-            widget._arc_angle = float(arc_val)
-
-            if diameter_val and str(diameter_val).strip():
-                widget.configure(diameter=int(diameter_val))
-
-            widget.pack_propagate(False)
-            widget.grid_propagate(False)
-
-            if hasattr(widget, "_canvas") and widget._canvas is not None:
-                widget._canvas.configure(width=w, height=w)
-
-            widget._draw_dial_base()
-
         return widget
 
 
@@ -121,36 +88,41 @@ class sCTkDialSelectorBO(BuilderObject):
     container = False
 
     OPTIONS_STANDARD = ("width", "height", "state")
-    OPTIONS_CUSTOM = ("diameter", "arc_angle")  # Note: Labels handles lists, which are usually initialized in code
+    OPTIONS_CUSTOM = ("diameter", "arc_angle","command", "left_click_callback", "right_click_callback" ) #  # Note: Labels handles lists, which are usually initialized in code
     properties = OPTIONS_STANDARD + OPTIONS_CUSTOM
+    command_properties = ("command", "left_click_callback", "right_click_callback")
+
+    # def _process_property_value(self, name, value):
+    #     if name == 'labels':
+    #         print("labels:", value)
+    #         mylist = value.split(",")
+    #         print(mylist, type(mylist))
+    #         if not value or not str(value).strip(): return []
+    #         mylist = [col.strip() for col in str(value).split(',') if col.strip()]
+    #         print(mylist)
+    #         return mylist
+    #         # return [col.strip() for col in str(value).split(',') if col.strip()]
+    #     if value is None or str(value).strip() == "":
+    #         return None
+    #     if name in ("width", "height", "diameter", "arc_angle"):
+    #         return int(str(value).strip())
+    #     return str(value)
 
     def realize(self, parent, *args, **kwargs):
+        """Streamlined Pygubu Selector Lifecycle Intercept."""
         props_map = self.wmeta.properties if hasattr(self, "wmeta") else {}
         diameter_val = props_map.get("diameter", None)
-        arc_val = props_map.get("arc_angle", 270)
 
+        # Calculate target boundary box footprint with design fallbacks
         w = int(diameter_val) if (diameter_val and str(diameter_val).strip()) else 120
+        self.wmeta.properties["width"] = str(w)
+        self.wmeta.properties["height"] = str(w)
 
-        if hasattr(self, "wmeta") and self.wmeta:
-            self.wmeta.properties["width"] = str(w)
-            self.wmeta.properties["height"] = str(w)
-
+        # Call the core engine to instantiate the widget using standard xml properties
         widget = super().realize(parent, *args, **kwargs)
-
-        if widget:
-            widget._arc_angle = float(arc_val)
-            if diameter_val and str(diameter_val).strip():
-                widget.configure(diameter=int(diameter_val))
-
-            widget.pack_propagate(False)
-            widget.grid_propagate(False)
-
-            if hasattr(widget, "_canvas") and widget._canvas is not None:
-                widget._canvas.configure(width=w, height=w)
-
-            widget._draw_dial_base()
-
         return widget
+
+
 # =====================================================================
 # UNIFIED MODULE-LEVEL PYGUBU REGISTRATION LEDGER
 # Registers all three semantic variations simultaneously inside the palette.
@@ -163,17 +135,23 @@ register_custom_property(id_continuous, "width", "naturalnumber", help="Width in
 register_custom_property(id_continuous, "height", "naturalnumber", help="Height in pixels.")
 register_custom_property(id_continuous, "divisions", "naturalnumber", default_value=24, help="Flywheel detents per 360 turn.")
 register_custom_property(id_continuous, "diameter", "naturalnumber", default_value=120, help="Knob circle size.")
+register_custom_property(id_continuous, "command", "commandentry", help="Callback for knob turn by mousewheel.")
+register_custom_property(id_continuous, "left_click_callback", "commandentry", help="Callback for left mouse click.")
+register_custom_property(id_continuous, "right_click_callback", "commandentry", help="Callback for right mouse click.")
 
 # --- 2. RANGED POTENTIOMETER MATRIX REGISTRY ---
 id_range = f"{builder_namespace}.sCTkDialRange"
 register_widget(id_range, sCTkDialRangeBO, "sCTkDialRange", ("ttk", section_name))
 register_custom_property(id_range, "width", "naturalnumber", help="Width in pixels.")
 register_custom_property(id_range, "height", "naturalnumber", help="Height in pixels.")
-register_custom_property(id_range, "from_", "integer", default_value=0, help="Absolute minimum boundary limit.")
-register_custom_property(id_range, "to", "integer", default_value=100, help="Absolute maximum boundary limit.")
+register_custom_property(id_range, "from_", "integernumber", default_value=0, help="Absolute minimum boundary limit.")
+register_custom_property(id_range, "to", "integernumber", default_value=100, help="Absolute maximum boundary limit.")
 register_custom_property(id_range, "divisions", "naturalnumber", default_value=5, help="Number of calibration tick lines drawn.")
 register_custom_property(id_range, "diameter", "naturalnumber", default_value=120, help="Knob circle size.")
 register_custom_property(id_range, "arc_angle", "naturalnumber", default_value=270, help="Symmetrical active arc sweep.")
+register_custom_property(id_range, "command", "commandentry", help="Callback for knob turn by mousewheel.")
+register_custom_property(id_range, "left_click_callback", "commandentry", help="Callback for left mouse click.")
+register_custom_property(id_range, "right_click_callback", "commandentry", help="Callback for right mouse click.")
 
 # --- 3. MODE SELECTOR MATRIX REGISTRY ---
 id_selector = f"{builder_namespace}.sCTkDialSelector"
@@ -182,3 +160,8 @@ register_custom_property(id_selector, "width", "naturalnumber", help="Width in p
 register_custom_property(id_selector, "height", "naturalnumber", help="Height in pixels.")
 register_custom_property(id_selector, "diameter", "naturalnumber", default_value=120, help="Knob circle size.")
 register_custom_property(id_selector, "arc_angle", "naturalnumber", default_value=270, help="Symmetrical active arc sweep.")
+register_custom_property(id_selector, "command", "commandentry", help="Callback for knob turn by mousewheel.")
+register_custom_property(id_selector, "left_click_callback", "commandentry", help="Callback for left mouse click.")
+register_custom_property(id_selector, "right_click_callback", "commandentry", help="Callback for right mouse click.")
+# register_custom_property(id_selector, "labels", "entry", help="Labels for dial in format 'label1', 'label2' ")
+

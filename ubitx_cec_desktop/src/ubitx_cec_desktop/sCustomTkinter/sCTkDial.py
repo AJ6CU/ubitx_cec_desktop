@@ -83,14 +83,54 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
         if delta_y >= 0x8000: delta_y -= 0x10000
         return delta_y
 
-    def configure(self, **kwargs):
-        if "state" in kwargs: self._state = "normal" if kwargs.pop("state").lower() == "normal" else "disabled"
-        if "diameter" in kwargs:
-            dim = int(kwargs.pop("diameter"))
-            super().configure(width=dim, height=dim)
-        if "divisions" in kwargs: self._divisions = int(kwargs.pop("divisions"))
-        super().configure(**kwargs)
-        if self.canvas.winfo_exists(): self._draw_dial_base()
+    def configure(self, *args, **kwargs):
+        """
+        Unified Parent Class Property Intercept.
+        Catches Pygubu-Designer unset_property positional lookups early, and
+        safely strips out the 'state' argument to protect the underlying CTkFrame layer.
+        """
+        # 1. Handle single-string positional metadata lookups for Pygubu's unset loops
+        if args and len(args) == 1:
+            pname = args[0]
+
+            # Map standard frame properties safely
+            if pname == "width":
+                current_w = self.cget("width") if hasattr(self, "cget") else 120
+                return ('width', 'width', 'Width', 120, current_w)
+            if pname == "height":
+                current_h = self.cget("height") if hasattr(self, "cget") else 120
+                return ('height', 'height', 'Height', 120, current_h)
+            if pname == "state":
+                return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
+
+            # Map custom specialized attributes safely
+            if pname in ["diameter", "divisions", "arc_angle", "from_", "to", "labels", "command",
+                         "left_click_callback", "right_click_callback"]:
+                return (pname, pname, pname, "", "")
+
+            # Fallback path if any other unexpected property slips down the chain
+            try:
+                return super().configure(*args, **kwargs)
+            except Exception:
+                return (pname, pname, pname, "", "")
+
+        # 2. STANDARD GEOMETRY SANITIZATION: Intercept geometry strings to prevent type crashes
+        if "width" in kwargs:
+            w = kwargs["width"]
+            kwargs["width"] = int(w) if (w and str(w).strip()) else 120
+        if "height" in kwargs:
+            h = kwargs["height"]
+            kwargs["height"] = int(h) if (h and str(h).strip()) else 120
+
+        # 3. FIXED CRASH SHIELD FOR STATE ATTR:
+        # We must use .pop() to entirely pull 'state' out of kwargs!
+        # This stops it from ever being passed to CustomTkinter's base CTkFrame engine.
+        if "state" in kwargs:
+            st = kwargs.pop("state")
+            self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
+
+        # Forward remaining sanitized configurations safely up to the parent engine
+        return super().configure(**kwargs)
 
     def cget(self, attribute_name):
         if attribute_name == "state": return self._state
@@ -240,55 +280,231 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
                                     dy + ind_radius + 1.5, fill="", outline=pointer_glow, width=1.5)
 
 
-class sCTkDialSelector(sCTkDialBase):
-    """Rotary switch selector module. Constrained to custom arc angles (default 270)."""
+class sCTkDialContinuous(sCTkDialBase):
+    """
+    Infinite flywheel tuning wheel encoder.
+    Flashes a signature signed direction step velocity delta integer (+1, -1, etc.) on rotation.
+    Visual indicator loop wraps around 360-degrees dynamically.
+    Fully insulated against Pygubu-Designer empty-string callback removals.
+    """
 
-    def __init__(self, master=None, labels=None, arc_angle=270, command=None, diameter=120, **kw):
+    def __init__(self, master=None, divisions=24, command=None, left_click_callback=None, right_click_callback=None,
+                 diameter=120, **kw):
+        super().__init__(master, divisions=divisions, diameter=diameter, **kw)
+        self._command = command
+
+        # Guard: Sanitize empty design-time strings out of initial creation footprint
+        self._left_click_callback = left_click_callback if (
+                    left_click_callback and str(left_click_callback).strip()) else None
+        self._right_click_callback = right_click_callback if (
+                    right_click_callback and str(right_click_callback).strip()) else None
+        self._current_value = 0
+
+    def _get_value_fraction(self):
+        return self._current_value / self._divisions
+
+    def configure(self, *args, **kwargs):
+        """Unified continuous wheel configuration routing."""
+        # Forward positional single-string queries immediately up to the parent base intercept!
+        if args:
+            return super().configure(*args, **kwargs)
+
+        if "divisions" in kwargs:
+            divs = kwargs.pop("divisions")
+            self._divisions = int(divs) if (divs and str(divs).strip()) else 24
+
+        if "command" in kwargs:
+            cb = kwargs.pop("command")
+            self._command = cb if (cb and str(cb).strip()) else None
+        if "left_click_callback" in kwargs:
+            cb = kwargs.pop("left_click_callback")
+            self._left_click_callback = cb if (cb and str(cb).strip()) else None
+        if "right_click_callback" in kwargs:
+            cb = kwargs.pop("right_click_callback")
+            self._right_click_callback = cb if (cb and str(cb).strip()) else None
+
+        if "diameter" in kwargs:
+            d_val = kwargs.pop("diameter")
+            if d_val and str(d_val).strip():
+                d = int(d_val)
+            else:
+                d = int(kwargs.get("width", self.cget("width") if hasattr(self, "cget") else 120))
+            kwargs["width"], kwargs["height"] = d, d
+            if hasattr(self, "_target_width"):
+                self._target_width, self._target_height = d, d
+
+        result = super().configure(**kwargs)
+        if self.canvas.winfo_exists():
+            self._draw_dial_base()
+        return result
+
+    def cget(self, attribute_name):
+        """Unified attribute state query lookup."""
+        if attribute_name == "command": return self._command
+        if attribute_name == "left_click_callback": return self._left_click_callback
+        if attribute_name == "right_click_callback": return self._right_click_callback
+        return super().cget(attribute_name)
+
+    def set_position_index(self, step_delta):
+        """Advances the 3D visual dimple layout coordinates via an integer delta tracking loop."""
+        self._current_value = (self._current_value + int(step_delta)) % self._divisions
+        if self.canvas.winfo_exists():
+            self._draw_dial_base()
+        if self._command is not None and self._state == "normal":
+            self._command(int(step_delta))
+
+    def _on_left_click_step(self, event):
+        if self._state == "disabled": return
+        if self._left_click_callback is not None and callable(self._left_click_callback):
+            self._left_click_callback()
+        else:
+            self.set_position_index(-1)
+
+    def _on_right_click_step(self, event):
+        if self._state == "disabled": return
+        if self._right_click_callback is not None and callable(self._right_click_callback):
+            self._right_click_callback()
+        else:
+            self.set_position_index(1)
+
+    def _on_button_press(self, event):
+        self._last_y = event.y
+
+    def _on_button_motion(self, event):
+        if self._state == "disabled": return
+        delta_y = self._last_y - event.y
+        if abs(delta_y) > 2:
+            direction = 1 if delta_y > 0 else -1
+            self.set_position_index(direction)
+            self._last_y = event.y
+
+    def _process_mac_touchpad_scroll(self, event):
+        if self._state == "disabled": return "break"
+        import time
+        current_time = time.time()
+        if current_time - self._last_scroll_time < self._scroll_cooldown_seconds: return "break"
+        delta_y = self._decode_mac_touchpad_delta(event.delta)
+        if delta_y != 0:
+            self._last_scroll_time = current_time
+            self.set_position_index(1 if delta_y > 0 else -1)
+        return "break"
+
+    def _process_scroll_wheel(self, event):
+        if self._state == "disabled": return
+        if getattr(event, "num", 0) == 4 or (hasattr(event, "delta") and event.delta > 0):
+            direction = 1
+        elif getattr(event, "num", 0) == 5 or (hasattr(event, "delta") and event.delta < 0):
+            direction = -1
+        else:
+            return
+        self.set_position_index(direction)
+
+
+class sCTkDialSelector(sCTkDialBase):
+    """
+    Rotary switch selector module. Constrained to custom arc angles (default 270).
+    Loops infinitely past outer limits and reports the active integer item index position.
+    """
+
+    def __init__(self, master=None, labels=None, arc_angle=270, command=None, left_click_callback=None,
+                 right_click_callback=None, diameter=120, **kw):
         self._labels = labels if labels is not None else ["POS 1", "POS 2", "POS 3"]
         self._arc_angle = float(arc_angle)
+
         super().__init__(master, divisions=len(self._labels), diameter=diameter, **kw)
         self._scroll_cooldown_seconds = 0.150
         self._command = command
+
+        # Guard: Sanitize empty design-time strings out of initial creation footprint
+        self._left_click_callback = left_click_callback if (
+                    left_click_callback and str(left_click_callback).strip()) else None
+        self._right_click_callback = right_click_callback if (
+                    right_click_callback and str(right_click_callback).strip()) else None
         self._current_value = 0
 
     def _get_value_fraction(self):
         total_steps = len(self._labels) - 1
         return self._current_value / total_steps if total_steps > 0 else 0.0
 
-    def configure(self, **kwargs):
+    def configure(self, *args, **kwargs):
+        """Unified switch selector configuration routing."""
+        # Forward positional single-string queries immediately up to the parent base intercept!
+        if args:
+            return super().configure(*args, **kwargs)
+
         if "labels" in kwargs:
-            self._labels = kwargs.pop("labels")
+            lbls = kwargs.pop("labels")
+            self._labels = lbls if lbls else ["CW", "USB", "LSB", "AM", "FM", "RTTY"]
             self._divisions = len(self._labels)
-        if "arc_angle" in kwargs: self._arc_angle = float(kwargs.pop("arc_angle"))
-        if "command" in kwargs: self._command = kwargs.pop("command")
-        super().configure(**kwargs)
+
+        if "arc_angle" in kwargs:
+            arc = kwargs.pop("arc_angle")
+            self._arc_angle = float(arc) if (arc and str(arc).strip()) else 270.0
+
+        if "command" in kwargs:
+            cb = kwargs.pop("command")
+            self._command = cb if (cb and str(cb).strip()) else None
+        if "left_click_callback" in kwargs:
+            cb = kwargs.pop("left_click_callback")
+            self._left_click_callback = cb if (cb and str(cb).strip()) else None
+        if "right_click_callback" in kwargs:
+            cb = kwargs.pop("right_click_callback")
+            self._right_click_callback = cb if (cb and str(cb).strip()) else None
+
+        if "diameter" in kwargs:
+            d_val = kwargs.pop("diameter")
+            if d_val and str(d_val).strip():
+                d = int(d_val)
+            else:
+                d = int(kwargs.get("width", self.cget("width") if hasattr(self, "cget") else 120))
+            kwargs["width"], kwargs["height"] = d, d
+
+        result = super().configure(**kwargs)
+        if self.canvas.winfo_exists():
+            self._draw_dial_base()
+        return result
 
     def cget(self, attribute_name):
+        """Unified attribute state query lookup."""
         if attribute_name == "labels": return self._labels
         if attribute_name == "arc_angle": return self._arc_angle
         if attribute_name == "command": return self._command
+        if attribute_name == "left_click_callback": return self._left_click_callback
+        if attribute_name == "right_click_callback": return self._right_click_callback
         return super().cget(attribute_name)
 
     def set(self, value):
+        """Sets the active index integer and forces canvas updates."""
         target = int(value)
         total_len = len(self._labels)
         if total_len == 0: return
+
         if target >= total_len:
             target = 0
         elif target < 0:
             target = total_len - 1
+
         self._current_value = target
         if self.canvas.winfo_exists(): self._draw_dial_base()
-        if self._command is not None and self._state == "normal": self._command(self._current_value)
+        if self._command is not None and self._state == "normal":
+            self._command(self._current_value)
 
     def get(self):
         return self._current_value
 
     def _on_left_click_step(self, event):
-        self.set(self._current_value - 1)
+        if self._state == "disabled": return
+        if self._left_click_callback is not None and callable(self._left_click_callback):
+            self._left_click_callback()
+        else:
+            self.set(self._current_value - 1)
 
     def _on_right_click_step(self, event):
-        self.set(self._current_value + 1)
+        if self._state == "disabled": return
+        if self._right_click_callback is not None and callable(self._right_click_callback):
+            self._right_click_callback()
+        else:
+            self.set(self._current_value + 1)
 
     def _on_button_press(self, event):
         self._last_y = event.y
@@ -297,11 +513,13 @@ class sCTkDialSelector(sCTkDialBase):
         if self._state == "disabled": return
         delta_y = self._last_y - event.y
         if abs(delta_y) > 25:
-            self.set(self._current_value + (1 if delta_y > 0 else -1))
+            direction = 1 if delta_y > 0 else -1
+            self.set(self._current_value + direction)
             self._last_y = event.y
 
     def _process_mac_touchpad_scroll(self, event):
         if self._state == "disabled": return "break"
+        import time
         current_time = time.time()
         if current_time - self._last_scroll_time < self._scroll_cooldown_seconds: return "break"
         delta_y = self._decode_mac_touchpad_delta(event.delta)
@@ -320,56 +538,88 @@ class sCTkDialSelector(sCTkDialBase):
             return
         self.set(self._current_value + direction)
 
-import time
 
-
-# =====================================================================
-# MODULE 2: THE HARD END-STOP POTENTIOMETER (RANGED INTERFACE)
-# =====================================================================
 class sCTkDialRange(sCTkDialBase):
     """
     Ranged potentiometer module tracking discrete integer boundaries.
     Enforces absolute dead stops (does not loop at thresholds) and reports absolute integer states.
     """
 
-    def __init__(self, master=None, from_=0, to=100, arc_angle=270, command=None, diameter=120, divisions=5, **kw):
+    def __init__(self, master=None, from_=0, to=100, arc_angle=270, command=None, left_click_callback=None,
+                 right_click_callback=None, diameter=120, divisions=5, **kw):
         self._from = int(from_)
         self._to = int(to)
         self._arc_angle = float(arc_angle)
 
-        # FIXED: Accept an explicit number of scale divisions separate from from/to range indices
         super().__init__(master, divisions=divisions, diameter=diameter, **kw)
         self._command = command
+
+        # Guard: Sanitize empty design-time strings out of initial creation footprint
+        self._left_click_callback = left_click_callback if (
+                    left_click_callback and str(left_click_callback).strip()) else None
+        self._right_click_callback = right_click_callback if (
+                    right_click_callback and str(right_click_callback).strip()) else None
         self._current_value = self._from
 
     def _get_value_fraction(self):
         val_range = self._to - self._from
         return (self._current_value - self._from) / val_range if val_range > 0 else 0.0
 
-    def configure(self, **kwargs):
-        """Unified configuration intercept system."""
-        if "from_" in kwargs or "min_value" in kwargs:
-            self._from = int(kwargs.pop("from_", kwargs.pop("min_value", self._from)))
-        if "to" in kwargs or "max_value" in kwargs:
-            self._to = int(kwargs.pop("to", kwargs.pop("max_value", self._to)))
-        if "arc_angle" in kwargs:
-            self._arc_angle = float(kwargs.pop("arc_angle"))
-        if "command" in kwargs:
-            self._command = kwargs.pop("command")
-        if "divisions" in kwargs:
-            self._divisions = int(kwargs.pop("divisions"))
+    def configure(self, *args, **kwargs):
+        """Unified ranged potentiometer configuration routing."""
+        # Forward positional single-string queries immediately up to the parent base intercept!
+        if args:
+            return super().configure(*args, **kwargs)
 
-        super().configure(**kwargs)
+        if "from_" in kwargs or "min_value" in kwargs:
+            val = kwargs.pop("from_", kwargs.pop("min_value", 0))
+            self._from = int(val) if (val and str(val).strip()) else 0
+        if "to" in kwargs or "max_value" in kwargs:
+            val = kwargs.pop("to", kwargs.pop("max_value", 100))
+            self._to = int(val) if (val and str(val).strip()) else 100
+        if "arc_angle" in kwargs:
+            arc = kwargs.pop("arc_angle")
+            self._arc_angle = float(arc) if (arc and str(arc).strip()) else 270.0
+        if "divisions" in kwargs:
+            divs = kwargs.pop("divisions")
+            self._divisions = int(divs) if (divs and str(divs).strip()) else 5
+
+        if "command" in kwargs:
+            cb = kwargs.pop("command")
+            self._command = cb if (cb and str(cb).strip()) else None
+        if "left_click_callback" in kwargs:
+            cb = kwargs.pop("left_click_callback")
+            self._left_click_callback = cb if (cb and str(cb).strip()) else None
+        if "right_click_callback" in kwargs:
+            cb = kwargs.pop("right_click_callback")
+            self._right_click_callback = cb if (cb and str(cb).strip()) else None
+
+        if "diameter" in kwargs:
+            d_val = kwargs.pop("diameter")
+            if d_val and str(d_val).strip():
+                d = int(d_val)
+            else:
+                d = int(kwargs.get("width", self.cget("width") if hasattr(self, "cget") else 120))
+            kwargs["width"], kwargs["height"] = d, d
+
+        result = super().configure(**kwargs)
+        if self.canvas.winfo_exists():
+            self._draw_dial_base()
+        return result
 
     def cget(self, attribute_name):
+        """Unified attribute state query lookup."""
         if attribute_name in ["from_", "min_value"]: return self._from
         if attribute_name in ["to", "max_value"]: return self._to
         if attribute_name == "arc_angle": return self._arc_angle
         if attribute_name == "command": return self._command
         if attribute_name == "divisions": return self._divisions
+        if attribute_name == "left_click_callback": return self._left_click_callback
+        if attribute_name == "right_click_callback": return self._right_click_callback
         return super().cget(attribute_name)
 
     def set(self, value):
+        """Sets the absolute integer value within hard bounded limits."""
         target = max(self._from, min(self._to, int(value)))
         if target != self._current_value:
             self._current_value = target
@@ -381,10 +631,18 @@ class sCTkDialRange(sCTkDialBase):
         return self._current_value
 
     def _on_left_click_step(self, event):
-        self.set(self._current_value - 5)
+        if self._state == "disabled": return
+        if self._left_click_callback is not None and callable(self._left_click_callback):
+            self._left_click_callback()
+        else:
+            self.set(self._current_value - 1)
 
     def _on_right_click_step(self, event):
-        self.set(self._current_value + 5)
+        if self._state == "disabled": return
+        if self._right_click_callback is not None and callable(self._right_click_callback):
+            self._right_click_callback()
+        else:
+            self.set(self._current_value + 1)
 
     def _on_button_press(self, event):
         self._last_y = event.y
@@ -394,7 +652,7 @@ class sCTkDialRange(sCTkDialBase):
         delta_y = self._last_y - event.y
         if abs(delta_y) > 2:
             direction = 1 if delta_y > 0 else -1
-            self.set(self._current_value + (direction * 2))
+            self.set(self._current_value + direction)
             self._last_y = event.y
 
     def _process_mac_touchpad_scroll(self, event):
@@ -405,81 +663,18 @@ class sCTkDialRange(sCTkDialBase):
         delta_y = self._decode_mac_touchpad_delta(event.delta)
         if delta_y != 0:
             self._last_scroll_time = current_time
-            self.set(self._current_value + (5 if delta_y > 0 else -5))
+            self.set(self._current_value + (1 if delta_y > 0 else -1))
         return "break"
 
     def _process_scroll_wheel(self, event):
         if self._state == "disabled": return
         if getattr(event, "num", 0) == 4 or (hasattr(event, "delta") and event.delta > 0):
-            direction = 5
+            direction = 1
         elif getattr(event, "num", 0) == 5 or (hasattr(event, "delta") and event.delta < 0):
-            direction = -5
+            direction = -1
         else:
             return
         self.set(self._current_value + direction)
-
-
-class sCTkDialContinuous(sCTkDialBase):
-    """Infinite flywheel tuning wheel encoder."""
-    def __init__(self, master=None, divisions=24, command=None, left_click_callback=None, right_click_callback=None, diameter=120, **kw):
-        super().__init__(master, divisions=divisions, diameter=diameter, **kw)
-        self._command = command
-        self._left_click_callback = left_click_callback
-        self._right_click_callback = right_click_callback
-        self._current_value = 0
-
-    def _get_value_fraction(self): return self._current_value / self._divisions
-    def configure(self, **kwargs):
-        if "command" in kwargs: self._command = kwargs.pop("command")
-        if "left_click_callback" in kwargs: self._left_click_callback = kwargs.pop("left_click_callback")
-        if "right_click_callback" in kwargs: self._right_click_callback = kwargs.pop("right_click_callback")
-        super().configure(**kwargs)
-
-    def cget(self, attribute_name):
-        if attribute_name == "command": return self._command
-        if attribute_name == "left_click_callback": return self._left_click_callback
-        if attribute_name == "right_click_callback": return self._right_click_callback
-        return super().cget(attribute_name)
-
-    def set_position_index(self, step_delta):
-        self._current_value = (self._current_value + int(step_delta)) % self._divisions
-        if self.canvas.winfo_exists(): self._draw_dial_base()
-        if self._command is not None and self._state == "normal": self._command(int(step_delta))
-
-    def _on_left_click_step(self, event):
-        if self._state == "disabled": return
-        if self._left_click_callback is not None: self._left_click_callback()
-        else: self.set_position_index(-1)
-
-    def _on_right_click_step(self, event):
-        if self._state == "disabled": return
-        if self._right_click_callback is not None: self._right_click_callback()
-        else: self.set_position_index(1)
-
-    def _on_button_press(self, event): self._last_y = event.y
-    def _on_button_motion(self, event):
-        if self._state == "disabled": return
-        delta_y = self._last_y - event.y
-        if abs(delta_y) > 2:
-            self.set_position_index(1 if delta_y > 0 else -1)
-            self._last_y = event.y
-
-    def _process_mac_touchpad_scroll(self, event):
-        if self._state == "disabled": return "break"
-        current_time = time.time()
-        if current_time - self._last_scroll_time < self._scroll_cooldown_seconds: return "break"
-        delta_y = self._decode_mac_touchpad_delta(event.delta)
-        if delta_y != 0:
-            self._last_scroll_time = current_time
-            self.set_position_index(1 if delta_y > 0 else -1)
-        return "break"
-
-    def _process_scroll_wheel(self, event):
-        if self._state == "disabled": return
-        if getattr(event, "num", 0) == 4 or (hasattr(event, "delta") and event.delta > 0): direction = 1
-        elif getattr(event, "num", 0) == 5 or (hasattr(event, "delta") and event.delta < 0): direction = -1
-        else: return
-        self.set_position_index(direction)
 
 
 # =====================================================================
