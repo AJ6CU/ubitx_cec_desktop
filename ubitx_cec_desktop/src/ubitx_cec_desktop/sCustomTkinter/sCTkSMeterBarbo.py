@@ -34,9 +34,11 @@ class sCTkSMeterBarBO(BuilderObject):
     properties = OPTIONS_CUSTOM
 
     def _process_property_value(self, pname, value):
-        if pname in ("width", "height", "sig_min_value", "sig_max_value", "swr_max_value"):
+        if pname in ("width", "height"):
             return int(value)
-        if pname in ("swr_visible", "pwr_visible", "hide_lower_row"):
+        elif pname in ("sig_min_value", "sig_max_value", "swr_max_value"):
+            return float(value)
+        elif pname in ("swr_visible", "pwr_visible", "hide_lower_row"):
             if value == "True":
                 return True
             else:
@@ -72,21 +74,21 @@ register_custom_property(
 register_custom_property(
     builder_id,
     "sig_min_value",
-    "integernumber",default_value=0,
+    "realnumber",
     help="Smallest value for signal on scale"
 )
 
 register_custom_property(
     builder_id,
     "sig_max_value",
-    "integernumber",default_value=60,
+    "realnumber",
     help="largest value for signal on scale"
 )
 
 register_custom_property(
     builder_id,
     "swr_max_value",
-    "integernumber",default_value=3,
+    "realnumber",
     help="largest value for signal on scale"
 )
 

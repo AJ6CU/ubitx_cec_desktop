@@ -124,9 +124,12 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
             #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
 
             # Map every custom specialized parameter to return a safe baseline tuple
-            if pname in ["sig_max_value", "sig_min_value", "swr_max_value"]:
-                val = getattr(self, f"{pname}", "")
-                return (pname, pname, pname, "", val)
+            if pname in ["sig_max_value", "to"]:
+                return (pname, pname, pname, str(self._default_sig_max_value), str(self.sig_max_value))
+            if pname in ["sig_min_value", "from_"]:
+                return (pname, pname, pname, str(self._default_sig_min_value), str(self.sig_min_value))
+            if pname in ["swr_max_value"]:
+                return (pname, pname, pname, str(self._default_swr_max_value), str(self.swr_max_value))
 
             return super().configure(*args, **kwargs)
 
@@ -155,10 +158,10 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
                 # Only execute float conversion if we have verified a valid numeric text string!
                 self.sig_min_value = float(val)
 
-            # # AUTOMATIC CEILING ALIGNMENT RULE:
-            # # If the new min overlaps or matches the existing max, force min to below max!
-            # if self.sig_min_value >= self.sig_max_value:
-            #     self.sig_min_value = self.sig_max_value - 1
+            # AUTOMATIC CEILING ALIGNMENT RULE:
+            # If the new min overlaps or matches the existing max, force min to below max!
+            if self.sig_min_value >= self.sig_max_value:
+                self.sig_min_value = self.sig_max_value - 1
 
         if "sig_max_value" in kwargs or "to" in kwargs:
             # 1. Safely extract the raw string value out of the dictionary tree
@@ -171,11 +174,15 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
                 # Only execute float conversion if we have verified a valid numeric text string!
                 self.sig_max_value = float(val)
 
+            # AUTOMATIC CEILING ALIGNMENT RULE:
+            # If the new min overlaps or matches the existing max, force min to below max!
+            if self.sig_min_value >= self.sig_max_value:
+                self.sig_max_value = self.sig_min_value + 1
+
 
         if "swr_max_value" in kwargs:
             # 1. Safely extract the raw string value out of the dictionary tree
             val = kwargs.pop("swr_max_value")
-
             # 2. Check if the field was completely erased/deleted in the panel
             if val == "" or (val is not None and not str(val).strip()):
                 self.swr_max_value = self._default_swr_max_value

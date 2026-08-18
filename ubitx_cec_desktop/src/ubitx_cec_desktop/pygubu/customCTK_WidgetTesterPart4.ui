@@ -76,6 +76,13 @@
               <property name="column">2</property>
               <property name="row">0</property>
             </layout>
+            <child>
+              <object class="custom_widgets.sCTkSMeter" id="sctksmeter1">
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
         <child>
