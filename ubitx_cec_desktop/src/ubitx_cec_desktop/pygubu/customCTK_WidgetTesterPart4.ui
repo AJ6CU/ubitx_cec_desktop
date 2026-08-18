@@ -63,7 +63,6 @@
             </layout>
             <child>
               <object class="custom_widgets.sCTkSMeterBar" id="sctksmeterbar1">
-                <property name="hide_lower_row">False</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -77,15 +76,6 @@
               <property name="column">2</property>
               <property name="row">0</property>
             </layout>
-            <child>
-              <object class="custom_widgets.sCTkSMeter" id="sctksmeter1">
-                <property name="sig_max_value">60</property>
-                <property name="sig_min_value">0</property>
-                <layout manager="pack">
-                  <property name="side">top</property>
-                </layout>
-              </object>
-            </child>
           </object>
         </child>
         <child>

@@ -124,8 +124,8 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
             #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
 
             # Map every custom specialized parameter to return a safe baseline tuple
-            if pname in ["sig_max_value", "sig_min_value", "swr_max_value", "command"]:
-                val = getattr(self, f"_{pname}", "")
+            if pname in ["sig_max_value", "sig_min_value", "swr_max_value"]:
+                val = getattr(self, f"{pname}", "")
                 return (pname, pname, pname, "", val)
 
             return super().configure(*args, **kwargs)
@@ -154,6 +154,11 @@ class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
             elif val is not None:
                 # Only execute float conversion if we have verified a valid numeric text string!
                 self.sig_min_value = float(val)
+
+            # # AUTOMATIC CEILING ALIGNMENT RULE:
+            # # If the new min overlaps or matches the existing max, force min to below max!
+            # if self.sig_min_value >= self.sig_max_value:
+            #     self.sig_min_value = self.sig_max_value - 1
 
         if "sig_max_value" in kwargs or "to" in kwargs:
             # 1. Safely extract the raw string value out of the dictionary tree

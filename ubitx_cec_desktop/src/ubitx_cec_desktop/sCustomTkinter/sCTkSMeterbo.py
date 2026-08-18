@@ -34,8 +34,10 @@ class sCTkSMeterBO(BuilderObject):
     properties = OPTIONS_CUSTOM
 
     def _process_property_value(self, pname, value):
-        if pname in ("width", "height", "sig_min_value", "sig_max_value"):
+        if pname in ("width", "height"):
             return int(value)
+        elif pname in ("sig_min_value", "sig_max_value"):
+            return float(value)
         return super()._process_property_value(pname, value)
 
 
@@ -66,14 +68,14 @@ register_custom_property(
 register_custom_property(
     builder_id,
     "sig_min_value",
-    "integernumber",default_value=0,
+    "realnumber",
     help="Smallest value for signal on scale"
 )
 
 register_custom_property(
     builder_id,
     "sig_max_value",
-    "integernumber",default_value=60,
+    "realnumber",
     help="largest value for signal on scale"
 )
 

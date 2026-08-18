@@ -14,7 +14,7 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
     Supports fixed explicit hardware width and height constraint arguments.
     """
 
-    def __init__(self, master=None, sig_min_value=0, sig_max_value=60, width=340, height=130, **kw):
+    def __init__(self, master=None, sig_min_value=5, sig_max_value=55, width=340, height=130, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkSMeter"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
@@ -37,6 +37,14 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         self.sig_max_value = float(sig_max_value)
         self._current_value = self.sig_min_value
 
+        #  Capture default values
+        import inspect
+        sig = inspect.signature(self.__init__)
+        self._default_sig_min_value = sig.parameters['sig_min_value'].default
+        self._default_sig_max_value = sig.parameters['sig_max_value'].default
+        self._default_width = sig.parameters['width'].default
+        self._default_height = sig.parameters['height'].default
+
         # Exact mathematical arc bounds to match the layout curve signature perfectly
         self.start_angle = 38
         self.extent_angle = 104
@@ -58,21 +66,69 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
     # Dynamically forces omitted max parameters back to standard values
     # if alignment thresholds are breached during live reconfigurations!
     # =====================================================================
-    def configure(self, **kwargs):
+    def configure(self, *args, **kwargs):
+        # 1. POSITIONAL INTERCEPT LOOP: Satisfies Pygubu's unset_property() default value queries
+        if args and len(args) == 1:
+            pname = args[0]  # Read the single string property name
+
+            # Map standard frame properties safely
+            if pname == "width":
+                return ('width', 'width', 'Width', self._default_width, self.cget("width"))
+            if pname == "height":
+                return ('height', 'height', 'Height', self._default_height, self.cget("height"))
+            # if pname == "state":
+            #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
+
+            # Map every custom specialized parameter to return a safe baseline tuple
+            if pname in ["sig_max_value", "sig_min_value"]:
+                # val = getattr(self, f"{pname}", "")
+                val = getattr(self, f"{pname}", "")
+                str_val = str(val) if val != "" else ""
+                return (pname, pname, pname, "0.0", str_val)
+                # return (pname, pname, pname, "", val)
+            #
+            return super().configure(*args, **kwargs)
+
+        # 2. STANDARD GEOMETRY SANITIZATION: Catch empty properties deletions live
+        if "width" in kwargs:
+            w = kwargs["width"]
+            kwargs["width"] = int(w) if (w and str(w).strip()) else self._default_width
+        if "height" in kwargs:
+            h = kwargs["height"]
+            kwargs["height"] = int(h) if (h and str(h).strip()) else self._default_height
+
         """Public unified frame layout configuration and parameter update modifiers."""
-        # 1. Pop parameters out safely to shield CustomTkinter
+        # 3. Pop parameters out safely to shield CustomTkinter
         if "sig_min_value" in kwargs or "from_" in kwargs:
             val = kwargs.pop("sig_min_value", kwargs.pop("from_", None))
-            self.sig_min_value = float(val)
+            print(val, type(val))
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self.sig_min_value = self._default_sig_min_value
+            elif val is not None:
+                # Only execute float conversion if we have verified a valid numeric text string!
+                self.sig_min_value = float(val)
 
-            # AUTOMATIC CEILING ALIGNMENT RULE:
-            # If the new min overlaps or matches the existing max, force max to default back to 60.0!
-            if self.sig_min_value >= self.sig_max_value:
-                self.sig_max_value = 60.0
+            # # AUTOMATIC CEILING ALIGNMENT RULE:
+            # # If the new min overlaps or matches the existing max, force min to below max!
+            # if self.sig_min_value >= self.sig_max_value:
+            #     self.sig_min_value = self.sig_max_value - 1
 
         if "sig_max_value" in kwargs or "to" in kwargs:
+            # 1. Safely extract the raw string value out of the dictionary tree
             val = kwargs.pop("sig_max_value", kwargs.pop("to", None))
-            self.sig_max_value = float(val)
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self.sig_max_value = self._default_sig_max_value
+            elif val is not None:
+                # Only execute float conversion if we have verified a valid numeric text string!
+                self.sig_max_value = float(val)
+
+            # # AUTOMATIC CEILING ALIGNMENT RULE:
+            # # If the new min overlaps or matches the existing max, force min to below max!
+            # if self.sig_min_value >= self.sig_max_value:
+            #     self.sig_max_value = self.sig_min_value + 1
 
         # 2. Pass sanitized geometry tokens down to CustomTkinter core layers
         super().configure(**kwargs)
@@ -80,6 +136,10 @@ class sCTkSMeter(sCTkFrame, ThemeableWidget):
         # 3. Force instant, adaptive structural repaint
         if self.canvas.winfo_exists():
             self._draw_meter()
+
+
+
+
 
     def cget(self, attribute_name):
         """Public operational register attribute getter lookups."""
