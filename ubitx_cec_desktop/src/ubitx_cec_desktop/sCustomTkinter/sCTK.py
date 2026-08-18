@@ -30,6 +30,7 @@ import sCTkDialogCorebo
 import sCTkSeparatorbo
 import sCTkSMeterbo
 import sCTkBarSMeterbo
+import sCTkDialbo
 
 
 import sCTkWidgetSetPlugin

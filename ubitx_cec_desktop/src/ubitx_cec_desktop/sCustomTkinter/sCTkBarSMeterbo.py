@@ -41,6 +41,7 @@ class sCTkBarSMeterBO(BuilderObject):
                 return True
             else:
                 return False
+
         return super()._process_property_value(pname, value)
 
 
@@ -92,14 +93,16 @@ register_custom_property(
 register_custom_property(
     builder_id,
     "swr_visible",
-    "choice",values=("","True","False"),
+    "choice",values=("True","False"),
+    default_value="True",
     help="Controls the visability of the SWR meter"
 )
 
 register_custom_property(
     builder_id,
     "pwr_visible",
-    "choice",values=("","True","False"),
+    "choice",values=("True","False"),
+    default_value="True",
     help="Controls the visability of the SWR meter"
 )
 
@@ -107,7 +110,8 @@ register_custom_property(
 register_custom_property(
     builder_id,
     "hide_lower_row",
-    "choice",values=("","True","False"),
+    "choice",values=("True","False"),
+    default_value="False",
     help="Hides the PWR/SWR if True"
 )
 

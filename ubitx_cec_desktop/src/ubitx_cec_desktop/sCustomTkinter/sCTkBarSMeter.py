@@ -15,7 +15,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
     Supports complete runtime visibility toggles and fading states for lower instrument clusters.
     """
 
-    def __init__(self, master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0,
+    def __init__(self, master=None, sig_min_value=0, sig_max_value=60, swr_max_value=5.0,
                  swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw):
         theme_defaults = THEME_DEFAULTS["sCTkBarSMeter"]
 
@@ -39,6 +39,18 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         self.sig_min_value = float(sig_min_value)
         self.sig_max_value = float(sig_max_value)
         self.swr_max_value = float(swr_max_value)
+
+        #  Capture default values
+        import inspect
+        sig = inspect.signature(self.__init__)
+        self._default_sig_min_value = sig.parameters['sig_min_value'].default
+        self._default_sig_max_value = sig.parameters['sig_max_value'].default
+        self._default_swr_max_value = sig.parameters['swr_max_value'].default
+        self._default_swr_visible = bool(sig.parameters['swr_visible'].default)
+        self._default_pwr_visible = bool(sig.parameters['pwr_visible'].default)
+        self._default_hide_lower_row = bool(sig.parameters['hide_lower_row'].default)
+        self._default_width = sig.parameters['width'].default
+        self._default_height = sig.parameters['height'].default
 
         # Dynamic visibility state parameters
         self._swr_visible = bool(swr_visible)
@@ -98,21 +110,107 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
     # =====================================================================
     # CONFIGURATION ROUTER AND POP-GUARD INTERCEPTS
     # =====================================================================
-    def configure(self, **kwargs):
+    def configure(self, *args, **kwargs):
+        # 1. POSITIONAL INTERCEPT LOOP: Satisfies Pygubu's unset_property() default value queries
+        if args and len(args) == 1:
+            pname = args[0]  # Read the single string property name
+
+            # Map standard frame properties safely
+            if pname == "width":
+                return ('width', 'width', 'Width', self._default_width, self.cget("width"))
+            if pname == "height":
+                return ('height', 'height', 'Height', self._default_height, self.cget("height"))
+            if pname == "state":
+                return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
+
+            # Map every custom specialized parameter to return a safe baseline tuple
+            if pname in ["sig_max_value", "sig_min_value", "swr_max_value", "command"]:
+                val = getattr(self, f"_{pname}", "")
+                return (pname, pname, pname, "", val)
+
+            return super().configure(*args, **kwargs)
+
+        # 2. STANDARD GEOMETRY SANITIZATION: Catch empty properties deletions live
+        if "width" in kwargs:
+            w = kwargs["width"]
+            kwargs["width"] = int(w) if (w and str(w).strip()) else self._default_width
+        if "height" in kwargs:
+            h = kwargs["height"]
+            kwargs["height"] = int(h) if (h and str(h).strip()) else self._default_height
+
+        # 3. OPERATIONAL STATE SANITIZATION: Clean standard operational states safely
+        if "state" in kwargs:
+            st = kwargs.pop("state")
+            self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
+
         """Public configuration modifier mapping live updates directly into active variables."""
         if "sig_min_value" in kwargs or "from_" in kwargs:
-            self.sig_min_value = float(kwargs.pop("sig_min_value", kwargs.pop("from_", self.sig_min_value)))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("sig_min_value", kwargs.pop("from_", None))
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self.sig_min_value = self._default_sig_min_value
+            elif val is not None:
+                # Only execute float conversion if we have verified a valid numeric text string!
+                self.sig_min_value = float(val)
+
         if "sig_max_value" in kwargs or "to" in kwargs:
-            self.sig_max_value = float(kwargs.pop("sig_max_value", kwargs.pop("to", self.sig_max_value)))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("sig_max_value", kwargs.pop("to", None))
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self.sig_max_value = self._default_sig_max_value
+            elif val is not None:
+                # Only execute float conversion if we have verified a valid numeric text string!
+                self.sig_max_value = float(val)
+
+
         if "swr_max_value" in kwargs:
-            self.swr_max_value = float(kwargs.pop("swr_max_value"))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("swr_max_value")
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self.swr_max_value = self._default_swr_max_value
+            elif val is not None:
+                # Only execute float conversion if we have verified a valid numeric text string!
+                self.swr_max_value = float(val)
+
 
         if "swr_visible" in kwargs:
-            self._swr_visible = bool(kwargs.pop("swr_visible"))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("swr_visible")
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self._swr_visible = self._default_swr_visible
+            elif val is not None:
+                # Only execute string conversion if we have verified a valid numeric text string!
+                self._swr_visible = bool(val)
+
         if "pwr_visible" in kwargs:
-            self._pwr_visible = bool(kwargs.pop("pwr_visible"))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("pwr_visible")
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self._pwr_visible = self._default_pwr_visible
+            elif val is not None:
+                # Only execute string conversion if we have verified a valid numeric text string!
+                self._pwr_visible = bool(val)
+
         if "hide_lower_row" in kwargs:
-            self._hide_lower_row = bool(kwargs.pop("hide_lower_row"))
+            # 1. Safely extract the raw string value out of the dictionary tree
+            val = kwargs.pop("hide_lower_row")
+
+            # 2. Check if the field was completely erased/deleted in the panel
+            if val == "" or (val is not None and not str(val).strip()):
+                self._hide_lower_row = self._default_hide_lower_row
+            elif val is not None:
+                # Only execute string conversion if we have verified a valid numeric text string!
+                self._hide_lower_row = bool(val)
 
         super().configure(**kwargs)
         if self.canvas.winfo_exists():

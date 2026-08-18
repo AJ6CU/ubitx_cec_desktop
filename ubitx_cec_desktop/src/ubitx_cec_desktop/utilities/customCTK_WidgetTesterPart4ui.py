@@ -72,12 +72,12 @@ class customCTK_WidgetTesterPart4UI:
         sctkframe6.configure(bg_color="green")
         sctkbarsmeter1 = sCTkBarSMeter(sctkframe6)
         sctkbarsmeter1.configure(
-            hide_lower_row=False,
-            pwr_visible=True,
+            hide_lower_row=True,
+            pwr_visible=False,
             sig_max_value=60,
             sig_min_value=0,
             swr_max_value=5,
-            swr_visible=True)
+            swr_visible=False)
         sctkbarsmeter1.pack(expand=True, fill="x", side="top")
         sctkframe6.grid(column=1, row=0)
         sctkframe1 = sCTkFrame(ctkframe1)
@@ -93,8 +93,7 @@ class customCTK_WidgetTesterPart4UI:
         sctkframe2.grid(column=0, row=1)
         sctkframe3 = sCTkFrame(ctkframe1)
         sctkdialselector1 = sCTkDialSelector(sctkframe3)
-        sctkdialselector1.configure(
-            diameter=150, labels="one, two, three, four")
+        sctkdialselector1.configure(diameter=150)
         sctkdialselector1.pack(side="top")
         sctkdialselector1.configure(command=self.selector_CB)
         sctkframe3.grid(column=1, row=1)

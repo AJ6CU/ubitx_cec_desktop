@@ -22,7 +22,6 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkDialbo.py" />
     </customwidgets>
     <resources />
   </project>
