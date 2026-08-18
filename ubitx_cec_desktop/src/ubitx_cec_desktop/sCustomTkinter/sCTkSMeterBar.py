@@ -7,7 +7,7 @@ from ThemeableWidget import ThemeableWidget
 from sCTkThemes import THEME_DEFAULTS
 
 
-class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
+class sCTkSMeterBar(sCTkFrame, ThemeableWidget):
     """
     A standalone, low-profile horizontal discrete LED segment bar widget displaying
     simultaneous, independent tracks for incoming S-Units and transmitter SWR ratio levels.
@@ -17,7 +17,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
 
     def __init__(self, master=None, sig_min_value=0, sig_max_value=60, swr_max_value=5.0,
                  swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw):
-        theme_defaults = THEME_DEFAULTS["sCTkBarSMeter"]
+        theme_defaults = THEME_DEFAULTS["sCTkSMeterBar"]
 
         # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
         ThemeableWidget.__init__(self, theme_defaults, kw)
@@ -90,7 +90,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
 
     def _update_theme_colors(self):
         """Wipes and paint fresh layout parameters using locked device accents."""
-        theme_map = THEME_DEFAULTS["sCTkBarSMeter"]
+        theme_map = THEME_DEFAULTS["sCTkSMeterBar"]
         bg_color = self._resolve_color(theme_map.get("fg_color"))
         self.canvas.configure(bg=bg_color)
         self._draw_meter()
@@ -120,8 +120,8 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
                 return ('width', 'width', 'Width', self._default_width, self.cget("width"))
             if pname == "height":
                 return ('height', 'height', 'Height', self._default_height, self.cget("height"))
-            if pname == "state":
-                return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
+            # if pname == "state":
+            #     return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
 
             # Map every custom specialized parameter to return a safe baseline tuple
             if pname in ["sig_max_value", "sig_min_value", "swr_max_value", "command"]:
@@ -139,9 +139,9 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
             kwargs["height"] = int(h) if (h and str(h).strip()) else self._default_height
 
         # 3. OPERATIONAL STATE SANITIZATION: Clean standard operational states safely
-        if "state" in kwargs:
-            st = kwargs.pop("state")
-            self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
+        # if "state" in kwargs:
+        #     st = kwargs.pop("state")
+        #     self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
 
         """Public configuration modifier mapping live updates directly into active variables."""
         if "sig_min_value" in kwargs or "from_" in kwargs:
@@ -234,7 +234,7 @@ class sCTkBarSMeter(sCTkFrame, ThemeableWidget):
         if width < 10 or height < 10:
             return
 
-        theme_map = THEME_DEFAULTS["sCTkBarSMeter"]
+        theme_map = THEME_DEFAULTS["sCTkSMeterBar"]
         bg_color = self._resolve_color(theme_map.get("fg_color"))
         amber_color = self._resolve_color(theme_map.get("text_color"))
         red_color = self._resolve_color(theme_map.get("alarm_color"))
@@ -440,7 +440,7 @@ import customtkinter as ctk
 
 
 # Cross-module import reference tracking your standalone LED component file
-# from sCTkBarSMeter import sCTkBarSMeter
+# from sCTkSMeterBar import sCTkSMeterBar
 
 class HarnessSimulator:
     def __init__(self, master_root, bar_meter):
@@ -521,7 +521,7 @@ if __name__ == "__main__":
     panel_container.pack(padx=20, pady=15, fill="both", expand=True)
 
     # Mount Core Piece: The Custom Horizontal LED Bar Segment S/SWR/PWR-Meter
-    led_bar_gauge = sCTkBarSMeter(panel_container, width=340, height=110)
+    led_bar_gauge = sCTkSMeterBar(panel_container, width=340, height=110)
     led_bar_gauge.pack(pady=15)
 
 

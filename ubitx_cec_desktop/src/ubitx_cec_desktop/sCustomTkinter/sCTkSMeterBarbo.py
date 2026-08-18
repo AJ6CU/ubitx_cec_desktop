@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-sCTkBarSMeter
+sCTkSMeterBar
 
 Pygubu Builder Object for a bar style s-meter, pwr and swr.
 """
@@ -14,20 +14,20 @@ from pygubu.api.v1 import (
 )
 
 # Import the native custom class
-from sCTkBarSMeter import sCTkBarSMeter
+from sCTkSMeterBar import sCTkSMeterBar
 from sCTkFrame import sCTkFrame
 
 #
 # Builder definition section
 #
-widget_namespace = "sCTkBarSMeter"
-widget_classname = "sCTkBarSMeter"
+widget_namespace = "sCTkSMeterBar"
+widget_classname = "sCTkSMeterBar"
 builder_namespace = "custom_widgets"
 section_name = "sCustomTkinter"
 
 
-class sCTkBarSMeterBO(BuilderObject):
-    class_ = sCTkBarSMeter
+class sCTkSMeterBarBO(BuilderObject):
+    class_ = sCTkSMeterBar
 
     # Expose custom compound parameters alongside theme state configurations
     OPTIONS_CUSTOM = ("width", "height", "sig_min_value", "sig_max_value", "swr_max_value", "swr_visible", "pwr_visible", "hide_lower_row")
@@ -48,7 +48,7 @@ class sCTkBarSMeterBO(BuilderObject):
 # Register the widget into Pygubu's parsing engine
 builder_id = f"{builder_namespace}.{widget_classname}"
 
-register_widget(builder_id, sCTkBarSMeterBO, 'sCTkBarSMeter', ("ttk", section_name))
+register_widget(builder_id, sCTkSMeterBarBO, 'sCTkSMeterBar', ("ttk", section_name))
 
 
 

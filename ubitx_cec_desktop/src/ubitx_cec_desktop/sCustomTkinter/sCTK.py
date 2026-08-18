@@ -29,7 +29,7 @@ import sCTkDialogCorebo
 # import sCTkSelectorbo
 import sCTkSeparatorbo
 import sCTkSMeterbo
-import sCTkBarSMeterbo
+import sCTkSMeterBarbo
 import sCTkDialbo
 
 

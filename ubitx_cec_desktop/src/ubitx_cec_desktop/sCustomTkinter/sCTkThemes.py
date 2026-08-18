@@ -691,7 +691,7 @@ THEME_DEFAULTS = {
         "needle_color": ("#112A4B", "#FF9100")    # Deep Navy Pointer / Glowing Orange Pointer
     },
 
-    "sCTkBarSMeter": {
+    "sCTkSMeterBar": {
         # Light Mode: Clean White Face | Dark Mode: Deep Cockpit Black
         "fg_color": ("#FFFFFF", "#0A0A0A"),
 

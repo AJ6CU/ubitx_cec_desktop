@@ -7,10 +7,10 @@ just tests each widget
 UI source file: customCTK_WidgetTesterPart4.ui
 """
 from customtkinter import (CTk, CTkFrame)
-from sCTkBarSMeter import sCTkBarSMeter
 from sCTkDial import (sCTkDialContinuous, sCTkDialRange, sCTkDialSelector)
 from sCTkFrame import sCTkFrame
 from sCTkSMeter import sCTkSMeter
+from sCTkSMeterBar import sCTkSMeterBar
 from sCTkTableview import sCTkTableview
 
 
@@ -70,15 +70,9 @@ class customCTK_WidgetTesterPart4UI:
         sctkframe5.grid(column=0, row=0)
         sctkframe6 = sCTkFrame(ctkframe1)
         sctkframe6.configure(bg_color="green")
-        sctkbarsmeter1 = sCTkBarSMeter(sctkframe6)
-        sctkbarsmeter1.configure(
-            hide_lower_row=True,
-            pwr_visible=False,
-            sig_max_value=60,
-            sig_min_value=0,
-            swr_max_value=5,
-            swr_visible=False)
-        sctkbarsmeter1.pack(expand=True, fill="x", side="top")
+        sctksmeterbar1 = sCTkSMeterBar(sctkframe6)
+        sctksmeterbar1.configure(hide_lower_row=False, pwr_visible=False)
+        sctksmeterbar1.pack(side="top")
         sctkframe6.grid(column=1, row=0)
         sctkframe1 = sCTkFrame(ctkframe1)
         sctksmeter1 = sCTkSMeter(sctkframe1)
