@@ -88,37 +88,30 @@ class sCTkDialSelectorBO(BuilderObject):
     container = False
 
     OPTIONS_STANDARD = ("width", "height", "state")
-    OPTIONS_CUSTOM = ("diameter", "arc_angle","command", "left_click_callback", "right_click_callback" ) #  # Note: Labels handles lists, which are usually initialized in code
+    OPTIONS_CUSTOM = ("diameter", "arc_angle","command", "left_click_callback", "right_click_callback", "labels" ) #  # Note: Labels handles lists, which are usually initialized in code
     properties = OPTIONS_STANDARD + OPTIONS_CUSTOM
     command_properties = ("command", "left_click_callback", "right_click_callback")
 
-    # def _process_property_value(self, name, value):
-    #     if name == 'labels':
-    #         print("labels:", value)
-    #         mylist = value.split(",")
-    #         print(mylist, type(mylist))
-    #         if not value or not str(value).strip(): return []
-    #         mylist = [col.strip() for col in str(value).split(',') if col.strip()]
-    #         print(mylist)
-    #         return mylist
-    #         # return [col.strip() for col in str(value).split(',') if col.strip()]
-    #     if value is None or str(value).strip() == "":
-    #         return None
-    #     if name in ("width", "height", "diameter", "arc_angle"):
-    #         return int(str(value).strip())
-    #     return str(value)
+    def _process_property_value(self, name, value):
+        if name == 'labels':
+            return value.split(",")
+        return value
 
     def realize(self, parent, *args, **kwargs):
-        """Streamlined Pygubu Selector Lifecycle Intercept."""
+        """
+        Streamlined Pygubu Selector Lifecycle Intercept.
+        Calculates symmetrical geometry footprints safely using the wmeta table
+        and lets the widget handle configuration changes natively on instantiation.
+        """
         props_map = self.wmeta.properties if hasattr(self, "wmeta") else {}
         diameter_val = props_map.get("diameter", None)
 
-        # Calculate target boundary box footprint with design fallbacks
+        # Calculate target square boundary box sizes with active design fallbacks
         w = int(diameter_val) if (diameter_val and str(diameter_val).strip()) else 120
         self.wmeta.properties["width"] = str(w)
         self.wmeta.properties["height"] = str(w)
 
-        # Call the core engine to instantiate the widget using standard xml properties
+        # Instantiate the widget natively through Pygubu's master compilation loop
         widget = super().realize(parent, *args, **kwargs)
         return widget
 
@@ -163,5 +156,5 @@ register_custom_property(id_selector, "arc_angle", "naturalnumber", default_valu
 register_custom_property(id_selector, "command", "commandentry", help="Callback for knob turn by mousewheel.")
 register_custom_property(id_selector, "left_click_callback", "commandentry", help="Callback for left mouse click.")
 register_custom_property(id_selector, "right_click_callback", "commandentry", help="Callback for right mouse click.")
-# register_custom_property(id_selector, "labels", "entry", help="Labels for dial in format 'label1', 'label2' ")
+register_custom_property(id_selector, "labels", "entry", help="Labels for dial in format 'label1', 'label2' ")
 

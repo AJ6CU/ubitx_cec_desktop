@@ -86,10 +86,12 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
     def configure(self, *args, **kwargs):
         """
         Unified Parent Class Property Intercept.
-        Catches Pygubu-Designer unset_property positional lookups early, and
-        safely strips out the 'state' argument to protect the underlying CTkFrame layer.
+        Catches Pygubu-Designer unset_property positional lookups early to prevent
+        CustomTkinter from choking on un-mapped single string tuple description queries.
         """
-        # 1. Handle single-string positional metadata lookups for Pygubu's unset loops
+        # 1. FIXED FOR SELECTOR PROPERTY RESET CRASHES:
+        # If Pygubu queries a property name to find its default value on erasure,
+        # return a valid 5-element standard Tkinter metadata tuple to keep Pygubu happy!
         if args and len(args) == 1:
             pname = args[0]
 
@@ -103,9 +105,15 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
             if pname == "state":
                 return ('state', 'state', 'State', 'normal', getattr(self, "_state", "normal"))
 
+            # FIXED: If Pygubu requests the default state for the labels tracking array list,
+            # forcefully feed it a clean comma-separated text string representation!
+            if pname == "labels":
+                return ('labels', 'labels', 'Labels', "POS 1, POS 2, POS 3",
+                        ", ".join(getattr(self, "_labels", ["POS 1", "POS 2", "POS 3"])))
+
             # Map custom specialized attributes safely
-            if pname in ["diameter", "divisions", "arc_angle", "from_", "to", "labels", "command",
-                         "left_click_callback", "right_click_callback"]:
+            if pname in ["diameter", "divisions", "arc_angle", "from_", "to", "command", "left_click_callback",
+                         "right_click_callback"]:
                 return (pname, pname, pname, "", "")
 
             # Fallback path if any other unexpected property slips down the chain
@@ -122,14 +130,12 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
             h = kwargs["height"]
             kwargs["height"] = int(h) if (h and str(h).strip()) else 120
 
-        # 3. FIXED CRASH SHIELD FOR STATE ATTR:
-        # We must use .pop() to entirely pull 'state' out of kwargs!
-        # This stops it from ever being passed to CustomTkinter's base CTkFrame engine.
+        # STANDARD OPERATIONAL STATE SANITIZATION: Wiping state maps back onto normal
         if "state" in kwargs:
             st = kwargs.pop("state")
             self._state = str(st).strip().lower() if (st and str(st).strip()) else "normal"
 
-        # Forward remaining sanitized configurations safely up to the parent engine
+        # Forward remaining sanitized configurations up down CustomTkinter's private channels
         return super().configure(**kwargs)
 
     def cget(self, attribute_name):
@@ -141,63 +147,63 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
     def _draw_dial_base(self):
         """
         Polymorphic Vector Drawing Engine.
-        Dynamically adjusts graphics, colors, angular sweeps, and indicator pointer
-        styles depending on whether a Selector, Range, or Continuous module is calling it.
+        Self-corrects dimensional lookups and forcefully synchronizes
+        subdivision array states to ensure text labels and dial markings
+        never clip off-screen when wiped inside Pygubu-Designer.
         """
         self.canvas.delete("all")
+
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
-
-        # FIXED DESIGNER FALLBACK:
-        # If running inside Pygubu's preview manager loops and winfo returns zero,
-        # fallback directly to the diameter layout property setting to force rendering visible!
         if width < 10 or height < 10:
-            width = int(getattr(self, "width", 120))
+            width = int(self.cget("width") if hasattr(self, "cget") else 120)
             height = width
 
         child_classname = self.__class__.__name__
-        theme_map = THEME_DEFAULTS.get(child_classname, THEME_DEFAULTS["sCTkDial"])
 
-        bg_color = self._resolve_color(theme_map.get("fg_color"))
-        shadow_paint = self._resolve_color(theme_map.get("shadow_color"))
+        # Enforce baseline fallback options if stylesheets or dictionaries are unmapped
+        try:
+            from sCTkThemes import THEME_DEFAULTS
+            theme_map = THEME_DEFAULTS.get(child_classname, THEME_DEFAULTS.get("sCTkDial", {}))
+        except Exception:
+            theme_map = {}
+
+        bg_color = self._resolve_color(theme_map.get("fg_color", ("#F1F5F9", "#0A0A0A")))
+        shadow_paint = self._resolve_color(theme_map.get("shadow_color", ("#CBD5E1", "#02040A")))
+        text_color = self._resolve_color(theme_map.get("text_color", ("#1A4375", "#FF9100")))
+        dial_color = self._resolve_color(theme_map.get("dial_color", ("#1E293B", "#181E2B")))
         is_dark_mode = (ctk.get_appearance_mode() == "Dark")
 
         if self._state == "disabled":
-            text_color = self._resolve_color(theme_map.get("disabled_text_color"))
-            dial_color = self._resolve_color(theme_map.get("disabled_dial_color"))
-            pointer_glow = self._resolve_color(
-                theme_map.get("disabled_dimple_glow", theme_map.get("disabled_text_color")))
+            text_color = self._resolve_color(theme_map.get("disabled_text_color", ("#94A3B8", "#4B5563")))
+            dial_color = self._resolve_color(theme_map.get("disabled_dial_color", ("#E2E8F0", "#1A1D24")))
+            pointer_glow = self._resolve_color(theme_map.get("disabled_dimple_glow", ("#CBD5E1", "#334155")))
         else:
-            text_color = self._resolve_color(theme_map.get("text_color"))
-            dial_color = self._resolve_color(theme_map.get("dial_color"))
             pointer_glow = self._resolve_color(("#CBD5E1", "#3A455C"))
 
         self.canvas.configure(bg=bg_color)
 
         center_x = width / 2
         center_y = height / 2
-        max_radius = min(center_x, center_y) - 6
-
-        # FIXED: Increased buffer subtraction from -20 to -28 to safely draw
-        # perimeter text text indicators fully inside the Canvas viewport mask box!
         knob_radius = min(center_x, center_y) - 28
 
         has_arc_constraints = hasattr(self, "_arc_angle")
-        if has_arc_constraints:
-            arc_sweep = float(self._arc_angle)
-            start_deg = -90.0 - (arc_sweep / 2.0)
-        else:
-            arc_sweep = 360.0
-            start_deg = 0.0
+        arc_sweep = float(self._arc_angle) if has_arc_constraints else 360.0
+        start_deg = -90.0 - (arc_sweep / 2.0) if has_arc_constraints else 0.0
 
-        # Evaluate distinct grid mark channels
+        # FIXED FOR CACHED DELETIONS: Forceful sync check of tick tracking arrays
         if child_classname == "sCTkDialSelector" and hasattr(self, "_labels"):
+            # Enforce fallbacks if labels became an empty string array list node
+            if not self._labels or len(self._labels) == 0:
+                self._labels = list(getattr(self, "_default_labels", ["POS 1", "POS 2", "POS 3"]))
             total_ticks = len(self._labels)
+            self._divisions = total_ticks  # Force sync state tracker variable
         elif child_classname == "sCTkDialRange" and hasattr(self, "_divisions"):
-            total_ticks = self._divisions
+            total_ticks = int(self._divisions) if (self._divisions and int(self._divisions) > 0) else 5
         else:
-            total_ticks = self._divisions
+            total_ticks = int(self._divisions) if (hasattr(self, "_divisions") and self._divisions) else 24
 
+        # Draw scales and text elements
         for i in range(total_ticks):
             if total_ticks > 1 and has_arc_constraints:
                 fraction = i / (total_ticks - 1)
@@ -214,12 +220,14 @@ class sCTkDialBase(sCTkFrame, ThemeableWidget):
 
             self.canvas.create_line(x1, y1, x2, y2, fill=text_color, width=2.0)
 
-            if child_classname == "sCTkDialSelector" and hasattr(self, "_labels") and i < len(self._labels):
+            if child_classname == "sCTkDialSelector" and i < len(self._labels):
                 tx = center_x + (knob_radius + 18) * math.cos(angle_rad)
                 ty = center_y - (knob_radius + 18) * math.sin(angle_rad)
                 self.canvas.create_text(tx, ty, text=str(self._labels[i]), fill=text_color, font=("Arial", 9, "bold"))
             elif child_classname == "sCTkDialRange":
-                range_val = int(self._from + (self._to - self._from) * fraction)
+                from_val = getattr(self, "_from", 0)
+                to_val = getattr(self, "_to", 100)
+                range_val = int(from_val + (to_val - from_val) * fraction)
                 tx = center_x + (knob_radius + 18) * math.cos(angle_rad)
                 ty = center_y - (knob_radius + 18) * math.sin(angle_rad)
                 self.canvas.create_text(tx, ty, text=str(range_val), fill=text_color, font=("Arial", 9, "bold"))
@@ -408,10 +416,20 @@ class sCTkDialSelector(sCTkDialBase):
 
     def __init__(self, master=None, labels=None, arc_angle=270, command=None, left_click_callback=None,
                  right_click_callback=None, diameter=120, **kw):
-        self._labels = labels if labels is not None else ["POS 1", "POS 2", "POS 3"]
+        if isinstance(labels, str) and labels.strip():
+            try:
+                import ast
+                labels = ast.literal_eval(labels.strip())
+            except Exception:
+                labels = [x.strip().strip("'\"") for x in labels.strip()[1:-1].split(",")]
+
+        # FIXED: Capture your core original defaults baseline natively
+        self._default_labels = ["POS 1", "POS 2", "POS 3"]
+        self._labels = labels if labels is not None else list(self._default_labels)
         self._arc_angle = float(arc_angle)
 
         super().__init__(master, divisions=len(self._labels), diameter=diameter, **kw)
+
         self._scroll_cooldown_seconds = 0.150
         self._command = command
 
@@ -427,29 +445,37 @@ class sCTkDialSelector(sCTkDialBase):
         return self._current_value / total_steps if total_steps > 0 else 0.0
 
     def configure(self, *args, **kwargs):
-        """Unified switch selector configuration routing."""
-        # Forward positional single-string queries immediately up to the parent base intercept!
+        """Unified switch selector configuration routing supporting comma-separated property strings."""
+        # 1. Forward positional single-string queries immediately up to the parent base intercept
         if args:
             return super().configure(*args, **kwargs)
 
         if "labels" in kwargs:
             lbls = kwargs.pop("labels")
-            self._labels = lbls if lbls else ["CW", "USB", "LSB", "AM", "FM", "RTTY"]
+
+            # 2. COMMA SEPARATED PARSING LAYER: Cleanly strip brackets/quotes and split on commas
+            if isinstance(lbls, str):
+                stripped_lbls = lbls.strip().strip("[]\"'")
+                if stripped_lbls:
+                    lbls = [x.strip() for x in stripped_lbls.split(",")]
+                else:
+                    lbls = list(getattr(self, "_default_labels", ["POS 1", "POS 2", "POS 3"]))
+
+            # 3. CLEARANCE EXCEPTION GUARD: If wiped out completely, snap straight back to defaults
+            if lbls is None or lbls == "" or len(lbls) == 0:
+                self._labels = list(getattr(self, "_default_labels", ["POS 1", "POS 2", "POS 3"]))
+            else:
+                self._labels = lbls
+
             self._divisions = len(self._labels)
 
         if "arc_angle" in kwargs:
             arc = kwargs.pop("arc_angle")
             self._arc_angle = float(arc) if (arc and str(arc).strip()) else 270.0
 
-        if "command" in kwargs:
-            cb = kwargs.pop("command")
-            self._command = cb if (cb and str(cb).strip()) else None
-        if "left_click_callback" in kwargs:
-            cb = kwargs.pop("left_click_callback")
-            self._left_click_callback = cb if (cb and str(cb).strip()) else None
-        if "right_click_callback" in kwargs:
-            cb = kwargs.pop("right_click_callback")
-            self._right_click_callback = cb if (cb and str(cb).strip()) else None
+        if "command" in kwargs: self._command = kwargs.pop("command")
+        if "left_click_callback" in kwargs: self._left_click_callback = kwargs.pop("left_click_callback")
+        if "right_click_callback" in kwargs: self._right_click_callback = kwargs.pop("right_click_callback")
 
         if "diameter" in kwargs:
             d_val = kwargs.pop("diameter")
@@ -459,6 +485,7 @@ class sCTkDialSelector(sCTkDialBase):
                 d = int(kwargs.get("width", self.cget("width") if hasattr(self, "cget") else 120))
             kwargs["width"], kwargs["height"] = d, d
 
+        # Re-routes cleanly into sCTkDialBase.configure()
         result = super().configure(**kwargs)
         if self.canvas.winfo_exists():
             self._draw_dial_base()
