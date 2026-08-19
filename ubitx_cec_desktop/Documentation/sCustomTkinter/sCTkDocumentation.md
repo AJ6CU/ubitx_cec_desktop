@@ -736,14 +736,12 @@ The `sCTkSMeter` is a classical analog S-Meter/Output for a Ham Radio Transceive
 ## 📋 API Constructor Reference
 
 ```python
-sCTkSMeter(master=None, sig_min_value=0, sig_max_value=15, width=340, height=130, **kw)
+sCTkSMeter(master=None, width=340, height=130, **kw)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
 | `master` | `any` | `None` | Reference pointer tracking your root window or parent `sCTkFrame` container layout layer. |
-| `sig_min_value` | `int` / `float` | `0` | The raw input number mapping to the absolute left floor (**S0**) of the upper `SIGNAL` arc track. |
-| `sig_max_value` | `int` / `float` | `15` | The raw input number mapping to the absolute right ceiling (**+60dB**) of the upper `SIGNAL` arc track. |
 | `width` | `int` | `340` | Manual hardware panel horizontal width boundary tracking profile measured in pixels. |
 | `height` | `int` | `130` | Manual hardware panel vertical height boundary tracking profile measured in pixels. |
 
@@ -755,13 +753,9 @@ To drive the meter pointer sweep dynamics smoothly inside background tracking th
 
 ### Update Instrument Needle Value
 ```python
-# Updates pointer positioning (Expects numeric ranges between sig_min_value and sig_max_value)
+# Updates pointer positioning 
 smeter.set(value)
 ```
-
-* **Note:** Values dropping below `sig_min_value` or crossing past `sig_max_value` will automatically be clamped tightly to the track minimum/maximum thresholds to safeguard the visual rendering matrix from canvas clipping errors.
-
----
 
 ## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
 
@@ -795,14 +789,12 @@ The `sCTkBarSMeter` is a standalone, low-profile horizontal discrete LED segment
 ## 📋 API Constructor Reference
 
 ```python
-sCTkBarSMeter(master=None, sig_min_value=0, sig_max_value=15, swr_max_value=5.0, swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw)
+sCTkBarSMeter(master=None, swr_max_value=5.0, swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
 | `master` | `any` | `None` | Reference pointer tracking your root window or parent `sCTkFrame` container layout layer. |
-| `sig_min_value` | `int` / `float` | `0` | The raw input number mapping to the absolute left floor (**S0**) of the upper `SIG` (Signal Strength) track. |
-| `sig_max_value` | `int` / `float` | `15` | The raw input number mapping to the absolute right ceiling (**+60dB**) of the upper `SIG` (Signal Strength) track. |
 | `swr_max_value` | `int` / `float` | `5.0` | The explicit maximum scale boundary representing the far right edge limit tracking your transmitter's SWR track. |
 | `swr_visible` | `bool` | `True` | Visibility flag for the SWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |
 | `pwr_visible` | `bool` | `True` | Visibility flag for the PWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |

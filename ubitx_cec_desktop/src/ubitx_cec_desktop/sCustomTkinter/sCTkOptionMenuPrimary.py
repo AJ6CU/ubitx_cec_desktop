@@ -32,6 +32,60 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
         # Initialize CustomTkinter with the clean final kwargs array securely
         super().__init__(master, **self.final_kw)
 
+    def configure(self, *args, **kwargs):
+        """Processes Pygubu designer workspace queries and manages theme state updates cleanly."""
+        # -----------------------------------------------------------------
+        # ZONE A: POSITION INTERCEPT (Feeds values to Pygubu Inspector)
+        # -----------------------------------------------------------------
+        if args and len(args) == 1:
+            pname = args[0]
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(super().cget("state")))
+
+            if pname in ["fg_color", "button_color", "button_hover_color", "text_color"]:
+                current_state = str(super().cget("state")).lower()
+                if current_state == "disabled" and self._custom_disabled_map:
+                    val = self._custom_disabled_map.get(pname)
+                else:
+                    val = self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+
+            return super().configure(*args, **kwargs)
+
+        # -----------------------------------------------------------------
+        # ZONE C: STATE CONTROLLER (Swaps colors safely based on current mode)
+        # -----------------------------------------------------------------
+        if "state" in kwargs:
+            target_state = str(kwargs["state"]).lower()
+
+            if target_state == "disabled" and self._custom_disabled_map:
+                # Apply explicit disabled map values from sCTkThemes
+                kwargs["fg_color"] = self._custom_disabled_map.get("fg_color")
+                kwargs["button_color"] = self._custom_disabled_map.get("button_color")
+                kwargs["button_hover_color"] = self._custom_disabled_map.get("button_color")
+                kwargs["text_color"] = self._custom_disabled_map.get("text_color")
+
+            elif target_state in ["normal", "active"]:
+                # Revert to normal active brand colors (No hardwired fallbacks!)
+                # Strictly uses keys from your local defaults dictionary to enforce a hard stop if broken
+                kwargs["fg_color"] = self._local_defaults["fg_color"]
+                kwargs["button_color"] = self._local_defaults["button_color"]
+                kwargs["button_hover_color"] = self._local_defaults["button_hover_color"]
+                kwargs["text_color"] = self._local_defaults["text_color"]
+
+        # ZONE D: EXECUTE BASE CLASS INITIALIZATION (Do not pop 'state' - native widget needs it)
+        return super().configure(**kwargs)
+
+    def state(self, state_string=None):
+        """Standard Tkinter state management mapping helper."""
+        if state_string is not None:
+            self.configure(state=state_string)
+        return str(super().cget("state")).lower()
+
+    def get_state(self):
+        """Explicit getter synchronized with your standalone test harness script assertions."""
+        return self.state()
+
     def update_list(self, new_values: list, default_index: int = 0):
         """Safely updates the items list and resets the visible value."""
         if not new_values:
