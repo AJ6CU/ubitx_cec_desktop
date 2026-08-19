@@ -4,6 +4,7 @@ from sCTkThemes import THEME_DEFAULTS
 from sCTkLabelPrimary import sCTkLabelPrimary
 from sCTkLabelSecondary import sCTkLabelSecondary
 from sCTkScrollableFrame import sCTkScrollableFrame
+from ThemeableWidget import ThemeableWidget
 
 
 class sCTkTableview(sCTkScrollableFrame):
@@ -12,19 +13,36 @@ class sCTkTableview(sCTkScrollableFrame):
                  outline_width: float = 1.0, outline_radius: int = 4, state: Literal["normal", "disabled"] = "normal",
                  num_columns: int = 3, num_rows: int = 1, show_headers: Any = True,
                  cell_bg_color: Optional[Any] = None, cell_alt_bg_color: Optional[Any] = None, *args, **kwargs):
-        self.final_kw = THEME_DEFAULTS.get("sCTkTableview", THEME_DEFAULTS.get("sCTkTableView", {}))
-        self._header_bg = self.final_kw.get("header_bg_color", ("#E2E8F0", "#1E293B"))
-        self._header_fg = self.final_kw.get("header_text_color", ("#0F172A", "#F8FAFC"))
-        self._header_font = self.final_kw.get("header_font", ("Arial", 14, "bold"))
 
-        self._cell_bg = cell_bg_color if cell_bg_color is not None else self.final_kw.get("cell_bg_color",
-                                                                                          ("#FFFFFF", "#111827"))
-        self._cell_alt_bg = cell_alt_bg_color if cell_alt_bg_color is not None else self.final_kw.get(
-            "cell_alt_bg_color", ("#D1DCEE", "#222C3A"))
-        self._cell_fg = self.final_kw.get("cell_text_color", ("#1E293B", "#E2E8F0"))
-        self._cell_font = self.final_kw.get("cell_font", ("Arial", 13, "normal"))
-        self._grid_line_color = self.final_kw.get("grid_line_color", ("#CBD5E1", "#334155"))
+        theme_config = THEME_DEFAULTS.get("sCTkTableview", THEME_DEFAULTS.get("sCTkTableView", {}))
 
+        # 1. BIND OBJECT SCOPE EARLY
+        self._local_defaults = theme_config
+        self._custom_disabled_map = theme_config.get("disabled_map", {})
+
+        # 2. RUN SHARED THEME LOGIC FIRST: Populates self.final_kw and strips disabled sub-dicts
+        ThemeableWidget.__init__(self, theme_config, kwargs)
+
+        # 3. LEAN PURGE: Remove unmapped behavioral tokens from self.final_kw
+        # Shields the parent sCTkScrollableFrame class initialization layers
+        self.final_kw.pop("state", None)
+        self.final_kw.pop("grid_mode", None)
+        self.final_kw.pop("show_headers", None)
+        self.final_kw.pop("num_rows", None)
+        self.final_kw.pop("num_columns", None)
+
+        # 4. ASSIGN LOCAL THEME METRICS (Will strictly raise a KeyError hard stop if broken inside themes!)
+        self._header_bg = self.final_kw["header_bg_color"]
+        self._header_fg = self.final_kw["header_text_color"]
+        self._header_font = self.final_kw["header_font"]
+
+        self._cell_bg = cell_bg_color if cell_bg_color is not None else self.final_kw["cell_bg_color"]
+        self._cell_alt_bg = cell_alt_bg_color if cell_alt_bg_color is not None else self.final_kw["cell_alt_bg_color"]
+        self._cell_fg = self.final_kw["cell_text_color"]
+        self._cell_font = self.final_kw["cell_font"]
+        self._grid_line_color = self.final_kw["grid_line_color"]
+
+        # 5. INITIALIZE TRACKING FIELDS
         self._grid_mode = str(grid_mode).replace("'", "").replace('"', "").strip().lower()
         self._header_line_width = int(header_line_width) if header_line_width is not None else 2
         self._outline_width = float(outline_width) if outline_width else 1.0
@@ -38,9 +56,11 @@ class sCTkTableview(sCTkScrollableFrame):
         self._data_matrix, self._cell_widgets, self._header_widgets = [], [], []
         kwargs["border_width"], kwargs["corner_radius"], kwargs["scrollbar_fg_color"] = 0, 0, self._cell_bg
 
+        # 6. INITIALIZE NATIVE BASE LAYER (Passes pure remaining keyword keys down cleanly)
         super().__init__(master=master, width=width, height=height, *args, **kwargs)
         super().configure(border_width=0, corner_radius=0, fg_color=self._cell_bg)
 
+        # ... (The rest of your widget packing and layout generation logic remains completely untouched below) ...
         self.table_outline_frame = ctk.CTkFrame(self, fg_color=self._grid_line_color, border_width=self._outline_width,
                                                 border_color=self._grid_line_color, corner_radius=self._outline_radius)
         self.table_outline_frame.grid(row=0, column=0, sticky="nw", padx=1, pady=1)
@@ -54,13 +74,15 @@ class sCTkTableview(sCTkScrollableFrame):
         else:
             self.columns_list = [""] * self._num_columns
 
-        # ✅ FIXED CONSTRUCTOR LIST INITIALIZATION ARRAYS
         self._column_widths = [120] * self._num_columns
         self._column_anchors = ["center"] * self._num_columns
         self._click_callback, self._edit_callback, self._validation_callback = None, None, None
 
         self._create_header_bar()
         self.load_dataset([[""] * self._num_columns for _ in range(self._num_rows)])
+
+        # Defer initial state to your configure loop so it sets the grid components to 'disabled' on launch if requested
+        self.configure(state=state)
 
     def _create_header_bar(self):
         for w in self._header_widgets:
@@ -217,20 +239,48 @@ class sCTkTableview(sCTkScrollableFrame):
         if self._edit_callback and self._data_matrix[r_idx][c_idx] == val: self._edit_callback(r_idx, c_idx, val)
 
     def configure(self, require_redraw=False, **kwargs):
+        """Processes Pygubu designer workspace queries and manages composite state updates."""
+
+        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
+        if require_redraw is not None and not kwargs and isinstance(require_redraw, str):
+            pname = require_redraw
+            mapping = {
+                "state": ("state", "state", "state", "normal", str(getattr(self, "_state", "normal"))),
+                "grid_mode": ("grid_mode", "grid_mode", "grid_mode", "zebra",
+                              str(getattr(self, "_grid_mode", "zebra"))),
+                "show_headers": ("show_headers", "show_headers", "show_headers", "True",
+                                 str(getattr(self, "_show_headers", True)))
+            }
+            if pname in mapping:
+                return mapping[pname]
+            if pname in ["num_columns", "num_rows", "header_line_width"]:
+                return (pname, pname, pname, "0", str(getattr(self, f"_{pname}", 0)))
+
+            return super().configure(require_redraw)
+
+        if isinstance(require_redraw, dict):
+            kwargs.update(require_redraw)
+            require_redraw = False
+
         rebuild_layout = False
 
+        # ZONE B: SANITIZATION & LAYOUT MODIFICATIONS
         if "cell_bg_color" in kwargs:
             self._cell_bg = kwargs.pop("cell_bg_color")
             rebuild_layout = True
+
         if "cell_alt_bg_color" in kwargs:
             self._cell_alt_bg = kwargs.pop("cell_alt_bg_color")
             rebuild_layout = True
+
         if "num_columns" in kwargs:
             self._num_columns = int(kwargs.pop("num_columns"))
             rebuild_layout = True
+
         if "num_rows" in kwargs:
             self._num_rows = int(kwargs.pop("num_rows"))
             rebuild_layout = True
+
         if "show_headers" in kwargs:
             val = kwargs.pop("show_headers")
             self._show_headers = val if isinstance(val, bool) else (str(val).lower() in ("true", "1", "yes"))
@@ -271,12 +321,85 @@ class sCTkTableview(sCTkScrollableFrame):
             self._create_header_bar()
 
             target_rows = len(self._data_matrix) if (
-                        hasattr(self, "_data_matrix") and len(self._data_matrix) > 0) else self._num_rows
+                    hasattr(self, "_data_matrix") and len(self._data_matrix) > 0) else self._num_rows
             if target_rows < self._num_rows:
                 target_rows = self._num_rows
 
             self.load_dataset([[""] * self._num_columns for _ in range(target_rows)])
 
+        # -----------------------------------------------------------------
+        # ZONE C: STATE CONTROLLER MANAGEMENT (Cascades state to cells & parent layout)
+        # -----------------------------------------------------------------
+        if "state" in kwargs:
+            # Safely capture state string variable continuously across all execution rings
+            self._state = str(kwargs.get("state")).lower()
+
+            # Pulls the master table dictionary block directly to preserve your hard-stops!
+            table_theme = THEME_DEFAULTS.get("sCTkTableview", THEME_DEFAULTS.get("sCTkTableView", {}))
+            theme_primary = THEME_DEFAULTS["sCTkLabelPrimary"]
+            theme_secondary = THEME_DEFAULTS["sCTkLabelSecondary"]
+
+            if self._state == "disabled":
+                # Swap internal rendering flags to match your disabled styling profiles
+                # Strictly references keys without soft defaults to force a hard stop if broken!
+                self._header_bg = theme_primary.get("disabled_map", {}).get("fg_color") or table_theme[
+                    "header_bg_color"]
+                self._header_fg = theme_primary["disabled_map"]["text_color"]
+
+                self._cell_bg = theme_secondary.get("disabled_map", {}).get("fg_color") or table_theme["cell_bg_color"]
+                self._cell_alt_bg = theme_secondary.get("disabled_map", {}).get("fg_color") or table_theme[
+                    "cell_alt_bg_color"]
+                self._cell_fg = theme_secondary["disabled_map"]["text_color"]
+
+                if "grid_line_color" in table_theme:
+                    disabled_map = table_theme.get("disabled_map", {})
+                    self._grid_line_color = disabled_map.get("grid_line_color") or table_theme["grid_line_color"]
+            else:
+                # Revert completely back to your pure operational table database values
+                self._header_bg = table_theme["header_bg_color"]
+                self._header_fg = table_theme["header_text_color"]
+                self._cell_bg = table_theme["cell_bg_color"]
+                self._cell_alt_bg = table_theme["cell_alt_bg_color"]
+                self._cell_fg = table_theme["cell_text_color"]
+                self._grid_line_color = table_theme["grid_line_color"]
+
+            # 1. SAFE TIMING FILTER: Update outline and grid borders safely without rebuilding fonts
+            if hasattr(self, "table_outline_frame") and self.table_outline_frame:
+                self.table_outline_frame.configure(fg_color=self._grid_line_color, border_color=self._grid_line_color)
+
+            # 2. FIXED: Cascade parameters to the separate header widgets array list!
+            if hasattr(self, "_header_widgets") and self._header_widgets:
+                for header_cell in self._header_widgets:
+                    if hasattr(header_cell, "configure"):
+                        if self._state == "disabled":
+                            header_cell.configure(text_color=self._header_fg)
+                        else:
+                            header_cell.configure(text_color=table_theme["header_text_color"])
+
+                        if hasattr(header_cell, "_update_appearance"):
+                            header_cell._update_appearance()
+
+            # 3. Cascade parameters to the EXISTING active rendered data row sub-cells
+            if hasattr(self, "_cell_widgets") and self._cell_widgets:
+                for row_idx, row in enumerate(self._cell_widgets):
+                    for col_idx, cell in enumerate(row):
+                        if hasattr(cell, "configure"):
+                            # Select text colors using your verified class tracking attributes
+                            if self._state == "disabled":
+                                cell.configure(text_color=self._cell_fg)
+                                # Freeze text input entry elements cleanly via 'readonly' rules to preserve text readability
+                                if hasattr(cell, "_entry") or "entry" in str(type(cell)).lower():
+                                    cell.configure(state="readonly")
+                            else:
+                                cell.configure(text_color=table_theme["cell_text_color"])
+                                if hasattr(cell, "_entry") or "entry" in str(type(cell)).lower():
+                                    cell.configure(state="normal")
+
+                            # Force the text layout to refresh its graphics inside the canvas window context
+                            if hasattr(cell, "_update_appearance"):
+                                cell._update_appearance()
+
+        # ZONE D: EXECUTE BASE CLASS INITIALIZATION (Preserves state key for parent scrollframe tracking)
         super().configure(require_redraw=require_redraw, **kwargs)
 
     def get_num_rows(self) -> int:
@@ -321,7 +444,7 @@ if __name__ == "__main__":
     cols = ["Channel Label", "Frequency (MHz)", "Mode", "Station Name"]
 
     # Initialize your table view module cleanly (Pass state="normal" or state="disabled" to test lock modes)
-    table = sCTkTableview(border_capsule, columns=cols, grid_mode="grid", header_line_width=3, outline_width=1.5,
+    table = sCTkTableview(border_capsule, columns=cols, grid_mode="zebra", header_line_width=3, outline_width=1.5,
                           outline_radius=6, state="normal")
     table.pack(padx=10, pady=(10, 10), fill="both", expand=True)
 
@@ -357,5 +480,6 @@ if __name__ == "__main__":
     table.bind_validation_callback(validate_table_cell_changes)
     table.bind_selection_callback(lambda r, vals: print(f"📡 Clicked Row: {r} -> {vals}"))
     table.bind_edit_callback(lambda r, c, val: print(f"📝 Persistent Data Saved ({r}, {c}) -> '{val}'"))
+    table.configure(state="disabled")
 
     root.mainloop()

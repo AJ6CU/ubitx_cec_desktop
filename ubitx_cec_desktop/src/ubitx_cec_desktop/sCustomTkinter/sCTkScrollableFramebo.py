@@ -39,6 +39,13 @@ container_layout = False
 class sCTkScrollableFrameBO(CTkScrollableFrameBO):
     class_ = sCTkScrollableFrame
 
+    OPTIONS_CUSTOM = ('state',)
+    properties = CTkScrollableFrameBO.properties + OPTIONS_CUSTOM
+
+    OPTIONS_CUSTOM_DEFAULTS = {
+        'state': 'normal'
+    }
+
     def code_imports(self):
         # should return an iterable of (module, classname/function) to import
         # or None
@@ -46,11 +53,11 @@ class sCTkScrollableFrameBO(CTkScrollableFrameBO):
         imports.extend(self.code_extra_imports())
         return imports
 
-
 builder_id = f"{builder_namespace}.{widget_classname}"
 register_widget(
     builder_id, sCTkScrollableFrameBO, widget_classname, ("ttk", section_name)
 )
+
 
 # Copy properties before we define our own properties.
 #
@@ -61,3 +68,9 @@ for pname in CTkScrollableFrameBO.properties:
         copy_custom_property(nsctk.CTkScrollableFrame, pname, builder_id)
     except:
         pass
+
+# -----------------------------------------------------------------
+# EXPOSE CUSTOM 'STATE' CHANNELS INSIDE PYGUBU DESIGNER PANEL
+# -----------------------------------------------------------------
+# 1. Define the UI element type mapping definitions
+register_custom_property(builder_id,"state", "choice", values=("normal", "disabled"))

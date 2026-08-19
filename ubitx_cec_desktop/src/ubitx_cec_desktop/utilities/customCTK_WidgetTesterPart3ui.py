@@ -179,6 +179,7 @@ class customCTK_WidgetTesterPart3UI:
         framelabeledprimary6.bind("<MouseWheel>", self.callback, add="")
         sctkscrollableframe1 = sCTkScrollableFrame(
             ctkframe1, orientation="vertical")
+        sctkscrollableframe1.configure(state="disabled")
         sctkcheckbox2 = sCTkCheckBox(sctkscrollableframe1)
         sctkcheckbox2.configure(text='sctkcheckbox2')
         sctkcheckbox2.pack(side="top")
@@ -264,16 +265,12 @@ class customCTK_WidgetTesterPart3UI:
         sctkframe3 = sCTkFrame(ctkframe1)
         sctkselector1 = sCTkSelector(sctkframe3)
         sctkselector1.configure(
-            grid_propagate=False,
-            height=300,
             items=[
                 'apple',
                 'pear',
                 'orange'],
             multiple_choices=True,
-            pack_propagate=False,
-            state='normal',
-            width=400)
+            state='normal')
         sctkselector1.pack(expand=True, fill="x", side="top")
         sctkframe3.grid(column=1, row=2)
         sctkframe4 = sCTkFrame(ctkframe1)

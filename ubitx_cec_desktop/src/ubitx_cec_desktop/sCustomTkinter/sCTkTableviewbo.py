@@ -5,7 +5,6 @@ from pygubu.api.v1 import (
     register_custom_property
 )
 from sCTkTableview import sCTkTableview
-# RACKING_ID = "sCTkTableview"
 
 widget_namespace = "sCTkTableview"
 widget_classname = "sCTkTableview"
@@ -20,13 +19,6 @@ class sCTkTableviewBO(BuilderObject):
     load and evaluate BEFORE the string column parser executes!
     """
     class_ = sCTkTableview
-    # WIDGET_TAG = builder_id
-    # import_modules = ['sCTkTableview']
-    # builder_id = builder_id
-    #
-    # Builder definition section
-    #
-
 
     # 📐 Structural options declared first, layout payload definitions placed dead last!
     OPTIONS_CUSTOM = ('num_columns', 'num_rows', 'grid_mode', 'show_headers', 'header_line_width', 'outline_width',
@@ -77,6 +69,9 @@ class sCTkTableviewBO(BuilderObject):
         args['num_rows'] = int(w_props.get('num_rows') if w_props.get('num_rows') else 1)
         args['grid_mode'] = str(w_props.get('grid_mode') if w_props.get('grid_mode') else "zebra")
 
+        # FIXED: Pass state down during rebuild instantiation passes!
+        args['state'] = str(w_props.get('state') if w_props.get('state') else "normal")
+
         raw_cols = w_props.get('columns')
         if raw_cols:
             args['columns'] = self._process_property_value('columns', raw_cols)
@@ -85,13 +80,32 @@ class sCTkTableviewBO(BuilderObject):
         args['show_headers'] = self._process_property_value('show_headers', w_props.get('show_headers') or True)
         return args
 
+    def _set_property(self, backend_widget, pname, value):
+        """Intercepts and forces live visual canvas property redraw updates instantly."""
+        if pname in self.OPTIONS_CUSTOM:
+            processed_val = self._process_property_value(pname, value)
+            backend_widget.configure(**{pname: processed_val})
+        else:
+            super()._set_property(backend_widget, pname, value)
+
     def set_property(self, name, value):
-        super().set_property(name, value)
-        if hasattr(self, "builder") and hasattr(self.builder, "recreate_widget"):
-            try:
-                self.builder.recreate_widget(self)
-            except Exception:
-                pass
+        # 1. Update the runtime property backing variables
+        if hasattr(self, 'wmeta') and hasattr(self.wmeta, 'properties'):
+            self.wmeta.properties[name] = value
+
+        # 2. Call our custom _set_property to handle real-time color repainting on the active canvas object
+        if hasattr(self, 'widget') and self.widget:
+            self._set_property(self.widget, name, value)
+
+        # 3. FIXED: Force full visual object recreation on layout structural edits OR state swaps
+        # to ensure Pygubu-Designer forces a total clean redrawing window sync pass!
+        if name in ('num_columns', 'num_rows', 'columns', 'show_headers', 'state', 'grid_mode'):
+            if hasattr(self, "builder") and hasattr(self.builder, "recreate_widget"):
+                try:
+                    self.builder.recreate_widget(self)
+                except Exception:
+                    pass
+
 
     def code_get_configure_properties(self, code_identifier, entry):
         return []

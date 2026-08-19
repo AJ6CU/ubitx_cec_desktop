@@ -65,7 +65,8 @@ class customCTK_WidgetTesterPart4UI:
             header_line_width=4,
             num_columns=3,
             num_rows=8,
-            show_headers=True)
+            show_headers=True,
+            state="disabled")
         sctktableview1.pack(side="top")
         sctkframe5.grid(column=0, row=0)
         sctkframe6 = sCTkFrame(ctkframe1)
