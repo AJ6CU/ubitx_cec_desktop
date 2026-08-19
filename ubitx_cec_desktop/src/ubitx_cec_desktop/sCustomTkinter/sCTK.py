@@ -21,7 +21,7 @@ import sCTkScrollbarbo
 import sCTkSegmentedButtonbo
 import sCTkSliderbo
 import sCTkSwitchbo
-# import sCTkTabviewbo
+import sCTkTabviewbo
 import sCTkScrollableFramebo
 # import sCTkFramebo
 # import sCTkPathChooserbo

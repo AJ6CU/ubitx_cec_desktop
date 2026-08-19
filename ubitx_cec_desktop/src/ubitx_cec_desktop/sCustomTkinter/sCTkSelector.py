@@ -20,23 +20,29 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
         """Selector widgets to select options in a list of options.
         Includes a search bar to find different elements faster.
         """
-        # 1. FIXED: Extract and clear ALL custom designer parameters from kwargs immediately
+        # 1. SANITIZE RUNTIME ARGUMENTS: Strip unmanaged properties out of kwargs immediately
         # This completely shields the parent CTkFrame from invalid keyword errors on startup
         state_init = kwargs.pop("state", "normal")
         pack_prop_init = kwargs.pop("pack_propagate", None)
         grid_prop_init = kwargs.pop("grid_propagate", None)
 
-        # 2. Initialize ThemeableWidget safely using the cleaned kwargs dictionary
+        # 2. MERGE THEMES: Initialize ThemeableWidget safely using the cleaned kwargs dictionary
         theme_config = THEME_DEFAULTS.get("sCTkSelector", {})
+
+        # FIXED: Store dictionary references safely onto instance memory BEFORE configure runs
+        self._local_defaults = theme_config
+        self._custom_disabled_map = theme_config.get("disabled_map", {})
+
         ThemeableWidget.__init__(self, theme_config, kwargs)
 
         fg_color = self.final_kw.get("fg_color", "transparent")
 
-        # 3. FIXED: Remove custom parameters from self.final_kw just in case
-        # they were pulled out of THEME_DEFAULTS config dictionary
-        self.final_kw.pop("state", None)
-        self.final_kw.pop("pack_propagate", None)
-        self.final_kw.pop("grid_propagate", None)
+        # # 3. LEAN PURGE: Remove only custom behavioral parameters from self.final_kw
+        # # just in case they were pulled out of the THEME_DEFAULTS config dictionary.
+        # # (No need to pop items or multiple_choices here since they were never in the theme files!)
+        # self.final_kw.pop("state", None)
+        # self.final_kw.pop("pack_propagate", None)
+        # self.final_kw.pop("grid_propagate", None)
 
         # 4. Call the parent sCTkFrame constructor safely
         super().__init__(master, **self.final_kw)
@@ -114,10 +120,47 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
         """
         import ast
 
+        # -----------------------------------------------------------------
+        # ZONE A: POSITION INTERCEPT (Satisfies Pygubu Inspector panel queries)
+        # -----------------------------------------------------------------
+        # If Pygubu passes a single positional string, intercept and return the meta-tuple
+        if cnf is not None and not kwargs and isinstance(cnf, str):
+            pname = cnf
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(getattr(self, "state", "normal")))
+            if pname == "multiple_choices":
+                return ("multiple_choices", "multiple_choices", "multiple_choices", "True", str(self.multiple_choices))
+            if pname == "items":
+                # Returns the current checklist text elements as a string format
+                current_items = [cb.cget("text") for cb in self.checkboxes] if hasattr(self, "checkboxes") else []
+                return ("items", "items", "items", "[]", str(current_items))
+            if pname in ["pack_propagate", "grid_propagate"]:
+                return (pname, pname, pname, "None", str(getattr(self, f"_{pname}_val", None)))
+            if pname in ["fg_color", "border_color", "text_color"]:
+                current_state = str(getattr(self, "state", "normal")).lower()
+                if current_state == "disabled" and self._widget_disabled_map:
+                    val = self._widget_disabled_map.get(pname)
+                else:
+                    val = self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+
+            return super().configure(cnf)
+
+        # Handle Pygubu dictionary-style passes or unify arguments into standard kwargs
+        if isinstance(cnf, dict):
+            kwargs.update(cnf)
+
+        # -----------------------------------------------------------------
+        # ZONE B: SANITIZATION INTERCEPTOR (Your Precise Checkbox & Option Physics)
+        # -----------------------------------------------------------------
         # 1. Intercept and route list modifications cleanly
         if "items" in kwargs:
             items_val = kwargs.pop("items")
-            if isinstance(items_val, str):
+
+            # Handle empty/cleared field erasures from Pygubu gracefully
+            if items_val == "" or items_val is None:
+                items_val = []
+            elif isinstance(items_val, str):
                 try:
                     items_val = ast.literal_eval(items_val)
                 except Exception:
@@ -142,13 +185,20 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
 
         if "multiple_choices" in kwargs:
             mult_val = kwargs.pop("multiple_choices")
-            if isinstance(mult_val, str):
+            if mult_val == "" or mult_val is None:
+                mult_val = True
+            elif isinstance(mult_val, str):
                 mult_val = str(mult_val).lower() in ['true', '1', 'yes']
             self.multiple_choices = mult_val
 
         # 2. Intercept and apply the state configuration property with your disabled_map theme settings
         if "state" in kwargs:
             target_state = kwargs.pop("state")
+            if target_state == "" or target_state is None:
+                target_state = "normal"
+            else:
+                target_state = str(target_state).lower()
+
             if target_state in ("normal", "disabled"):
                 self.state = target_state
                 disabled_text_color = self._widget_disabled_map.get("text_color", None)
@@ -157,60 +207,81 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
                     self.search_bar.configure(state=self.state)
                     if self.state == "disabled" and disabled_text_color:
                         self.search_bar.configure(text_color=disabled_text_color)
+                    elif self.state == "normal":
+                        # FIXED: Extract text color parameters directly from the inner
+                        # text component's local defaults instead of the parent composite frame!
+                        # This enforces a hard stop crash if the theme file configuration is broken.
+                        entry_defaults = THEME_DEFAULTS.get("sCTkEntryPrimary", {})
+                        self.search_bar.configure(text_color=entry_defaults["text_color"])
 
                 if hasattr(self, "checkboxes"):
                     for checkbox in self.checkboxes:
                         checkbox.configure(state=self.state)
                         if self.state == "disabled" and disabled_text_color:
                             checkbox.configure(text_color=disabled_text_color)
+                        elif self.state == "normal":
+                            # FIXED: Pull text parameters directly out of the core checkbox configuration
+                            cb_defaults = THEME_DEFAULTS.get("sCTkCheckBox", {})
+                            checkbox.configure(text_color=cb_defaults["text_color"])
 
         # 3. Safely pop custom propagation fields out before they hit ThemeableWidget parsing
         pack_prop_val = kwargs.pop("pack_propagate", None)
         grid_prop_val = kwargs.pop("grid_propagate", None)
 
-        # 4. Extract theme updates matching ThemeableWidget rules
-        theme_config = THEME_DEFAULTS.get("sCTkSelector", {})
-        ThemeableWidget.__init__(self, theme_config, kwargs)
+        # Save structural tracking configurations for Pygubu queries
+        if pack_prop_val is not None and pack_prop_val != "":
+            setattr(self, "_pack_propagate_val", str(pack_prop_val).lower() in ['true', '1', 'yes'])
+        if grid_prop_val is not None and grid_prop_val != "":
+            setattr(self, "_grid_propagate_val", str(grid_prop_val).lower() in ['true', '1', 'yes'])
+
+        # 4. FIXED: Instead of re-running ThemeableWidget.__init__ (which clears out your theme maps),
+        # selectively update the existing local final_kw configuration dictionary!
+        for k, v in list(kwargs.items()):
+            if k in self._local_defaults:
+                self.final_kw[k] = kwargs.pop(k)
 
         if "fg_color" in self.final_kw:
             new_fg = self.final_kw.get("fg_color")
             if hasattr(self, "checkboxes_frame"):
                 self.checkboxes_frame.configure(fg_color=new_fg)
 
+
         # 5. Resolve layout sizing and fallback default constraints dynamically
         w_val = int(self.final_kw.get("width", 0))
         h_val = int(self.final_kw.get("height", 0))
 
         if w_val > 0 or h_val > 0:
-            use_pack_p = pack_prop_val if pack_prop_val is not None else False
-            use_grid_p = grid_prop_val if grid_prop_val is not None else False
+            use_pack_p = pack_prop_val if pack_prop_val is not None else getattr(self, "_pack_propagate_val", False)
+            use_grid_p = grid_prop_val if grid_prop_val is not None else getattr(self, "_grid_propagate_val", False)
         else:
             self.final_kw["width"] = 200
             self.final_kw["height"] = 150
-            use_pack_p = pack_prop_val if pack_prop_val is not None else True
-            use_grid_p = grid_prop_val if grid_prop_val is not None else True
+            use_pack_p = pack_prop_val if pack_prop_val is not None else getattr(self, "_pack_propagate_val", True)
+            use_grid_p = grid_prop_val if grid_prop_val is not None else getattr(self, "_grid_propagate_val", True)
 
         if isinstance(use_pack_p, str): use_pack_p = use_pack_p.lower() in ['true', '1', 'yes']
         if isinstance(use_grid_p, str): use_grid_p = use_grid_p.lower() in ['true', '1', 'yes']
 
-        self.pack_propagate(use_pack_p)
-        self.grid_propagate(use_grid_p)
+        if use_pack_p is not None: self.pack_propagate(use_pack_p)
+        if use_grid_p is not None: self.grid_propagate(use_grid_p)
 
         if hasattr(self, "checkboxes_frame") and hasattr(self.checkboxes_frame, "_parent_frame"):
-            self.checkboxes_frame._parent_frame.pack_propagate(use_pack_p)
-            self.checkboxes_frame._parent_frame.grid_propagate(use_grid_p)
+            if use_pack_p is not None: self.checkboxes_frame._parent_frame.pack_propagate(use_pack_p)
+            if use_grid_p is not None: self.checkboxes_frame._parent_frame.grid_propagate(use_grid_p)
 
-        # 6. ✅ CRITICAL BULLETPROOF SANITIZATION STEP:
-        # Explicitly scrub ALL custom keys completely from self.final_kw.
-        # This guarantees CustomTkinter never encounters unmapped layout configurations!
-        self.final_kw.pop("items", None)
-        self.final_kw.pop("multiple_choices", None)
+        # 6. ✅ CRITICAL LEAN CLEANUP STEP:
+        # Scrub unmapped layout tokens entirely before passing remaining standard dictionary elements downstream
         self.final_kw.pop("pack_propagate", None)
         self.final_kw.pop("grid_propagate", None)
         self.final_kw.pop("state", None)
 
         # Route standard remaining layout tokens safely to the frame constructor pass
-        return super().configure(cnf, **self.final_kw)
+        # Clean out any leftover empty string keyword values to prevent Tkinter validation crashes
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
+        return super().configure(**kwargs)
 
     def clear_selections(self):
         """ Clears the selections """

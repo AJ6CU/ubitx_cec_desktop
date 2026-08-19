@@ -39,6 +39,10 @@ class sCTkTabview(baseui.sCTkTabviewUI, ThemeableWidget):
         if hasattr(self, "_segmented_button"):
             self._segmented_button.configure(font=target_font)
 
+    def get_state(self):
+        """Explicit getter to return the current composite state string safely."""
+        return str(self.state("state")).lower()
+
     def state(self, mode: str):
         """Dedicated Tabview composite state controller."""
         mode = mode.lower()
@@ -91,6 +95,27 @@ class sCTkTabview(baseui.sCTkTabviewUI, ThemeableWidget):
                         button.configure(text_color=disabled_txt)
 
             self._custom_current_state = "disabled"
+    def bind(self, sequence=None, func=None, add=None):
+        """
+        Intercepts Pygubu-Designer click bindings on the Tabview to prevent
+        CustomTkinter's native NotImplementedError from crashing the workspace.
+        """
+        import tkinter as tk
+        try:
+            # Try falling back directly to standard Tkinter's frame window binding mechanics
+            return tk.Frame.bind(self, sequence, func, add)
+        except Exception:
+            # Safe ultimate bypass if any other background layout manager intercepts fire
+            return ""
+
+    # def winfo_children(self):
+    #     """
+    #     Hides the internal tab frames and segmented buttons from Pygubu's recursive
+    #     previewer scan. Prevents the designer from crawling into child structures
+    #     that raise NotImplementedError.
+    #     """
+    #     # Presenting an empty list stops Pygubu from crawling any deeper into the layout tree
+    #     return []
 
 
 if __name__ == "__main__":

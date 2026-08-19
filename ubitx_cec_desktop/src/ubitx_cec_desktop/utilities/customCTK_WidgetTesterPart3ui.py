@@ -222,8 +222,9 @@ class customCTK_WidgetTesterPart3UI:
         sctkcheckbox4 = sCTkCheckBox(sctkframeoutlined1)
         sctkcheckbox4.configure(state="normal", text='sctkcheckbox4')
         sctkcheckbox4.pack(pady="5 30", side="top")
-        sctkcombobox2 = sCTkComboBox(sctkframeoutlined1)
-        sctkcombobox2.pack(side="top")
+        sctkcombobox4 = sCTkComboBox(sctkframeoutlined1)
+        sctkcombobox4.configure(values=["one", "two", "three"])
+        sctkcombobox4.pack(side="top")
         sctkframeoutlined1.pack(pady="20 0", side="top")
         sctkframe1.grid(column=1, row=1)
         sctkframe2 = sCTkFrame(ctkframe1)
@@ -263,12 +264,16 @@ class customCTK_WidgetTesterPart3UI:
         sctkframe3 = sCTkFrame(ctkframe1)
         sctkselector1 = sCTkSelector(sctkframe3)
         sctkselector1.configure(
+            grid_propagate=False,
+            height=300,
             items=[
                 'apple',
                 'pear',
                 'orange'],
             multiple_choices=True,
-            state='normal')
+            pack_propagate=False,
+            state='normal',
+            width=400)
         sctkselector1.pack(expand=True, fill="x", side="top")
         sctkframe3.grid(column=1, row=2)
         sctkframe4 = sCTkFrame(ctkframe1)
