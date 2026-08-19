@@ -28,62 +28,61 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
 
         theme_defaults = THEME_DEFAULTS["sCTkOptionMenuSecondary"]
 
-        # 2. FIXED: Assign instance memory BEFORE running master parent initializers
+        # 2. Assign instance memory BEFORE running master parent initializers
         self._local_defaults = theme_defaults
         self._custom_disabled_map = theme_defaults.get("disabled_map", {})
 
         # 3. Run shared theme logic safely now that variables exist
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
-        # 4. Initialize the outer bordered container frame layout natively
+        # 4. FIXED: Inject a safe fallback layout width natively into final_kw
+        # before any constructor execution loops can cause an early crash!
+        if "width" not in self.final_kw or self.final_kw["width"] == "":
+            self.final_kw["width"] = 160
+        if "height" not in self.final_kw or self.final_kw["height"] == "":
+            self.final_kw["height"] = 28
+
+        # 5. Initialize the outer bordered container frame layout natively
         super().__init__(master,
+                         width=self.final_kw.get("width"),
+                         height=self.final_kw.get("height"),
                          border_width=self.final_kw.get("border_width"),
                          border_color=self.final_kw.get("border_color"),
                          fg_color=self.final_kw.get("fg_color"),
                          corner_radius=self.final_kw.get("corner_radius"))
-        # super().__init__(master, **self.final_kw)
-        self.final_kw.pop("border_color")
-        self.final_kw.pop("border_width")
 
-        # Force a safe baseline layout width so menu text never clips on small cells
-        if "width" not in self.final_kw:
-            self.configure(width=160)
-        #
-        # # Pass solid dummy colors here to stop CustomTkinter from raising a ValueError!
+        # Clean unmapped layout properties safely
+        self.final_kw.pop("border_color", None)
+        self.final_kw.pop("border_width", None)
+
+        # 6. Pass solid dummy colors here to stop CustomTkinter from raising a ValueError!
         self._menu = ctk.CTkOptionMenu(
             self,
             values=values,
             command=command,
             variable=variable)
-        #     font=self.final_kw.get("font"),
-        #     dropdown_font=self.final_kw.get("dropdown_font"),
-        #     text_color=self.final_kw.get("text_color"),
-        #     fg_color=("gray", "gray"),  # Dummy values to pass validation
-        #     button_color=("gray", "gray"),  # Dummy values to pass validation
-        #     button_hover_color=self.final_kw.get("button_hover_color"),
-        #     dropdown_fg_color=self.final_kw.get("dropdown_fg_color"),
-        #     dropdown_text_color=self.final_kw.get("dropdown_text_color"),
-        #     dropdown_hover_color=self.final_kw.get("dropdown_hover_color"),
-        #     corner_radius=0
-        # )
-        self._menu.pack(expand=True, fill="both", padx=1, pady=1)
-        #
-        # # Reach into the core canvas properties and strip colors post-creation!
-        # # This gives us true transparency without triggering CustomTkinter's type checks.
+
+        self._menu.pack(expand=True, fill="both", padx=2, pady=2)
+
+        # 7. Reach into the core canvas properties and strip colors post-creation!
+        # This gives us true transparency without triggering CustomTkinter's type checks.
         try:
             self._menu.configure(fg_color=self.final_kw.get("fg_color"), button_color=self.final_kw.get("fg_color"))
         except Exception:
-            # Absolute raw fallback to force lookups
-            if hasattr(self._menu, "_canvas"):
+            if hasattr(self._menu, "_canvas") and self._menu._canvas:
                 self._menu._canvas.configure(background="")
 
     def configure(self, *args, **kwargs):
-        """Handles Pygubu queries and manages composite state updates safely."""
-        # 1. POSITION INTERCEPT LOOP: Synchronizes the live Pygubu workspace preview
+        """Handles Pygubu designer queries and manages composite state updates safely."""
+
+        # -----------------------------------------------------------------
+        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
+        # -----------------------------------------------------------------
         if args and len(args) == 1:
-            pname = args
+            pname = args[0]
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
+
             if pname in ["fg_color", "border_color", "text_color"]:
                 current_state = str(self.state()).lower()
                 if current_state == "disabled" and self._custom_disabled_map:
@@ -91,15 +90,30 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
                 else:
                     val = self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
-            return super().configure(*args, **kwargs)
 
-        # 2. KEYWORD SANITIZATION: Handles state-based color swapping dynamically
+            # FIXED: Avoid forwarding unnecessary **kwargs dictionary buffers down to super
+            return super().configure(pname)
+
+        # -----------------------------------------------------------------
+        # ZONE B: SUB-COMPONENT PAYLOAD ROUTING
+        # -----------------------------------------------------------------
+        # Route dropdown values, bindings, or tkVariables directly into the inner widget
+        if "values" in kwargs:
+            self._menu.configure(values=kwargs.pop("values"))
+        if "command" in kwargs:
+            self._menu.configure(command=kwargs.pop("command"))
+        if "variable" in kwargs:
+            self._menu.configure(variable=kwargs.pop("variable"))
+
+        # -----------------------------------------------------------------
+        # ZONE C: STATE CONTROLLER (Apply disabled configurations and cascade parameters)
+        # -----------------------------------------------------------------
         if "state" in kwargs:
-            target_state = str(kwargs["state"]).lower()
+            target_state = str(kwargs.pop("state")).lower()
 
             if target_state == "disabled":
                 self._menu.configure(state="disabled")
-                # Apply disabled colors straight out of your custom map
+                # Apply disabled configurations out of your custom map profile
                 super().configure(
                     border_color=self._custom_disabled_map.get("border_color"),
                     fg_color=self._custom_disabled_map.get("fg_color")
@@ -111,24 +125,28 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
                 )
             elif target_state in ["normal", "enabled", "active"]:
                 self._menu.configure(state="normal")
-                # Restore original active theme colors
+                # FIXED: Strictly reference local default dictionary indices to enforce hard-stops!
+                # If these keys are missing from sCTkThemes, the widget will execute a loud KeyError crash.
                 super().configure(
-                    border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
-                    fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color"))
+                    border_color=self._local_defaults["border_color"],
+                    fg_color=self._local_defaults["fg_color"]
                 )
                 self._menu.configure(
-                    fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
-                    button_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
-                    text_color=self.final_kw.get("text_color", self._local_defaults.get("text_color"))
+                    fg_color=self._local_defaults["fg_color"],
+                    button_color=self._local_defaults["fg_color"],
+                    text_color=self._local_defaults["text_color"]
                 )
 
-            # Pop state to prevent passing unsupported states down to CTkFrame base
-            kwargs.pop("state")
-
+        # -----------------------------------------------------------------
+        # ZONE D: EXECUTE BASE CONTAINER LAYER INITIALIZATION
+        # -----------------------------------------------------------------
         if kwargs:
-            kwargs.pop("values", [""])
-            # kwargs.pop("values")
-            super().configure(**kwargs)
+            # Clean out empty strings passed by backspacing parameters in Pygubu to prevent C-engine validation exceptions
+            for k, v in list(kwargs.items()):
+                if v == "":
+                    kwargs.pop(k)
+            if kwargs:
+                super().configure(**kwargs)
 
     def get_state(self):
         """Explicit getter to return the current composite state string safely."""
@@ -160,29 +178,6 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
 
     def get(self) -> str:
         return self._menu.get()
-
-    # def bind(self, sequence=None, func=None, add=None):
-    #     """
-    #     Intercepts and safely wraps binding requests to prevent CustomTkinter
-    #     from raising a NotImplementedError inside Pygubu-Designer's previewer.
-    #     """
-    #     try:
-    #         # 1. First, attempt to bind to the outer container CTkFrame natively
-    #         return super().bind(sequence, func, add)
-    #     except NotImplementedError:
-    #         # 2. Fallback gracefully to standard Tkinter syntax if CustomTkinter blocks it
-    #         return tk.Frame.bind(self, sequence, func, add)
-    #
-    # def winfo_children(self):
-    #     """
-    #     Hides internal child components from Pygubu-Designer's preview engine.
-    #     This prevents the previewer from recursively binding handlers to
-    #     components that raise a NotImplementedError.
-    #     """
-    #     # Return an empty list so Pygubu treats this as a single atomic element
-    #     return []
-
-
 
 
 if __name__ == "__main__":

@@ -42,6 +42,12 @@ from sCTkSelectorbo import (
     builder_id as sCTkSelector_builder_id
 )
 
+from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
+from sCTkOptionMenuSecondarybo import (
+    sCTkOptionMenuSecondaryBO,
+    builder_id as sCTkOptionMenuSecondary_builder_id
+)
+
 
 # from sCTkDial import sCTkDialContinuous
 # from sCTkDialbo import (
@@ -106,6 +112,18 @@ class sCTkSelectorForPreview(sCTkSelector):
                     clist.append(cwidget._text_label)
                     clist.append(cwidget._canvas)
         return clist
+import sys
+class sCTkOptionMenuSecondaryForPreview(sCTkOptionMenuSecondary):
+    def winfo_children(self):
+        internal = [
+            self._menu,
+        ]
+        clist = []
+        for widget in internal:
+            for cwidget in widget.winfo_children():
+                clist.append(cwidget)
+        return clist
+
 
 # class sCTkDialContinuousForPreview(sCTkDialContinuous):
 #     def winfo_children(self):
@@ -131,6 +149,9 @@ class sCTkTableviewForPreviewBO(sCTkTableviewBO):
 
 class sCTkSelectorForPreviewBO(sCTkSelectorBO):
     class_ = sCTkSelectorForPreview
+
+class sCTkOptionMenuSecondaryForPreviewBO(sCTkOptionMenuSecondaryBO):
+    class_ = sCTkOptionMenuSecondaryForPreview
 #
 # class sCTkDialContinuousForPreviewBO(sCTkSelectorBO):
 #     class_ = sCTkDialContinuousForPreview
@@ -157,6 +178,9 @@ class sCTkPlugin(IDesignerPlugin):
             return sCTkTableviewForPreviewBO
         elif builder_uid == sCTkSelector_builder_id:
             return sCTkSelectorForPreviewBO
+        elif builder_uid == sCTkOptionMenuSecondary_builder_id:
+            return sCTkOptionMenuSecondaryForPreviewBO
+
         # elif builder_uid == sCTkDialContinuous_builder_id:
         #     return sCTkDialContinuousForPreviewBO
         return None
