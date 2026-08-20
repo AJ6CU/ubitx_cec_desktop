@@ -22,6 +22,7 @@
     </settings>
     <customwidgets>
       <customwidget path="../sCustomTkinter/sCTK.py" />
+      <customwidget path="../sCustomTkinter/sCTkSpinboxbo.py" />
     </customwidgets>
     <resources />
   </project>
@@ -95,7 +96,8 @@
             <child>
               <object class="custom_widgets.sCTkDialContinuous" id="sctkdialcontinuous2">
                 <property name="diameter">150</property>
-                <property name="right_click_callback" type="command" cbtype="simple">test</property>
+                <property name="left_click_callback" type="command" cbtype="simple">leftClick_CB</property>
+                <property name="right_click_callback" type="command" cbtype="simple">rightClick_CB</property>
                 <layout manager="pack">
                   <property name="side">top</property>
                 </layout>
@@ -136,6 +138,38 @@
                 </layout>
               </object>
             </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="sctkframe7">
+        <layout manager="pack">
+          <property name="side">left</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkSpinbox" id="sctkspinbox1">
+            <property name="arrow_font_size">36</property>
+            <property name="button_side">split</property>
+            <property name="command" type="command" cbtype="simple">callme</property>
+            <property name="format">%0.4f</property>
+            <property name="from_">1</property>
+            <property name="justify">right</property>
+            <property name="orientation">horizontal</property>
+            <property name="state">normal</property>
+            <property name="step_size">10</property>
+            <property name="textvariable">string:boxvalue_VAR</property>
+            <property name="to">100</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Spinbox" id="spinbox1">
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
           </object>
         </child>
       </object>

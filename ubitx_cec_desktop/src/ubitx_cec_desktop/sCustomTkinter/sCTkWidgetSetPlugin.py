@@ -48,6 +48,12 @@ from sCTkOptionMenuSecondarybo import (
     builder_id as sCTkOptionMenuSecondary_builder_id
 )
 
+from sCTkSpinbox import sCTkSpinbox
+from sCTkSpinboxbo import (
+    sCTkSpinboxBO,
+    builder_id as sCTkSpinbox_builder_id
+)
+
 
 # from sCTkDial import sCTkDialContinuous
 # from sCTkDialbo import (
@@ -124,7 +130,16 @@ class sCTkOptionMenuSecondaryForPreview(sCTkOptionMenuSecondary):
                 clist.append(cwidget)
         return clist
 
-
+class sCTkSpinboxForPreview(sCTkSpinbox):
+    def winfo_children(self):
+        internal = [
+            self.entry
+        ]
+        clist = []
+        for widget in internal:
+            for cwidget in widget.winfo_children():
+                clist.append(cwidget)
+        return clist
 # class sCTkDialContinuousForPreview(sCTkDialContinuous):
 #     def winfo_children(self):
 #         return super(tk.Frame, self).winfo_children()
@@ -152,6 +167,9 @@ class sCTkSelectorForPreviewBO(sCTkSelectorBO):
 
 class sCTkOptionMenuSecondaryForPreviewBO(sCTkOptionMenuSecondaryBO):
     class_ = sCTkOptionMenuSecondaryForPreview
+
+class sCTkSpinboxForPreviewBO(sCTkSpinboxBO):
+    class_ = sCTkSpinboxForPreview
 #
 # class sCTkDialContinuousForPreviewBO(sCTkSelectorBO):
 #     class_ = sCTkDialContinuousForPreview
@@ -180,6 +198,8 @@ class sCTkPlugin(IDesignerPlugin):
             return sCTkSelectorForPreviewBO
         elif builder_uid == sCTkOptionMenuSecondary_builder_id:
             return sCTkOptionMenuSecondaryForPreviewBO
+        elif builder_uid == sCTkSpinbox_builder_id:
+            return sCTkSpinboxForPreviewBO
 
         # elif builder_uid == sCTkDialContinuous_builder_id:
         #     return sCTkDialContinuousForPreviewBO

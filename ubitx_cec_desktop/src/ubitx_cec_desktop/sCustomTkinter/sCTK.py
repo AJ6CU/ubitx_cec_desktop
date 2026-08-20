@@ -7,7 +7,7 @@ import sCTkButtonTertiarybo
 import sCTkEntryPrimarybo
 import sCTkEntrySecondarybo
 import sCTkOptionMenuPrimarybo
-import sCTkOptionMenuSecondarybo
+# import sCTkOptionMenuSecondarybo
 import sCTkLabelPrimarybo
 import sCTkLabelSecondarybo
 import sCTkLabelTertiarybo

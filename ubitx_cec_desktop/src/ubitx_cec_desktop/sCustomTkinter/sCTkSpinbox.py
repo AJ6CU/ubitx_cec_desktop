@@ -1,435 +1,477 @@
-import sys
+#!/usr/bin/python3
+"""
+sCTkSpinbox
+
+A theme-compliant, highly configurable custom spinbox wrapper component.
+"""
 import customtkinter as ctk
-
-# Direct framework path module and theme dictionary registry imports
-from sCTkFrame import sCTkFrame
-from ThemeableWidget import ThemeableWidget
 from sCTkThemes import THEME_DEFAULTS
+from ThemeableWidget import ThemeableWidget
+from sCTkEntryPrimary import sCTkEntryPrimary
 
 
-class sCTkSpinbox(sCTkFrame, ThemeableWidget):
-    """
-    A theme-adaptive numerical spinbox component mirroring standard ttk.Spinbox behaviors.
-    Features vertical stacked arrow adjustments, text validation filters, and boundary wrapping.
-    Strictly resources parameters from the central registry with zero local design defaults.
-    """
-
+class sCTkSpinbox(ctk.CTkFrame, ThemeableWidget):
     def __init__(self, master=None, from_=0.0, to=100.0, step_size=1.0, command=None,
                  state="normal", wrap=False, justify="left", show=None, textvariable=None,
                  placeholder_text=None, exportselection=True, width=140, height=32, **kw):
+
+        # 1. INTERCEPT CUSTOM LAYOUT PARAMETERS EARLY
+        button_width = kw.pop("button_width", 22)
+        button_height = kw.pop("button_height", None)  # Dynamically calculated below if None
+        button_side = kw.pop("button_side", "right")  # Options: "right", "left", "split"
+        orientation = kw.pop("orientation", "vertical")  # Options: "vertical", "horizontal"
+        # ADD THIS LINE: Capture custom arrow font size parameters early
+        arrow_font_size = kw.pop("arrow_font_size", 8)
+        format_str = kw.pop("format", None)
+
         theme_defaults = THEME_DEFAULTS["sCTkSpinbox"]
 
-        # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
+        # 2. Assign instance memory BEFORE running master parent initializers
+        self._local_defaults = theme_defaults
+        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
+
+        # 3. Run shared theme logic safely now that variables exist
         ThemeableWidget.__init__(self, theme_defaults, kw)
 
-        # 2. FIXED POP GUARDS: Clean all custom variables out of the keyword dictionary to shield the frame layer.
-        self.final_kw.pop("fg_color", None)
-        self.final_kw.pop("text_color", None)
-        self.final_kw.pop("entry_color", None)
-        self.final_kw.pop("border_color", None)
-        self.final_kw.pop("border_width", None)
-        self.final_kw.pop("corner_radius", None)
-        self.final_kw.pop("font", None)
-        self.final_kw.pop("placeholder_text_color", None)
-        self.final_kw.pop("button_color", None)
-        self.final_kw.pop("button_hover_color", None)
-        self.final_kw.pop("disabled_text_color", None)
-        self.final_kw.pop("disabled_entry_color", None)
-        self.final_kw.pop("disabled_border_color", None)
-        self.final_kw.pop("disabled_button_color", None)
+        # 4. Clean custom style variables out of final_kw to protect parent frame
+        for pop_key in ["fg_color", "text_color", "entry_color", "border_color", "border_width",
+                        "corner_radius", "font", "placeholder_text_color", "button_color",
+                        "button_hover_color", "disabled_text_color", "disabled_entry_color",
+                        "disabled_border_color", "disabled_button_color"]:
+            self.final_kw.pop(pop_key, None)
 
-        # 3. Construct the custom base frame using raw configuration mappings
+        # 5. Construct the base capsule frame natively
         super().__init__(master, width=width, height=height, fg_color="transparent", **self.final_kw)
 
-        # Core operational constraint boundaries mimicking ttk.Spinbox variables
+        # Core operational parameters
         self._from = float(from_)
         self._to = float(to)
         self._step_size = float(step_size)
         self._wrap = bool(wrap)
-        self._state = "normal" if state.lower() == "normal" else "disabled"
+        self._state = "normal" if str(state).lower() == "normal" else "disabled"
         self._command = command
+        self._placeholder_text = placeholder_text
+        self._format = str(format_str) if format_str else ""
 
-        # Configure layout grids inside our frame wrapper capsule
-        self.grid_columnconfigure(0, weight=1)  # Entry field expands horizontally
-        self.grid_columnconfigure(1, weight=0)  # Buttons column remains compact
-        self.grid_rowconfigure((0, 1), weight=1)  # Buttons split vertical height uniformly
+        # Save custom layout attributes to instance memory
+        self._button_width = int(button_width)
+        self._button_side = str(button_side).lower()
+        self._orientation = str(orientation).lower()
+        self._arrow_font_size = int(arrow_font_size)
 
-        # 4. FIXED MOUNT: Fully mapped text input entry field linking to your custom variables
-        self.entry = ctk.CTkEntry(
+        # Calculate dynamic button heights if not explicitly overriden
+        if button_height is not None:
+            self._button_height = int(button_height)
+        else:
+            self._button_height = (height // 2) - 1 if self._orientation == "vertical" else height
+
+        # 6. MOUNT ENTRY CONTAINER LAYER
+        self.entry = sCTkEntryPrimary(
             self,
-            width=width - 24,
+            width=width - (self._button_width * 2 if self._button_side == "split" or self._orientation == "horizontal" else self._button_width),
             height=height,
             justify=justify,
             show=show,
             textvariable=textvariable,
-            placeholder_text=placeholder_text,
+            placeholder_text=self._placeholder_text,
             exportselection=exportselection,
-            fg_color=ThemeableWidget._resolve_color(self, theme_defaults.get("entry_color")),
-            text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("text_color")),
-            border_color=ThemeableWidget._resolve_color(self, theme_defaults.get("border_color")),
-            placeholder_text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("placeholder_text_color")),
-            border_width=theme_defaults.get("border_width", 1.5),
-            corner_radius=theme_defaults.get("corner_radius", 6),
-            font=theme_defaults.get("font")
+            # FIXED: Explicitly forward the spinbox's custom theme font straight down!
+            # If the "font" key is ever accidentally missing from sCTkThemes, this triggers a loud hard-stop crash.
+            font=self._local_defaults["font"]
         )
-        self.entry.grid(row=0, column=0, rowspan=2, padx=(0, 2), pady=0, sticky="nsew")
 
-        # Insert initial baseline register text data value only if a textvariable is absent
+        # FIXED: Format your very first initial value pass using your custom string controller
         if textvariable is None:
-            self.entry.insert(0, str(self._from))
+            init_val = self._from
+            if self._format:
+                try:
+                    formatted_txt = self._format % init_val
+                except Exception:
+                    formatted_txt = f"{init_val:.2f}"
+            else:
+                # Fallback to smart guessing based on step_size decimals
+                dec_places = len(str(self._step_size).split('.')[1]) if '.' in str(self._step_size) else 0
+                formatted_txt = f"{init_val:.{dec_places}f}"
 
-        # Bind value parsing safeguards upon user manual typing entry exit points
+            self.entry.insert(0, formatted_txt)
+
         self.entry.bind("<FocusOut>", lambda e: self._validate_and_sanitize_input())
         self.entry.bind("<Return>", lambda e: self._validate_and_sanitize_input())
 
-        # 5. MOUNT: Stacked Vertical Directional Arrow Controls
-        btn_w = 22
-        btn_h = (height // 2) - 1
-
+        # 7. MOUNT DIRECTIONAL ARROW BUTTONS
+        # Update the button font trackers to use your dynamic instance variable string token
         self.up_button = ctk.CTkButton(
-            self, text="▲", width=btn_w, height=btn_h, corner_radius=2,
+            self, text="▲", width=self._button_width, height=self._button_height, corner_radius=2,
             fg_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_color")),
             hover_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_hover_color")),
             text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("text_color")),
-            font=("Arial", 8), command=self._increment_callback
+            font=("Arial", self._arrow_font_size), command=self._increment_callback
         )
-        self.up_button.grid(row=0, column=1, padx=(1, 0), pady=(0, 1), sticky="nsew")
 
         self.down_button = ctk.CTkButton(
-            self, text="▼", width=btn_w, height=btn_h, corner_radius=2,
+            self, text="▼", width=self._button_width, height=self._button_height, corner_radius=2,
             fg_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_color")),
             hover_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_hover_color")),
             text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("text_color")),
-            font=("Arial", 8), command=self._decrement_callback
+            font=("Arial", self._arrow_font_size), command=self._decrement_callback
         )
-        self.down_button.grid(row=1, column=1, padx=(1, 0), pady=(1, 0), sticky="nsew")
 
-        # Sync initial state configurations
+        # 8. PROCESS GRID GEOMETRY MATRIX MAPS
+        self._rebuild_grid_layout()
+
+        # Sync initial state configurations through the pipeline
         if self._state == "disabled":
             self.configure(state="disabled")
 
-    def _set_appearance_mode(self, mode_string):
-        """Intercepts the top-level application background theme color shifts."""
-        super()._set_appearance_mode(mode_string)
-        if hasattr(self, "entry") and self.entry.winfo_exists():
-            # Delays execution slightly to allow system graphics registers to refresh safely
-            self.after(20, self._process_live_theme_repaint)
-
-    def _process_live_theme_repaint(self):
-        """Forces all sub-components to perform fresh runtime token re-evaluations."""
-        theme_defaults = THEME_DEFAULTS["sCTkSpinbox"]
-
-        if self._state == "disabled":
-            e_bg = theme_defaults.get("disabled_entry_color")
-            e_bd = theme_defaults.get("disabled_border_color")
-            txt = theme_defaults.get("disabled_text_color")
-            btn = theme_defaults.get("disabled_button_color")
-            btn_h = theme_defaults.get("disabled_button_color")
-        else:
-            e_bg = theme_defaults.get("entry_color")
-            e_bd = theme_defaults.get("border_color")
-            txt = theme_defaults.get("text_color")
-            btn = theme_defaults.get("button_color")
-            btn_h = theme_defaults.get("button_hover_color")
-
-        # Push dynamic, resolved string color tokens down across sub-widget configurations
-        self.entry.configure(
-            fg_color=ThemeableWidget._resolve_color(self, e_bg),
-            border_color=ThemeableWidget._resolve_color(self, e_bd),
-            text_color=ThemeableWidget._resolve_color(self, txt),
-            # FIXED: Dynamically re-evaluates the dimmed placeholder accent lines on repaint
-            placeholder_text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("placeholder_text_color"))
-        )
-        self.up_button.configure(
-            fg_color=ThemeableWidget._resolve_color(self, btn),
-            hover_color=ThemeableWidget._resolve_color(self, btn_h),
-            text_color=ThemeableWidget._resolve_color(self, txt)
-        )
-        self.down_button.configure(
-            fg_color=ThemeableWidget._resolve_color(self, btn),
-            hover_color=ThemeableWidget._resolve_color(self, btn_h),
-            text_color=ThemeableWidget._resolve_color(self, txt)
-        )
-
-    import sys
-    import customtkinter as ctk
-
-    # Direct framework path module and theme dictionary registry imports
-    from sCTkFrame import sCTkFrame
-    from ThemeableWidget import ThemeableWidget
-    from sCTkThemes import THEME_DEFAULTS
-
-    # FIXED: Import your custom high-fidelity design entry wrapper component
-    from sCTkEntryPrimary import sCTkEntryPrimary
-
-    class sCTkSpinbox(sCTkFrame, ThemeableWidget):
-        """
-        A theme-adaptive numerical spinbox component mirroring standard ttk.Spinbox behaviors.
-        Features vertical stacked arrow adjustments, text validation filters, and boundary wrapping.
-        Natively utilizes sCTkEntryPrimary to guarantee styling and contrast continuity.
-        """
-
-        def __init__(self, master=None, from_=0.0, to=100.0, step_size=1.0, command=None,
-                     state="normal", wrap=False, justify="left", show=None, textvariable=None,
-                     placeholder_text=None, exportselection=True, width=140, height=32, **kw):
-            theme_defaults = THEME_DEFAULTS["sCTkSpinbox"]
-
-            # 1. Initialize Themeable mixin safely to assemble self.final_kw and attributes
-            ThemeableWidget.__init__(self, theme_defaults, kw)
-
-            # 2. FIXED POP GUARDS: Clean all custom variables out of the keyword dictionary to shield the frame layer.
-            self.final_kw.pop("fg_color", None)
-            self.final_kw.pop("text_color", None)
-            self.final_kw.pop("entry_color", None)
-            self.final_kw.pop("border_color", None)
-            self.final_kw.pop("border_width", None)
-            self.final_kw.pop("corner_radius", None)
-            self.final_kw.pop("font", None)
-            self.final_kw.pop("placeholder_text_color", None)
-            self.final_kw.pop("button_color", None)
-            self.final_kw.pop("button_hover_color", None)
-            self.final_kw.pop("disabled_text_color", None)
-            self.final_kw.pop("disabled_entry_color", None)
-            self.final_kw.pop("disabled_border_color", None)
-            self.final_kw.pop("disabled_button_color", None)
-
-            # 3. Construct the custom base frame using raw configuration mappings
-            super().__init__(master, width=width, height=height, fg_color="transparent", **self.final_kw)
-
-            # Core operational constraint boundaries mimicking ttk.Spinbox variables
-            self._from = float(from_)
-            self._to = float(to)
-            self._step_size = float(step_size)
-            self._wrap = bool(wrap)
-            self._state = "normal" if state.lower() == "normal" else "disabled"
-            self._command = command
-            self._placeholder_text = placeholder_text
-
-            # Configure layout grids inside our frame wrapper capsule
-            self.grid_columnconfigure(0, weight=1)  # Entry field expands horizontally
-            self.grid_columnconfigure(1, weight=0)  # Buttons column remains compact
-            self.grid_rowconfigure((0, 1), weight=1)  # Buttons split vertical height uniformly
-
-            # 4. FIXED MOUNT: Fully mapped input entry area utilizing sCTkEntryPrimary natively!
-            # It automatically inherits all fonts, borders, contrast levels, and placeholders.
-            self.entry = sCTkEntryPrimary(
-                self,
-                width=width - 24,
-                height=height,
-                justify=justify,
-                show=show,
-                textvariable=textvariable,
-                placeholder_text=self._placeholder_text,
-                exportselection=exportselection
-            )
-            self.entry.grid(row=0, column=0, rowspan=2, padx=(0, 2), pady=0, sticky="nsew")
-
-            if textvariable is None:
-                self.entry.insert(0, str(self._from))
-
-            # Bind value parsing safeguards upon user manual typing entry exit points
-            self.entry.bind("<FocusOut>", lambda e: self._validate_and_sanitize_input())
-            self.entry.bind("<Return>", lambda e: self._validate_and_sanitize_input())
-
-            # 5. MOUNT: Stacked Vertical Directional Arrow Controls
-            btn_w = 22
-            btn_h = (height // 2) - 1
-
-            self.up_button = ctk.CTkButton(
-                self, text="▲", width=btn_w, height=btn_h, corner_radius=2,
-                fg_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_color")),
-                hover_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_hover_color")),
-                text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("text_color")),
-                font=("Arial", 8), command=self._increment_callback
-            )
-            self.up_button.grid(row=0, column=1, padx=(1, 0), pady=(0, 1), sticky="nsew")
-
-            self.down_button = ctk.CTkButton(
-                self, text="▼", width=btn_w, height=btn_h, corner_radius=2,
-                fg_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_color")),
-                hover_color=ThemeableWidget._resolve_color(self, theme_defaults.get("button_hover_color")),
-                text_color=ThemeableWidget._resolve_color(self, theme_defaults.get("text_color")),
-                font=("Arial", 8), command=self._decrement_callback
-            )
-            self.down_button.grid(row=1, column=1, padx=(1, 0), pady=(1, 0), sticky="nsew")
-
-            # Sync initial state configurations
-            if self._state == "disabled":
-                self.configure(state="disabled")
-
-        def _set_appearance_mode(self, mode_string):
-            """Intercepts the top-level application background theme color shifts."""
-            super()._set_appearance_mode(mode_string)
-            if hasattr(self, "up_button") and self.up_button.winfo_exists():
-                # Delays execution slightly to allow button styles to cascade accurately
-                self.after(20, self._process_live_theme_repaint)
-
-        def _process_live_theme_repaint(self):
-            """Forces button layouts to perform fresh runtime token re-evaluations."""
-            theme_defaults = THEME_DEFAULTS["sCTkSpinbox"]
-
-            if self._state == "disabled":
-                txt = theme_defaults.get("disabled_text_color")
-                btn = theme_defaults.get("disabled_button_color")
-                btn_h = theme_defaults.get("disabled_button_color")
-            else:
-                txt = theme_defaults.get("text_color")
-                btn = theme_defaults.get("button_color")
-                btn_h = theme_defaults.get("button_hover_color")
-
-            self.up_button.configure(
-                fg_color=ThemeableWidget._resolve_color(self, btn),
-                hover_color=ThemeableWidget._resolve_color(self, btn_h),
-                text_color=ThemeableWidget._resolve_color(self, txt)
-            )
-            self.down_button.configure(
-                fg_color=ThemeableWidget._resolve_color(self, btn),
-                hover_color=ThemeableWidget._resolve_color(self, btn_h),
-                text_color=ThemeableWidget._resolve_color(self, txt)
-            )
-
-    def _increment_callback(self):
-        """Advances the internal counter value up by one configured step size slice."""
-        if self._state == "disabled": return
-        current_val = self.get()
-        if current_val is None: current_val = self._from
-
-        new_value = current_val + self._step_size
-        if new_value > self._to:
-            new_value = self._from if self._wrap else self._to
-
-        self.set(new_value)
-        if self._command is not None: self._command()
-
-    def _decrement_callback(self):
-        """Drops the internal counter value down by one configured step size slice."""
-        if self._state == "disabled": return
-        current_val = self.get()
-        if current_val is None: current_val = self._from
-
-        new_value = current_val - self._step_size
-        if new_value < self._from:
-            new_value = self._to if self._wrap else self._from
-
-        self.set(new_value)
-        if self._command is not None: self._command()
-
-    def _validate_and_sanitize_input(self):
-        """Forces fallback clamps and resets entry characters upon text typing exit events."""
-        current_val = self.get()
-        if current_val is None:
+        # FIXED INITIALIZATION POPULATION PASS:
+        # Ensures that even under early Pygubu initialization sweeps, a clean starting number is forced on canvas!
+        if textvariable is None:
             self.set(self._from)
-            return
-        clamped_val = max(self._from, min(self._to, current_val))
-        self.set(clamped_val)
+        else:
+            # If a variable is attached, force its initial state to mirror the floor limit
+            if not textvariable.get():
+                textvariable.set(self._format_value(self._from))
+            self.set(textvariable.get())
 
-    def get(self):
-        """Public getter tracking standard numerical values formatted back as float indices."""
-        try:
-            return float(self.entry.get())
-        except ValueError:
-            return None
 
-    def set(self, value):
-        """Public setter clearing old strings and formatting entries cleanly."""
-        try:
-            tx_var = self.entry.cget("textvariable")
-            if tx_var is not None:
-                formatted_str = f"{float(value):.2f}".rstrip('0').rstrip('.')
-                if formatted_str == "": formatted_str = "0"
-                tx_var.set(formatted_str)
-                return
-        except Exception:
-            pass
+    def _rebuild_grid_layout(self):
+        """Calculates rows, columns, padding, and alignments based on side and orientation selections."""
+        # 1. FIXED: Explicitly reset column weights back to index 0 across ALL possible tracks
+        # to clear CustomTkinter's geometry cache before altering orientations!
+        for col_idx in range(3):
+            self.grid_columnconfigure(col_idx, weight=0, minsize=0)
+        for row_idx in range(2):
+            self.grid_rowconfigure(row_idx, weight=0, minsize=0)
 
-        self.entry.delete(0, "end")
-        formatted_str = f"{float(value):.2f}".rstrip('0').rstrip('.')
-        if formatted_str == "": formatted_str = "0"
-        self.entry.insert(0, formatted_str)
+        # 2. Clear existing geometry placements safely
+        self.entry.grid_forget()
+        self.up_button.grid_forget()
+        self.down_button.grid_forget()
 
-    def configure(self, **kwargs):
-        """Public unified frame configuration and state machine update triggers."""
-        if "state" in kwargs:
-            target_state = kwargs["state"].lower()
-            self._state = "normal" if target_state == "normal" else "disabled"
-            if self._state == "disabled":
-                self.entry.configure(state="disabled")
-                self.up_button.configure(state="disabled")
-                self.down_button.configure(state="disabled")
-            else:
-                self.entry.configure(state="normal")
-                self.up_button.configure(state="normal")
-                self.down_button.configure(state="normal")
-            del kwargs["state"]
+        if self._orientation == "horizontal":
+            # Horizontal layout forces buttons to be full height side-by-side or split
+            self.grid_rowconfigure(0, weight=1)
+            self.grid_columnconfigure(1, weight=1)  # Entry stretches horizontally
 
-        if "from_" in kwargs:
-            self._from = float(kwargs["from_"])
-            del kwargs["from_"]
-        if "to" in kwargs:
-            self._to = float(kwargs["to"])
-            del kwargs["to"]
-        if "step_size" in kwargs:
-            self._step_size = float(kwargs["step_size"])
-            del kwargs["step_size"]
+            # Switch button arrow characters dynamically to match horizontal flow
+            # FIXED: Pass your active instance font variable along when swapping characters!
+            self.up_button.configure(text="▶", font=("Arial", self._arrow_font_size))
+            self.down_button.configure(text="◀", font=("Arial", self._arrow_font_size))
 
-        # Cascades pass-through settings straight to your sCTkEntryPrimary component layer
+            if self._button_side == "left":
+                self.down_button.grid(row=0, column=0, padx=(0, 1), pady=0, sticky="nsew")
+                self.up_button.grid(row=0, column=1, padx=(1, 1), pady=0, sticky="nsew")
+                self.entry.grid(row=0, column=2, padx=(1, 0), pady=0, sticky="nsew")
+            elif self._button_side == "split":
+                # Split puts decrement on far left, increment on far right
+                self.down_button.grid(row=0, column=0, padx=(0, 2), pady=0, sticky="nsew")
+                self.entry.grid(row=0, column=1, padx=(2, 2), pady=0, sticky="nsew")
+                self.up_button.grid(row=0, column=2, padx=(2, 0), pady=0, sticky="nsew")
+            else:  # Default right
+                self.entry.grid(row=0, column=0, padx=(0, 1), pady=0, sticky="nsew")
+                self.down_button.grid(row=0, column=1, padx=(1, 1), pady=0, sticky="nsew")
+                self.up_button.grid(row=0, column=2, padx=(1, 0), pady=0, sticky="nsew")
+
+        else:  # Vertical layout stack
+            self.grid_rowconfigure((0, 1), weight=1)
+
+            # Restore standard vertical arrow character markers
+            self.up_button.configure(text="▲", font=("Arial", self._arrow_font_size))
+            self.down_button.configure(text="▼", font=("Arial", self._arrow_font_size))
+
+            if self._button_side == "left":
+                self.grid_columnconfigure(1, weight=1)  # Entry stretches
+                self.up_button.grid(row=0, column=0, padx=(0, 1), pady=(0, 1), sticky="nsew")
+                self.down_button.grid(row=1, column=0, padx=(0, 1), pady=(1, 0), sticky="nsew")
+                self.entry.grid(row=0, column=1, rowspan=2, padx=(1, 0), pady=0, sticky="nsew")
+            elif self._button_side == "split":
+                self.grid_columnconfigure(1, weight=1)
+                self.down_button.grid(row=0, column=0, rowspan=2, padx=(0, 2), pady=0, sticky="nsew")
+                self.entry.grid(row=0, column=1, rowspan=2, padx=(2, 2), pady=0, sticky="nsew")
+                self.up_button.grid(row=0, column=2, rowspan=2, padx=(2, 0), pady=0, sticky="nsew")
+            else:  # Default right
+                self.grid_columnconfigure(0, weight=1)  # Entry stretches
+                self.entry.grid(row=0, column=0, rowspan=2, padx=(0, 2), pady=0, sticky="nsew")
+                self.up_button.grid(row=0, column=1, padx=(1, 0), pady=(0, 1), sticky="nsew")
+                self.down_button.grid(row=1, column=1, padx=(1, 0), pady=(1, 0), sticky="nsew")
+
+        # 3. FIXED: Force an immediate layout redraw pass to notify CustomTkinter's canvas engine
+        self.update_idletasks()
+
+    def configure(self, require_redraw=None, **kwargs):
+        """Standardized configuration handler supporting Pygubu layout switches."""
+        # --- Zone A: Position Intercept (Pygubu Compatibility) ---
+        if require_redraw is not None and not kwargs and isinstance(require_redraw, str):
+            mapping = {
+                "state": ("state", "state", "state", "normal", str(getattr(self, "_state", "normal"))),
+                "from_": ("from_", "from_", "from_", "0.0", str(getattr(self, "_from", 0.0))),
+                "to": ("to", "to", "to", "100.0", str(getattr(self, "_to", 100.0))),
+                "step_size": ("step_size", "step_size", "step_size", "1.0", str(getattr(self, "_step_size", 1.0))),
+                "button_width": ("button_width", "button_width", "button_width", "22",
+                                 str(getattr(self, "_button_width", 22))),
+                "button_height": ("button_height", "button_height", "button_height", "",
+                                  str(getattr(self, "_button_height", ""))),
+                "button_side": ("button_side", "button_side", "button_side", "right",
+                                str(getattr(self, "_button_side", "right"))),
+                "orientation": ("orientation", "orientation", "orientation", "vertical",
+                                str(getattr(self, "_orientation", "vertical"))),
+                "justify": ("justify", "justify", "justify", "left", str(self.entry.cget("justify"))),
+                "placeholder_text": ("placeholder_text", "placeholder_text", "placeholder_text", "",
+                                     str(getattr(self, "_placeholder_text", ""))),
+                "format": ("format", "format", "format", "", str(getattr(self, "_format", ""))),
+                "textvariable": ("textvariable", "textvariable", "textvariable", "",
+                                 str(getattr(self, "_textvariable", "")))
+            }
+            if require_redraw in mapping: return mapping[require_redraw]
+            return super().configure(require_redraw)
+
+        if isinstance(require_redraw, dict):
+            kwargs.update(require_redraw)
+
+        # =====================================================================
+        # ZONE B: SANITIZATION, TEXT PAYLOAD ROUTING & VARIABLE SYNCHRONIZATION
+        # =====================================================================
+        if "textvariable" in kwargs:
+            new_var = kwargs["textvariable"]
+            self._textvariable = new_var  # Cache the internal pointer reference
+
+            # FIXED STARTUP SYNC PASS: If the incoming Pygubu variable is completely empty,
+            # initialize its value to your current floor boundary BEFORE it links and wipes the screen!
+            if new_var is not None:
+                try:
+                    # Check if the string variable is empty or unpopulated
+                    if str(new_var.get()).strip() == "":
+                        # Pull your current active value, format it cleanly, and force it onto the variable
+                        current_num = getattr(self, "_from", 0.0)
+                        formatted_start = self._format_value(current_num)
+                        new_var.set(formatted_start)
+                except Exception:
+                    pass
+
+        for key in ["from_", "to", "step_size"]:
+            if key in kwargs:
+                setattr(self, f"_{key}",
+                        float(kwargs.pop(key) or (0.0 if key == 'from_' else 100.0 if key == 'to' else 1.0)))
+
+        if "command" in kwargs:
+            self._command = kwargs.pop("command")
+
+        if "format" in kwargs:
+            self._format = str(kwargs.pop("format") or "")
+            try:
+                current_val = float(self.get())
+                self.set(current_val)
+            except Exception:
+                pass
+
+        # Intercept structural layout property changes
+        rebuild_grid = False
+        if "button_width" in kwargs:
+            self._button_width = int(kwargs.pop("button_width"))
+            self.up_button.configure(width=self._button_width)
+            self.down_button.configure(width=self._button_width)
+            rebuild_grid = True
+        if "button_height" in kwargs:
+            self._button_height = int(kwargs.pop("button_height"))
+            self.up_button.configure(height=self._button_height)
+            self.down_button.configure(height=self._button_height)
+            rebuild_grid = True
+        if "button_side" in kwargs:
+            val = kwargs.pop("button_side")
+            self._button_side = str(val or "right").strip().lower()
+            rebuild_grid = True
+        if "orientation" in kwargs:
+            val = kwargs.pop("orientation")
+            self._orientation = str(val or "vertical").strip().lower()
+
+            if not kwargs.get("button_height") and hasattr(self, "cget"):
+                current_height = int(self.cget("height"))
+                self._button_height = (current_height // 2) - 1 if self._orientation == "vertical" else current_height
+                self.up_button.configure(height=self._button_height)
+                self.down_button.configure(height=self._button_height)
+            rebuild_grid = True
+
+        if "arrow_font_size" in kwargs:
+            self._arrow_font_size = int(kwargs.pop("arrow_font_size"))
+            up_char = "▶" if self._orientation == "horizontal" else "▲"
+            down_char = "◀" if self._orientation == "horizontal" else "▼"
+            self.up_button.configure(font=("Arial", self._arrow_font_size), text=up_char)
+            self.down_button.configure(font=("Arial", self._arrow_font_size), text=down_char)
+
+        # FIXED TEXTVARIABLE INTERCEPT TRACK:
+        if "textvariable" in kwargs:
+            self._textvariable = kwargs["textvariable"]  # Keep internal tracking reference
+
         for entry_attr in ["justify", "show", "textvariable", "placeholder_text", "exportselection"]:
             if entry_attr in kwargs:
-                self.entry.configure(**{entry_attr: kwargs[entry_attr]})
-                del kwargs[entry_attr]
+                if hasattr(self, "entry") and self.entry.winfo_exists():
+                    self.entry.configure(**{entry_attr: kwargs[entry_attr]})
+                if entry_attr == "placeholder_text":
+                    self._placeholder_text = kwargs[entry_attr]
+                kwargs.pop(entry_attr)
 
-        super().configure(**kwargs)
+        if rebuild_grid:
+            if hasattr(self, "cget") and hasattr(self, "entry"):
+                current_width = int(self.cget("width"))
+                used_buttons = 2 if self._button_side == "split" or self._orientation == "horizontal" else 1
+                self.entry.configure(width=current_width - (self._button_width * used_buttons))
+            self._rebuild_grid_layout()
+
+        if "state" in kwargs:
+            self._state = str(kwargs.pop("state")).lower()
+            for child in [self.entry, self.up_button, self.down_button]:
+                if hasattr(child, "winfo_exists") and child.winfo_exists():
+                    child.configure(state=self._state)
+            self._process_live_theme_repaint()
+
+        if kwargs: super().configure(**kwargs)
+
+    def _format_value(self, val: float) -> str:
+        """Utility helper that safely applies string parsing rules to floats."""
+        fmt = self._format.strip() if hasattr(self, "_format") and self._format else ""
+
+        if fmt:
+            if "{" in fmt and "}" in fmt:
+                try:
+                    res = fmt.format(val)
+                    return res
+                except Exception as e:
+                    print(f"[FORMAT ENGINE] Curly-Brace calculation failed: {e}")
+            elif ":" in fmt and not "{" in fmt:
+                try:
+                    wrapped = "{" + fmt + "}"
+                    res = wrapped.format(val)
+                    return res
+                except Exception as e:
+                    print(f"[FORMAT ENGINE] Raw Colon calculation failed: {e}")
+            elif "%" in fmt:
+                try:
+                    res = fmt % val
+                    return res
+                except Exception as e:
+                    print(f"[FORMAT ENGINE] Percent-Style calculation failed: {e}")
+
+        dec_places = len(str(self._step_size).split('.')) if '.' in str(self._step_size) else 0
+        res = f"{val:.{dec_places}f}"
+        return res
+
+    def set(self, value):
+        """Standardized setter method ensuring tracking variables synchronize dynamically."""
+        try:
+            num = float(value)
+            f_limit = getattr(self, "_from", None)
+            t_limit = getattr(self, "_to", None)
+            if f_limit is not None and num < f_limit: num = f_limit
+            if t_limit is not None and num > t_limit: num = t_limit
+
+            formatted_text = self._format_value(num)
+
+            # FIXED DATA SYNC PASS: Force variables to update tracking states cleanly!
+            if hasattr(self, "_textvariable") and self._textvariable:
+                self._textvariable.set(formatted_text)
+
+            old_state = self.entry.cget("state")
+            self.entry.configure(state="normal")
+            self.entry.delete(0, "end")
+            self.entry.insert(0, formatted_text)
+            self.entry.configure(state=old_state)
+
+            if self._command:
+                self._command(num)
+        except ValueError:
+            pass
 
     def cget(self, attribute_name):
-        """Public operational register attribute getter lookups."""
-        if attribute_name == "state": return self._state
-        if attribute_name == "from_": return self._from
-        if attribute_name == "to": return self._to
-        if attribute_name == "step_size": return self._step_size
-
-        if attribute_name in ["justify", "show", "textvariable", "placeholder_text", "exportselection"]:
-            return self.entry.cget(attribute_name)
-
+        pname = str(attribute_name).lower()
+        if pname in ["state", "from_", "to", "step_size", "button_width", "button_height", "button_side", "orientation",
+                     "arrow_font_size", "format"]:
+            return getattr(self, f"_{pname}")
         return super().cget(attribute_name)
 
+    def _process_live_theme_repaint(self):
+        """Strict theme repainting using direct explicit lookups from cached defaults."""
+        if self._state == "disabled":
+            disabled_map = self._local_defaults["disabled_map"]
+            if hasattr(self, "entry") and self.entry.winfo_exists():
+                self.entry.configure(
+                    fg_color=ThemeableWidget._resolve_color(self, disabled_map["entry_color"]),
+                    border_color=ThemeableWidget._resolve_color(self, disabled_map["border_color"]),
+                    text_color=ThemeableWidget._resolve_color(self, disabled_map["text_color"]),
+                    placeholder_text_color=ThemeableWidget._resolve_color(self, self._local_defaults[
+                        "placeholder_text_color"])
+                )
+            for button in [self.up_button, self.down_button]:
+                if hasattr(button, "winfo_exists") and button.winfo_exists():
+                    button.configure(
+                        fg_color=ThemeableWidget._resolve_color(self, disabled_map["button_color"]),
+                        hover_color=ThemeableWidget._resolve_color(self, disabled_map["button_color"]),
+                        text_color=ThemeableWidget._resolve_color(self, disabled_map["text_color"])
+                    )
+        else:
+            if hasattr(self, "entry") and self.entry.winfo_exists():
+                self.entry.configure(
+                    fg_color=ThemeableWidget._resolve_color(self, self._local_defaults["entry_color"]),
+                    border_color=ThemeableWidget._resolve_color(self, self._local_defaults["border_color"]),
+                    text_color=ThemeableWidget._resolve_color(self, self._local_defaults["text_color"]),
+                    placeholder_text_color=ThemeableWidget._resolve_color(self, self._local_defaults[
+                        "placeholder_text_color"])
+                )
+            for button in [self.up_button, self.down_button]:
+                if hasattr(button, "winfo_exists") and button.winfo_exists():
+                    button.configure(
+                        fg_color=ThemeableWidget._resolve_color(self, self._local_defaults["button_color"]),
+                        hover_color=ThemeableWidget._resolve_color(self, self._local_defaults["button_hover_color"]),
+                        text_color=ThemeableWidget._resolve_color(self, self._local_defaults["text_color"])
+                    )
 
-import customtkinter as ctk
+
+    def _increment_callback(self):
+        if self._state == "disabled": return
+        try:
+            current_val = float(self.get())
+            next_val = current_val + self._step_size
+
+            if next_val > self._to:
+                next_val = self._from if self._wrap else self._to
+
+            self.set(next_val)
+        except ValueError:
+            self.set(self._from)
+
+    def _decrement_callback(self):
+        if self._state == "disabled": return
+        try:
+            current_val = float(self.get())
+            next_val = current_val - self._step_size
+
+            if next_val < self._from:
+                next_val = self._to if self._wrap else self._from
+
+            self.set(next_val)
+        except ValueError:
+            self.set(self._from)
 
 
-# Ensure cross-module tracking points find your local widget packages
-# from sCTkSpinbox import sCTkSpinbox
 
-def on_spinbox_value_changed():
-    """
-    Core Event Callback Hook: Automatically invoked on every valid click step change.
-    Reads the value from the spinbox instance and updates our cockpit tracking label.
-    """
-    current_val = spinbox.get()
-    if current_val is not None:
-        # Formats output text data dynamically to match your dashboard rows
-        vfo_readout.configure(text=f"Tuning Step: {current_val:.1f} kHz")
+    def _validate_and_sanitize_input(self):
+        """Sanitizes manual user keyboard inputs upon text field exit points."""
+        try:
+            raw_text = self.get()
+            if not raw_text.strip():
+                self.set(self._from)
+                return
+            self.set(float(raw_text))
+        except ValueError:
+            self.set(self._from)
 
+    def get(self) -> str:
+        """FIXED GETTER: Prioritizes active tracking variables if attached."""
+        if hasattr(self, "_textvariable") and self._textvariable:
+            return str(self._textvariable.get())
+        if hasattr(self, "entry") and self.entry.winfo_exists():
+            return str(self.entry.get())
+        return str(getattr(self, "_from", "0.0"))
 
-import customtkinter as ctk
-
-
-# Ensure cross-module tracking points find your local widget packages
-# from sCTkSpinbox import sCTkSpinbox
-
-def on_spinbox_value_changed():
-    """
-    Core Event Callback Hook: Automatically invoked on every valid click step change.
-    Reads the value from the spinbox instance and updates our cockpit tracking label.
-    """
-    current_val = spinbox.get()
-    if current_val is not None:
-        vfo_readout.configure(text=f"Tuning Step: {current_val:.1f} kHz")
-    else:
-        # Gracefully handle placeholder string states if the entry field is wiped blank
-        vfo_readout.configure(text="Tuning Step: Empty / Incomplete")
-
-
-import customtkinter as ctk
 
 # Ensure cross-module tracking points find your local widget packages
 from sCTkFrame import sCTkFrame
@@ -441,29 +483,8 @@ from sCTkCheckBox import sCTkCheckBox
 from sCTkButtonPrimary import sCTkButtonPrimary
 
 
-def on_spinbox_value_changed():
-    """
-    Core Event Callback Hook: Automatically invoked on every valid click step change.
-    Reads the value from the spinbox instance and updates our cockpit tracking label.
-    """
-    current_val = spinbox.get()
-    if current_val is not None:
-        vfo_readout.configure(text=f"Tuning Step: {current_val:.1f} kHz")
-    else:
-        # Gracefully handle placeholder string states if the entry field is wiped blank
-        vfo_readout.configure(text="Tuning Step: Empty / Incomplete")
 
 
-import customtkinter as ctk
-
-# Ensure cross-module tracking points find your local widget packages
-from sCTkFrame import sCTkFrame
-from sCTkSpinbox import sCTkSpinbox
-from sCTkComboBox import sCTkComboBox  # FIXED: Capitalized the 'B' to match your module profile
-from sCTkLabelSecondary import sCTkLabelSecondary
-from sCTkEntryPrimary import sCTkEntryPrimary
-from sCTkCheckBox import sCTkCheckBox
-from sCTkButtonPrimary import sCTkButtonPrimary
 
 
 def on_spinbox_value_changed():
@@ -482,11 +503,27 @@ def on_spinbox_value_changed():
 # =====================================================================
 # SYSTEM ASSEMBLY TEST BENCH RUNNER MAIN
 # =====================================================================
+# =============================================================================
+#   STANDALONE HARNESS TEST DECK
+# =============================================================================
 if __name__ == "__main__":
+    import customtkinter as ctk
+    # Import your local themed sub-components
+    from sCTkFrame import sCTkFrame
+    from sCTkLabelSecondary import sCTkLabelSecondary
+    from sCTkComboBox import sCTkComboBox
+    from sCTkEntryPrimary import sCTkEntryPrimary
+    from sCTkCheckBox import sCTkCheckBox
+    from sCTkButtonPrimary import sCTkButtonPrimary
+
     app = ctk.CTk()
     app.title("sCTk Advanced Spinbox Tester Deck")
-    app.geometry("480x560")
+    app.geometry("480x640")  # Expanded height slightly to accommodate new layout controls smoothly
     app.configure(fg_color=("#F1F5F9", "#1C1C1C"))
+
+    # Event tracking logger for value adjustments
+    def on_spinbox_value_changed(val):
+        vfo_readout.configure(text=f"Tuning Step: {val:.1f} kHz")
 
     # Outer parent frame layers updated to sCTkFrame
     dashboard_panel = sCTkFrame(app, fg_color="transparent", border_width=0)
@@ -511,7 +548,7 @@ if __name__ == "__main__":
         justify="center",
         placeholder_text="Enter step...",
         command=on_spinbox_value_changed,
-        width=160,
+        width=180,  # Given a bit more width to display split/horizontal structures nicely
         height=34
     )
     spinbox.pack(pady=10)
@@ -525,14 +562,11 @@ if __name__ == "__main__":
     lbl_state = sCTkLabelSecondary(control_frame, text="Component State:", font=("Arial", 11, "bold"))
     lbl_state.grid(row=0, column=0, padx=15, pady=6, sticky="w")
 
-
     def on_state_dropdown_changed(choice):
         target_state = "normal" if "Normal" in choice else "disabled"
         spinbox.configure(state=target_state)
 
-
-    # FIXED: Re-mapped to your exact sCTkComboBox name convention
-    state_dropdown = sCTkComboBox(control_frame, values=["Normal State (Active)", "Disabled State (Locked)"],
+    state_dropdown = ctk.CTkComboBox(control_frame, values=["Normal State (Active)", "Disabled State (Locked)"],
                                   command=on_state_dropdown_changed, width=170)
     state_dropdown.grid(row=0, column=1, padx=15, pady=6, sticky="e")
     state_dropdown.set("Normal State (Active)")
@@ -541,13 +575,10 @@ if __name__ == "__main__":
     lbl_justify = sCTkLabelSecondary(control_frame, text="Text Alignment (Justify):", font=("Arial", 11, "bold"))
     lbl_justify.grid(row=1, column=0, padx=15, pady=6, sticky="w")
 
-
     def on_justify_changed(choice):
         spinbox.configure(justify=choice.lower())
 
-
-    # FIXED: Re-mapped to your exact sCTkComboBox name convention
-    justify_dropdown = sCTkComboBox(control_frame, values=["Center", "Left", "Right"], command=on_justify_changed,
+    justify_dropdown = ctk.CTkComboBox(control_frame, values=["Center", "Left", "Right"], command=on_justify_changed,
                                     width=170)
     justify_dropdown.grid(row=1, column=1, padx=15, pady=6, sticky="e")
     justify_dropdown.set("Center")
@@ -556,11 +587,9 @@ if __name__ == "__main__":
     lbl_placeholder = sCTkLabelSecondary(control_frame, text="Placeholder Text String:", font=("Arial", 11, "bold"))
     lbl_placeholder.grid(row=2, column=0, padx=15, pady=6, sticky="w")
 
-
     def update_placeholder_text(event=None):
         new_text = txt_placeholder.get()
         spinbox.configure(placeholder_text=new_text)
-
 
     txt_placeholder = sCTkEntryPrimary(control_frame, width=170, height=28, placeholder_text="Type placeholder here...")
     txt_placeholder.grid(row=2, column=1, padx=15, pady=6, sticky="e")
@@ -568,16 +597,61 @@ if __name__ == "__main__":
     txt_placeholder.bind("<Return>", update_placeholder_text)
     txt_placeholder.bind("<FocusOut>", update_placeholder_text)
 
+    # --- NEW: Row 3: Button Placement Side (sCTkLabelSecondary & sCTkComboBox) ---
+    lbl_side = sCTkLabelSecondary(control_frame, text="Button Placement Side:", font=("Arial", 11, "bold"))
+    lbl_side.grid(row=3, column=0, padx=15, pady=6, sticky="w")
 
-    # --- Row 3: Password Masking Toggle (sCTkCheckBox) ---
+    def on_side_changed(choice):
+        spinbox.configure(button_side=choice.lower())
+
+    side_dropdown = ctk.CTkComboBox(control_frame, values=["Right", "Left", "Split"], command=on_side_changed, width=170)
+    side_dropdown.grid(row=3, column=1, padx=15, pady=6, sticky="e")
+    side_dropdown.set("Right")
+
+    # --- NEW: Row 4: Component Grid Orientation (sCTkLabelSecondary & sCTkComboBox) ---
+    lbl_orient = sCTkLabelSecondary(control_frame, text="Control Orientation:", font=("Arial", 11, "bold"))
+    lbl_orient.grid(row=4, column=0, padx=15, pady=6, sticky="w")
+
+    def on_orientation_changed(choice):
+        spinbox.configure(orientation=choice.lower())
+
+    orient_dropdown = ctk.CTkComboBox(control_frame, values=["Vertical", "Horizontal"], command=on_orientation_changed, width=170)
+    orient_dropdown.grid(row=4, column=1, padx=15, pady=6, sticky="e")
+    orient_dropdown.set("Vertical")
+
+    # --- Row 5: Arrow Character Sizing (sCTkLabelSecondary & CTkComboBox) ---
+    lbl_arrow_size = sCTkLabelSecondary(control_frame, text="Arrow Indicator Size:", font=("Arial", 11, "bold"))
+    lbl_arrow_size.grid(row=5, column=0, padx=15, pady=6, sticky="w")
+
+
+    def on_arrow_size_changed(choice):
+        size_num = int(choice.split()[0])  # Extracts the number from strings like "8 pt" Safely
+        spinbox.configure(arrow_font_size=size_num)
+
+
+    arrow_size_dropdown = ctk.CTkComboBox(
+        control_frame,
+        values=["6 pt (Small)", "8 pt (Default)", "11 pt (Medium)", "14 pt (Large)", "18 pt", "24 pt", "36 pt"],
+        command=on_arrow_size_changed,
+        width=170
+    )
+
+    arrow_size_dropdown.grid(row=5, column=1, padx=15, pady=6, sticky="e")
+    arrow_size_dropdown.set("8 pt (Default)")
+
+
+    # --- Row 6: Password Masking Toggle (sCTkCheckBox) ---
     def toggle_password_mask():
         mask_active = bool(check_show.get())
         spinbox.configure(show="*" if mask_active else "")
 
 
+    # 1. INITIALIZE FIRST (Creates the variable token in memory)
     check_show = sCTkCheckBox(control_frame, text="Mask Input Characters (show=\"*\")", command=toggle_password_mask,
                               font=("Arial", 11))
-    check_show.grid(row=3, column=0, columnspan=2, padx=15, pady=8, sticky="w")
+
+    # 2. GRID SECOND (Now completely safe from NameError exceptions!)
+    check_show.grid(row=6, column=0, columnspan=2, padx=15, pady=8, sticky="w")
 
 
     # 4. Add an on-the-fly theme switcher button to check layout color flips live (sCTkButtonPrimary)
@@ -585,10 +659,10 @@ if __name__ == "__main__":
         current = ctk.get_appearance_mode()
         ctk.set_appearance_mode("Light" if current == "Dark" else "Dark")
 
-
     theme_btn = sCTkButtonPrimary(app, text="Toggle Light/Dark Theme", command=toggle_theme)
     theme_btn.pack(pady=5)
 
     app.mainloop()
+
 
 

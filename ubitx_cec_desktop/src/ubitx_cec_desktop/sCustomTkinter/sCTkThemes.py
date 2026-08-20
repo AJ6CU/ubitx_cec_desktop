@@ -744,7 +744,7 @@ THEME_DEFAULTS = {
         "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
         "disabled_dimple_glow": ("#CBD5E1", "#334155")
     },
-    "sCTkSpinbox": {
+        "sCTkSpinbox": {
         # Sourced precisely from your sCTkEntryPrimary specifications!
         "font": ("Arial", 15, "normal"),
         "border_width": 1.5,
@@ -753,21 +753,22 @@ THEME_DEFAULTS = {
         "text_color": ("#1F2937", "#F9FAFB"),
         "corner_radius": 6,
 
-        # FIXED: Deeply dampened contrast tokens to blend smoothly into the canvas backgrounds
-        # Light Mode: Soft silver gray that steps down dramatically from the #1F2937 active text font
-        # Dark Mode: Faded slate charcoal that sits just a tiny fraction above the pitch-black entry core
+        # Deeply dampened contrast tokens to blend smoothly into the canvas backgrounds
         "placeholder_text_color": ("#B1BBC6", "#2E3748"),
 
         # Standard vertical stacked micro-arrow styling tracks
         "button_color": ("#9E9E9E", "#2A2F3D"),
         "button_hover_color": ("#7D7D7D", "#374151"),
 
-        # Direct cascading mapping for the locked disabled state machine
-        "disabled_entry_color": ("#F3F4F6", "#1F2937"),
-        "disabled_border_color": ("#CBD5E1", "#475569"),
-        "disabled_text_color": ("#94A3B8", "#64748B"),
-        "disabled_button_color": ("#CBD5E1", "#334155")
+        # ✅ FIXED: Grouped cleanly into your unified high-fidelity disabled map matrix!
+        "disabled_map": {
+            "entry_color": ("#F3F4F6", "#1F2937"),
+            "border_color": ("#CBD5E1", "#475569"),
+            "text_color": ("#94A3B8", "#64748B"),
+            "button_color": ("#CBD5E1", "#334155")
+        }
     },
+
     # ... your other widget entries
 }
 

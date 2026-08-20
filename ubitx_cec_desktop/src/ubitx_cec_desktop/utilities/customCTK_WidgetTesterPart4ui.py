@@ -6,11 +6,14 @@ just tests each widget
 
 UI source file: customCTK_WidgetTesterPart4.ui
 """
+import tkinter as tk
+import tkinter.ttk as ttk
 from customtkinter import (CTk, CTkFrame)
 from sCTkDial import (sCTkDialContinuous, sCTkDialRange, sCTkDialSelector)
 from sCTkFrame import sCTkFrame
 from sCTkSMeter import sCTkSMeter
 from sCTkSMeterBar import sCTkSMeterBar
+from sCTkSpinbox import sCTkSpinbox
 from sCTkTableview import sCTkTableview
 
 
@@ -66,7 +69,7 @@ class customCTK_WidgetTesterPart4UI:
             num_columns=3,
             num_rows=8,
             show_headers=True,
-            state="disabled")
+            state="normal")
         sctktableview1.pack(side="top")
         sctkframe5.grid(column=0, row=0)
         sctkframe6 = sCTkFrame(ctkframe1)
@@ -82,7 +85,8 @@ class customCTK_WidgetTesterPart4UI:
         sctkdialcontinuous2 = sCTkDialContinuous(sctkframe2)
         sctkdialcontinuous2.configure(diameter=150)
         sctkdialcontinuous2.pack(side="top")
-        sctkdialcontinuous2.configure(right_click_callback=self.test)
+        sctkdialcontinuous2.configure(left_click_callback=self.leftClick_CB)
+        sctkdialcontinuous2.configure(right_click_callback=self.rightClick_CB)
         sctkframe2.grid(column=0, row=1)
         sctkframe3 = sCTkFrame(ctkframe1)
         sctkdialselector1 = sCTkDialSelector(sctkframe3)
@@ -97,6 +101,25 @@ class customCTK_WidgetTesterPart4UI:
         sctkdialrange1.configure(command=self.pot)
         sctkframe4.grid(column=2, row=1)
         ctkframe1.pack(expand=True, fill="x", side="top")
+        sctkframe7 = sCTkFrame(ctk1)
+        sctkspinbox1 = sCTkSpinbox(sctkframe7)
+        self.boxvalue_VAR = tk.StringVar()
+        sctkspinbox1.configure(
+            arrow_font_size=36,
+            button_side="split",
+            format="%0.4f",
+            from_=1,
+            justify="right",
+            orientation="horizontal",
+            state="normal",
+            step_size=10,
+            textvariable=self.boxvalue_VAR,
+            to=100)
+        sctkspinbox1.pack(side="top")
+        sctkspinbox1.configure(command=self.callme)
+        spinbox1 = ttk.Spinbox(sctkframe7)
+        spinbox1.pack(side="top")
+        sctkframe7.pack(side="left")
 
         # Main widget
         self.mainwindow = ctk1
@@ -104,13 +127,19 @@ class customCTK_WidgetTesterPart4UI:
     def run(self):
         self.mainwindow.mainloop()
 
-    def test(self):
+    def leftClick_CB(self):
+        pass
+
+    def rightClick_CB(self):
         pass
 
     def selector_CB(self):
         pass
 
     def pot(self):
+        pass
+
+    def callme(self):
         pass
 
 
