@@ -179,7 +179,6 @@ class customCTK_WidgetTesterPart3UI:
         framelabeledprimary6.bind("<MouseWheel>", self.callback, add="")
         sctkscrollableframe1 = sCTkScrollableFrame(
             ctkframe1, orientation="vertical")
-        sctkscrollableframe1.configure(state="disabled")
         sctkcheckbox2 = sCTkCheckBox(sctkscrollableframe1)
         sctkcheckbox2.configure(text='sctkcheckbox2')
         sctkcheckbox2.pack(side="top")

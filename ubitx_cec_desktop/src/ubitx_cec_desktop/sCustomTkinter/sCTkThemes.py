@@ -595,18 +595,37 @@ THEME_DEFAULTS = {
         }
     },
     "sCTkFileExplorer": {
-        "entry_font": ("Arial", 12),
-        "entry_fg": ("#F9F9FA", "#343638"),
-        "entry_border_color": ("#979DA2", "#565B5E"),
-        "entry_text_color": ("#000000", "#FFFFFF"),
-        "btn_font": ("Arial", 12),
-        "btn_fg": ("#3B8ED0", "#1F6AA5"),
-        "btn_hover": ("#2C74B3", "#144E75"),
-        "btn_text_color": ("#DCE4EE", "#F9F9FA"),
-        "btn_border_color": ("#3B8ED0", "#1F6AA5"),
-        "row_active_text": ("#1F6AA5", "#3B8ED0"),
-        "row_dimmed_text": ("#A0A0A0", "#606060"),
+        # Typography configurations assigned to management controls and row labels
+        "btn_font": ("Arial", 11, "bold"),
+        "entry_font": ("Arial", 12, "normal"),
+
+        # Upper navigational button styling variables
+        "btn_fg": ("#3B82F6", "#1D4ED8"),
+        "btn_hover": ("#2563EB", "#1E40AF"),
+        "btn_text_color": ("#FFFFFF", "#F9FAFB"),
+        "btn_border_color": ("#1E3A8A", "#1E3A8A"),
+
+        # Path display address input cell field colors
+        "entry_fg": ("#FFFFFF", "#111827"),
+        "entry_text_color": ("#1F2937", "#F9FAFB"),
+        "entry_border_color": ("#CBD5E1", "#475569"),
+
+        # Live File Row Rendering Palette Look Parameters
+        "row_active_text": ("#1F2937", "#F9FAFB"),
+        "row_dimmed_text": ("#94A3B8", "#64748B"),
+
+        # 🎨 NEW CASCADING STATE LOCKDOWN CONTROLLERS
+        "disabled_map": {
+            "btn_fg": ("#CBD5E1", "#334155"),
+            "btn_border_color": ("#CBD5E1", "#334155"),
+            "btn_text_color": ("#94A3B8", "#64748B"),
+            "entry_fg": ("#F3F4F6", "#1F2937"),
+            "entry_border_color": ("#CBD5E1", "#475569"),
+            "entry_text_color": ("#94A3B8", "#64748B"),
+            "row_active_text": ("#94A3B8", "#64748B")
+        }
     },
+
 
     "sCTkSelector": {
         "fg_color": "transparent",

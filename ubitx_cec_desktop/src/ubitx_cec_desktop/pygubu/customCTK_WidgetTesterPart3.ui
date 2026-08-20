@@ -21,7 +21,7 @@
       <setting id="ttk_style_definition_file" />
     </settings>
     <customwidgets>
-      <customwidget path="../sCustomTkinter/sCTK.py" />
+      <customwidget path="../sCustomTkinter/sCTkWidgetSetForPygubuDesigner.py" />
     </customwidgets>
     <resources />
   </project>

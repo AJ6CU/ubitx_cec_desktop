@@ -21,7 +21,6 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkSegmentedButton(baseui.sCTkSegmentedButtonUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-
         theme_defaults = THEME_DEFAULTS["sCTkSegmentedButton"]
 
         # Store dictionary references safely onto instance memory

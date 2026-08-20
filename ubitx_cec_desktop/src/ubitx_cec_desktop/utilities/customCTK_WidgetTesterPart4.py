@@ -19,7 +19,7 @@ class customCTK_WidgetTesterPart4(baseui.customCTK_WidgetTesterPart4UI):
         print("cont", num)
 
     def leftClick_CB(self):
-        print("Cont leftClick",self.boxvalue_VAR.get())
+        print("Cont leftClick")
 
     def rightClick_CB(self):
         print("Cont rightClick")
@@ -44,7 +44,17 @@ class customCTK_WidgetTesterPart4(baseui.customCTK_WidgetTesterPart4UI):
         # print("Pot rightClick")
         pass
     def callme(self, num):
-        print("callme", type(num),num, type(self.boxvalue_VAR.get()),self.boxvalue_VAR.get() )
+        print("callme", type(num),num )
+
+    def explorerSingle(self, name):
+        print("single Click Explorer", name)
+
+    def explorerDouble(self, name):
+        print("double Click Explorer", name)
+
+
+    def pathCommand(self, name):
+        print("pathcommand", name)
 
 
 if __name__ == "__main__":

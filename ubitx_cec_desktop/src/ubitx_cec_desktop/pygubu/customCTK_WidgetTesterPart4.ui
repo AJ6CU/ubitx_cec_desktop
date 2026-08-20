@@ -21,18 +21,19 @@
       <setting id="ttk_style_definition_file" />
     </settings>
     <customwidgets>
-      <customwidget path="../sCustomTkinter/sCTK.py" />
-      <customwidget path="../sCustomTkinter/sCTkSpinboxbo.py" />
+      <customwidget path="../sCustomTkinter/sCTkWidgetSetForPygubuDesigner.py" />
+      <customwidget path="../sCustomTkinter/sCTkFileExplorerbo.py" />
     </customwidgets>
     <resources />
   </project>
   <object class="customtkinter.CTk" id="ctk1">
     <child>
       <object class="customtkinter.CTkFrame" id="ctkframe1">
-        <layout manager="pack">
-          <property name="expand">true</property>
-          <property name="fill">x</property>
-          <property name="side">top</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="columnspan">3</property>
+          <property name="row">0</property>
+          <property name="sticky">ew</property>
         </layout>
         <child>
           <object class="custom_widgets.sCTkFrame" id="sctkframe5">
@@ -144,8 +145,9 @@
     </child>
     <child>
       <object class="custom_widgets.sCTkFrame" id="sctkframe7">
-        <layout manager="pack">
-          <property name="side">left</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">1</property>
         </layout>
         <child>
           <object class="custom_widgets.sCTkSpinbox" id="sctkspinbox1">
@@ -166,8 +168,41 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Spinbox" id="spinbox1">
-            <property name="wrap">true</property>
+          <object class="custom_widgets.sCTkSegmentedButton" id="sctksegmentedbutton1">
+            <property name="values">["one","two","three"]</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="custom_widgets.sCTkPathChooser" id="sctkpathchooser1">
+            <property name="command" type="command" cbtype="simple">pathCommand</property>
+            <property name="initialdir">~</property>
+            <property name="justify">left</property>
+            <property name="title" translatable="yes">pick me</property>
+            <property name="type">file</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="custom_widgets.sCTkFrame" id="sctkframe8">
+        <layout manager="grid">
+          <property name="column">1</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object class="custom_widgets.sCTkFileExplorer" id="sctkfileexplorer1">
+            <property name="command" type="command" cbtype="simple">explorerSingle</property>
+            <property name="double_click_command" type="command" cbtype="simple">explorerDouble</property>
+            <property name="filetypes">['.py','.txt']</property>
+            <property name="initialdir">~</property>
+            <property name="state">disabled</property>
+            <property name="type">file</property>
             <layout manager="pack">
               <property name="side">top</property>
             </layout>

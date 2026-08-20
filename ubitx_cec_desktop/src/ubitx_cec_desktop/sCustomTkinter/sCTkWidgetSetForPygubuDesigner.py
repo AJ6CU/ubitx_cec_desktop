@@ -3,63 +3,92 @@ from pygubu.component.plugin_engine import IDesignerPlugin
 from pygubu.component.plugin_manager import PluginManager
 from customtkinter import (CTkScrollableFrame)
 
-from sCTkFrame import sCTkFrame
-from sCTkFramebo import (
-    sCTkFrameBO,
-    builder_id as sCTkFrame_builder_id
-)
+#
+#   Import the sCustomTkinter Widgets (alphabetically)
+#   Format is "import foobo" for normal widgets that are selectable
+#   format is
+#   from foo import foo
+#   from foobo import (fooBO,builder_id as foo_builder_id)
+#   notice difference between "foorbo" (file name) and "fooBO" (class name within that file)
+#
 
-from sCTkFrameOutlined import sCTkFrameOutlined
-from sCTkFrameOutlinedbo import (
-    sCTkFrameOutlinedBO,
-    builder_id as sCTkFrameOutlined_builder_id
-)
+
+import sCTkButtonPrimarybo
+import sCTkButtonSecondarybo
+import sCTkButtonTertiarybo
+
+import sCTkCheckBoxbo
+import sCTkComboBoxbo
+
+import sCTkDialbo
+
+import sCTkDialogCorebo
+
+import sCTkEntryPrimarybo
+import sCTkEntrySecondarybo
+
+#import sCTkFileExplorerbo # missing bo file
+
+
+from sCTkFrame import sCTkFrame
+from sCTkFramebo import (sCTkFrameBO, builder_id as sCTkFrame_builder_id)
 
 from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
-from sCTkFrameLabeledPrimarybo import (
-    sCTkFrameLabeledPrimaryBO,
-    builder_id as sCTkFrameLabeledPrimary_builder_id
-)
+from sCTkFrameLabeledPrimarybo import (sCTkFrameLabeledPrimaryBO, builder_id as sCTkFrameLabeledPrimary_builder_id)
+import sCTkFrameLabeledSecondarybo
 
-from sCTkPathChooser import sCTkPathChooser
-from sCTkPathChooserbo import (
-    sCTkPathChooserBO,
-    builder_id as sCTkPathChooser_builder_id
-)
+from sCTkFrameOutlined import sCTkFrameOutlined
+from sCTkFrameOutlinedbo import (sCTkFrameOutlinedBO, builder_id as sCTkFrameOutlined_builder_id)
 
+import sCTkLabelPrimarybo
+import sCTkLabelSecondarybo
+import sCTkLabelTertiarybo
 
-from sCTkTableview import sCTkTableview
-from sCTkTableviewbo import (
-    sCTkTableviewBO,
-    builder_id as sCTkTableview_builder_id
-)
-
-from sCTkSelector import sCTkSelector
-from sCTkCheckBox import sCTkCheckBox
-
-from sCTkSelectorbo import (
-    sCTkSelectorBO,
-    builder_id as sCTkSelector_builder_id
-)
+import sCTkOptionMenuPrimarybo
 
 from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
-from sCTkOptionMenuSecondarybo import (
-    sCTkOptionMenuSecondaryBO,
-    builder_id as sCTkOptionMenuSecondary_builder_id
-)
+from sCTkOptionMenuSecondarybo import (sCTkOptionMenuSecondaryBO, builder_id as sCTkOptionMenuSecondary_builder_id)
+
+from sCTkPathChooser import sCTkPathChooser
+from sCTkPathChooserbo import (sCTkPathChooserBO, builder_id as sCTkPathChooser_builder_id)
+
+import sCTkProgressBarbo
+
+import sCTkRadioButtonbo
+
+import sCTkScrollableFramebo
+
+import sCTkScrollbarbo
+
+import sCTkSegmentedButtonbo
+# from sCTkSegmentedButtonbo import (sCTkSegmentedButtonBO, builder_id as sCTkSegmentedButton_builder_id )
+
+from sCTkSelector import sCTkSelector
+from sCTkCheckBox import sCTkCheckBox       # Needs importing because selector made up of checkboxes and we need
+                                            # to search to find the clickable master frame
+from sCTkSelectorbo import (sCTkSelectorBO, builder_id as sCTkSelector_builder_id)
+
+import sCTkSeparatorbo
+
+import sCTkSliderbo
+
+import sCTkSMeterbo
+import sCTkSMeterBarbo
 
 from sCTkSpinbox import sCTkSpinbox
-from sCTkSpinboxbo import (
-    sCTkSpinboxBO,
-    builder_id as sCTkSpinbox_builder_id
-)
+from sCTkSpinboxbo import (sCTkSpinboxBO, builder_id as sCTkSpinbox_builder_id)
 
+import sCTkSwitchbo
 
-# from sCTkDial import sCTkDialContinuous
-# from sCTkDialbo import (
-#     sCTkDialContinuousBO,
-#     builder_id as sCTkDialContinuous_builder_id
-# )
+import sCTkTabviewbo
+
+from sCTkTableview import sCTkTableview
+from sCTkTableviewbo import (sCTkTableviewBO, builder_id as sCTkTableview_builder_id)
+
+import sCTkTextboxPrimarybo
+import sCTkTextboxSecondarybo
+
+# import sCTkTreeviewbo         # undecied whether to include
 
 #
 # Preview class for sCTkFrame
@@ -76,16 +105,15 @@ class sCTkFrameOutlinedForPreview(sCTkFrameOutlined):
         #  clickable on preview we need a hack.
         return super(tk.Frame, self).winfo_children()
 
-
 class sCTkFrameLabeledPrimaryForPreview(sCTkFrameLabeledPrimary):
     def winfo_children(self):
-        # CTkFrameOUtline has a hidden canvas inside. So, to make it
+        # sCTkFrameLabeledPrimary has a hidden canvas inside. So, to make it
         #  clickable on preview we need a hack.
         return super(tk.Frame, self).winfo_children()
 
 class sCTkPathChooserForPreview(sCTkPathChooser):
     def winfo_children(self):
-        # CTkFrameOUtline has a hidden canvas inside. So, to make it
+        # sCTkPathChooser has a hidden canvas inside. So, to make it
         #  clickable on preview we need a hack.
         return super(tk.Frame, self).winfo_children()
 
@@ -140,9 +168,21 @@ class sCTkSpinboxForPreview(sCTkSpinbox):
             for cwidget in widget.winfo_children():
                 clist.append(cwidget)
         return clist
-# class sCTkDialContinuousForPreview(sCTkDialContinuous):
+
+# class sCTkSegmentedButtonForPreview(sCTkSegmentedButton):
 #     def winfo_children(self):
-#         return super(tk.Frame, self).winfo_children()
+#         # # CTkFrameOUtline has a hidden canvas inside. So, to make it
+#         # #  clickable on preview we need a hack.
+#         # return super(tk.Frame, self).winfo_children()
+#
+#         # internal = [
+#         #     self.object
+#         # ]
+#         # clist = []
+#         # for widget in internal:
+#         #     for cwidget in widget.winfo_children():
+#         #         clist.append(cwidget)
+#         return self.winfo_children().master
 
 #
 # Builder for Preview
@@ -170,9 +210,10 @@ class sCTkOptionMenuSecondaryForPreviewBO(sCTkOptionMenuSecondaryBO):
 
 class sCTkSpinboxForPreviewBO(sCTkSpinboxBO):
     class_ = sCTkSpinboxForPreview
+
+# class sCTkSegmentedButtonForPreviewBO(sCTkSegmentedButtonBO):
+#     class_ = sCTkSegmentedButtonForPreview
 #
-# class sCTkDialContinuousForPreviewBO(sCTkSelectorBO):
-#     class_ = sCTkDialContinuousForPreview
 
 
 #
@@ -200,9 +241,9 @@ class sCTkPlugin(IDesignerPlugin):
             return sCTkOptionMenuSecondaryForPreviewBO
         elif builder_uid == sCTkSpinbox_builder_id:
             return sCTkSpinboxForPreviewBO
+        # elif builder_uid == sCTkSegmentedButton_builder_id:
+        #     return sCTkSegmentedButtonForPreviewBO
 
-        # elif builder_uid == sCTkDialContinuous_builder_id:
-        #     return sCTkDialContinuousForPreviewBO
         return None
 
 

@@ -261,6 +261,10 @@ class customCTK_WidgetTesterPart2UI:
             framelabeledprimary3)
         sctkoptionmenusecondary1.configure(values=["VW", "Audi", "Ford"])
         sctkoptionmenusecondary1.grid(column=1, pady="10 0", row=2)
+        sctkoptionmenusecondary2 = sCTkOptionMenuSecondary(
+            framelabeledprimary3)
+        sctkoptionmenusecondary2.configure(values=["VW", "Audi", "Ford"])
+        sctkoptionmenusecondary2.grid(column=1, pady="10 0", row=3)
         framelabeledprimary3.grid(column=2, row=1)
         sctkframelabeledprimary1 = sCTkFrameLabeledPrimary(ctkframe1)
         sctkframelabeledprimary1.configure(

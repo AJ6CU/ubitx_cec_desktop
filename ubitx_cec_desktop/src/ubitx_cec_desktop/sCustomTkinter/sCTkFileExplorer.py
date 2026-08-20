@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-sCTkFileExplorer - Part 1 of 4
+sCTkFileExplorer
 
-A fully stylized, theme-compliant CustomTkinter file system navigation panel.
-Unselectable files/folders are dynamically dimmed and unclickable.
+A theme-compliant, highly configurable custom file explorer wrapper component.
+Files/folders are dynamically dimmed and unclickable.
 Handles standalone panel embed loops with single and double click callbacks.
 """
 import os
@@ -42,7 +42,7 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
                  overwrite_preferred_drawing_method: Union[str, None] = None,
                  **kwargs):
 
-        # Cleanse incoming custom dictionary parameters to protect framework from core argument leaks
+        # 1. Cleanse incoming custom dictionary parameters to protect framework from core argument leaks
         kwargs.pop("initialdir", None)
         kwargs.pop("initialfile", None)
         kwargs.pop("type", None)
@@ -56,7 +56,7 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
         theme_defaults = THEME_DEFAULTS.get("sCTkFileExplorer", {})
         ThemeableWidget.__init__(self, theme_defaults, kwargs)
 
-        # Initialize base frame container safely with a perfectly sanitized kwargs package pass
+        # 2. Initialize base frame container safely with a perfectly sanitized kwargs package pass
         super().__init__(master, width=width, height=height, corner_radius=corner_radius,
                          border_width=border_width, bg_color=bg_color, fg_color=fg_color,
                          border_color=border_color, background_corner_colors=background_corner_colors,
@@ -103,6 +103,7 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
                     self.filetypes.append(clean_f)
         else:
             self.filetypes = None
+
         # Resolve starting coordinates, correcting for tilde variables upfront
         raw_file = os.path.expanduser(str(initialfile)) if initialfile else None
         raw_dir = os.path.expanduser(str(initialdir)) if initialdir else None
@@ -129,26 +130,11 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
         self.top_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
         self.top_frame.columnconfigure(1, weight=1)
 
-        self.back_button = ctk.CTkButton(
-            self.top_frame,
-            text="▲ Up",
-            width=45,
-            font=self.final_kw.get("btn_font"),
-            fg_color=self.final_kw.get("btn_fg"),
-            hover_color=self.final_kw.get("btn_hover"),
-            text_color=self.final_kw.get("btn_text_color"),
-            border_color=self.final_kw.get("btn_border_color")
-        )
+        # 3. Mount sub-components cleanly as un-styled layout blocks
+        self.back_button = ctk.CTkButton(self.top_frame, text="▲ Up", width=45)
         self.back_button.grid(row=0, column=0, padx=(0, 5), sticky="nw")
 
-        self.path_entry = ctk.CTkEntry(
-            self.top_frame,
-            textvariable=self.selected_path,
-            font=self.final_kw.get("entry_font"),
-            fg_color=self.final_kw.get("entry_fg"),
-            border_color=self.final_kw.get("entry_border_color"),
-            text_color=self.final_kw.get("entry_text_color")
-        )
+        self.path_entry = ctk.CTkEntry(self.top_frame, textvariable=self.selected_path)
         self.path_entry.grid(row=0, column=1, sticky="ew")
 
         # Stretch the main container explicitly using layout grid weights to occupy available panel coordinates
@@ -161,7 +147,6 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
         self.canvas = ctk.CTkCanvas(
             self.main_container,
             highlightthickness=0,
-            bg=self._apply_appearance_mode(self.cget("fg_color")),
             width=self._desired_width - 30,
             height=self._desired_height - 70
         )
@@ -176,11 +161,87 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
 
         self.canvas.create_window((0, 0), window=self.explorer_frame, anchor="nw", tags="inner_window")
 
+        # Bind operational controls
         self.after(10, self._finalize_split_bindings)
 
-    # =========================================================================
-    # sCTkFileExplorer - Part 3 of 4: Configuration API & State Managers
-    # =========================================================================
+        # 4. Trigger configuration loop tracking to apply initial layout paint
+        self._process_live_theme_repaint()
+
+    def _process_live_theme_repaint(self):
+        """Centralized theme-repaint pipeline resolving look choices and interaction states."""
+        theme = self.final_kw
+        d_map = theme.get("disabled_map", {})
+
+        # Track active state variables safely
+        current_state = getattr(self, "_state", "normal")
+
+        # 1. EVALUATE PASSIVE VERSUS ACTIVE ACCORDING TO WIDGET CONTROLLERS
+        if current_state == "disabled":
+            btn_fg = d_map.get("btn_fg", theme.get("btn_fg"))
+            btn_border = d_map.get("btn_border_color", theme.get("btn_border_color"))
+            btn_text = d_map.get("btn_text_color", theme.get("btn_text_color"))
+            btn_hover = btn_fg  # Lock panel hover scaling animations out when disabled
+
+            entry_fg = d_map.get("entry_fg", theme.get("entry_fg"))
+            entry_border = d_map.get("entry_border_color", theme.get("entry_border_color"))
+            entry_text = d_map.get("entry_text_color", theme.get("entry_text_color"))
+
+            # 🎨 SCROLLBAR INTERACTION LOCKOUT MAPPING
+            # Pull desaturated gray tones from disabled_map button definitions to dim scrollbar thumb
+            sb_btn_color = d_map.get("button_color", ("#CBD5E1", "#334155"))
+            sb_command = None  # Wiping the tracking command disconnects dragging mechanics
+        else:
+            btn_fg = theme.get("btn_fg")
+            btn_border = theme.get("btn_border_color")
+            btn_text = theme.get("btn_text_color")
+            btn_hover = theme.get("btn_hover")
+
+            entry_fg = theme.get("entry_fg")
+            entry_border = theme.get("entry_border_color")
+            entry_text = theme.get("entry_text_color")
+
+            # Restore original theme color configurations and canvas scrolling mechanics
+            sb_btn_color = theme.get("button_color", ctk.ThemeManager.theme["CTkScrollbar"]["button_color"])
+            sb_command = self.canvas.yview
+
+        # Cleanly resolve background color settings for the underlying canvas container
+        canvas_bg_raw = self.cget("fg_color")
+        if canvas_bg_raw == "transparent" or canvas_bg_raw is None:
+            canvas_bg_raw = ctk.ThemeManager.theme["CTkFrame"]["fg_color"]
+        self.canvas.configure(bg=self._apply_appearance_mode(canvas_bg_raw))
+
+        # 2. PROPAGATE THEMED VALUES UNIFORMLY DOWN TO MANAGEMENT CONTROLS
+        if hasattr(self, "back_button"):
+            self.back_button.configure(
+                state=current_state,
+                font=theme.get("btn_font"),
+                fg_color=ThemeableWidget._resolve_color(self, btn_fg),
+                hover_color=ThemeableWidget._resolve_color(self, btn_hover),
+                text_color=ThemeableWidget._resolve_color(self, btn_text),
+                border_color=ThemeableWidget._resolve_color(self, btn_border)
+            )
+
+        if hasattr(self, "path_entry"):
+            self.path_entry.configure(
+                state=current_state,
+                font=theme.get("entry_font"),
+                fg_color=ThemeableWidget._resolve_color(self, entry_fg),
+                border_color=ThemeableWidget._resolve_color(self, entry_border),
+                text_color=ThemeableWidget._resolve_color(self, entry_text)
+            )
+
+        # 🎨 3. APPLY RUNTIME THEME OVERRIDES DIRECTLY INTO INTERNAL SCROLLBAR SUB-WIDGET
+        if hasattr(self, "y_scrollbar"):
+            self.y_scrollbar.configure(
+                command=sb_command,
+                button_color=ThemeableWidget._resolve_color(self, sb_btn_color),
+                button_hover_color=ThemeableWidget._resolve_color(self, sb_btn_color)
+            )
+
+        # Redraw row item grid list to capture the fresh text color changes smoothly
+        if hasattr(self, "path_to_show"):
+            self._fill_explorer()
+
     def _configure_frame(self, event=None):
         self.after(10, lambda: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
 
@@ -233,19 +294,43 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
             self.canvas.bind_all("<MouseWheel>", self._mousewheel)
 
         self._fill_explorer()
-        # Cleaned out initial state seed check block since state tracking is handled at the chooser level
 
-    def configure(self, cnf=None, **kw):
+    def configure(self, *args, **kwargs):
         """Extended configure to handle dynamic updates and apply geometry/theme parameters."""
-        if cnf is not None:
-            kw = cnf | kw
 
-        if "filetypes" in kw:
-            ft_val = kw.pop("filetypes")
+        # 1. POSITION INTERCEPT LOOP: Resolves live Pygubu workspace preview queries
+        if args and len(args) == 1:
+            pname = args[0]
+            if pname == "state":
+                return ("state", "state", "state", "normal", getattr(self, "_state", "normal"))
+            if pname == "type":
+                return ("type", "type", "type", "directory", self.response_type)
+            if pname == "initialdir":
+                return ("initialdir", "initialdir", "initialdir", "", self.path_to_show.get())
+            if pname == "initialfile":
+                return ("initialfile", "initialfile", "initialfile", "", self.selected_path.get())
+            if pname == "filetypes":
+                return ("filetypes", "filetypes", "filetypes", "", str(self.filetypes) if self.filetypes else "")
+            if pname == "double_click_command":
+                return ("double_click_command", "double_click_command", "double_click_command", "",
+                        str(self.double_click_command))
+            return super().configure(*args, **kwargs)
+
+        # 2. KEYWORD SANITIZATION: Captures runtime configurations
+        if "state" in kwargs:
+            self._state = str(kwargs.pop("state")).lower()
+            if self._state not in ("normal", "disabled"):
+                self._state = "normal"
+
+        if "type" in kwargs:
+            self.response_type = str(kwargs.pop("type")).lower()
+            if self.response_type not in ("file", "directory"):
+                self.response_type = "directory"
+
+        # 🔑 FIX: Accept the filetypes setting unconditionally without throwing order-of-operation errors
+        if "filetypes" in kwargs:
+            ft_val = kwargs.pop("filetypes")
             if ft_val:
-                if self.response_type != "file":
-                    raise ValueError(
-                        "Cannot provide 'filetypes' configuration filter when layout mode context is 'directory'.")
                 if isinstance(ft_val, str):
                     cleaned_ft = ft_val.strip()
                     if not (cleaned_ft.startswith("[") and cleaned_ft.endswith("]")):
@@ -270,35 +355,67 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
             else:
                 self.filetypes = None
 
-        if "width" in kw:
-            self._desired_width = int(kw.pop("width"))
-            super().configure(width=self._desired_width)
+        # 🚨 THE RECONCILIATION: Completely removed the immediate 'raise ValueError' from here
+
+        if "width" in kwargs:
+            self._desired_width = int(kwargs.pop("width"))
+            kwargs["width"] = self._desired_width
             if hasattr(self, "top_frame"): self.top_frame.configure(width=self._desired_width)
             if hasattr(self, "main_container"): self.main_container.configure(width=self._desired_width)
             if hasattr(self, "canvas"): self.canvas.configure(width=self._desired_width - 30)
 
-        if "height" in kw:
-            self._desired_height = int(kw.pop("height"))
-            super().configure(height=self._desired_height)
+        if "height" in kwargs:
+            self._desired_height = int(kwargs.pop("height"))
+            kwargs["height"] = self._desired_height
             if hasattr(self, "main_container"): self.main_container.configure(height=self._desired_height - 60)
             if hasattr(self, "canvas"): self.canvas.configure(height=self._desired_height - 70)
 
-        # Removed the block tracking kw.pop("state") to let the container rely cleanly on chooser-level freeze loops
+        if "command" in kwargs: self.command = kwargs.pop("command")
+        if "double_click_command" in kwargs: self.double_click_command = kwargs.pop("double_click_command")
 
-        if "command" in kw: self.command = kw.pop("command")
-        if "double_click_command" in kw: self.double_click_command = kw.pop("double_click_command")
+        if "initialdir" in kwargs:
+            raw_init_dir = kwargs.pop("initialdir")
+            if raw_init_dir:
+                init_dir = os.path.normpath(os.path.abspath(os.path.expanduser(str(raw_init_dir))))
+                self.path_to_show.set(init_dir)
+                self.change_path = False
+                self.selected_path.set(init_dir)
+                self.change_path = True
 
-        return super().configure(**kw)
+        if "initialfile" in kwargs:
+            raw_init_file = kwargs.pop("initialfile")
+            if raw_init_file:
+                init_file = os.path.normpath(os.path.abspath(os.path.expanduser(str(raw_init_file))))
+                self.selected_path.set(init_file)
+
+        # Scrub custom theme mappings from final_kw tracking dictionary
+        if hasattr(self, "final_kw"):
+            for custom_key in ["type", "filetypes", "double_click_command", "initialdir", "initialfile", "state"]:
+                self.final_kw.pop(custom_key, None)
+
+        # Force a visual layout repaint to push the changes down
+        self._process_live_theme_repaint()
+        return super().configure(*args, **kwargs)
 
     config = configure
 
-    # =========================================================================
-    # sCTkFileExplorer - Part 4 of 4: Rendering Engine & Callbacks
-    # =========================================================================
+    config = configure
+
     def _fill_explorer(self):
+        """Populates the explorer frame grid layout with files and directories based on mode and state."""
         self._empty_explorer()
         current_dir = self.path_to_show.get()
         current_selected = os.path.normpath(os.path.abspath(self.selected_path.get()))
+
+        # 🔑 RUNTIME VALIDATION LOOKUP: Protects against sequential Pygubu configure loops
+        if self.filetypes and self.response_type != "file":
+            error_lbl = ctk.CTkLabel(
+                self.explorer_frame,
+                text="⚠️ UI Configuration Mismatch:\nCannot apply 'filetypes' filters when mode is 'directory'.",
+                text_color="red"
+            )
+            error_lbl.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+            return
 
         try:
             items = sorted(os.listdir(current_dir))
@@ -309,6 +426,10 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
             return
 
         row_idx = 0
+        current_state = getattr(self, "_state", "normal")
+        theme = self.final_kw
+        d_map = theme.get("disabled_map", {})
+
         for item in items:
             if item.startswith('.'):
                 continue
@@ -326,15 +447,25 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
             icon = self.folder_icon if is_dir else self.file_icon
             is_currently_highlighted = (full_path == current_selected)
 
-            if is_valid_row:
-                txt_color = self.final_kw.get("row_active_text", self._apply_appearance_mode(
-                    ctk.ThemeManager.theme["CTkLabel"]["text_color"]))
-                widget_state = "normal"
-                btn_bg = self.final_kw.get("btn_fg", ctk.ThemeManager.theme["CTkButton"][
-                    "fg_color"]) if is_currently_highlighted else "transparent"
+            # Evaluate row visual aesthetics based on overall master state
+            if current_state == "disabled":
+                # Master frame lockdown: Force every entry row to dim and freeze interactions
+                txt_color = ThemeableWidget._resolve_color(self,
+                                                           d_map.get("row_active_text", theme.get("row_dimmed_text")))
+                row_widget_state = "disabled"
+                btn_bg = "transparent"
+            elif is_valid_row:
+                # Active component state: Standard rendering rules for matching files/folders
+                txt_color = ThemeableWidget._resolve_color(self, theme.get("row_active_text",
+                                                                           ctk.ThemeManager.theme["CTkLabel"][
+                                                                               "text_color"]))
+                row_widget_state = "normal"
+                btn_bg = ThemeableWidget._resolve_color(self, theme.get(
+                    "btn_fg")) if is_currently_highlighted else "transparent"
             else:
-                txt_color = self.final_kw.get("row_dimmed_text", "gray50")
-                widget_state = "disabled"
+                # Active component state: Dim files that don't match the filetypes constraint filters
+                txt_color = ThemeableWidget._resolve_color(self, theme.get("row_dimmed_text", "gray50"))
+                row_widget_state = "disabled"
                 btn_bg = "transparent"
 
             item_btn = ctk.CTkButton(
@@ -343,14 +474,14 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
                 anchor="w",
                 fg_color=btn_bg,
                 text_color=txt_color,
-                state=widget_state,
-                hover_color=self.final_kw.get("btn_hover", self._apply_appearance_mode(
-                    ctk.ThemeManager.theme["CTkButton"]["hover_color"])),
+                state=row_widget_state,
+                hover_color=ThemeableWidget._resolve_color(self, theme.get("btn_hover")),
                 command=lambda p=full_path: self._on_item_clicked(p)
             )
             item_btn.grid(row=row_idx, column=0, sticky="ew", padx=2, pady=1)
 
-            if is_valid_row:
+            # Only register mouse double-click bindings and label lookups if the widget state is fully active
+            if is_valid_row and current_state != "disabled":
                 item_btn.bind("<Double-Button-1>", lambda e, p=full_path: self._on_item_double_clicked(p))
                 self.item_labels[full_path] = item_btn
 
@@ -359,7 +490,6 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
         self.canvas.yview_moveto(0)
 
     def _on_item_clicked(self, target_path):
-        import time
         now = time.time()
         if (now - self._last_double_click_time) < 0.3:
             return
@@ -374,7 +504,7 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
 
         for path, btn in self.item_labels.items():
             if path == target_path:
-                btn.configure(fg_color=self.final_kw.get("btn_fg", ctk.ThemeManager.theme["CTkButton"]["fg_color"]))
+                btn.configure(fg_color=ThemeableWidget._resolve_color(self, self.final_kw.get("btn_fg")))
             else:
                 btn.configure(fg_color="transparent")
 
@@ -393,7 +523,6 @@ class sCTkFileExplorer(ctk.CTkFrame, ThemeableWidget):
             if self.response_type == "directory":
                 target_path = os.path.dirname(target_path)
 
-            import time
             now = time.time()
             if (now - self._last_double_click_time) < 0.3:
                 return
@@ -409,21 +538,17 @@ if __name__ == "__main__":
     app.title("Standalone Embedded sCTkFileExplorer Panel View")
     app.geometry("500x500")
 
-
     def track_selection(path):
         print(f"SINGLE-CLICK HIGHLIGHT: {path}")
 
-
     def execute_file(path):
         print(f"DOUBLE-CLICK CONFIRMED! Launching: {path}")
-
 
     explorer = sCTkFileExplorer(
         app,
         type="file",
         filetypes=[".py"],
         command=track_selection,
-        state="disabled",
         double_click_command=execute_file
     )
     explorer.pack(fill="both", expand=True, padx=15, pady=15)

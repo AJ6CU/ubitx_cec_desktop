@@ -29,6 +29,10 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
     })
 
     def __init__(self, master=None, **kwargs):
+        # 1. Initialize local theme defaults from sCTkThemes.py first
+        self._local_defaults = THEME_DEFAULTS.get("sCTkPathChooser", {})
+        self._custom_disabled_map = self._local_defaults.get("disabled_map", {})
+
         # Forcefully extract custom properties out so ctk.CTkFrame never throws a kwargs error
         self.type = str(kwargs.pop("type", "directory") or "directory").lower()
         self.title = str(kwargs.pop("title", "Select Path"))
@@ -65,12 +69,10 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         # Clean out other potential custom property parameter leaks
         kwargs.pop("defaultextension", None)
         kwargs.pop("entry_width", None)
-        kwargs.pop("initialdir", None)
-        kwargs.pop("initialfile", None)
-        kwargs.pop("filetypes", None)
 
-        raw_file = kwargs.get("initialfile", None)
-        raw_dir = kwargs.get("initialdir", None)
+        raw_file = kwargs.pop("initialfile", None)
+        raw_dir = kwargs.pop("initialdir", None)
+        ft_raw = kwargs.pop("filetypes", None)
 
         self.initialfile = os.path.normpath(os.path.expanduser(str(raw_file))) if raw_file else None
         self.initialdir = os.path.normpath(os.path.expanduser(str(raw_dir))) if raw_dir else os.getcwd()
@@ -79,7 +81,6 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             self.initialdir = os.path.dirname(self.initialfile)
             self.initialfile = None
 
-        ft_raw = kwargs.get("filetypes", None)
         self.filetypes = []
         if ft_raw:
             if self.type != "file":
@@ -97,8 +98,7 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         else:
             self.filetypes = None
 
-        theme_defaults = THEME_DEFAULTS.get("sCTkPathChooser", {})
-        ThemeableWidget.__init__(self, theme_defaults, kwargs)
+        ThemeableWidget.__init__(self, self._local_defaults, kwargs)
 
         # Initialize base container passing standard frame parameters safely with no extra keyword arguments leaking
         super().__init__(master, width=desired_width, height=desired_height, **kwargs)
@@ -109,161 +109,182 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         self.columnconfigure(1, weight=0)  # Column 1 (Button) stays fixed to btn_width
         self.rowconfigure(0, weight=1)
 
-        self.entry = ctk.CTkEntry(
-            self,
-            font=self.final_kw.get("entry_font"),
-            fg_color=self.final_kw.get("entry_fg"),
-            border_color=self.final_kw.get("entry_border_color"),
-            text_color=self.final_kw.get("entry_text_color"),
-            justify=self.justify,
-            width=0,  # Base width is 0 so grid alignment stretching governs size fluidly
-            height=self.entry_height
-        )
+        # Mount sub-widgets cleanly as un-styled slates
+        self.entry = ctk.CTkEntry(self, justify=self.justify, width=0, height=self.entry_height)
         entry_v_padding = max(0, (desired_height - self.entry_height) // 2)
         self.entry.grid(row=0, column=0, sticky="ew", padx=(0, 8), pady=entry_v_padding)
 
         default_seed = self.initialfile if self.initialfile else self.initialdir
         self.set(default_seed)
 
-        btn_txt = "Browse Folders..." if self.type == "directory" else "Browse Files..."
-        if self.btn_text is not None:
-            btn_txt = self.btn_text
-
-        self.btn = ctk.CTkButton(
-            self,
-            text=btn_txt,
-            font=self.final_kw.get("btn_font"),
-            fg_color=self.final_kw.get("btn_fg"),
-            hover_color=self.final_kw.get("btn_hover"),
-            text_color=self.final_kw.get("btn_text_color"),
-            border_color=self.final_kw.get("btn_border_color"),
-            width=self.btn_width,
-            height=self.btn_height,
-            command=self._launch_browser
-        )
+        self.btn = ctk.CTkButton(self, width=self.btn_width, height=self.btn_height, command=self._launch_browser)
         btn_v_padding = max(0, (desired_height - self.btn_height) // 2)
         self.btn.grid(row=0, column=1, sticky="ew", pady=btn_v_padding)
 
-        # Apply the initial tracking state configuration seed right at the end of setup
+        # Force structural tracking state initialization loops
+        self._process_live_theme_repaint()
         if self._initial_state_seed == "disabled":
             self.configure(state="disabled")
 
-    # =========================================================================
-    # sCTkPathChooser - Part 2: Configuration Overrides
-    # =========================================================================
-    def configure(self, cnf=None, **kw):
-        """Extended configure to allow the main program/Pygubu to override geometry and justification."""
-        if cnf is not None:
-            kw = cnf | kw
+    def _process_live_theme_repaint(self):
+        """Centralized theme-repaint pipeline resolving aesthetic look parameters."""
+        theme = self.final_kw
+        btn_txt = self.btn_text if self.btn_text is not None else ("Browse Folders..." if self.type == "directory" else "Browse Files...")
 
-        if "btn_text" in kw:
-            raw_txt = kw.pop("btn_text")
+        if hasattr(self, "_state") and self._state == "disabled":
+            d_map = self._custom_disabled_map
+            entry_bg = d_map.get("entry_fg", theme.get("entry_fg"))
+            entry_border = d_map.get("entry_border_color", theme.get("entry_border_color"))
+            entry_text = d_map.get("entry_text_color", theme.get("entry_text_color"))
+            btn_bg = d_map.get("btn_fg", theme.get("btn_fg"))
+            btn_border = d_map.get("btn_border_color", theme.get("btn_border_color"))
+            btn_text = d_map.get("btn_text_color", theme.get("btn_text_color"))
+            btn_hover = btn_bg
+        else:
+            entry_bg = theme.get("entry_fg")
+            entry_border = theme.get("entry_border_color")
+            entry_text = theme.get("entry_text_color")
+            btn_bg = theme.get("btn_fg")
+            btn_border = theme.get("btn_border_color")
+            btn_text = theme.get("btn_text_color")
+            btn_hover = theme.get("btn_hover")
+
+        if hasattr(self, "entry"):
+            self.entry.configure(
+                font=theme.get("entry_font"),
+                fg_color=ThemeableWidget._resolve_color(self, entry_bg),
+                border_color=ThemeableWidget._resolve_color(self, entry_border),
+                text_color=ThemeableWidget._resolve_color(self, entry_text)
+            )
+
+        if hasattr(self, "btn"):
+            self.btn.configure(
+                text=btn_txt,
+                font=theme.get("btn_font"),
+                fg_color=ThemeableWidget._resolve_color(self, btn_bg),
+                hover_color=ThemeableWidget._resolve_color(self, btn_hover),
+                text_color=ThemeableWidget._resolve_color(self, btn_text),
+                border_color=ThemeableWidget._resolve_color(self, btn_border)
+            )
+
+    def configure(self, *args, **kwargs):
+        """Extended configure to handle Pygubu queries and dynamic look modifications."""
+
+        # 1. POSITION INTERCEPT LOOP: Resolves live Pygubu workspace preview queries
+        if args and len(args) == 1:
+            pname = args[0]
+            if pname == "type":
+                return ("type", "type", "type", "directory", self.type)
+            if pname == "justify":
+                return ("justify", "justify", "justify", "left", self.justify)
+            if pname == "btn_text":
+                return ("btn_text", "btn_text", "btn_text", "", str(self.btn_text) if self.btn_text else "")
+            if pname == "title":
+                return ("title", "title", "title", "Select Path", self.title)
+            if pname == "entry_height":
+                return ("entry_height", "entry_height", "entry_height", "32", self.entry_height)
+            if pname == "btn_width":
+                return ("btn_width", "btn_width", "btn_width", "110", self.btn_width)
+            if pname == "btn_height":
+                return ("btn_height", "btn_height", "btn_height", "32", self.btn_height)
+            return super().configure(*args, **kwargs)
+
+        # 2. KEYWORD SANITIZATION: Intercepts custom configuration properties
+        if "btn_text" in kwargs:
+            raw_txt = kwargs.pop("btn_text")
             self.btn_text = str(raw_txt) if raw_txt is not None else None
-            if hasattr(self, "btn"):
-                if self.btn_text is not None:
-                    self.btn.configure(text=self.btn_text)
-                else:
-                    self.btn.configure(text="Browse Folders..." if self.type == "directory" else "Browse Files...")
 
-        if "type" in kw:
-            self.type = str(kw.pop("type")).lower()
-            if hasattr(self, "btn") and self.btn_text is None:
-                self.btn.configure(text="Browse Folders..." if self.type == "directory" else "Browse Files...")
+        if "type" in kwargs:
+            self.type = str(kwargs.pop("type")).lower()
 
-        if "title" in kw: self.title = str(kw.pop("title"))
+        if "title" in kwargs:
+            self.title = str(kwargs.pop("title"))
 
-        if "justify" in kw:
-            self.justify = str(kw.pop("justify")).lower()
+        if "justify" in kwargs:
+            self.justify = str(kwargs.pop("justify")).lower()
             if self.justify not in ("left", "right", "center"):
                 self.justify = "left"
             if hasattr(self, "entry"):
                 self.entry.configure(justify=self.justify)
                 self.set(self.entry.get())
 
-        if "entry_height" in kw:
-            self.entry_height = int(kw.pop("entry_height"))
+        if "entry_height" in kwargs:
+            self.entry_height = int(kwargs.pop("entry_height"))
             if hasattr(self, "entry"):
                 self.entry.configure(height=self.entry_height)
                 current_h = self.cget("height")
                 v_pad = max(0, (current_h - self.entry_height) // 2)
                 self.entry.grid_configure(pady=v_pad)
 
-        if "btn_width" in kw:
-            self.btn_width = int(kw.pop("btn_width"))
+        if "btn_width" in kwargs:
+            self.btn_width = int(kwargs.pop("btn_width"))
             if hasattr(self, "btn"): self.btn.configure(width=self.btn_width)
 
-        if "btn_height" in kw:
-            self.btn_height = int(kw.pop("btn_height"))
+        if "btn_height" in kwargs:
+            self.btn_height = int(kwargs.pop("btn_height"))
             if hasattr(self, "btn"):
                 self.btn.configure(height=self.btn_height)
                 current_h = self.cget("height")
                 v_pad = max(0, (current_h - self.btn_height) // 2)
                 self.btn.grid_configure(pady=v_pad)
 
-        if "browser_width" in kw: self.browser_width = int(kw.pop("browser_width"))
-        if "browser_height" in kw: self.browser_height = int(kw.pop("browser_height"))
+        if "browser_width" in kwargs: self.browser_width = int(kwargs.pop("browser_width"))
+        if "browser_height" in kwargs: self.browser_height = int(kwargs.pop("browser_height"))
+        if "command" in kwargs: self.command = kwargs.pop("command")
 
-        if "width" in kw:
-            w_val = int(kw.pop("width"))
-            super().configure(width=w_val)
+        if "width" in kwargs:
+            super().configure(width=int(kwargs.pop("width")))
 
-        if "height" in kw:
-            h_val = int(kw.pop("height"))
+        if "height" in kwargs:
+            h_val = int(kwargs.pop("height"))
             super().configure(height=h_val)
 
             if hasattr(self, "entry"):
-                target_entry_h = self.entry_height if ("entry_height" not in kw) else min(self.entry_height, h_val)
+                target_entry_h = min(self.entry_height, h_val)
                 self.entry.configure(height=target_entry_h)
                 v_pad_entry = max(0, (h_val - target_entry_h) // 2)
                 self.entry.grid_configure(pady=v_pad_entry)
 
             if hasattr(self, "btn"):
-                target_btn_h = self.btn_height if ("btn_height" not in kw) else min(self.btn_height, h_val)
+                target_btn_h = min(self.btn_height, h_val)
                 self.btn.configure(height=target_btn_h)
                 v_pad_btn = max(0, (h_val - target_btn_h) // 2)
                 self.btn.grid_configure(pady=v_pad_btn)
+
+        if "state" in kwargs:
+            self._state = str(kwargs.pop("state")).lower()
+            if hasattr(self, "entry") and hasattr(self, "btn"):
+                st = "disabled" if self._state == "disabled" else "normal"
+                self.entry.configure(state=st)
+                self.btn.configure(state=st)
+
+        # Scrub theme properties from final_kw to prevent parent frame from crashing
+        if hasattr(self, "final_kw"):
+            for custom_key in ["type", "justify", "btn_text", "title", "entry_height", "btn_width", "btn_height",
+                               "browser_width", "browser_height"]:
+                self.final_kw.pop(custom_key, None)
 
         self.grid_propagate(False)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=0)
 
-        kw.pop("defaultextension", None)
-        kw.pop("entry_width", None)
+        kwargs.pop("defaultextension", None)
+        kwargs.pop("entry_width", None)
+        kwargs.pop("initialdir", None)
+        kwargs.pop("initialfile", None)
+        kwargs.pop("filetypes", None)
 
-        if "state" in kw:
-            state_val = str(kw.pop("state")).lower()
-            theme = self.final_kw
-
-            if state_val == "disabled":
-                # Pull state colors directly from the isolated private class property map
-                d_map = getattr(self, "_widget_disabled_map", {})
-                self.entry.configure(state="disabled", fg_color=d_map.get("entry_fg"),
-                                     border_color=d_map.get("entry_border_color"),
-                                     text_color=d_map.get("entry_text_color"))
-                self.btn.configure(state="disabled", fg_color=d_map.get("btn_fg"),
-                                   border_color=d_map.get("btn_border_color"), text_color=d_map.get("btn_text_color"))
-            else:
-                self.entry.configure(state="normal", fg_color=theme.get("entry_fg"),
-                                     border_color=theme.get("entry_border_color"),
-                                     text_color=theme.get("entry_text_color"))
-                self.btn.configure(state="normal", fg_color=theme.get("btn_fg"),
-                                   border_color=theme.get("btn_border_color"), text_color=theme.get("btn_text_color"))
-
-        if kw:
-            return super().configure(**kw)
+        # Force a visual layout look repaint
+        self._process_live_theme_repaint()
+        return super().configure(**kwargs)
 
     config = configure
-
-    # =========================================================================
-    # sCTkPathChooser - Part 3: Modal Controllers & Test Suite
-    # =========================================================================
     def _launch_browser(self):
         popup = ctk.CTkToplevel(self.winfo_toplevel())
 
         final_title = self.title
         if self.type == "file" and self.filetypes:
-            formatted_exts = [f"*{ext}" for ext in self.filetypes] if isinstance(self.filetypes, list) else [
-                f"*{self.filetypes}"]
+            formatted_exts = [f"*{ext}" for ext in self.filetypes] if isinstance(self.filetypes, list) else [f"*{self.filetypes}"]
             ext_suffix = f" ({', '.join(formatted_exts)})"
             final_title = f"{self.title}{ext_suffix}"
 
@@ -290,6 +311,7 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
                 seed_dir = os.path.dirname(entry_val)
                 seed_file = entry_val
 
+        # Pass a flexible *args lambda to accept both 1-argument and 2-argument file explorer signatures
         explorer = sCTkFileExplorer(
             popup,
             type=self.type,
@@ -298,8 +320,8 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             initialfile=seed_file,
             width=self.browser_width - 25,
             height=self.browser_height,
-            command=self.set,
-            double_click_command=lambda p: (self.set(p), popup.grab_release(), popup.destroy())
+            command=lambda p: self.set(p),
+            double_click_command=lambda *args: (self.set(args[-1]), popup.grab_release(), popup.destroy())
         )
         explorer.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
@@ -317,23 +339,27 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             popup.grab_release()
             popup.destroy()
 
-        ctk.CTkButton(bottom_bar, text="Cancel", fg_color="transparent", border_width=2, command=close).pack(
-            side="left")
+        ctk.CTkButton(bottom_bar, text="Cancel", fg_color="transparent", border_width=2, command=close).pack(side="left")
         ctk.CTkButton(bottom_bar, text="Select", command=submit).pack(side="right")
 
     def set(self, path_string: str):
         self.entry.configure(state="normal")
         self.entry.delete(0, tk.END)
-        self.entry.insert(0, os.path.normpath(path_string))
+        # 🔑 FIX: Force fully absolute tilde user expansion when paths are applied via button selections
+        expanded_path = os.path.normpath(os.path.abspath(os.path.expanduser(str(path_string))))
+        self.entry.insert(0, expanded_path)
 
         if self.justify == "right":
             self.entry.xview_moveto(1.0)
         else:
             self.entry.xview_moveto(0.0)
 
+        if hasattr(self, "_state") and self._state == "disabled":
+            self.entry.configure(state="disabled")
+
         if self.command and callable(self.command):
             try:
-                self.command(path_string)
+                self.command(expanded_path)
             except TypeError:
                 self.command()
 

@@ -6,12 +6,14 @@ just tests each widget
 
 UI source file: customCTK_WidgetTesterPart4.ui
 """
-import tkinter.ttk as ttk
 from customtkinter import (CTk, CTkFrame)
 from sCTkDial import (sCTkDialContinuous, sCTkDialRange, sCTkDialSelector)
+from sCTkFileExplorer import sCTkFileExplorer
 from sCTkFrame import sCTkFrame
+from sCTkPathChooser import sCTkPathChooser
 from sCTkSMeter import sCTkSMeter
 from sCTkSMeterBar import sCTkSMeterBar
+from sCTkSegmentedButton import sCTkSegmentedButton
 from sCTkSpinbox import sCTkSpinbox
 from sCTkTableview import sCTkTableview
 
@@ -99,11 +101,10 @@ class customCTK_WidgetTesterPart4UI:
         sctkdialrange1.pack(side="top")
         sctkdialrange1.configure(command=self.pot)
         sctkframe4.grid(column=2, row=1)
-        ctkframe1.pack(expand=True, fill="x", side="top")
+        ctkframe1.grid(column=0, columnspan=3, row=0, sticky="ew")
         sctkframe7 = sCTkFrame(ctk1)
         sctkspinbox1 = sCTkSpinbox(sctkframe7)
         sctkspinbox1.configure(
-            arrow_font="{Noto Sans Tagalog} 36 {italic}",
             arrow_font_size=42,
             button_side="split",
             format="%0.4f",
@@ -116,10 +117,26 @@ class customCTK_WidgetTesterPart4UI:
             to=100)
         sctkspinbox1.pack(side="top")
         sctkspinbox1.configure(command=self.callme)
-        spinbox1 = ttk.Spinbox(sctkframe7)
-        spinbox1.configure(wrap=True)
-        spinbox1.pack(side="top")
-        sctkframe7.pack(side="left")
+        sctksegmentedbutton1 = sCTkSegmentedButton(sctkframe7)
+        sctksegmentedbutton1.configure(values=["one", "two", "three"])
+        sctksegmentedbutton1.pack(side="top")
+        sctkpathchooser1 = sCTkPathChooser(sctkframe7)
+        sctkpathchooser1.configure(
+            filetypes="['.py']",
+            initialdir="~",
+            justify="left",
+            title='pick me',
+            type="directory")
+        sctkpathchooser1.pack(side="top")
+        sctkpathchooser1.configure(command=self.pathCommand)
+        sctkframe7.grid(column=0, row=1)
+        sctkframe8 = sCTkFrame(ctk1)
+        sctkfileexplorer1 = sCTkFileExplorer(sctkframe8)
+        sctkfileexplorer1.configure(initialdir="~", type="directory")
+        sctkfileexplorer1.pack(side="top")
+        sctkfileexplorer1.configure(command=self.explorerSingle)
+        sctkfileexplorer1.configure(double_click_command=self.explorerDouble)
+        sctkframe8.grid(column=1, row=1)
 
         # Main widget
         self.mainwindow = ctk1
@@ -140,6 +157,15 @@ class customCTK_WidgetTesterPart4UI:
         pass
 
     def callme(self):
+        pass
+
+    def pathCommand(self):
+        pass
+
+    def explorerSingle(self):
+        pass
+
+    def explorerDouble(self):
         pass
 
 
