@@ -6,7 +6,6 @@ just tests each widget
 
 UI source file: customCTK_WidgetTesterPart4.ui
 """
-import tkinter as tk
 import tkinter.ttk as ttk
 from customtkinter import (CTk, CTkFrame)
 from sCTkDial import (sCTkDialContinuous, sCTkDialRange, sCTkDialSelector)
@@ -103,21 +102,22 @@ class customCTK_WidgetTesterPart4UI:
         ctkframe1.pack(expand=True, fill="x", side="top")
         sctkframe7 = sCTkFrame(ctk1)
         sctkspinbox1 = sCTkSpinbox(sctkframe7)
-        self.boxvalue_VAR = tk.StringVar()
         sctkspinbox1.configure(
-            arrow_font_size=36,
+            arrow_font="{Noto Sans Tagalog} 36 {italic}",
+            arrow_font_size=42,
             button_side="split",
             format="%0.4f",
             from_=1,
             justify="right",
             orientation="horizontal",
+            placeholder_text="Click Me",
             state="normal",
             step_size=10,
-            textvariable=self.boxvalue_VAR,
             to=100)
         sctkspinbox1.pack(side="top")
         sctkspinbox1.configure(command=self.callme)
         spinbox1 = ttk.Spinbox(sctkframe7)
+        spinbox1.configure(wrap=True)
         spinbox1.pack(side="top")
         sctkframe7.pack(side="left")
 

@@ -744,23 +744,29 @@ THEME_DEFAULTS = {
         "disabled_dial_color": ("#E2E8F0", "#1A1D24"),
         "disabled_dimple_glow": ("#CBD5E1", "#334155")
     },
-        "sCTkSpinbox": {
-        # Sourced precisely from your sCTkEntryPrimary specifications!
+    "sCTkSpinbox": {
         "font": ("Arial", 15, "normal"),
+        "arrow_font": ("Arial", 8, "normal"),
+        "arrow_up_char": "▲",
+        "arrow_down_char": "▼",
+        "arrow_right_char": "▶",
+        "arrow_left_char": "◀",
+
         "border_width": 1.5,
-        "border_color": ("#1A4375", "#64748B"),
-        "entry_color": ("#FFFFFF", "#111827"),
-        "text_color": ("#1F2937", "#F9FAFB"),
         "corner_radius": 6,
 
-        # Deeply dampened contrast tokens to blend smoothly into the canvas backgrounds
-        "placeholder_text_color": ("#B1BBC6", "#2E3748"),
+        "entry_color": ("#FFFFFF", "#111827"),
+        "border_color": ("#1A4375", "#64748B"),
+        "text_color": ("#1F2937", "#F9FAFB"),
 
-        # Standard vertical stacked micro-arrow styling tracks
+        # 🎨 UPDATED SOFT CONTRAST:
+        # Light Mode: Comfortable Slate Blue-Grey (#5A6E7F)
+        # Dark Mode: Muted Technical Steel Blue-Grey (#526071) - Soft, readable, non-distracting
+        "placeholder_text_color": ("#5A6E7F", "#526071"),
+
         "button_color": ("#9E9E9E", "#2A2F3D"),
         "button_hover_color": ("#7D7D7D", "#374151"),
 
-        # ✅ FIXED: Grouped cleanly into your unified high-fidelity disabled map matrix!
         "disabled_map": {
             "entry_color": ("#F3F4F6", "#1F2937"),
             "border_color": ("#CBD5E1", "#475569"),
@@ -768,6 +774,7 @@ THEME_DEFAULTS = {
             "button_color": ("#CBD5E1", "#334155")
         }
     },
+
 
     # ... your other widget entries
 }

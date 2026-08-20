@@ -149,16 +149,16 @@
         </layout>
         <child>
           <object class="custom_widgets.sCTkSpinbox" id="sctkspinbox1">
-            <property name="arrow_font_size">36</property>
+            <property name="arrow_font_size">42</property>
             <property name="button_side">split</property>
             <property name="command" type="command" cbtype="simple">callme</property>
             <property name="format">%0.4f</property>
             <property name="from_">1</property>
             <property name="justify">right</property>
             <property name="orientation">horizontal</property>
+            <property name="placeholder_text">Click Me</property>
             <property name="state">normal</property>
             <property name="step_size">10</property>
-            <property name="textvariable">string:boxvalue_VAR</property>
             <property name="to">100</property>
             <layout manager="pack">
               <property name="side">top</property>
@@ -167,6 +167,7 @@
         </child>
         <child>
           <object class="ttk.Spinbox" id="spinbox1">
+            <property name="wrap">true</property>
             <layout manager="pack">
               <property name="side">top</property>
             </layout>

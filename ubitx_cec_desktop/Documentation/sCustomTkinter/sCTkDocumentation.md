@@ -1136,7 +1136,6 @@ THEME_DEFAULTS = {
     },
     # ... your other widget entries
 }
-```
 # sCTkSpinbox Component Documentation
 
 The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapper widget. It extends `ctk.CTkFrame` and aggregates an internal `sCTkEntryPrimary` alongside two stacked or flanking directional button controls. The component dynamically supports two operational tracking tracks: standard numerical incrementation step ranges, and discrete string text array index navigation. Like all sCTk widgets, it is theme-adaptive.
@@ -1146,7 +1145,7 @@ The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapp
 ## 📋 API Constructor Reference
 
 ```python
-sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state="normal", wrap=False, justify="left", show=None, textvariable=None, placeholder_text=None, exportselection=True, width=140, height=32, **kw)
+sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state="normal", wrap=False, justify="left", show=None, placeholder_text=None, exportselection=True, width=140, height=32, **kw)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
@@ -1160,14 +1159,13 @@ sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state
 | `wrap` | `bool` | `False` | Mechanical boundary iteration loop flag. When `True`, stepping past limits wraps around to alternative poles. |
 | `justify` | `str` | `"left"` | Content text arrangement alignment tracking mask within the entry area. Options: `"left"`, `"center"`, `"right"`. |
 | `show` | `str` | `None` | Character masking input indicator string sequence (e.g. `show="*"` for password entries). |
-| `textvariable` | `tk.StringVar` | `None` | Live tracking variable binder. Syncs structural string data state shifts dynamically across views. |
 | `placeholder_text` | `str` | `None` | Faded background prompt text block displayed natively whenever the input cell field is completely empty. |
 | `exportselection` | `bool` | `True` | Standard Tkinter selection clipboard persistence state identifier switch. |
 | `width` | `int` | `140` | Manual hardware panel horizontal width layout footprint dimension measured in pixels. |
 | `height` | `int` | `32` | Manual hardware panel vertical height layout footprint dimension measured in pixels. |
 
 ### 🛠️ Custom Keyword Extensions (`**kw`)
-These exclusive configuration parameters override default geometry behaviors and style proportions dynamically:
+These exclusive configuration parameters override default geometry behaviors, resolve theme definitions, and style proportions dynamically:
 
 | Extension Parameter | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
@@ -1175,8 +1173,9 @@ These exclusive configuration parameters override default geometry behaviors and
 | `button_height` | `int` | `None` | The vertical button height. If `None`, scales automatically based on active grid parameters. |
 | `button_side` | `str` | `"right"` | Hardware control grid positioning side anchor layout. Options: `"right"`, `"left"`, `"split"`. |
 | `orientation` | `str` | `"vertical"` | Structural grid layout arrangement axis profile track. Options: `"vertical"`, `"horizontal"`. |
-| `arrow_font_size` | `int` | `8` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings. |
-| `format` | `str` | `""` | Optional print mask specifier tracking string rules (supports C percent styles `%.3f` or bracket masks `{:.3f}`). |
+| `arrow_font` | `tuple` / `str` | `None` | Typography tuple passed directly to the arrows/glyphs. Ensures runtime theme compatibility. |
+| `arrow_font_size` | `int` | `8` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings inside Pygubu. |
+| `format` | `str` | `""` | Numerical formatting mask specifier string rule (supports C percent styles `%.3f` or bracket masks `{:.3f}`). |
 | `values` | `str` / `list` | `None` | Literal input values array string loader. Setting choices converts your widget into Discrete Text List Mode. |
 
 ---
@@ -1207,11 +1206,19 @@ spinbox.set_values('Low Medium High "Extreme Alert" Max')
 spinbox.configure(orientation="horizontal", button_side="split", arrow_font_size=14, wrap=True)
 ```
 
+### Advanced Sub-Component Style Targeting
+If an explicit overrides requirement arises at runtime that bypasses the compiled stylesheet definitions, you can directly interact with the isolated increment/decrement components safely without initialization crashes:
+```python
+# Manually altering internal button typography fonts at runtime
+spinbox._sub_button_1.configure(font=("Arial", 8, "normal")) # Increment button
+spinbox._sub_button_2.configure(font=("Arial", 8, "normal")) # Decrement button
+```
+
 ---
 
 ## 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
 
-The widget relies heavily on direct index key lookups within your central styling map profile matrix. To fulfill the zero-fallback constraint guidelines and avoid hard stop runtime verification drops, make certain your repository stylesheet contains this asset entry block:
+The widget relies heavily on direct index key lookups within your central styling map profile matrix. The theme mapping profile utilizes explicit arrow definitions, glyph direction markers, formatting masks, and soft contrast palettes to eliminate runtime fallback drops.
 
 ```python
 THEME_DEFAULTS = {
@@ -1219,7 +1226,19 @@ THEME_DEFAULTS = {
         # Font family and dimensions applied natively into the tracking sCTkEntryPrimary field area
         "font": ("Arial", 15, "normal"),
         
-        # Sizing measurement matching your baseline sCTkEntryPrimary boundary profiles
+        # Font configuration specifically assigned to resolve button arrows/glyphs
+        "arrow_font": ("Arial", 8, "normal"),
+        
+        # Explicit directional string characters assigned to step button graphics 
+        "arrow_up_char": "▲",
+        "arrow_down_char": "▼",
+        "arrow_right_char": "▶",
+        "arrow_left_char": "◀",
+
+        # String rendering format controller (C percent-style or python bracket mapping rules)
+        "format": "%.2f",
+
+        # Geometry footprints matching baseline sCTkEntryPrimary boundaries
         "border_width": 1.5,
         "corner_radius": 6,
         
@@ -1227,7 +1246,12 @@ THEME_DEFAULTS = {
         "entry_color": ("#FFFFFF", "#111827"),
         "border_color": ("#1A4375", "#64748B"),
         "text_color": ("#1F2937", "#F9FAFB"),
-        "placeholder_text_color": ("#B1BBC6", "#2E3748"),
+        
+        # 🎨 UPDATED SOFT CONTRAST:
+        # Light Mode: Comfortable Slate Blue-Grey (#5A6E7F)
+        # Dark Mode: Muted Technical Steel Blue-Grey (#526071) - Soft, readable, non-distracting
+        "placeholder_text_color": ("#5A6E7F", "#526071"),
+        
         "button_color": ("#9E9E9E", "#2A2F3D"),
         "button_hover_color": ("#7D7D7D", "#374151"),
 
@@ -1238,9 +1262,11 @@ THEME_DEFAULTS = {
             "text_color": ("#94A3B8", "#64748B"),
             "button_color": ("#CBD5E1", "#334155")
         }
-    },
-    # ... your other widget entries
-}
+    }
+
+```
+***
+
 ```
 
 
