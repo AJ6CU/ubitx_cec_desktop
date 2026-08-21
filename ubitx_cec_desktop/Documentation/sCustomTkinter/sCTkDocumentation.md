@@ -36,6 +36,64 @@ The sCustomTkinter widget provides this facility with a central theme file where
 
 # Architecture
 All custom layout components inherit properties and configuration data from ThemeableWidget and pull values out of the shared style sheet registry THEME_DEFAULTS inside sCTkThemes.py.
+# CustomTkinter vs. sCustomTkinter Theming & Architecture Comparison
+
+## 1. Core Structural Differences
+
+Standard CustomTkinter uses a global, monolithic theme model. It cannot naturally support unique style configurations (like Primary, Secondary, and Ghost buttons) for the same underlying widget class from a single JSON configuration. 
+
+Your `sCustomTkinter` library circumvents this limitation by using a **Separated Class Architecture**. It isolates each unique style variant into independent class scripts supported by separate user-interface and business-logic files.
+
+### Standard CustomTkinter
+* **Theming Style**: Single entry per widget class name (`"CTkButton"`).
+* **Implementation**: Relies on a single class; variations require manual parameter arguments inside each button instance.
+* **Theme Switching**: Hardcoded to look only at the native keys provided by the default CustomTkinter framework.
+
+### sCustomTkinter (Your Framework)
+* **Theming Style**: Unique entries matched to separate classes (`"sCTkButtonPrimary"`, `"sCTkButtonSecondary"`, etc.) within your main JSON theme file.
+* **Implementation**: Uses dedicated semantic classes. This completely keeps style strings out of your widget instantiation parameters.
+* **Theme Switching**: Handled dynamically using your custom `ThemeableWidget.py` logic wrapper.
+
+---
+
+## 2. Layout Architecture Comparison
+
+| Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkButton(master, fg_color="transparent")` | `sCTkButtonTertiary(master)` *(Functions as Ghost)* |
+| **Maintenance** | Manual color changes across multiple application layouts. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native layout pipeline. | Separated safely across `*ui.py`, `*bo.py`, and `ThemeableWidget.py`. |
+
+---
+
+## 3. Theme Configuration Mapping
+
+By bypassing the standard CustomTkinter template restrictions, your unified JSON theme file maps distinct properties to each functional variant:
+
+```json
+{
+  "sCTkButtonPrimary": {
+    "fg_color": ["#1f538d", "#246cb0"],
+    "hover_color": ["#14375e", "#1c5387"],
+    "text_color": ["#ffffff", "#ffffff"],
+    "border_width": 0
+  },
+  "sCTkButtonSecondary": {
+    "fg_color": ["#ebebeb", "#2b2b2b"],
+    "hover_color": ["#dbdbdb", "#323232"],
+    "text_color": ["#000000", "#ffffff"],
+    "border_width": 0
+  },
+  "sCTkButtonTertiary": {
+    "fg_color": "transparent",
+    "hover_color": ["#f0f0f0", "#2d2d2d"],
+    "text_color": ["#1f538d", "#246cb0"],
+    "border_width": 1,
+    "border_color": ["#1f538d", "#246cb0"]
+  }
+}
+```
+
 
 # Pygubu-Designer Integration
 All of the sCustomTkinter widgets can be added to your Pygubu-Designer palette by including the file sCTkWidgetSetForPygubuDesigner.py as 
