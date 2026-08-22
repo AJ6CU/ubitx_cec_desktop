@@ -1,62 +1,93 @@
 ## sCTkDialRange
 
-Ranged potentiometer dial module tracking discrete value limits, engineered with absolute dead stops, and reporting absolute scalar integer tracking metrics.
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Callback Signature & Usage](#callback-signature--usage)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
+---
+
+A concrete rotary encoder range variant designed for hard-bounded linear controls (e.g., AF/RF volume gain level sliders, squelch limits, or power thresholds). It enforces absolute mechanical dead stops at outer thresholds, preventing directional wraparound loops [INDEX].
 
 ### API Property Reference
 
-| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| Property / Feature | Type / Signature | Description |
 | :--- | :--- | :--- |
-| **Instantiation** | *Not Available Natively* | `sCTkDialRange(master)` *(Ranged Potentiometer)* |
-| **File Mapping** | No comparable native drawing component framework. | Inherits vector math mechanics directly out of `sCTKDialBase.py`. |
-| `_from` / `_to` | *Not Available Natively* | `int` minimum boundary floor values and maximum boundary ceiling targets. |
-| `set(value)` | *Not Available Natively* | `Method (int)` forces the dial pointer to a value with strict threshold limits. |
-| `get()` | *Not Available Natively* | `Method -> int` returns the absolute scalar numerical integer current location value. |
+| **Instantiation** | *Constructor* | `sCTkDialRange(master)` *(Bounded Linear Range Dial)* |
+| **File Mapping** | *Inheritance Tree* | Inherits parent 3D mechanical chassis elements and base state tracking directly from `sCTKDialBase.py` [INDEX]. |
+| `from_` / `min_value` | `int` | Lower boundary threshold (default 0) enforcing absolute counter-clockwise dead stops [INDEX]. |
+| `to` / `max_value` | `int` | Upper boundary threshold (default 100) enforcing absolute clockwise dead stops [INDEX]. |
+| `divisions` | `int` | Quantized subdivision tick line count painted geometrically across the arc limit sweep [INDEX]. |
+| `_scroll_cooldown_seconds`| `float` | Throttle limiting touchpad refresh rates to stabilize fast range adjustments [INDEX]. |
+| `get()` / `set(val)` | `Methods -> int` | Unified index query mechanisms to get or force selected integer values [INDEX]. |
+| `left_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step decrements to execute accelerated jumping intervals when clicking the left canvas edge [INDEX]. |
+| `right_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step increments to execute accelerated jumping intervals when clicking the right canvas edge [INDEX]. |
+| **State**                 | `dial.state("disabled")`<br>**OR**<br>`dial.configure(state="disabled")` | **Dual-Routing State Pipeline:** Handles both syntaxes natively [INDEX]. Freezes canvas mouse-wheel scrolling, disables click jump hooks, and shifts visual themes out of `disabled_map` guidelines [INDEX, INDEX]. |
 
 ---
 
 ### Constructor
 
-Initialize a custom ranged potentiometer element instance. Keyword parameters seamlessly support standard minimum and maximum terminology variations.
+Initialize a custom bounded linear range potentiometer instance. Keyword parameters seamlessly scale divisions and limits out of central stylesheet registries [INDEX].
 
 ```python
-# Instantiate the themed ranged potentiometer element
-volume_pot = sCTkDialRange(
-    master=frame_range,
+# Instantiate an AF Volume gain potentiometer control dial
+volume_potentiometer = sCTkDialRange(
+    master=control_panel,
     from_=0,
-    to=100,
+    to=30,
+    divisions=6,
     arc_angle=270,
-    divisions=5,
-    diameter=110,
-    command=on_volume_pot_rotated
+    command=on_volume_level_changed,
+    left_click_callback=my_custom_left_click,
+    right_click_callback=my_custom_right_click
 )
-
-# Secure the initialization volume value to 25% at application boot
-volume_pot.set(25)
 ```
 
 ---
 
 ### Callback Signature & Usage
 
-Dispatches real-time absolute calculated scalar data values down to interface listeners directly upon pointer movements.
+Dispatches the current absolute active integer value directly to runtime tracking listeners upon position changes [INDEX].
 
 #### Command 
 
 ```python
-# Fires on numerical location shifts via scroll adjustments or vector pointer drag tracks
-def on_volume_pot_rotated(absolute_value: int):
-    # Receives raw integer values calculated dynamically from your min/max limits
-    print(f"Potentiometer Value updated to: {absolute_value}")
+# Fires automatically on valid mouse scrolling, touchpad rolling, or click-drag actions
+def on_volume_level_changed(active_value: int):
+    # active_value is hard constrained between your from_ and to boundary integers
+    print(f"Active Selected Option Value position tracker = {active_value}")
+```
+
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
+```json
+{
+    "sCTkDialRange": {
+        "fg_color": "transparent",
+        "dial_color": ["#1E293B", "#181E2B"],
+        "border_color": ["#CBD5E1", "#334155"],
+        "text_color": ["#3B8ED0", "#FF9100"],
+        "pointer_color": ["#3B8ED0", "#FF9100"],
+        "shadow_color": ["#CBD5E1", "#02040A"],
+        "border_width": 0,
+        "corner_radius": 0
+    }
+}
 ```
 
 ### Other notes
-* **Clamped Hard Bounding Stops:** Integrates rigid limit boundary filters (`max(self._from, min(self._to, ...))`), locking the pointer line securely at thresholds during dragging cycles instead of looping.
-* **Polymorphic Scale Rendering:** Automatically reads the `divisions` argument to divide your custom arc wedge into distinct, numerically labeled index points.
+* **Absolute Threshold Dead Stops:** Unlike continuous or selector models, scrolling past upper or lower boundaries clips inputs securely using `max(self._from, min(self._to, value))`, blocking accidental overflow [INDEX].
+* **Unified State Infrastructure:** Implements no internal state query definitions. `get_state()` gracefully routes up to the `sCTKDialBase` layer natively via the Python method resolution order (MRO), eliminating redundant file methods [INDEX].
+* **Custom Accelerated Steps:** Attaching optional click callbacks allows click events to jump values by wider intervals rather than dropping onto the baseline single-step tracking paths [INDEX].
 
+---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkSlider` alongside a live telemetry monitor.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkDialRange` alongside custom click jump hooks and an active volume gain control panel display tracker [INDEX].
 
 ```python
 #!/usr/bin/python3
@@ -64,60 +95,76 @@ Below is a complete, self-contained test execution script demonstrating how to p
 sCTkDialRange - Standalone Interactive Testing Harness
 """
 import customtkinter as ctk
-from sCTkFrame import sCTkFrame
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-from sCTkDialRange import sCTkDialRange
-
-# Initial test scalar baseline metrics
-audio_volume_pct = 25
-
-def on_volume_pot_rotated(absolute_value):
-    """Callback for Range Module: Receives absolute bounded scalar integer coordinates."""
-    if lbl_range_display.winfo_exists():
-        lbl_range_display.configure(text=f"Volume: {absolute_value}%")
-
-def toggle_operational_state():
-    """Toggles interaction channels and visual states back and forth."""
-    current_mode = dial_range.cget("state")
-    target = "disabled" if current_mode == "normal" else "normal"
-    
-    dial_range.configure(state=target)
-    lbl_range_display.configure(state=target)
-    btn_toggle.configure(text="Lock Pot (Set 'disabled')" if target == "normal" else "Unlock Pot (Set 'normal')")
-    print(f"Logged Verification Hook -> dial_range.get_state() = {dial_range.get_state()}")
+from sCTkDial import sCTkDialRange
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
-    root.title("sCTkDialRange Test Deck")
-    root.geometry("380x360")
+    root.geometry("450x350")
+    root.title("Ranged Potentiometer Telemetry Bench")
 
     base = sCTkFrame(root, corner_radius=8)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    lbl_title = sCTkLabelSecondary(base, text="2. POTENTIOMETER (RANGE)", font=("Arial", 12, "bold"))
-    lbl_title.pack(pady=(12, 2))
+    # 1. Live feedback display lane tracking
+    lbl_volume = sCTkLabelSecondary(base, text="AF Volume: 15 %", font=("Arial", 11, "bold"))
+    lbl_volume.pack(pady=15)
 
-    dial_range = sCTkDialRange(
-        base, 
-        from_=0, 
-        to=100, 
-        arc_angle=270, 
-        command=on_volume_pot_rotated, 
-        diameter=110,
-        divisions=5
+    def my_custom_left_click():
+        """Accelerated Jump: Drops 3 units per click tap [INDEX]."""
+        if volume_pot.get_state() == "disabled": return
+        volume_pot.set(volume_pot.get() - 3)
+
+    def my_custom_right_click():
+        """Accelerated Jump: Jumps 3 units per click tap [INDEX]."""
+        if volume_pot.get_state() == "disabled": return
+        volume_pot.set(volume_pot.get() + 3)
+
+    # 2. Instantiate with explicit limits and tracking labels
+    volume_pot = sCTkDialRange(
+        base,
+        from_=0,
+        to=30,
+        divisions=6,
+        arc_angle=270,
+        command=lambda val: lbl_volume.configure(text=f"AF Volume: {int((val / 30) * 100)} %"),
+        left_click_callback=my_custom_left_click,
+        right_click_callback=my_custom_right_click
     )
-    dial_range.pack(pady=10)
-    dial_range.set(audio_volume_pct)
+    volume_pot.pack(expand=True, fill="none", padx=10, pady=10)
+    volume_pot.set(5)  # Initialize baseline startup volume index
 
-    lbl_range_display = sCTkLabelSecondary(base, text=f"Volume: {audio_volume_pct}%", font=("Arial", 11, "bold"))
-    lbl_range_display.pack(pady=10)
+    # 3. Dynamic panel interactive state toggle test layout
+    def toggle_pot_lock():
+        current_mode = volume_pot.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+        
+        volume_pot.configure(state=target)
+        btn_toggle.configure(text="UNLOCK VOLUME DECK" if target == "disabled" else "LOCK POTENTIOMETER")
+        print(f"Logged Verification Hook -> volume_pot.get_state() = {volume_pot.get_state()}")
 
-    btn_toggle = ctk.CTkButton(base, text="Lock Pot (Set 'disabled')", command=toggle_operational_state)
+    btn_toggle = ctk.CTkButton(base, text="LOCK POTENTIOMETER", command=toggle_pot_lock)
     btn_toggle.pack(side="bottom", pady=15)
 
+    # Standard test assertions routine verification sequences
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    print(f"Initial Potentiometer State = {dial_range.get_state().upper()}")
+    volume_pot.state("disabled")
+    print("state (Disabled Pass) =", volume_pot.get_state())  # Output: disabled
+
+    volume_pot.state("normal")
+    print("state (Normal Pass)   =", volume_pot.get_state())  # Output: normal
     print("========================================\n")
 
     root.mainloop()
 ```
+
+[Return to Table of Contents](#contents)

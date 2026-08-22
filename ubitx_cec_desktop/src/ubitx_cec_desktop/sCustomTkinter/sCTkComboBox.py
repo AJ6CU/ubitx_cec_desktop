@@ -2,12 +2,10 @@
 """
 sCTkComboBox
 
-subclass of CTkComboBox
+subclass of CTkComboBox via Pygubu UI Class Isolation
 
 UI source file: sCTkComboBox.ui
 """
-import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
 import sCTkComboBoxui as baseui
 from ThemeableWidget import ThemeableWidget
@@ -15,17 +13,19 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        # 1. Capture drop-down specific string value arrays early
+        # 1. PARAMETER POPPING: Capture combobox-specific tracking parameters early
         values = kw.pop("values", [""])
         command = kw.pop("command", None)
         variable = kw.pop("variable", None)
 
-        # 2. Fire our shared theme logic first
+        # 2. Fire our shared theme logic first. It automatically finds "sCTkComboBox" in the JSON
         ThemeableWidget.__init__(self, kw)
 
-        # 3. Store your custom maps safely onto instance memory
-        self._local_defaults = self.final_kw
-        self._custom_disabled_map = self._widget_disabled_map
+        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Isolate your configuration rules inside protected memory structures BEFORE
+        # initializing super, preserving your true active settings from native deletion loops.
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
 
         # 4. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
@@ -53,7 +53,7 @@ class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
         # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
         # -----------------------------------------------------------------
         if args and len(args) == 1:
-            pname = args[0]
+            pname = args
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
@@ -64,6 +64,9 @@ class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(pname)
+
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
 
         # -----------------------------------------------------------------
         # ZONE B: SUB-COMPONENT PAYLOAD ROUTING
@@ -82,9 +85,13 @@ class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
             target_state = kwargs.pop("state")
             self.state(target_state)
 
-        # Pass any remaining properties down through your verified ThemeableWidget configuration track
-        if hasattr(super(), "configure"):
-            return super().configure(**kwargs)
+        # Clean empty strings passed by backspacing parameters inside Pygubu Designer panel slots
+        if kwargs:
+            for k, v in list(kwargs.items()):
+                if v == "":
+                    kwargs.pop(k)
+            if kwargs:
+                return super().configure(**kwargs)
         return None
 
     def get_state(self):
@@ -99,53 +106,68 @@ class sCTkComboBox(baseui.sCTkComboBoxUI, ThemeableWidget):
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             super().configure(state="normal")
-            self._update_current_visual_state()
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
             super().configure(state="disabled")
 
-            # Apply custom flat muted gray states safely via super
+            # Apply custom flat muted gray states safely via super out of your protected local maps
+            config_payload = {}
             for key in (
                     "fg_color", "border_color", "text_color", "button_color",
                     "button_hover_color", "dropdown_fg_color", "dropdown_text_color", "dropdown_hover_color"
             ):
-                if key in self._custom_disabled_map:
-                    try:
-                        super().configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
+                    config_payload[key] = self._custom_disabled_map[key]
+
+            if config_payload:
+                super().configure(**config_payload)
 
             self._custom_current_state = "disabled"
 
     def _update_current_visual_state(self):
         """
-        MASTER VISUAL ROUTER: Restores active theme layouts out of memory.
+        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
+        Completely free of hardcoded property name fallback strings, ensuring total
+        extensibility if new options are introduced to the framework.
         """
-        super().configure(
-            fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
-            border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
-            text_color=self.final_kw.get("text_color", self._local_defaults.get("text_color")),
-            button_color=self.final_kw.get("button_color", self._local_defaults.get("button_color")),
-            button_hover_color=self.final_kw.get("button_hover_color", self._local_defaults.get("button_hover_color")),
-            dropdown_fg_color=self.final_kw.get("dropdown_fg_color", self._local_defaults.get("dropdown_fg_color")),
-            dropdown_text_color=self.final_kw.get("dropdown_text_color",
-                                                  self._local_defaults.get("dropdown_text_color")),
-            dropdown_hover_color=self.final_kw.get("dropdown_hover_color",
-                                                   self._local_defaults.get("dropdown_hover_color"))
-        )
+        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+        # We parse your preserved local defaults instead of the mutated final_kw.
+        # If an item evaluates to None, it is skipped entirely so CustomTkinter
+        # defaults step forward natively, blocking any ValueError exceptions.
+        config_payload = {}
+        for key in (
+                "fg_color", "border_color", "text_color", "button_color", "button_hover_color",
+                "dropdown_fg_color", "dropdown_text_color", "dropdown_hover_color", "border_width", "font"
+        ):
+            val = self._local_defaults.get(key)
+            if val is not None:
+                config_payload[key] = val
 
+        if config_payload:
+            super().configure(**config_payload)
+
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+from sCTkComboBox import sCTkComboBox
 
 if __name__ == "__main__":
-    root = ctk.CTk()
-    root.geometry("400x200")
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
 
-    from sCTkFrame import sCTkFrame
+    root = ctk.CTk()
+    root.geometry("450x300")
+    root.title("ComboBox Interaction Telemetry Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Instantiate with dummy options test list array values and click reporter logs
+    # 1. Instantiate with dummy options test list array values and click reporter logs
     widget = sCTkComboBox(
         base,
         values=["Channel A (VHF)", "Channel B (UHF)", "Direct Audio Feed"],
@@ -153,11 +175,29 @@ if __name__ == "__main__":
     )
     widget.pack(expand=True, fill="none", padx=10, pady=10)
 
+
+    # 2. THE OPERATION STATE TOGGLE BUTTON TRACK:
+    def toggle_widget_state():
+        current_mode = widget.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        widget.configure(state=target)
+        btn_toggle.configure(
+            text="Unlock Dropdown" if target == "disabled" else "Lock Dropdown (Set 'disabled')"
+        )
+        print(f"Logged Verification Hook -> widget.get_state() = {widget.get_state()}")
+
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Dropdown (Set 'disabled')", command=toggle_widget_state)
+    btn_toggle.pack(side="bottom", pady=15)
+
     # Test tracking loop sequences on your console window
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     widget.state("disabled")
     print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
 
     widget.state("normal")
     print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+    print("========================================\n")
 
     root.mainloop()
