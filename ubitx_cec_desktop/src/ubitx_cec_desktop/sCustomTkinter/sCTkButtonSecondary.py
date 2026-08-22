@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+
+# !/usr/bin/python3
 """
 sCTkButtonSecondary
 
@@ -9,36 +10,69 @@ UI source file: sCTkButtonSecondary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
 import sCTkButtonSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
 
-#
-# Manual user code
-#
-
 class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
+        # 1. Fire our shared theme logic first. It automatically finds "sCTkButtonSecondary" in the JSON
+        ThemeableWidget.__init__(self, kw)
 
-        theme_defaults = THEME_DEFAULTS["sCTkButtonSecondary"]
+        # 2. Store your custom maps using the newly sanitized internal mixin objects safely onto instance memory
+        self._local_defaults = self.final_kw
+        self._custom_disabled_map = self._widget_disabled_map
+        self._custom_pressed_map = self._widget_pressed_map
 
-        # Store your custom pressed data map reference safely
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
-        self._custom_pressed_map = theme_defaults.get("pressed_map", {})
-
-        # Run our shared theme logic first to sanitize parameters
-        ThemeableWidget.__init__(self, theme_defaults, kw)
-
-        # Initialize CustomTkinter natively with the clean final kwargs array safely
+        # 3. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
         # Set up your local press tracking boolean state flag
         self.is_pressed = False
 
-    def state(self, mode: str):
+    def configure(self, *args, **kwargs):
+        """Handles Pygubu designer queries and manages composite state updates safely."""
+
+        # -----------------------------------------------------------------
+        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
+        # -----------------------------------------------------------------
+        if args and len(args) == 1:
+            pname = args[0]
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(self.state()))
+
+            if pname in ["fg_color", "border_color", "text_color"]:
+                current_state = str(self.state()).lower()
+                if current_state == "disabled" and self._custom_disabled_map:
+                    val = self._custom_disabled_map.get(pname)
+                else:
+                    val = self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+
+            # FIXED: Avoid forwarding unnecessary **kwargs dictionary buffers down to super
+            return super().configure(pname)
+
+        # -----------------------------------------------------------------
+        # ZONE B: SUB-COMPONENT PAYLOAD ROUTING / STATE INTERCEPTION
+        # -----------------------------------------------------------------
+        if "state" in kwargs:
+            target_state = kwargs.pop("state")
+            self.state(target_state)
+
+        # Pass any remaining properties down through your verified ThemeableWidget configuration track
+        if hasattr(super(), "configure"):
+            return super().configure(**kwargs)
+        return None
+
+    def get_state(self):
+        """Explicit getter synchronized with your standalone test harness script assertions."""
+        return self.state()
+
+    def state(self, mode: str = None):
         """Dedicated secondary button latching toggle state controller."""
+        if mode is None:
+            return str(super().cget("state")).lower()
+
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             # FIX: Normalized cross-platform mouse release event string tag bindings
@@ -50,9 +84,8 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            self.configure(state="normal", hover=True)
-
-            # Force re-evaluation of flags to maintain persistent looks!
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
+            super().configure(state="normal", hover=True)
             self._update_current_visual_state()
             self._custom_current_state = "normal"
 
@@ -66,13 +99,14 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            self.configure(state="disabled", hover=False)
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
+            super().configure(state="disabled", hover=False)
 
             # Apply disabled overrides from your map safely
             for key in ("fg_color", "hover_color", "border_color", "text_color"):
                 if key in self._custom_disabled_map:
                     try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
+                        super().configure(**{key: self._custom_disabled_map[key]})
                     except Exception:
                         pass
 
@@ -80,7 +114,6 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
 
     def set_pressed(self, pressed: bool):
         """Toggles the visual pressed state of the secondary button cleanly."""
-        # Block interaction states immediately if the button is disabled
         if getattr(self, "_custom_current_state", "normal") == "disabled":
             return
 
@@ -94,7 +127,8 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
         """
         # A. PRESSED STATE TAKES PRIMARY LOCAL PRIORITY
         if self.is_pressed:
-            self.configure(
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
+            super().configure(
                 fg_color=self._custom_pressed_map.get("fg_color"),
                 hover_color=self._custom_pressed_map.get("hover_color"),
                 border_color=self._custom_pressed_map.get("border_color"),
@@ -103,7 +137,8 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             )
         # B. FALLBACK TO STANDARD ACTIVE THEME CONFIGURATION
         else:
-            self.configure(
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
+            super().configure(
                 fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
                 hover_color=self.final_kw.get("hover_color", self._local_defaults.get("hover_color")),
                 border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
@@ -111,11 +146,10 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
                 hover=True
             )
 
-
 if __name__ == "__main__":
     # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
-    root.geometry("400x400")
+    root.geometry("400x200")
 
     from sCTkFrame import sCTkFrame
 
@@ -123,12 +157,14 @@ if __name__ == "__main__":
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
     widget = sCTkButtonSecondary(base, text="System Action Button")
-    widget1 = sCTkButtonSecondary(base, text="testpressed")
+    widget1 = sCTkButtonSecondary(base, text="Latching Preset Toggle")
 
     widget.pack(padx=40, pady=20)
     widget1.pack(padx=40, pady=20)
 
-    # Test tracking loop sequences
+    # -----------------------------------------------------------------
+    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
+    # -----------------------------------------------------------------
     widget.state("normal")
     widget1.set_pressed(True)
 
@@ -143,5 +179,19 @@ if __name__ == "__main__":
     print("\n--- NORMAL PASS ---")
     print("Widget 0 state =", widget.get_state())
     print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: SECONDARY BUTTON INTERACTION ACTIVE ===\n")
+
+    # -----------------------------------------------------------------
+    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
+    # -----------------------------------------------------------------
+    # 🛠️ THE CLICK REPORT FIX: Added a print statement to report the click instantly
+    widget.configure(
+        command=lambda: [print("System Action Button Clicked"), widget.set_pressed(not widget.is_pressed)])
+
+    # Clicking 'widget1' does the exact same thing, turning its pre-set pressed state off and on!
+    widget1.configure(
+        command=lambda: [print("Testpressed Button Clicked"), widget1.set_pressed(not widget1.is_pressed)])
 
     root.mainloop()
+
+

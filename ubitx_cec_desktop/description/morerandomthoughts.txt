@@ -717,3 +717,96 @@ How does this HUD configuration sound for your VFO Subclass component design? If
 
 What widget component are we sketching out next? (e.g., a theme-compliant, rotary sCTkDial tuning knob wheel or an analog sweeping sCTkMeter gauge indicator for signal tracking?)
 
+
+
+🐧 Linux (Ubuntu, Debian, Fedora, etc.)Status: Supported, but requires an optional system library helper packageHow it works: Linux lacks a single unified theme registry. Different desktop environments (like GNOME, KDE, or XFCE) store theme profiles in entirely isolated database tracks.The Caveat: By default, if CustomTkinter cannot query a unified desktop theme token on Linux, it fails gracefully and falls back to Light Mode permanently.The Permanent Fix: To enable your Linux machine to seamlessly pass its system dark/light mode data straight to your CustomTkinter environment, you just need to install the darkdetect package into your active project virtual environment terminal loop:bashpip install darkdetect
+Use code with caution.Once darkdetect is present inside your environment packages, CustomTkinter will instantly read your Linux theme preferences natively, allowing your dials and labels to match the OS perfectly.
+
+#!/bin/sh
+cat widgets/*.md > README.md
+git add README.md
+
+
+
+#!/bin/sh
+
+echo "# Contents\n" > README.md
+
+# 1. Match H1, H2, and H3 headers (#, ##, ###)
+grep -h "^#\{1,3\} " widgets/*.md | while read -r line; do
+
+  # Extract header text (remove leading # and spaces)
+  title=$(echo "$line" | sed 's/^#\{1,3\} *//')
+
+  # Generate anchor: lowercase, spaces to hyphens, strip special characters
+  anchor=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
+
+  # Determine indentation depth based on header level
+  case "$line" in
+    "### "*) indent="    * " ;; # Level 3 (Sub-bullet)
+    "## "*)  indent="  * " ;;   # Level 2 (Nested bullet)
+    "# "*)   indent="* " ;;     # Level 1 (Top-level bullet)
+  esac
+
+  echo "${indent}[$title](#$anchor)" >> README.md
+done
+
+echo "\n---\n" >> README.md
+
+# 2. Append all widget files below
+cat widgets/*.md >> README.md
+
+git add README.md
+
+
+How to modify the depth:
+
+Include up to H2 (Level 2 only): Change grep -h "^#\{1,3\} " to grep -h "^#\{1,2\} "
+
+Include up to H4 (Level 4): Change grep to ^#\{1,4\}  and add "#### "*) indent="      * " ;; inside the case block.
+
+
+manifest driven to control order
+1. Create widgets/order.txt:
+
+widgets/overview.md
+widgets/architecture.md
+widgets/pygubu-designer.md
+widgets/containers.md
+widgets/sctkbuttonprimary.md
+
+2. run this script
+#!/bin/sh
+
+echo "# Contents\n" > README.md
+
+# 1. Generate TOC using order.txt
+while read -r file; do
+  [ -f "$file" ] || continue
+  grep -h "^#\{1,3\} " "$file" | while read -r line; do
+    title=$(echo "$line" | sed 's/^#\{1,3\} *//')
+    anchor=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
+
+    case "$line" in
+      "### "*) indent="    * " ;;
+      "## "*)  indent="  * " ;;
+      "# "*)   indent="* " ;;
+    esac
+
+    echo "${indent}[$title](#$anchor)" >> README.md
+  done
+done < widgets/order.txt
+
+echo "\n---\n" >> README.md
+
+# 2. Append files in the specified order
+while read -r file; do
+  [ -f "$file" ] && cat "$file" >> README.md && echo "\n\n" >> README.md
+done < widgets/order.txt
+
+git add README.md
+
+
+
+
+

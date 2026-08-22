@@ -2,76 +2,117 @@
 """
 ThemeableWidget - Centralized Theme Management and Global Structural Enforcement
 """
+#!/usr/bin/python3
 import os
+import json
 import customtkinter as ctk
 
+# 🛠️ GLOBAL JSON LOADER (Runs only once when the application boots)
+THEME_FILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sCTkThemes.json")
+
 try:
-    from sCTkThemes import THEME_DEFAULTS
-except (ImportError, ModuleNotFoundError) as err:
-    # Stop execution loops immediately if the shared theme config module cannot be resolved
+    with open(THEME_FILE_PATH, "r", encoding="utf-8") as file:
+        GLOBAL_THEME_REGISTRY = json.load(file)
+except Exception as err:
     raise FileNotFoundError(
-        f"CRITICAL SYSTEM BREAKDOWN: The mandatory theme stylesheet tracking file "
-        f"'sCTkThemes.py' could not be found or resolved within the local python path space. "
-        f"Underlying tracking loop error feed: {err}. Please restore this module to your "
-        f"active project utilities folder to re-enable custom widgets compilation blocks."
+        f"CRITICAL SYSTEM BREAKDOWN: The centralized theme configuration file "
+        f"'{THEME_FILE_PATH}' could not be located or parsed. "
+        f"Underlying error feed: {err}."
     )
 
 
 class ThemeableWidget:
-    def __init__(self, theme_defaults: dict, kwargs: dict):
+    def __init__(self, kwargs: dict):
         """
-        Shared base mixin that resolves global theme dictionary lookups,
-        extracts styling options, and aggressively enforces complete key configurations.
+        Shared base mixin that resolves global theme lookups via introspection,
+        extracts styling options, handles nested map sanitization, and filters
+        custom layout properties to prevent native framework validation failures.
         """
-        # GLOBAL CORRUPTION GUARD
-        if not theme_defaults or not isinstance(theme_defaults, dict):
-            class_name = self.__class__.__name__
+        class_name = self.__class__.__name__
+
+        theme_defaults = GLOBAL_THEME_REGISTRY.get(class_name)
+        if theme_defaults is None:
+            theme_defaults = {}
+
+        # ✅ GLOBAL CORRUPTION GUARD
+        if not isinstance(theme_defaults, dict):
             raise KeyError(
-                f"CRITICAL STYLING EXCEPTION: The sCTkThemes configuration registry is corrupted. "
-                f"Could not locate a valid section or mapping entry dictionary for widget type: '{class_name}'. "
-                f"Please verify your 'THEME_DEFAULTS' definition properties."
+                f"CRITICAL STYLING EXCEPTION: The themes.json configuration registry is corrupted. "
+                f"Expected a dictionary mapping entry for widget type: '{class_name}'..."
             )
 
-        # GLOBAL UNRESOLVED NULL TRAFFIC INTERCEPTOR
+        # ✅ GLOBAL UNRESOLVED NULL TRAFFIC INTERCEPTOR
         for style_key, style_value in theme_defaults.items():
             if isinstance(style_value, dict):
                 for sub_key, sub_value in style_value.items():
                     if sub_value is None:
-                        class_name = self.__class__.__name__
                         raise ValueError(
                             f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
-                            f"Inside sCTkThemes.py -> ['{class_name}']['{style_key}']['{sub_key}'] evaluates to None. "
-                            f"Every structural custom theme parameter property must contain an explicit hexadecimal, "
-                            f"string, or list mapping profile token before initialization passes can execute."
+                            f"Inside themes.json -> ['{class_name}']['{style_key}']['{sub_key}'] evaluates to None."
                         )
             elif style_value is None:
-                class_name = self.__class__.__name__
                 raise ValueError(
                     f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
-                    f"Inside sCTkThemes.py -> ['{class_name}']['{style_key}'] evaluates to None. "
-                    f"Every structural custom theme parameter property must contain an explicit hexadecimal, "
-                    f"string, or list mapping profile token before initialization passes can execute."
+                    f"Inside themes.json -> ['{class_name}']['{style_key}'] evaluates to None."
                 )
 
-        # 🛡️ GLOBAL SANITIZATION RESCUE
-        self._widget_disabled_map = theme_defaults.get("disabled_map") or {}
-        self._widget_pressed_map = theme_defaults.get("pressed_map") or {}
-        self._widget_alarm_map = theme_defaults.get("alarm_map") or {}
+        # 🛡️ NESTED MAP EXTRACTION PASS (Runs first so custom vector engines capture them successfully!)
+        self._widget_disabled_map = self._convert_lists_to_tuples(theme_defaults.get("disabled_map") or {})
+        self._widget_pressed_map = self._convert_lists_to_tuples(theme_defaults.get("pressed_map") or {})
+        self._widget_alarm_map = self._convert_lists_to_tuples(theme_defaults.get("alarm_map") or {})
 
-        # Define internal forbidden key tags to strip automatically
+        # Define block keys that should never be processed as raw framework layout arguments
         forbidden_keys = {"disabled_map", "pressed_map", "alarm_map"}
+
+        # 🛠️ UNIVERSAL WIDGET KEYWORD FILTER GUARD
+        CUSTOM_VECTOR_KEYS = {
+            "dial_color", "shadow_color", "text_color", "pointer_color",
+            "pointer_glow_color", "disabled_text_color", "disabled_dial_color",
+            "disabled_dimple_glow", "diameter"
+        }
 
         self.final_kw = {}
 
-        # Load the global theme mapping defaults first (filtering out internal tracking keys)
+        # 1. Load global configuration file defaults (Filtering out custom layout keys)
         for key, value in theme_defaults.items():
-            if key not in forbidden_keys:
-                self.final_kw[key] = value
+            if key not in forbidden_keys and key not in CUSTOM_VECTOR_KEYS:
+                self.final_kw[key] = self._sanitize_value(key, value)
 
-        # Layer any direct inline runtime configuration overrides over the top
+        # 2. Layer direct inline runtime keyword modifications over the top
         for key, value in kwargs.items():
-            if value is not None and key not in forbidden_keys:
-                self.final_kw[key] = value
+            if value is not None and key not in forbidden_keys and key not in CUSTOM_VECTOR_KEYS:
+                self.final_kw[key] = self._sanitize_value(key, value)
+
+    def apply_theme(self):
+        """
+        Explicit execution block called AFTER parent class initialization
+        to forcefully override any layout defaults embedded within baseui layers.
+        """
+        if hasattr(self, "configure"):
+            # Direct multi-property injection override pass
+            self.configure(**self.final_kw)
+
+    def _convert_lists_to_tuples(self, target_dict: dict) -> dict:
+        """Helper to convert dictionary color lists back into CustomTkinter friendly tuples."""
+        return {k: tuple(v) if isinstance(v, list) and len(v) == 2 else v for k, v in target_dict.items()}
+
+    def _sanitize_value(self, key, value):
+        """
+        UNIVERSAL SANITIZER: Turns JSON lists [] back into Python tuples (),
+        while catching and flattening transparency settings to keep CustomTkinter from crashing.
+        """
+        if isinstance(value, list):
+            # 🛠️ THE TRANSPARENCY FIX: If the list is ["transparent", "transparent"], flatten it to a single string
+            if len(value) == 2 and value[0] == "transparent":
+                return "transparent"
+
+            return tuple(value)
+
+        # Fallback check just in case it was already pre-processed as a tuple
+        if isinstance(value, tuple) and len(value) == 2 and value[0] == "transparent":
+            return "transparent"
+
+        return value
 
     def configure(self, require_redraw=False, **kwargs):
         """
@@ -85,21 +126,22 @@ class ThemeableWidget:
             if self._state == "disabled" and hasattr(self, "_widget_disabled_map"):
                 disabled_fg = self._widget_disabled_map.get("text_color")
                 if disabled_fg and hasattr(self, "configure"):
-                    # Use a clean local lookup string loop instead of breaking MRO lines
                     if hasattr(super(), "configure"):
+                        # Safe conversion verification
+                        if isinstance(disabled_fg, list):
+                            disabled_fg = tuple(disabled_fg)
                         super().configure(text_color=disabled_fg)
             elif self._state == "normal" and hasattr(self, "final_kw"):
                 normal_fg = self.final_kw.get("text_color")
                 if normal_fg and hasattr(self, "configure"):
                     if hasattr(super(), "configure"):
+                        if isinstance(normal_fg, list):
+                            normal_fg = tuple(normal_fg)
                         super().configure(text_color=normal_fg)
 
             require_redraw = True
 
         # 🛡️ FIXED MRO CHAIN HIJACK:
-        # Verify if the sibling class in the multiple inheritance layout track
-        # actually has a valid configure() method before calling it. This ensures
-        # ctk.CTkFrame.configure() runs natively, initializing the canvas mouse intercept layers!
         if hasattr(super(), "configure"):
             return super().configure(require_redraw=require_redraw, **kwargs)
 
@@ -116,11 +158,10 @@ class ThemeableWidget:
     def _resolve_color(self, color_value):
         """
         Helper method to safely pull the singular valid string hex color
-        from a CustomTkinter (Light, Dark) mode theme tuple.
+        from a CustomTkinter (Light, Dark) mode theme tuple/list.
         """
         if isinstance(color_value, (tuple, list)):
             # 0 for Light Mode, 1 for Dark Mode
             mode_idx = 1 if ctk.get_appearance_mode() == "Dark" else 0
             return color_value[mode_idx]
         return color_value
-

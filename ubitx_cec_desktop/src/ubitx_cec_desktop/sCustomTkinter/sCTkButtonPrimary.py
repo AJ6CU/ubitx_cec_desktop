@@ -9,39 +9,77 @@ UI source file: sCTkButtonPrimary.ui
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
 import sCTkButtonPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
-#
-# Manual user code
-#
 
 class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-
-        theme_defaults = THEME_DEFAULTS["sCTkButtonPrimary"]
+        # 1. Run the shared theme logic to load defaults out of themes.json
+        ThemeableWidget.__init__(self, kw)
 
         # Store dictionary references safely onto instance memory
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
-        self._custom_pressed_map = theme_defaults.get("pressed_map", {})
-        self._custom_alarm_map = theme_defaults.get("alarm_map", {})
+        self._local_defaults = self.final_kw
+        self._custom_disabled_map = self._widget_disabled_map
+        self._custom_pressed_map = self._widget_pressed_map
+        self._custom_alarm_map = self._widget_alarm_map
 
-        # Run our shared theme logic first to sanitize parameters
-        ThemeableWidget.__init__(self, theme_defaults, kw)
-
-        # Initialize CustomTkinter with the clean final kwargs array
+        # Initialize CustomTkinter with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
         self.is_pressed = False
         self.is_alarm = False
 
-    def state(self, mode: str):
+    def configure(self, *args, **kwargs):
+        """Handles Pygubu designer queries and manages composite state updates safely."""
+
+        # -----------------------------------------------------------------
+        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
+        # -----------------------------------------------------------------
+        if args and len(args) == 1:
+            pname = args[0]
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(self.state()))
+
+            if pname in ["fg_color", "border_color", "text_color", "hover_color"]:
+                current_state = str(self.state()).lower()
+                if current_state == "disabled" and self._custom_disabled_map:
+                    val = self._custom_disabled_map.get(pname)
+                elif getattr(self, "is_alarm", False) and self._custom_alarm_map:
+                    val = self._custom_alarm_map.get(pname)
+                elif getattr(self, "is_pressed", False) and self._custom_pressed_map:
+                    val = self._custom_pressed_map.get(pname)
+                else:
+                    val = self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+
+            # Avoid forwarding unnecessary **kwargs dictionary buffers down to super
+            return super().configure(pname)
+
+        # -----------------------------------------------------------------
+        # ZONE B: SUB-COMPONENT PAYLOAD ROUTING / STATE INTERCEPTION
+        # -----------------------------------------------------------------
+        if "state" in kwargs:
+            target_state = kwargs.pop("state")
+            self.state(target_state)
+
+        # Pass any remaining properties down through your verified ThemeableWidget configuration track
+        if hasattr(super(), "configure"):
+            return super().configure(**kwargs)
+        return None
+
+    def get_state(self):
+        """Explicit getter synchronized with your standalone test harness script assertions."""
+        return self.state()
+
+    def state(self, mode: str = None):
         """Dedicated button state controller."""
+        if mode is None:
+            return str(super().cget("state")).lower()
+
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            #  Re-bind core canvas event loops cleanly when coming back to active status using native framework tags
+            # Re-bind core canvas event loops cleanly when coming back to active status using native framework tags
             try:
                 self._canvas.bind("<Enter>", self._on_enter)
                 self._canvas.bind("<Leave>", self._on_leave)
@@ -50,8 +88,8 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            # Restore standard look
-            self.configure(state="normal", hover=True)
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
+            super().configure(state="normal", hover=True)
             self._update_current_visual_state()
             self._custom_current_state = "normal"
 
@@ -65,14 +103,14 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            # Lock interaction engine
-            self.configure(state="disabled", hover=False)
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
+            super().configure(state="disabled", hover=False)
 
-            # Apply custom flat muted gray states
+            # Apply custom flat muted gray states safely via super
             for key in ("fg_color", "hover_color", "text_color"):
                 if key in self._custom_disabled_map:
                     try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
+                        super().configure(**{key: self._custom_disabled_map[key]})
                     except Exception:
                         pass
 
@@ -103,7 +141,8 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
         """
         # A. ALARM STATE TAKES IMMEDIATE PRIORITY
         if self.is_alarm:
-            self.configure(
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
+            super().configure(
                 fg_color=self._custom_alarm_map.get("fg_color"),
                 hover_color=self._custom_alarm_map.get("hover_color"),
                 text_color=self._custom_alarm_map.get("text_color"),
@@ -111,7 +150,8 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             )
         # B. PRESSED STATE TAKES SECONDARY PRIORITY
         elif self.is_pressed:
-            self.configure(
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
+            super().configure(
                 fg_color=self._custom_pressed_map.get("fg_color"),
                 hover_color=self._custom_pressed_map.get("hover_color"),
                 text_color=self._custom_pressed_map.get("text_color"),
@@ -119,8 +159,8 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             )
         # C. FALLBACK TO NORMAL THEME
         else:
-            # Safely pulls runtime configurations straight from your clean keyword storage dictionary
-            self.configure(
+            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
+            super().configure(
                 fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
                 hover_color=self.final_kw.get("hover_color", self._local_defaults.get("hover_color")),
                 text_color=self.final_kw.get("text_color", self._local_defaults.get("text_color")),
@@ -128,37 +168,49 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
             )
 
 
+# =====================================================================
+# 3. INTERACTIVE RUNTIME APP EXECUTION & TEST SEQUENCES
+# =====================================================================
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
-    root.geometry("400x400")
-
+    root.geometry("450x200")
+    root.title("Primary Button Test Harness")
     from sCTkFrame import sCTkFrame
+
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    widget = sCTkButtonPrimary(base, text="System Action Button")
-    widget1 = sCTkButtonPrimary(base, text="testpressed")
+    # Instantiate two primary actions
+    widget = sCTkButtonPrimary(base, text="System Alarm Button")
+    widget1 = sCTkButtonPrimary(base, text="Latching Preset Toggle")
 
-    widget.pack(padx=40, pady=20)
-    widget1.pack(padx=40, pady=20)
+    widget.pack(padx=40, pady=15)
+    widget1.pack(padx=40, pady=15)
 
-    # Test tracking loop sequences
-    widget.state("normal")
-    widget1.set_pressed(True)
-
-    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    # -----------------------------------------------------------------
+    # A. INITIAL CONSOLE LOG TEST SEQUENCE
+    # -----------------------------------------------------------------
+    print("--- BOOT TEST: FORCING DISABLED PASS ---")
     widget.state("disabled")
-    print("--- DISABLED PASS ---")
+    widget1.state("disabled")
     print("Widget 0 state =", widget.get_state())
     print("Widget 1 state =", widget1.get_state())
 
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    print("\n--- BOOT TEST: REVERTING TO NORMAL PASS ---")
     widget.state("normal")
-    print("\n--- NORMAL PASS ---")
+    widget1.state("normal")
     print("Widget 0 state =", widget.get_state())
     print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: BUTTON INTERACTION ACTIVE ===\n")
 
-    widget1.set_pressed(True)
+    # -----------------------------------------------------------------
+    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
+    # -----------------------------------------------------------------
+    # 🛠️ THE ALARM TOGGLE FIX: Change the command loop sequence to flip the alarm flag!
+    widget.configure(
+        command=lambda: [print("System Alarm Toggle Triggered"), widget.set_alarm_state(not widget.is_alarm)])
+
+    # Clicking 'widget1' remains assigned to your standard layout latch toggle
+    widget1.configure(command=lambda: [print("Latching Preset Clicked"), widget1.set_pressed(not widget1.is_pressed)])
 
     root.mainloop()

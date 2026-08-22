@@ -9,10 +9,27 @@ This document contains the reference documentation for the specialized sCTk Cust
 * [Pygubu-Designer Integration](#pygubu-designer-integration)
 * [Containers](#containers)
 * [Control and Display](#control-and-display)
+  * [sCTkButtonPrimary](#sctkbuttonprimary)
+  * [sCTkButtonSecondary](#sctkbuttonsecondary)
+  * [sCTkButtonTertiary](#sctkbuttontertiary)
+  * [sCTkCheckBox](#sctkcheckbox)
+  * [sCTkComboBox](#sctkcombobox)
   * [sCTkSeparator](#sctkseparator)
+  * [sCTkSpinbox](#sctkspinbox)
 * [Menus](#menus)
 * [Dialogs](#dialogs)
 * [Enhanced Widgets](#enhanced-widgets)
+  * [sCTkDial Family](#sctkdial-family)
+  * [sCTkDialSelector](#sctkdialselector) 
+  * [sCTkDialRange](#sctkdialrange)
+  * [sCTkDialContinuous](#sctkdialcontinuous)
+  * [sCTkFileExplorer](#sctkfileexplorer)
+  * [sCTkMessage](#sctkmessage)
+  * [sCTkSMeter](#sctksmeter)
+  * [sCTkSMeterBar](#sctksmeterbar)
+  * [sCTkPathChooser](#sctkpathchooser)
+  * [sCTkSelector](#sctkselector)
+  * [sCTkTableview](#sctktableview)
 * [Notes](#notes)
 
 
@@ -135,6 +152,861 @@ labeled_scroll_pane = sCTkFrameLabeledPrimary(
 )
 ```
 # Control and Display
+## sCTkButtonPrimary
+
+High-visibility primary action button equipped with state-latching mechanisms, emergency alarm state overrides, and multi-zone Pygubu Inspector design-time compatibility.
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonPrimary(master)` *(Functions as Core Action Trigger)* |
+| **Maintenance** | Manual color changes across multiple layouts. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native pipeline. | Separated across `sCTkButtonPrimary.py`, `sCTkButtonPrimaryui.py`, and `ThemeableWidget.py`. |
+| `is_pressed` | *Not Available Natively* | `bool` tracking if the component is toggled into its latching profile. |
+| `is_alarm` | *Not Available Natively* | `bool` high-priority override flag forcing the button into alert layouts. |
+| `set_pressed(pressed)` | *Not Available Natively* | `Method (bool)` to explicitly latch/unlatch custom pressed map configurations. |
+| `set_alarm_state(active)`| *Not Available Natively* | `Method (bool)` top-priority visual interceptor forcing emergency color overwrites. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+
+---
+
+### Constructor
+
+Initialize a primary action widget instance. Any direct property configuration passed here will safely layer over your centralized `themes.json` asset settings at runtime.
+
+```python
+# Instantiate the customized primary button element
+action_button = sCTkButtonPrimary(
+    master=base_frame,
+    text="Execute System Flash",
+    width=160,                     # Override centralized theme file dimension profile
+    command=primary_action_fired   # Attach your interactive loop callback function
+)
+
+# Render the layout inside your parent container geometry grid
+action_button.pack(padx=20, pady=10)
+```
+
+---
+
+### Callback Signature & Usage
+
+Executes standard command sequences and reports event loops natively without adding low-level canvas window hardware bindings.
+
+#### Command 
+
+```python
+# Fires on button selection via standard mouse release or tap tracking loops
+def primary_button_clicked():
+    print("Primary action initiated successfully.")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Transition the primary widget into an active alarm state or update text dynamically on the fly
+button.set_alarm_state(active=True)
+button.configure(text="CRITICAL ALERT ACTIVE")
+```
+
+### Convenience Functions
+```python
+# Query current state value string or toggle operational availability cleanly
+current_mode = button.get_state()  # Returns 'normal' or 'disabled'
+button.state("disabled")           # Completely locks interaction layers and applies muted styles
+```
+
+### Centralized Stylesheet Setup (`themes.json`)
+```json
+{
+    "sCTkButtonPrimary": {
+        "width": 140,
+        "height": 34,
+        "font": ["Arial", 15, "normal"],
+        "fg_color": ["#1A4375", "#2471A3"],
+        "hover_color": ["#112A4B", "#1F618D"],
+        "text_color": ["#FFFFFF", "#FFFFFF"],
+        "corner_radius": 6,
+        "disabled_map": {
+            "fg_color": ["#E5E7EB", "#374151"],
+            "hover_color": ["#E5E7EB", "#374151"],
+            "text_color": ["#94A3B8", "#64748B"]
+        },
+        "pressed_map": {
+            "fg_color": ["#3B5984", "#2E4A75"],
+            "hover_color": ["#3B5984", "#2E4A75"],
+            "text_color": ["#FFFFFF", "#FFFFFF"]
+        },
+        "alarm_map": {
+            "fg_color": ["#990000", "#E74C3C"],
+            "hover_color": ["#990000", "#E74C3C"],
+            "text_color": ["#FFFFFF", "#FFFFFF"]
+        }
+    }
+}
+```
+
+### Other notes
+* **Alarm Override Priority:** Turning on the alarm state forcefully turns off any persistent latching pressed visual looks.
+* **Pygubu Zone-A Interception:** The widget safely responds to single positional property queries coming from design-time editor tools without crashing or locking execution tracks.
+
+### Implementation Example & Test Harness
+
+Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkButtonPrimary` inside a root window workspace panel layout using the strict interactive test configuration loops.
+
+```python
+import customtkinter as ctk
+from sCTkButtonPrimary import sCTkButtonPrimary
+# =====================================================================
+# 3. INTERACTIVE RUNTIME APP EXECUTION & TEST SEQUENCES
+# =====================================================================
+if __name__ == "__main__":
+    root = ctk.CTk()
+    root.geometry("450x200")
+    root.title("Primary Button Test Harness")
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    # Instantiate two primary actions
+    widget = sCTkButtonPrimary(base, text="System Alarm Button")
+    widget1 = sCTkButtonPrimary(base, text="Latching Preset Toggle")
+
+    widget.pack(padx=40, pady=15)
+    widget1.pack(padx=40, pady=15)
+
+    # -----------------------------------------------------------------
+    # A. INITIAL CONSOLE LOG TEST SEQUENCE
+    # -----------------------------------------------------------------
+    print("--- BOOT TEST: FORCING DISABLED PASS ---")
+    widget.state("disabled")
+    widget1.state("disabled")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+
+    print("\n--- BOOT TEST: REVERTING TO NORMAL PASS ---")
+    widget.state("normal")
+    widget1.state("normal")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: BUTTON INTERACTION ACTIVE ===\n")
+
+    # -----------------------------------------------------------------
+    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
+    # -----------------------------------------------------------------
+    # 🛠️ THE ALARM TOGGLE FIX: Change the command loop sequence to flip the alarm flag!
+    widget.configure(
+        command=lambda: [print("System Alarm Toggle Triggered"), widget.set_alarm_state(not widget.is_alarm)])
+
+    # Clicking 'widget1' remains assigned to your standard layout latch toggle
+    widget1.configure(command=lambda: [print("Latching Preset Clicked"), widget1.set_pressed(not widget1.is_pressed)])
+
+    root.mainloop()
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkButtonSecondary
+
+Latching companion state toggle action button engineered with explicit edge borders, structured interaction tracking, and absolute canvas unbinding security tags.
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkButton(master, border_width=0)` | `sCTkButtonSecondary(master)` *(Functions as Companion Toggle Outline)* |
+| **Maintenance** | Manual color changes across multiple layouts. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native pipeline. | Separated safely across `sCTkButtonSecondary.py`, `sCTkButtonSecondaryui.py`, and `ThemeableWidget.py`. |
+| `is_pressed` | *Not Available Natively* | `bool` tracker flag indicating if the companion button is toggled down. |
+| `set_pressed(pressed)` | *Not Available Natively* | `Method (bool)` to manually lock or unlatch custom pressed map colors. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+
+---
+
+### Constructor
+
+Initialize a companion action toggle widget instance. Any direct configurations passed here layer over your centralized configuration settings.
+
+```python
+# Instantiate the customized secondary latching toggle element
+companion_button = sCTkButtonSecondary(
+    master=base_frame,
+    text="Toggle Grid Layout",
+    border_width=3,                 # Explicitly widen the border frame rim lines
+    command=toggle_action_fired     # Attach your selection event loop callback
+)
+
+# Render the layout inside your parent container geometry packer grid
+companion_button.pack(padx=20, pady=10)
+```
+
+---
+
+### Callback Signature & Usage
+
+Executes custom callback logic stacks on mouse selection changes, smoothly passing command statements down to local tracking terminals.
+
+#### Command 
+
+```python
+# Fires instantly upon receiving mouse selection interactions
+def companion_toggle_changed():
+    print("Secondary action loop execution trace recorded.")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Modify text value settings or force latching profiles directly on the fly
+button_secondary.set_pressed(True)
+button_secondary.configure(text="SELECTED COMPANION")
+```
+
+### Convenience Functions
+```python
+# Evaluate current active structural state strings or apply operational changes cleanly
+current_status = button_secondary.get_state()
+button_secondary.state("disabled")  # Unbinds all listeners and applies flat disabled maps safely
+```
+
+### Centralized Stylesheet Setup (`themes.json`)
+```json
+{
+    "sCTkButtonSecondary": {
+        "font": ["Arial", 15, "normal"],
+        "fg_color": ["#E5E7EB", "#374151"],
+        "hover_color": ["#D1D5DB", "#4B5563"],
+        "text_color": ["#1F2937", "#F9FAFB"],
+        "border_width": 2,
+        "border_color": ["#9CA3AF", "#4B5563"],
+        "corner_radius": 6,
+        "disabled_map": {
+            "fg_color": ["#F3F4F6", "#1F2937"],
+            "hover_color": ["#F3F4F6", "#1F2937"],
+            "border_color": ["#E5E7EB", "#374151"],
+            "text_color": ["#94A3B8", "#64748B"]
+        },
+        "pressed_map": {
+            "fg_color": ["#CBD5E1", "#1F2937"],
+            "hover_color": ["#CBD5E1", "#1F2937"],
+            "border_color": ["#475569", "#94A3B8"],
+            "text_color": ["#0F172A", "#FFFFFF"]
+        }
+    }
+}
+```
+
+### Other notes
+* **Memory Lock Leak Protection:** Shifting to `disabled` explicitly unbinds `<Enter>`, `<Leave>`, and `<Button-1>` mouse signals on the raw sub-canvas, preventing hovering graphic glitches.
+* **Super Core Redraw Bypass:** Redraws bypass the `configure` multi-zone positional intercept loop using `super()`, preventing deep stack pointer segmentation crashes.
+
+### Implementation Example & Test Harness
+
+Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkButtonSecondary` inside a root window workspace panel layout using the strict interactive test configuration loops.
+
+```python
+import customtkinter as ctk
+from ThemeableWidget import ThemeableWidget
+from sCTkButtonSecondary import sCTkButtonSecondary
+if __name__ == "__main__":
+    # # ctk.set_appearance_mode("dark")
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    widget = sCTkButtonSecondary(base, text="System Action Button")
+    widget1 = sCTkButtonSecondary(base, text="Latching Preset Toggle")
+
+    widget.pack(padx=40, pady=20)
+    widget1.pack(padx=40, pady=20)
+
+    # -----------------------------------------------------------------
+    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
+    # -----------------------------------------------------------------
+    widget.state("normal")
+    widget1.set_pressed(True)
+
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: SECONDARY BUTTON INTERACTION ACTIVE ===\n")
+
+    # -----------------------------------------------------------------
+    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
+    # -----------------------------------------------------------------
+    # 🛠️ THE CLICK REPORT FIX: Added a print statement to report the click instantly
+    widget.configure(
+        command=lambda: [print("System Action Button Clicked"), widget.set_pressed(not widget.is_pressed)])
+
+    # Clicking 'widget1' does the exact same thing, turning its pre-set pressed state off and on!
+    widget1.configure(
+        command=lambda: [print("Testpressed Button Clicked"), widget1.set_pressed(not widget1.is_pressed)])
+
+    root.mainloop()
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkButtonTertiary
+
+Minimalist ghost / outline tertiary button variant providing high-contrast bounding lines, dynamic background tint matching, and lightweight composite design-time stability.
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkButton(master, fg_color="transparent")` | `sCTkButtonTertiary(master)` *(Functions as Ghost / Border Action)* |
+| **Maintenance** | Manual color changes across multiple layouts. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native pipeline. | Separated safely across `sCTkButtonTertiary.py`, `sCTkButtonTertiaryui.py`, and `ThemeableWidget.py`. |
+| `is_pressed` | *Not Available Natively* | `bool` visibility latching flag tracking interactive background tinting status. |
+| `set_pressed(pressed)` | *Not Available Natively* | `Method (bool)` to smoothly shift outline buttons into contrast color styles. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling baseline layout tracking map transformations. |
+| `get_state()` | `self.cget("state")` | `Method -> str` synchronized assertion getter matching Pygubu queries. |
+
+---
+
+### Constructor
+
+Initialize a tertiary outline / ghost widget instance. Custom keyword overrides layer cleanly over your centralized layout configuration settings.
+
+```python
+# Instantiate the minimalist tertiary element
+ghost_button = sCTkButtonTertiary(
+    master=base_frame,
+    text="View Advanced Logs",
+    border_width=1.5,               # Override default outline boundary track weight
+    command=tertiary_action_fired   # Connect your functional event trigger loop callback
+)
+
+# Render the layout inside your parent container geometry tracker path
+ghost_button.pack(padx=20, pady=10)
+```
+
+---
+
+### Callback Signature & Usage
+
+Routes interaction execution signatures directly to custom functional hooks cleanly on standard click events.
+
+#### Command 
+
+```python
+# Fires on tactile button selection loops
+def tertiary_action_executed():
+    print("Ghost action click recorded.")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Alter button layout parameters or switch active styles dynamically on the fly
+button_tertiary.set_pressed(False)
+button_tertiary.configure(text="RE-EVALUATED ACTION")
+```
+
+### Convenience Functions
+```python
+# Query active component states or toggle operational locks cleanly
+current_visual = button_tertiary.get_state()
+button_tertiary.state("disabled")  # Completely secures layout from hover interactions
+```
+
+### Centralized Stylesheet Setup (`themes.json`)
+```json
+{
+    "sCTkButtonTertiary": {
+        "font": ["Arial", 15, "normal"],
+        "fg_color": "transparent",
+        "border_width": 1.25,
+        "border_color": ["#64748B", "#94A3B8"],
+        "hover_color": ["#E2E8F0", "#1E293B"],
+        "corner_radius": 6,
+        "disabled_map": {
+            "border_color": ["#E5E7EB", "#374151"],
+            "text_color": ["#94A3B8", "#64748B"]
+        },
+        "pressed_map": {
+            "fg_color": ["#E2E8F0", "#1E293B"],
+            "border_color": ["#112A4B", "#1F618D"],
+            "text_color": ["#112A4B", "#1F618D"]
+        }
+    }
+}
+```
+
+### Other notes
+* **Transparency Layer Handling:** The global `_sanitize_value` parser intercepts standard string `"transparent"` definitions, stripping out unsafe dual arrays to prevent underlying core crashes.
+* **Isolated Logic Blocks:** Dynamic references match safely without injecting long over-engineered fallback scripts inside shared module systems.
+
+### Implementation Example & Test Harness
+
+Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkButtonTertiary` inside a root window workspace panel layout using the strict interactive test configuration loops.
+
+```python
+#!/usr/bin/python3
+import customtkinter as ctk
+from ThemeableWidget import ThemeableWidget
+from sCTkButtonTertiary import sCTkButtonTertiary
+
+# ==========================================
+#   MAIN TESTING RUNNER CODE BLOCK
+# ==========================================
+if __name__ == "__main__":
+    # # ctk.set_appearance_mode("dark")
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    widget1 = sCTkButtonTertiary(base)
+    widget = sCTkButtonTertiary(base)
+
+    # -----------------------------------------------------------------
+    # 🛠️ THE CLICK REPORT & TOGGLE FIX (Moved cleanly to the Test Harness)
+    # -----------------------------------------------------------------
+    widget1.configure(
+        text="Latching Preset Toggle",
+        command=lambda: [
+            widget1.set_pressed(not widget1.is_pressed),
+            print("Latching Preset Toggle=", widget1.is_pressed)
+        ]
+    )
+
+    widget.configure(
+        text="System Action",
+        command=lambda: [
+            print("System Action Clicked")
+        ]
+    )
+
+    widget.pack(expand=False, fill="none", padx=40, pady=15)
+    widget1.pack(expand=False, fill="none", padx=40, pady=15)
+
+    # -----------------------------------------------------------------
+    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
+    # -----------------------------------------------------------------
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: TERTIARY BUTTON INTERACTION ACTIVE ===\n")
+
+    root.mainloop()
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkCheckBox
+
+Uniform application checkbox toggle component equipped with state tracking machines, centralized theme file injection, and multi-zone Pygubu Inspector design-time stability.
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkCheckBox(master)` | `sCTkCheckBox(master)` *(Functions as Core Toggle Selection)* |
+| **Maintenance** | Manual styling assignments across localized setups. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native pipeline. | Separated safely across `sCTkCheckBox.py`, `sCTkCheckBoxui.py`, and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+
+---
+
+### Constructor
+
+Initialize a custom checkbox interaction instance. Any direct property configuration passed here will safely layer over your centralized `themes.json` asset settings at runtime.
+
+```python
+# Instantiate the themed checkbox element
+logging_toggle = sCTkCheckBox(
+    master=control_panel,
+    text="Enable Logging Framework",
+    border_width=3,                 # Override baseline json rim track dimensions on the fly
+    command=framework_state_changed # Attach your interactive selection loop callback function
+)
+
+# Render the layout inside your parent container geometry panel
+logging_toggle.pack(padx=20, pady=10)
+```
+
+---
+
+### Callback Signature & Usage
+
+Executes standard callback logic blocks on selection changes, cleanly interogating the instance value natively via core retrieval keys.
+
+#### Command 
+
+```python
+# Fires on button selection state changes
+def framework_state_changed():
+    # Evaluates to 1 when active (checked), 0 when empty (unchecked)
+    print("Checked" if logging_toggle.get() == 1 else "Unchecked")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Select or deselect the tracking node values directly on the fly
+logging_toggle.select()   # Forces checkmark rendering active
+logging_toggle.deselect() # Wipes the checkbox state back to empty
+```
+
+### Convenience Functions
+```python
+# Query current state value string or toggle operational availability cleanly
+current_mode = logging_toggle.get_state() # Returns 'normal' or 'disabled'
+logging_toggle.state("disabled")          # Locks interaction tracks and applies muted styles
+```
+
+### Centralized Stylesheet Setup (`themes.json`)
+```json
+{
+    "sCTkCheckBox": {
+        "font": ["Arial", 15, "normal"],
+        "border_width": 3,
+        "border_color": ["#64748B", "#94A3B8"],
+        "fg_color": ["#1A4375", "#2471A3"],
+        "hover_color": ["#112A4B", "#1F618D"],
+        "text_color": ["#1F2937", "#D1D5DB"],
+        "disabled_map": {
+            "text_color": ["#94A3B8", "#64748B"],
+            "fg_color": ["#E5E7EB", "#374151"],
+            "border_color": ["#CBD5E1", "#475569"]
+        }
+    }
+}
+```
+
+### Other notes
+* **Volatile Canvas Preservation:** Modifying states via `state()` completely bypasses manual canvas `.unbind()` scripts, ensuring CustomTkinter's native internal window tracking loops stay perfectly functional.
+* **Pygubu Zone-A Interception:** The widget safely responds to single positional property queries coming from design-time editor tools without crashing or locking execution tracks.
+
+### Implementation Example & Test Harness
+
+Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkCheckBox` inside a root window workspace panel layout using the strict interactive test configuration loops.
+
+```python
+import customtkinter as ctk
+from sCTkCheckBox import sCTkCheckBox
+if __name__ == "__main__":
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    widget = sCTkCheckBox(root, text="Enable Logging Framework")
+    widget.configure(command=lambda: print("Checked" if widget.get() == 1 else "Unchecked"))
+    widget.pack(expand=True, fill="none", padx=10, pady=10)
+
+    widget.state("disabled")
+    print("state (Disabled Pass) =", widget.get_state())
+    
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())
+
+    root.mainloop()
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+## sCTkComboBox
+
+Multi-layered dropdown option selection widget equipped with custom composite state controllers, parameter-popping architecture initialization tracks, and Pygubu Inspector design-time stability.
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | `ctk.CTkComboBox(master)` | `sCTkComboBox(master)` *(Functions as Composite Select Menu)* |
+| **Maintenance** | Local style overrides duplicated across widgets. | Clean updates across all layouts modified directly in the JSON file. |
+| **File Mapping** | Everything runs under one core native pipeline. | Separated safely across `sCTkComboBox.py`, `sCTkComboBoxui.py`, and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+
+---
+
+### Constructor
+
+Initialize a custom option tracking menu instance. Composite parameters like `values`, `command`, and `variable` are explicitly popped early inside `__init__` to protect the layout engine from keyword collisions.
+
+```python
+# Instantiate the themed option selection element
+frequency_selector = sCTkComboBox(
+    master=control_panel,
+    values=["Channel A (VHF)", "Channel B (UHF)", "Direct Audio Feed"],
+    command=frequency_index_latched  # Attach your option change loop callback function
+)
+
+# Render the layout inside your parent container geometry tracker path
+frequency_selector.pack(padx=20, pady=10)
+```
+
+---
+
+### Callback Signature & Usage
+
+Dispatches selected option value text strings down to runtime logging terminals directly upon mouse selection changes inside the floating popup card window.
+
+#### Command 
+
+```python
+# Fires on dropdown menu option selection loops
+def frequency_index_latched(selected_choice: str):
+    print(f"ComboBox Option Latched: {selected_choice}")
+```
+
+### Dynamic Property Modifiers Live
+```python
+# Force alter the active option string selection array on the fly
+frequency_selector.configure(values=["HF Band Feed", "Satellite Link (SHF)"])
+```
+
+### Convenience Functions
+```python
+# Manually inject a default tracking option string directly into the entry field
+frequency_selector.set("Direct Audio Feed")
+
+# Query current state value string or toggle operational availability cleanly
+current_mode = frequency_selector.get_state()  # Returns 'normal' or 'disabled'
+frequency_selector.state("disabled")            # Locks interaction layers and dims inner buttons
+```
+
+### Centralized Stylesheet Setup (`themes.json`)
+```json
+{
+    "sCTkComboBox": {
+        "font": ["Arial", 15, "normal"],
+        "dropdown_font": ["Arial", 15, "normal"],
+        "border_width": 1.5,
+        "border_color": ["#1A4375", "#64748B"],
+        "fg_color": ["#FFFFFF", "#111827"],
+        "text_color": ["#1F2937", "#FFFFFF"],
+        "button_color": ["#2471A3", "#64748B"],
+        "button_hover_color": ["#112A4B", "#1F618D"],
+        "dropdown_fg_color": ["#FFFFFF", "#1F2937"],
+        "dropdown_text_color": ["#1F2937", "#F9FAFB"],
+        "dropdown_hover_color": ["#E5E7EB", "#374151"],
+        "disabled_map": {
+            "fg_color": ["#F3F4F6", "#1F2937"],
+            "border_color": ["#E5E7EB", "#374151"],
+            "text_color": ["#94A3B8", "#64748B"],
+            "button_color": ["#94A3B8", "#4B5563"]
+        }
+    }
+}
+```
+
+### Other notes
+* **Composite State Cascading:** Transitioning to `disabled` cleanly applies dimming array variables across the text fields, structural bounding rims, and arrow dropdown boxes simultaneously.
+* **Pygubu Zone-A Interception:** The widget safely responds to single positional property queries coming from design-time editor tools without crashing or locking execution tracks.
+
+### Implementation Example & Test Harness
+
+Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkComboBox` inside a root window workspace panel layout using the strict interactive test configuration loops.
+
+```python
+import customtkinter as ctk
+from sCTkComboBox import sCTkComboBox
+
+if __name__ == "__main__":
+    root = ctk.CTk()
+    root.geometry("400x200")
+
+    from sCTkFrame import sCTkFrame
+
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    # Instantiate with dummy options test list array values and click reporter logs
+    widget = sCTkComboBox(
+        base,
+        values=["Channel A (VHF)", "Channel B (UHF)", "Direct Audio Feed"],
+        command=lambda choice: print(f"ComboBox Option Latched: {choice}")
+    )
+    widget.pack(expand=True, fill="none", padx=10, pady=10)
+
+    # Test tracking loop sequences on your console window
+    widget.state("disabled")
+    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
+
+    widget.state("normal")
+    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+
+    root.mainloop()
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkSpinbox
+
+The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapper widget. It extends `ctk.CTkFrame` and aggregates an internal `sCTkEntryPrimary` alongside two stacked or flanking directional button controls. The component dynamically supports two operational tracking tracks: standard numerical incrementation step ranges, and discrete string text array index navigation. Like all sCTk widgets, it is theme-adaptive.
+
+---
+
+### 📋 API Constructor Reference
+
+```python
+sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state="normal", wrap=False, justify="left", show=None, placeholder_text=None, exportselection=True, width=140, height=32, **kw)
+```
+
+| Parameter Name | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `master` | `any` | `None` | Reference pointer tracking your root window or parent layout layer capsule container. |
+| `from_` | `float` | `0.0` | The lower numerical limit boundary representing the floor of your adjustment range. |
+| `to` | `float` | `100.0` | The upper numerical limit boundary representing the ceiling of your adjustment range. |
+| `step_size` | `float` | `1.0` | The exact mathematical offset added or subtracted from your tracking float on every button click. |
+| `command` | `callable` | `None` | Optional event logging callback function executed instantly on text shifts, passing the active value. |
+| `state` | `str` | `"normal"` | Execution state controller. Toggling to `"disabled"` dampens and locks out all inputs and arrows. |
+| `wrap` | `bool` | `False` | Mechanical boundary iteration loop flag. When `True`, stepping past limits wraps around to alternative poles. |
+| `justify` | `str` | `"left"` | Content text arrangement alignment tracking mask within the entry area. Options: `"left"`, `"center"`, `"right"`. |
+| `show` | `str` | `None` | Character masking input indicator string sequence (e.g. `show="*"` for password entries). |
+| `placeholder_text` | `str` | `None` | Faded background prompt text block displayed natively whenever the input cell field is completely empty. |
+| `exportselection` | `bool` | `True` | Standard Tkinter selection clipboard persistence state identifier switch. |
+| `width` | `int` | `140` | Manual hardware panel horizontal width layout footprint dimension measured in pixels. |
+| `height` | `int` | `32` | Manual hardware panel vertical height layout footprint dimension measured in pixels. |
+
+### 🛠️ Custom Keyword Extensions (`**kw`)
+These exclusive configuration parameters override default geometry behaviors, resolve theme definitions, and style proportions dynamically:
+
+| Extension Parameter | Data Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `button_width` | `int` | `22` | The horizontal width tracking measurement assigned to increment/decrement button frames in pixels. |
+| `button_height` | `int` | `None` | The vertical button height. If `None`, scales automatically based on active grid parameters. |
+| `button_side` | `str` | `"right"` | Hardware control grid positioning side anchor layout. Options: `"right"`, `"left"`, `"split"`. |
+| `orientation` | `str` | `"vertical"` | Structural grid layout arrangement axis profile track. Options: `"vertical"`, `"horizontal"`. |
+| `arrow_font` | `tuple` / `str` | `None` | Typography tuple passed directly to the arrows/glyphs. Ensures runtime theme compatibility. |
+| `arrow_font_size` | `int` | `8` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings inside Pygubu. |
+| `format` | `str` | `""` | Numerical formatting mask specifier string rule (supports C percent styles `%.3f` or bracket masks `{:.3f}`). |
+| `values` | `str` / `list` | `None` | Literal input values array string loader. Setting choices converts your widget into Discrete Text List Mode. |
+
+---
+
+### ⚡ Global Object Instance Methods
+
+#### Programmatically Set Value Elements
+```python
+# Insert a distinct float, integer, or matching list mode text option string natively
+spinbox.set(12.5)
+```
+
+#### Fetch Active Value Strings
+```python
+# Reaches into the data entry track, pulling back the active string layout contents
+current_selection = spinbox.get()
+```
+
+#### Discrete Values Array Loader Shortcut
+```python
+# Programmatically inject custom space-separated lines or list records on the fly
+spinbox.set_values('Low Medium High "Extreme Alert" Max')
+```
+
+#### Layout Parameter Configuration Modifier
+```python
+# Updates interactive structural layouts or boundaries cleanly without layout recreation overhead
+spinbox.configure(orientation="horizontal", button_side="split", arrow_font_size=14, wrap=True)
+```
+
+#### Advanced Sub-Component Style Targeting
+If an explicit overrides requirement arises at runtime that bypasses the compiled stylesheet definitions, you can directly interact with the isolated increment/decrement components safely without initialization crashes:
+```python
+# Manually altering internal button typography fonts at runtime
+spinbox._sub_button_1.configure(font=("Arial", 8, "normal")) # Increment button
+spinbox._sub_button_2.configure(font=("Arial", 8, "normal")) # Decrement button
+```
+
+---
+
+### 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
+
+The widget relies heavily on direct index key lookups within your central styling map profile matrix. The theme mapping profile utilizes explicit arrow definitions, glyph direction markers, formatting masks, and soft contrast palettes to eliminate runtime fallback drops.
+
+```python
+THEME_DEFAULTS = {
+    "sCTkSpinbox": {
+        # Font family and dimensions applied natively into the tracking sCTkEntryPrimary field area
+        "font": ("Arial", 15, "normal"),
+        
+        # Font configuration specifically assigned to resolve button arrows/glyphs
+        "arrow_font": ("Arial", 8, "normal"),
+        
+        # Explicit directional string characters assigned to step button graphics 
+        "arrow_up_char": "▲",
+        "arrow_down_char": "▼",
+        "arrow_right_char": "▶",
+        "arrow_left_char": "◀",
+
+        # String rendering format controller (C percent-style or python bracket mapping rules)
+        "format": "%.2f",
+
+        # Geometry footprints matching baseline sCTkEntryPrimary boundaries
+        "border_width": 1.5,
+        "corner_radius": 6,
+        
+        # Active Layout Palette Look Parameters
+        "entry_color": ("#FFFFFF", "#111827"),
+        "border_color": ("#1A4375", "#64748B"),
+        "text_color": ("#1F2937", "#F9FAFB"),
+        
+        # 🎨 UPDATED SOFT CONTRAST:
+        # Light Mode: Comfortable Slate Blue-Grey (#5A6E7F)
+        # Dark Mode: Muted Technical Steel Blue-Grey (#526071) - Soft, readable, non-distracting
+        "placeholder_text_color": ("#5A6E7F", "#526071"),
+        
+        "button_color": ("#9E9E9E", "#2A2F3D"),
+        "button_hover_color": ("#7D7D7D", "#374151"),
+
+        # Direct cascading mapping dictionary nested cleanly for the locked disabled state machine
+        "disabled_map": {
+            "entry_color": ("#F3F4F6", "#1F2937"),
+            "border_color": ("#CBD5E1", "#475569"),
+            "text_color": ("#94A3B8", "#64748B"),
+            "button_color": ("#CBD5E1", "#334155")
+        }
+    }
+
+```
+
+
+[Return to Table of Contents](#contents)
+
+
+
 
 
 ## sCTkSeparator
@@ -220,55 +1092,78 @@ Below is a complete, self-contained test execution script demonstrating how to p
 
 ```python
 #!/usr/bin/python3
-import os
 import customtkinter as ctk
-from sCTkSeparator import sCTkSeparator
+from ThemeableWidget import ThemeableWidget
+from sCTkButtonTertiary import sCTkButtonTertiary
 
 # ==========================================
 #   MAIN TESTING RUNNER CODE BLOCK
 # ==========================================
 if __name__ == "__main__":
-
+    # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
-    root.title("sCTkSeparator Feature Test Environment")
-    root.geometry("600x450")
+    root.geometry("400x200")
 
-    grid_Frame = ctk.CTkFrame(root)
-    grid_Frame.pack(side="top", fill="both", expand=True, padx=20, pady=15)
+    from sCTkFrame import sCTkFrame
 
-    grid_Frame.grid_columnconfigure(0, weight=1)
-    grid_Frame.grid_columnconfigure(1, weight=0)
-    grid_Frame.grid_columnconfigure(2, weight=1)
-    grid_Frame.grid_rowconfigure(0, weight=1)
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    lbl_left = ctk.CTkLabel(grid_Frame, text="Left Sub-Panel Group Data")
-    lbl_left.grid(row=0, column=0, sticky="nswe")
+    widget1 = sCTkButtonTertiary(base)
+    widget = sCTkButtonTertiary(base)
 
-    sep_vertical_text = sCTkSeparator(grid_Frame, orientation="vertical", text="CORE API", width=4)
-    sep_vertical_text.grid(row=0, column=1, sticky="ns", padx=10, pady=10)
+    # -----------------------------------------------------------------
+    # 🛠️ THE CLICK REPORT & TOGGLE FIX (Moved cleanly to the Test Harness)
+    # -----------------------------------------------------------------
+    widget1.configure(
+        text="Latching Preset Toggle",
+        command=lambda: [
+            widget1.set_pressed(not widget1.is_pressed),
+            print("Latching Preset Toggle=", widget1.is_pressed)
+        ]
+    )
 
-    lbl_right = ctk.CTkLabel(grid_Frame, text="Right Sub-Panel Group Data")
-    lbl_right.grid(row=0, column=2, sticky="nswe")
+    widget.configure(
+        text="System Action",
+        command=lambda: [
+            print("System Action Clicked")
+        ]
+    )
 
-    sep_horizontal_text = sCTkSeparator(root, orientation="horizontal", text="SYSTEM DASH SEPARATOR SECTION", width=15)
-    sep_horizontal_text.pack(side="top", fill="x", padx=20, pady=10)
+    widget.pack(expand=False, fill="none", padx=40, pady=15)
+    widget1.pack(expand=False, fill="none", padx=40, pady=15)
 
-    pack_frame = ctk.CTkFrame(root)
-    pack_frame.pack(side="bottom", fill="both", expand=True, padx=20, pady=(5, 20))
+    # -----------------------------------------------------------------
+    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
+    # -----------------------------------------------------------------
+    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    widget.state("disabled")
+    print("--- DISABLED PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
 
-    panel_a = ctk.CTkLabel(pack_frame, text="System Input Options")
-    panel_a.pack(side="left", fill="both", expand=True)
-
-    sep_dashed = sCTkSeparator(pack_frame, orientation="vertical", width=4, dash=(4, 4))
-    sep_dashed.pack(side="left", fill="y", padx=10, pady=15)
-
-    panel_b = ctk.CTkLabel(pack_frame, text="System Output Channels")
-    panel_b.pack(side="right", fill="both", expand=True)
+    # Verify the cascade pipeline unlocks everything smoothly right back to normal
+    widget.state("normal")
+    print("\n--- NORMAL PASS ---")
+    print("Widget 0 state =", widget.get_state())
+    print("Widget 1 state =", widget1.get_state())
+    print("\n=== SYSTEM ONLINE: TERTIARY BUTTON INTERACTION ACTIVE ===\n")
 
     root.mainloop()
 ```
 
+
+[Return to Table of Contents](#contents)
+
+
+
 # Menus
+
+
+[Return to Table of Contents](#contents)
+
+
+
 # Dialogs
 The creation of an advanced user dialogue panel is a structured, multi-step process in the sCustomTkinter system. This flow decouples structural layouts from operational code.
 
@@ -334,10 +1229,15 @@ The creation of an advanced user dialogue panel is a structured, multi-step proc
 *   **self.setResetButton(buttonName=None, ButtonCommand=None)**  
     Configures the label text string and click callback function pointer for the secondary option button. Passing None preserves current settings. If the internal reset button component has been previously destroyed or unmapped, no updates occur and it returns False. Otherwise, parameters align and it returns True.
 
+
+[Return to Table of Contents](#contents)
+
+
+
 # Enhanced Widgets
 
 
-## sCTkDial
+## sCTkDial Family
 
 The sCTkDial suite provides a group of theme-adaptive, object-oriented mechanical rotary knob widgets engineered explicitly for ham radio desktop console interfaces. Derived from an abstract base core (`sCTkDialBase`), each distinct child class utilizes specialized vector graphics rendering paths and distinct input damping to mimic authentic radio console hardware while translating telemetry arrays into strict, application-friendly integers. Although originally designed for ham radio applications, these virtual dials can be used for many other applications.
 
@@ -348,6 +1248,13 @@ The sCTkDial suite provides a group of theme-adaptive, object-oriented mechanica
 ![sCTk Dial Control Console Interface](images/sCTkDial.png)
 
 ---
+
+
+
+[Return to Table of Contents](#contents)
+
+
+
 
 ## sCTkDialSelector
 
@@ -406,9 +1313,13 @@ dial_selector.configure(labels=["160M", "80M", "40M", "20M", "10M"], arc_angle=2
 dial_selector.set(2)
 ```
 
----
 
-### 🎛️ 2. Hard End-Stop Potentiometer (`sCTkDialRange`)
+[Return to Table of Contents](#contents)
+
+
+
+
+### sCTkDialRange
 
 Designed for continuous absolute attenuations like Volume, Mic Gain, or RF Attenuation. It enforces hard structural end-stops (blocks wrap-around) and decouples physical graduation markings from internal tracking values.
 
@@ -449,10 +1360,15 @@ dial_range.configure(from_=0, to=10, divisions=2)
 
 # Manually force the potentiometer value to absolute index 50
 dial_range.set(50)
+```
 
----
 
-### 🎛️ 3. Infinite Flywheel Tuning Wheel (`sCTkDialContinuous`)
+[Return to Table of Contents](#contents)
+
+
+
+
+### sCTkDialContinuous
 
 Designed exclusively for Variable Frequency Oscillators and rapid continuous menu rolling. It spins infinitely in 360-degree vectors, ignoring absolute limit boundaries completely.
 
@@ -542,7 +1458,12 @@ THEME_DEFAULTS = {
 }
 ```
 
-## sCTkFileExplorer Component Documentation
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkFileExplorer
 
 The `sCTkFileExplorer` is a highly configurable, theme-compliant custom file and folder navigation panel. Designed as an embedded, nested component layout rather than a separate popup dialog frame, it maps absolute directory environments onto a scannable canvas area. Valid files and subfolders render with custom graphical glyphs, while invalid or filtered file records are dynamically dimmed and locked out from interactions. 
 
@@ -697,6 +1618,12 @@ if __name__ == "__main__":
     app.mainloop()
 ```
 
+
+[Return to Table of Contents](#contents)
+
+
+
+
 ## sCTkMessage
 ##### Derived from Selector class by Fastattack, 2024.   Source Repository: [MoreCustomTkinterWidgets](https://github.com/fastattackv/MoreCustomTkinterWidgets)  
 <br>
@@ -784,7 +1711,12 @@ Observe these implementation traits:
 
 
 
-## sCTkSMeter Component Documentation
+[Return to Table of Contents](#contents)
+
+
+
+
+## sCTkSMeter
 
 The `sCTkSMeter` is a classical analog S-Meter/Output for a Ham Radio Transceiver. Like all sCTk widgets, it is theme-adaptive.
 
@@ -836,6 +1768,12 @@ THEME_DEFAULTS = {
     # ... your other widget entries
 }
 ```
+
+
+[Return to Table of Contents](#contents)
+
+
+
 
 ## sCTkSMeterBar
 
@@ -903,7 +1841,12 @@ THEME_DEFAULTS = {
 }
 ```
 
-## sCTkPathChooser Component Documentation
+
+[Return to Table of Contents](#contents)
+
+
+
+## sCTkPathChooser
 ___
 The `sCTkPathChooser` is a custom compound widget that integrates a fluid layout data entry text field with an interactive file system directory browse button. The outer container manages the structural framing and boundary envelope dimensions, while the inner text field stretches dynamically to occupy available layout space. Clicking the action button initializes a modal document viewer popup window that lets users visually navigate absolute file paths using an underlying `sCTkFileExplorer` panel.
 ![pathchooser.png](images/pathchooser.png)
@@ -1063,6 +2006,11 @@ if __name__ == "__main__":
     app.mainloop()
 ```
 
+
+[Return to Table of Contents](#contents)
+
+
+
 ## sCTkSelector
 #### Derived from Selector class by Fastattack, 2024.   Source Repository: [MoreCustomTkinterWidgets](https://github.com/fastattackv/MoreCustomTkinterWidgets)  
 <br>
@@ -1219,137 +2167,12 @@ confirm_btn.pack(pady=15)
 root.mainloop()
 ```
 
-## sCTkSpinbox
 
-The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapper widget. It extends `ctk.CTkFrame` and aggregates an internal `sCTkEntryPrimary` alongside two stacked or flanking directional button controls. The component dynamically supports two operational tracking tracks: standard numerical incrementation step ranges, and discrete string text array index navigation. Like all sCTk widgets, it is theme-adaptive.
+[Return to Table of Contents](#contents)
 
----
 
-### 📋 API Constructor Reference
 
-```python
-sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state="normal", wrap=False, justify="left", show=None, placeholder_text=None, exportselection=True, width=140, height=32, **kw)
-```
-
-| Parameter Name | Data Type | Default Value | Description |
-| :--- | :--- | :--- | :--- |
-| `master` | `any` | `None` | Reference pointer tracking your root window or parent layout layer capsule container. |
-| `from_` | `float` | `0.0` | The lower numerical limit boundary representing the floor of your adjustment range. |
-| `to` | `float` | `100.0` | The upper numerical limit boundary representing the ceiling of your adjustment range. |
-| `step_size` | `float` | `1.0` | The exact mathematical offset added or subtracted from your tracking float on every button click. |
-| `command` | `callable` | `None` | Optional event logging callback function executed instantly on text shifts, passing the active value. |
-| `state` | `str` | `"normal"` | Execution state controller. Toggling to `"disabled"` dampens and locks out all inputs and arrows. |
-| `wrap` | `bool` | `False` | Mechanical boundary iteration loop flag. When `True`, stepping past limits wraps around to alternative poles. |
-| `justify` | `str` | `"left"` | Content text arrangement alignment tracking mask within the entry area. Options: `"left"`, `"center"`, `"right"`. |
-| `show` | `str` | `None` | Character masking input indicator string sequence (e.g. `show="*"` for password entries). |
-| `placeholder_text` | `str` | `None` | Faded background prompt text block displayed natively whenever the input cell field is completely empty. |
-| `exportselection` | `bool` | `True` | Standard Tkinter selection clipboard persistence state identifier switch. |
-| `width` | `int` | `140` | Manual hardware panel horizontal width layout footprint dimension measured in pixels. |
-| `height` | `int` | `32` | Manual hardware panel vertical height layout footprint dimension measured in pixels. |
-
-### 🛠️ Custom Keyword Extensions (`**kw`)
-These exclusive configuration parameters override default geometry behaviors, resolve theme definitions, and style proportions dynamically:
-
-| Extension Parameter | Data Type | Default Value | Description |
-| :--- | :--- | :--- | :--- |
-| `button_width` | `int` | `22` | The horizontal width tracking measurement assigned to increment/decrement button frames in pixels. |
-| `button_height` | `int` | `None` | The vertical button height. If `None`, scales automatically based on active grid parameters. |
-| `button_side` | `str` | `"right"` | Hardware control grid positioning side anchor layout. Options: `"right"`, `"left"`, `"split"`. |
-| `orientation` | `str` | `"vertical"` | Structural grid layout arrangement axis profile track. Options: `"vertical"`, `"horizontal"`. |
-| `arrow_font` | `tuple` / `str` | `None` | Typography tuple passed directly to the arrows/glyphs. Ensures runtime theme compatibility. |
-| `arrow_font_size` | `int` | `8` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings inside Pygubu. |
-| `format` | `str` | `""` | Numerical formatting mask specifier string rule (supports C percent styles `%.3f` or bracket masks `{:.3f}`). |
-| `values` | `str` / `list` | `None` | Literal input values array string loader. Setting choices converts your widget into Discrete Text List Mode. |
-
----
-
-### ⚡ Global Object Instance Methods
-
-#### Programmatically Set Value Elements
-```python
-# Insert a distinct float, integer, or matching list mode text option string natively
-spinbox.set(12.5)
-```
-
-#### Fetch Active Value Strings
-```python
-# Reaches into the data entry track, pulling back the active string layout contents
-current_selection = spinbox.get()
-```
-
-#### Discrete Values Array Loader Shortcut
-```python
-# Programmatically inject custom space-separated lines or list records on the fly
-spinbox.set_values('Low Medium High "Extreme Alert" Max')
-```
-
-#### Layout Parameter Configuration Modifier
-```python
-# Updates interactive structural layouts or boundaries cleanly without layout recreation overhead
-spinbox.configure(orientation="horizontal", button_side="split", arrow_font_size=14, wrap=True)
-```
-
-#### Advanced Sub-Component Style Targeting
-If an explicit overrides requirement arises at runtime that bypasses the compiled stylesheet definitions, you can directly interact with the isolated increment/decrement components safely without initialization crashes:
-```python
-# Manually altering internal button typography fonts at runtime
-spinbox._sub_button_1.configure(font=("Arial", 8, "normal")) # Increment button
-spinbox._sub_button_2.configure(font=("Arial", 8, "normal")) # Decrement button
-```
-
----
-
-### 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
-
-The widget relies heavily on direct index key lookups within your central styling map profile matrix. The theme mapping profile utilizes explicit arrow definitions, glyph direction markers, formatting masks, and soft contrast palettes to eliminate runtime fallback drops.
-
-```python
-THEME_DEFAULTS = {
-    "sCTkSpinbox": {
-        # Font family and dimensions applied natively into the tracking sCTkEntryPrimary field area
-        "font": ("Arial", 15, "normal"),
-        
-        # Font configuration specifically assigned to resolve button arrows/glyphs
-        "arrow_font": ("Arial", 8, "normal"),
-        
-        # Explicit directional string characters assigned to step button graphics 
-        "arrow_up_char": "▲",
-        "arrow_down_char": "▼",
-        "arrow_right_char": "▶",
-        "arrow_left_char": "◀",
-
-        # String rendering format controller (C percent-style or python bracket mapping rules)
-        "format": "%.2f",
-
-        # Geometry footprints matching baseline sCTkEntryPrimary boundaries
-        "border_width": 1.5,
-        "corner_radius": 6,
-        
-        # Active Layout Palette Look Parameters
-        "entry_color": ("#FFFFFF", "#111827"),
-        "border_color": ("#1A4375", "#64748B"),
-        "text_color": ("#1F2937", "#F9FAFB"),
-        
-        # 🎨 UPDATED SOFT CONTRAST:
-        # Light Mode: Comfortable Slate Blue-Grey (#5A6E7F)
-        # Dark Mode: Muted Technical Steel Blue-Grey (#526071) - Soft, readable, non-distracting
-        "placeholder_text_color": ("#5A6E7F", "#526071"),
-        
-        "button_color": ("#9E9E9E", "#2A2F3D"),
-        "button_hover_color": ("#7D7D7D", "#374151"),
-
-        # Direct cascading mapping dictionary nested cleanly for the locked disabled state machine
-        "disabled_map": {
-            "entry_color": ("#F3F4F6", "#1F2937"),
-            "border_color": ("#CBD5E1", "#475569"),
-            "text_color": ("#94A3B8", "#64748B"),
-            "button_color": ("#CBD5E1", "#334155")
-        }
-    }
-
-```
-
-## sCTkTableview Component Documentation
+## sCTkTableview
 
 The `sCTkTableview` is a high-performance, theme-adaptive, and interactive data grid widget engineered specifically for the `sCustomTkinter` desktop amateur radio workspace architecture. It wraps a specialized scrollable container viewport to render structured, matrix-aligned logging rows, transceiver channels, or telemetry tracking data.
 
@@ -1475,7 +2298,12 @@ app.mainloop()
 
 
 # Notes
-***
+
+
+[Return to Table of Contents](#contents)
+
+
+
 
 ```
 

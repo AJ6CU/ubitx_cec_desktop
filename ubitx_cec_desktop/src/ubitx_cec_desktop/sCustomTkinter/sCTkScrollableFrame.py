@@ -5,7 +5,6 @@ sCTkScrollableFrame
 A clean, theme-compliant scrollable viewport container frame.
 """
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
 from ThemeableWidget import ThemeableWidget
 
 import sCTkScrollableFrameui as baseui
