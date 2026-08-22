@@ -73,14 +73,24 @@ class ThemeableWidget:
 
         self.final_kw = {}
 
-        # 1. Load global configuration file defaults (Filtering out custom layout keys)
+        # 1. 🛠️ THE CONDITIONAL SHIELD RE-ALIGNMENT:
+        # We check if this widget is an advanced rendering vector component (like sCTkDial or sCTkMeter).
+        # If it is NOT a vector dial, we dynamically exclude 'text_color' from the forbidden list
+        # so buttons, entries, and labels can capture their custom font color styles flawlessly!
+        is_vector_widget = any(v_key in theme_defaults for v_key in ["dial_color", "pointer_color", "diameter"])
+
+        active_vector_guards = set(CUSTOM_VECTOR_KEYS)
+        if not is_vector_widget:
+            active_vector_guards.discard("text_color")
+
+        # Load global configuration file defaults using our refined active guards
         for key, value in theme_defaults.items():
-            if key not in forbidden_keys and key not in CUSTOM_VECTOR_KEYS:
+            if key not in forbidden_keys and key not in active_vector_guards:
                 self.final_kw[key] = self._sanitize_value(key, value)
 
         # 2. Layer direct inline runtime keyword modifications over the top
         for key, value in kwargs.items():
-            if value is not None and key not in forbidden_keys and key not in CUSTOM_VECTOR_KEYS:
+            if value is not None and key not in forbidden_keys and key not in active_vector_guards:
                 self.final_kw[key] = self._sanitize_value(key, value)
 
     def apply_theme(self):

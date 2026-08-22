@@ -1,112 +1,86 @@
 ## sCTkButtonTertiary
 
-Minimalist ghost / outline tertiary button variant providing high-contrast bounding lines, dynamic background tint matching, and lightweight composite design-time stability.
+An outline-driven custom toggle variant button widget component styled specifically for sub-presets, tuning markers, and option lock keys. It utilizes an independent deep-copy keyword caching shield and a dynamic runtime accent fallback detector to align button typography with CustomTkinter system configurations automatically.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkButton(master, fg_color="transparent")` | `sCTkButtonTertiary(master)` *(Functions as Ghost / Border Action)* |
-| **Maintenance** | Manual color changes across multiple layouts. | Clean updates across all layouts modified directly in the JSON file. |
-| **File Mapping** | Everything runs under one core native pipeline. | Separated safely across `sCTkButtonTertiary.py`, `sCTkButtonTertiaryui.py`, and `ThemeableWidget.py`. |
-| `is_pressed` | *Not Available Natively* | `bool` visibility latching flag tracking interactive background tinting status. |
-| `set_pressed(pressed)` | *Not Available Natively* | `Method (bool)` to smoothly shift outline buttons into contrast color styles. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling baseline layout tracking map transformations. |
-| `get_state()` | `self.cget("state")` | `Method -> str` synchronized assertion getter matching Pygubu queries. |
+| **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonTertiary(master)` *(Outline Latching Button)* |
+| **File Mapping** | Everything runs under one core native framework layout layer. | Separated safely across `sCTkButtonTertiary.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+| `set_pressed(bool)` | *Not Available Natively* | **Latching Hook:** Locks background contrast styles to match `pressed_map` guidelines. |
 
 ---
 
 ### Constructor
 
-Initialize a tertiary outline / ghost widget instance. Custom keyword overrides layer cleanly over your centralized layout configuration settings.
+Initialize a custom tertiary button instance. If no explicit `text_color` parameters are discovered inside `sCTkThemes.json`, the constructor queries CustomTkinter's baseline colors (`["#3B8ED0", "#1F6AA5"]`) automatically to preserve unified system highlights.
 
 ```python
-# Instantiate the minimalist tertiary element
-ghost_button = sCTkButtonTertiary(
-    master=base_frame,
-    text="View Advanced Logs",
-    border_width=1.5,               # Override default outline boundary track weight
-    command=tertiary_action_fired   # Connect your functional event trigger loop callback
+# Instantiate a tertiary outline latching button
+preset_select = sCTkButtonTertiary(
+    master=control_panel,
+    text="PRESET CHANNEL A",
+    command=on_preset_selected
 )
 
-# Render the layout inside your parent container geometry tracker path
-ghost_button.pack(padx=20, pady=10)
+# Render the widget inside your parent container geometry packer panel
+preset_select.pack(fill="x", padx=40, pady=10)
 ```
 
 ---
 
-### Callback Signature & Usage
-
-Routes interaction execution signatures directly to custom functional hooks cleanly on standard click events.
-
-#### Command 
-
-```python
-# Fires on tactile button selection loops
-def tertiary_action_executed():
-    print("Ghost action click recorded.")
-```
-
-### Dynamic Property Modifiers Live
-```python
-# Alter button layout parameters or switch active styles dynamically on the fly
-button_tertiary.set_pressed(False)
-button_tertiary.configure(text="RE-EVALUATED ACTION")
-```
-
-### Convenience Functions
-```python
-# Query active component states or toggle operational locks cleanly
-current_visual = button_tertiary.get_state()
-button_tertiary.state("disabled")  # Completely secures layout from hover interactions
-```
-
-### Centralized Stylesheet Setup (`themes.json`)
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
     "sCTkButtonTertiary": {
-        "font": ["Arial", 15, "normal"],
         "fg_color": "transparent",
-        "border_width": 1.25,
-        "border_color": ["#64748B", "#94A3B8"],
-        "hover_color": ["#E2E8F0", "#1E293B"],
-        "corner_radius": 6,
+        "border_color": ["#3B8ED0", "#1F6AA5"],
+        "text_color": null,
+        "border_width": 1,
+        "corner_radius": 4,
         "disabled_map": {
-            "border_color": ["#E5E7EB", "#374151"],
+            "fg_color": "transparent",
+            "border_color": ["#CBD5E1", "#374151"],
             "text_color": ["#94A3B8", "#64748B"]
         },
         "pressed_map": {
-            "fg_color": ["#E2E8F0", "#1E293B"],
-            "border_color": ["#112A4B", "#1F618D"],
-            "text_color": ["#112A4B", "#1F618D"]
+            "fg_color": ["#3B8ED0", "#1F6AA5"],
+            "border_color": ["#3B8ED0", "#1F6AA5"],
+            "text_color": ["#FFFFFF", "#FFFFFF"]
         }
     }
 }
 ```
 
-### Other notes
-* **Transparency Layer Handling:** The global `_sanitize_value` parser intercepts standard string `"transparent"` definitions, stripping out unsafe dual arrays to prevent underlying core crashes.
-* **Isolated Logic Blocks:** Dynamic references match safely without injecting long over-engineered fallback scripts inside shared module systems.
-
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkButtonTertiary` inside a root window workspace panel layout using the strict interactive test configuration loops.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkButtonTertiary` alongside latching switches.
 
 ```python
 #!/usr/bin/python3
 import customtkinter as ctk
-from ThemeableWidget import ThemeableWidget
+import sCTkThemes  # 🛠️ Top-level import for core application execution tracking
+
+class sCTkButtonTertiaryTestBench:
+    pass
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkButtonTertiary import sCTkButtonTertiary
 
-# ==========================================
-#   MAIN TESTING RUNNER CODE BLOCK
-# ==========================================
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
-    root = ctk.CTk()
-    root.geometry("400x200")
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
 
-    from sCTkFrame import sCTkFrame
+    root = ctk.CTk()
+    root.geometry("450x300")
+    root.title("Tertiary Outline Button Telemetry Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
@@ -114,45 +88,30 @@ if __name__ == "__main__":
     widget1 = sCTkButtonTertiary(base)
     widget = sCTkButtonTertiary(base)
 
-    # -----------------------------------------------------------------
-    # 🛠️ THE CLICK REPORT & TOGGLE FIX (Moved cleanly to the Test Harness)
-    # -----------------------------------------------------------------
     widget1.configure(
         text="Latching Preset Toggle",
         command=lambda: [
             widget1.set_pressed(not widget1.is_pressed),
-            print("Latching Preset Toggle=", widget1.is_pressed)
+            print(f"Logged Verification Hook -> widget1.is_pressed = {widget1.is_pressed}")
         ]
     )
 
     widget.configure(
         text="System Action",
-        command=lambda: [
-            print("System Action Clicked")
-        ]
+        command=lambda: print("System Action Clicked")
     )
 
-    widget.pack(expand=False, fill="none", padx=40, pady=15)
-    widget1.pack(expand=False, fill="none", padx=40, pady=15)
+    widget.pack(expand=False, fill="none", padx=40, pady=10)
+    widget1.pack(expand=False, fill="none", padx=40, pady=10)
 
-    # -----------------------------------------------------------------
-    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
-    # -----------------------------------------------------------------
-    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
+    # Standard test assertions routine verification sequences
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("Widget 0 state =", widget.get_state())
-    print("Widget 1 state =", widget1.get_state())
+    print("widget (Disabled Pass) =", widget.get_state())
 
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("Widget 0 state =", widget.get_state())
-    print("Widget 1 state =", widget1.get_state())
-    print("\n=== SYSTEM ONLINE: TERTIARY BUTTON INTERACTION ACTIVE ===\n")
+    print("widget (Normal Pass)   =", widget.get_state())
+    print("========================================\n")
 
     root.mainloop()
 ```
-
-
-[Return to Table of Contents](#contents)

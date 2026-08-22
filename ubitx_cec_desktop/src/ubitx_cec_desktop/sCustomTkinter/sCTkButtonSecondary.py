@@ -1,34 +1,36 @@
-
 # !/usr/bin/python3
 """
 sCTkButtonSecondary
 
-subclass of CTkButton (Secondary / Companion Action Latching Toggle Variant)
+subclass of CTkButton via Pygubu UI Class Isolation (Secondary Action Controller)
 
 UI source file: sCTkButtonSecondary.ui
 """
-import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
 import sCTkButtonSecondaryui as baseui
+import sCTkThemes
 from ThemeableWidget import ThemeableWidget
 
 
 class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
+
     def __init__(self, master=None, **kw):
         # 1. Fire our shared theme logic first. It automatically finds "sCTkButtonSecondary" in the JSON
         ThemeableWidget.__init__(self, kw)
 
-        # 2. Store your custom maps using the newly sanitized internal mixin objects safely onto instance memory
-        self._local_defaults = self.final_kw
-        self._custom_disabled_map = self._widget_disabled_map
-        self._custom_pressed_map = self._widget_pressed_map
+        # 2. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Clone your configuration parameters into completely independent memory structures
+        # BEFORE initializing super, protecting active color values from native corruption traps.
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
+        self._custom_pressed_map = dict(self._widget_pressed_map)
 
         # 3. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
         # Set up your local press tracking boolean state flag
         self.is_pressed = False
+        self._custom_current_state = "normal"
 
     def configure(self, *args, **kwargs):
         """Handles Pygubu designer queries and manages composite state updates safely."""
@@ -37,20 +39,20 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
         # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
         # -----------------------------------------------------------------
         if args and len(args) == 1:
-            pname = args[0]
+            pname = args
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
-            if pname in ["fg_color", "border_color", "text_color"]:
+            if pname in ["fg_color", "border_color", "text_color", "hover_color"]:
                 current_state = str(self.state()).lower()
-                if current_state == "disabled" and self._custom_disabled_map:
-                    val = self._custom_disabled_map.get(pname)
-                else:
-                    val = self._local_defaults.get(pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
+                    pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
-            # FIXED: Avoid forwarding unnecessary **kwargs dictionary buffers down to super
             return super().configure(pname)
+
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
 
         # -----------------------------------------------------------------
         # ZONE B: SUB-COMPONENT PAYLOAD ROUTING / STATE INTERCEPTION
@@ -59,9 +61,13 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             target_state = kwargs.pop("state")
             self.state(target_state)
 
-        # Pass any remaining properties down through your verified ThemeableWidget configuration track
-        if hasattr(super(), "configure"):
-            return super().configure(**kwargs)
+        # Clean empty strings passed by backspacing parameters inside Pygubu Designer panel slots
+        if kwargs:
+            for k, v in list(kwargs.items()):
+                if v == "":
+                    kwargs.pop(k)
+            if kwargs:
+                return super().configure(**kwargs)
         return None
 
     def get_state(self):
@@ -75,7 +81,6 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
 
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            # FIX: Normalized cross-platform mouse release event string tag bindings
             try:
                 self._canvas.bind("<Enter>", self._on_enter)
                 self._canvas.bind("<Leave>", self._on_leave)
@@ -84,13 +89,11 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
             super().configure(state="normal", hover=True)
-            self._update_current_visual_state()
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
-            # FIX: Normalized cross-platform unbind tags to prevent canvas memory locks
             try:
                 self._canvas.unbind("<Enter>")
                 self._canvas.unbind("<Leave>")
@@ -99,16 +102,16 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
             except Exception:
                 pass
 
-            # 🛠️ THE TEMPLATE FIX: Use super().configure to bypass Pygubu loops
             super().configure(state="disabled", hover=False)
 
-            # Apply disabled overrides from your map safely
+            # Apply disabled overrides out of your protected local maps
+            config_payload = {}
             for key in ("fg_color", "hover_color", "border_color", "text_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        super().configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
+                    config_payload[key] = self._custom_disabled_map[key]
+
+            if config_payload:
+                super().configure(**config_payload)
 
             self._custom_current_state = "disabled"
 
@@ -123,31 +126,45 @@ class sCTkButtonSecondary(baseui.sCTkButtonSecondaryUI, ThemeableWidget):
     def _update_current_visual_state(self):
         """
         MASTER VISUAL ROUTER: Evaluates the secondary button's press status variable
-        and dynamically maps configuration layouts out of memory.
+        and dynamically maps configuration layouts out of protected memory.
         """
         # A. PRESSED STATE TAKES PRIMARY LOCAL PRIORITY
         if self.is_pressed:
-            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
-            super().configure(
-                fg_color=self._custom_pressed_map.get("fg_color"),
-                hover_color=self._custom_pressed_map.get("hover_color"),
-                border_color=self._custom_pressed_map.get("border_color"),
-                text_color=self._custom_pressed_map.get("text_color"),
-                hover=False
-            )
+            config_payload = {}
+            for key in ("fg_color", "hover_color", "border_color", "text_color"):
+                val = self._custom_pressed_map.get(key)
+                if val is not None:
+                    config_payload[key] = val
+
+            config_payload["hover"] = False
+            super().configure(**config_payload)
+
         # B. FALLBACK TO STANDARD ACTIVE THEME CONFIGURATION
         else:
-            # 🛠️ THE TEMPLATE FIX: Use super().configure to safely hand off to CustomTkinter core
-            super().configure(
-                fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
-                hover_color=self.final_kw.get("hover_color", self._local_defaults.get("hover_color")),
-                border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
-                text_color=self.final_kw.get("text_color", self._local_defaults.get("text_color")),
-                hover=True
-            )
+            # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+            # We loop over your protected copy to force valid fallback properties.
+            # If an unmapped key returns None, it is skipped, preventing ValueError exceptions.
+            config_payload = {}
+            for key in ("fg_color", "hover_color", "border_color", "text_color", "border_width", "corner_radius",
+                        "font"):
+                val = self._local_defaults.get(key)
+                if val is not None:
+                    config_payload[key] = val
+
+            config_payload["hover"] = True
+            if config_payload:
+                super().configure(**config_payload)
+
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+from sCTkButtonSecondary import sCTkButtonSecondary
 
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
+    sCTkThemes.apply_sCTkThemes()
     root = ctk.CTk()
     root.geometry("400x200")
 

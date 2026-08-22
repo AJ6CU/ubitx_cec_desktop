@@ -1,156 +1,140 @@
+
+
 ## sCTkButtonPrimary
 
-High-visibility primary action button equipped with state-latching mechanisms, emergency alarm state overrides, and multi-zone Pygubu Inspector design-time compatibility.
+The dominant primary command execution button widget component. It incorporates high-priority telemetry layout overrides (**Alarm Warning Blocks** and **Latching Pressed Anchors**) layered over an independent deep-copy keyword caching shield to isolate colors from native dictionary mutation failures.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonPrimary(master)` *(Functions as Core Action Trigger)* |
-| **Maintenance** | Manual color changes across multiple layouts. | Clean updates across all layouts modified directly in the JSON file. |
-| **File Mapping** | Everything runs under one core native pipeline. | Separated across `sCTkButtonPrimary.py`, `sCTkButtonPrimaryui.py`, and `ThemeableWidget.py`. |
-| `is_pressed` | *Not Available Natively* | `bool` tracking if the component is toggled into its latching profile. |
-| `is_alarm` | *Not Available Natively* | `bool` high-priority override flag forcing the button into alert layouts. |
-| `set_pressed(pressed)` | *Not Available Natively* | `Method (bool)` to explicitly latch/unlatch custom pressed map configurations. |
-| `set_alarm_state(active)`| *Not Available Natively* | `Method (bool)` top-priority visual interceptor forcing emergency color overwrites. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonPrimary(master)` *(Dominant Action Button)* |
+| **File Mapping** | Everything runs under one core native layout pipeline. | Separated safely across `sCTkButtonPrimary.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking maps and toggling active canvas event binds. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+| `set_pressed(bool)` | *Not Available Natively* | **Latching Hook:** Locks background contrast styles to match `pressed_map` guidelines. |
+| `set_alarm_state(bool)` | *Not Available Natively* | **Priority Warning Hook:** Overrides interaction states to show a red warning panel. |
 
 ---
 
 ### Constructor
 
-Initialize a primary action widget instance. Any direct property configuration passed here will safely layer over your centralized `themes.json` asset settings at runtime.
+Initialize a custom primary button instance. Properties map cleanly out of central stylesheet parameters.
 
 ```python
-# Instantiate the customized primary button element
-action_button = sCTkButtonPrimary(
-    master=base_frame,
-    text="Execute System Flash",
-    width=160,                     # Override centralized theme file dimension profile
-    command=primary_action_fired   # Attach your interactive loop callback function
+# Instantiate a primary command action execution button
+tx_trigger = sCTkButtonPrimary(
+    master=control_panel,
+    text="TRANSMIT EXECUTE",
+    command=on_transmit_triggered
 )
 
-# Render the layout inside your parent container geometry grid
-action_button.pack(padx=20, pady=10)
+# Render the widget inside your parent container geometry packer panel
+tx_trigger.pack(fill="x", padx=40, pady=10)
 ```
 
 ---
 
-### Callback Signature & Usage
-
-Executes standard command sequences and reports event loops natively without adding low-level canvas window hardware bindings.
-
-#### Command 
-
-```python
-# Fires on button selection via standard mouse release or tap tracking loops
-def primary_button_clicked():
-    print("Primary action initiated successfully.")
-```
-
-### Dynamic Property Modifiers Live
-```python
-# Transition the primary widget into an active alarm state or update text dynamically on the fly
-button.set_alarm_state(active=True)
-button.configure(text="CRITICAL ALERT ACTIVE")
-```
-
 ### Convenience Functions
 ```python
-# Query current state value string or toggle operational availability cleanly
-current_mode = button.get_state()  # Returns 'normal' or 'disabled'
-button.state("disabled")           # Completely locks interaction layers and applies muted styles
+# Force an immediate priority warning red flash profile highlight
+tx_trigger.set_alarm_state(True)  # Forces alarm_map layout configurations forward
+
+# Toggle latching states or apply absolute interaction locks smoothly
+tx_trigger.set_pressed(True)      # Locks background contrast styles to pressed_map rules
+tx_trigger.state("disabled")      # Unbinds mouse canvas routines and applies muted gray fills
 ```
 
-### Centralized Stylesheet Setup (`themes.json`)
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
     "sCTkButtonPrimary": {
-        "width": 140,
-        "height": 34,
-        "font": ["Arial", 15, "normal"],
-        "fg_color": ["#1A4375", "#2471A3"],
-        "hover_color": ["#112A4B", "#1F618D"],
+        "fg_color": ["#1A4375", "#1F6AA5"],
+        "hover_color": ["#112A4B", "#194A7A"],
         "text_color": ["#FFFFFF", "#FFFFFF"],
+        "border_width": 0,
         "corner_radius": 6,
         "disabled_map": {
-            "fg_color": ["#E5E7EB", "#374151"],
-            "hover_color": ["#E5E7EB", "#374151"],
+            "fg_color": ["#F3F4F6", "#1F2937"],
+            "hover_color": ["#F3F4F6", "#1F2937"],
             "text_color": ["#94A3B8", "#64748B"]
         },
         "pressed_map": {
-            "fg_color": ["#3B5984", "#2E4A75"],
-            "hover_color": ["#3B5984", "#2E4A75"],
-            "text_color": ["#FFFFFF", "#FFFFFF"]
+            "fg_color": ["#0F2542", "#134267"],
+            "hover_color": ["#0F2542", "#134267"],
+            "text_color": ["#94A3B8", "#CBD5E1"]
         },
         "alarm_map": {
-            "fg_color": ["#990000", "#E74C3C"],
-            "hover_color": ["#990000", "#E74C3C"],
+            "fg_color": ["#DC2626", "#EF4444"],
+            "hover_color": ["#991B1B", "#7F1D1D"],
             "text_color": ["#FFFFFF", "#FFFFFF"]
         }
     }
 }
 ```
 
-### Other notes
-* **Alarm Override Priority:** Turning on the alarm state forcefully turns off any persistent latching pressed visual looks.
-* **Pygubu Zone-A Interception:** The widget safely responds to single positional property queries coming from design-time editor tools without crashing or locking execution tracks.
-
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkButtonPrimary` inside a root window workspace panel layout using the strict interactive test configuration loops.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkButtonPrimary` alongside an interactive theme state track and system warning switch.
 
 ```python
+#!/usr/bin/python3
 import customtkinter as ctk
+import sCTkThemes  # 🛠️ Top-level import for core application execution tracking
+
+class sCTkButtonPrimaryTestBench:
+    pass
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import customtkinter as ctk
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkButtonPrimary import sCTkButtonPrimary
-# =====================================================================
-# 3. INTERACTIVE RUNTIME APP EXECUTION & TEST SEQUENCES
-# =====================================================================
+
+
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
-    root.geometry("450x200")
-    root.title("Primary Button Test Harness")
-    from sCTkFrame import sCTkFrame
+    root.geometry("450x300")
+    root.title("Primary Command Button Telemetry Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Instantiate two primary actions
-    widget = sCTkButtonPrimary(base, text="System Alarm Button")
-    widget1 = sCTkButtonPrimary(base, text="Latching Preset Toggle")
+    # 1. Instantiate your custom primary action execution button element
+    command_btn = sCTkButtonPrimary(base, text="Primary Action Control")
+    command_btn.pack(expand=False, fill="x", padx=40, pady=10)
 
-    widget.pack(padx=40, pady=15)
-    widget1.pack(padx=40, pady=15)
 
-    # -----------------------------------------------------------------
-    # A. INITIAL CONSOLE LOG TEST SEQUENCE
-    # -----------------------------------------------------------------
-    print("--- BOOT TEST: FORCING DISABLED PASS ---")
-    widget.state("disabled")
-    widget1.state("disabled")
-    print("Widget 0 state =", widget.get_state())
-    print("Widget 1 state =", widget1.get_state())
+    # 2. 🛠️ THE ALARM STATE TOGGLE BUTTON TRACK:
+    # Alternates alternative selection sequences to force the primary button
+    # to jump in and out of high-visibility alarm warning states dynamically.
+    def toggle_system_alarm():
+        new_alarm_mode = not command_btn.is_alarm
+        command_btn.set_alarm_state(new_alarm_mode)
 
-    print("\n--- BOOT TEST: REVERTING TO NORMAL PASS ---")
-    widget.state("normal")
-    widget1.state("normal")
-    print("Widget 0 state =", widget.get_state())
-    print("Widget 1 state =", widget1.get_state())
-    print("\n=== SYSTEM ONLINE: BUTTON INTERACTION ACTIVE ===\n")
+        # Sync toggle button text indicator rules
+        btn_alarm_switch.configure(
+            text="System Alarm (ACTIVE - Click to Clear)" if new_alarm_mode else "System Alarm"
+        )
+        print(f"Logged Verification Hook -> command_btn.is_alarm = {command_btn.is_alarm}")
 
-    # -----------------------------------------------------------------
-    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
-    # -----------------------------------------------------------------
-    # 🛠️ THE ALARM TOGGLE FIX: Change the command loop sequence to flip the alarm flag!
-    widget.configure(
-        command=lambda: [print("System Alarm Toggle Triggered"), widget.set_alarm_state(not widget.is_alarm)])
 
-    # Clicking 'widget1' remains assigned to your standard layout latch toggle
-    widget1.configure(command=lambda: [print("Latching Preset Clicked"), widget1.set_pressed(not widget1.is_pressed)])
+    btn_alarm_switch = ctk.CTkButton(base, text="System Alarm", command=toggle_system_alarm)
+    btn_alarm_switch.pack(side="bottom", pady=15)
+
+    # Standard test assertions routine verification sequences
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
+    command_btn.state("disabled")
+    print("state (Disabled Pass) =", command_btn.get_state())
+
+    command_btn.state("normal")
+    print("state (Normal Pass)   =", command_btn.get_state())
+    print("========================================\n")
 
     root.mainloop()
 ```
-
-
-[Return to Table of Contents](#contents)
