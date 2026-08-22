@@ -8,9 +8,7 @@ subclass of ctk.CTkFrame acting as a cleanly bordered composite OptionMenu
 UI source file: sCTkOptionMenuSecondary.ui
 """
 import customtkinter as ctk
-import sCTkThemes
 from ThemeableWidget import ThemeableWidget
-
 
 class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
 
@@ -27,7 +25,13 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         # 3. Fire our shared theme logic to resolve json asset lookups safely
         ThemeableWidget.__init__(self, kw)
 
-        # 4. 🛠️ THE INVERSION BLACKLIST FILTER:
+        # 4. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Clone your configuration parameters into completely independent memory structures
+        # BEFORE initializing super, preserving your true active settings from native deletion loops.
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
+
+        # 5. 🛠️ THE INVERSION BLACKLIST FILTER:
         # Dynamically separate dropdown-specific keywords out of final_kw.
         # This protects the parent frame layer from seeing illegal arguments
         # (like 'font') and throwing an immediate CustomTkinter ValueError.
@@ -41,10 +45,10 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
             if key in self.final_kw:
                 self._menu_theme_kw[key] = self.final_kw.pop(key)
 
-        # 5. Initialize the native ctk.CTkFrame container using pure filtered frame options
+        # 6. Initialize the native ctk.CTkFrame container using pure filtered frame options
         super().__init__(master, **self.final_kw)
 
-        # 6. Initialize inner CustomTkinter option menu using cleanly popped parameters
+        # 7. Initialize inner CustomTkinter option menu using cleanly popped parameters
         self._menu = ctk.CTkOptionMenu(
             self,
             values=values,
@@ -53,7 +57,7 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         )
         self._menu.pack(expand=True, fill="both", padx=2, pady=2)
 
-        # 7. Execute clean layout matching tracks smoothly
+        # 8. Execute clean layout matching tracks smoothly
         self._update_current_visual_state()
         self._custom_current_state = "normal"
 
@@ -66,8 +70,8 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
 
             if pname in ["fg_color", "border_color", "text_color", "width", "height"]:
                 current_state = str(self.state()).lower()
-                val = self._widget_disabled_map.get(pname) if current_state == "disabled" else self.final_kw.get(pname)
-                return (pname, pname, pname, str(self.final_kw.get(pname)), str(val))
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(pname)
 
@@ -85,13 +89,13 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         if "state" in kwargs:
             self.state(kwargs.pop("state"))
 
+        # Clear empty strings passed by backspacing variables inside Pygubu Designer panel slots
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
         if kwargs:
-            # Clear empty strings passed by backspacing variables inside Pygubu Designer panel slots
-            for k, v in list(kwargs.items()):
-                if v == "":
-                    kwargs.pop(k)
-            if kwargs:
-                super().configure(**kwargs)
+            super().configure(**kwargs)
 
     def get_state(self):
         """Explicit getter to return the current composite state string safely."""
@@ -108,28 +112,28 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
             elif mode == "disabled":
                 self._menu.configure(state="disabled")
 
-                # Apply custom map profiles down across composite layout elements safely
+                # Apply custom map profiles down across composite layout elements safely out of protected memory
                 super().configure(
-                    border_color=self._widget_disabled_map.get("border_color"),
-                    fg_color=self._widget_disabled_map.get("fg_color")
+                    border_color=self._custom_disabled_map.get("border_color"),
+                    fg_color=self._custom_disabled_map.get("fg_color")
                 )
                 self._menu.configure(
-                    fg_color=self._widget_disabled_map.get("fg_color"),
-                    button_color=self._widget_disabled_map.get("fg_color"),
-                    text_color=self._widget_disabled_map.get("text_color"),
-                    button_hover_color=self._widget_disabled_map.get("fg_color")
+                    fg_color=self._custom_disabled_map.get("fg_color"),
+                    button_color=self._custom_disabled_map.get("fg_color"),
+                    text_color=self._custom_disabled_map.get("text_color"),
+                    button_hover_color=self._custom_disabled_map.get("fg_color")
                 )
                 self._custom_current_state = "disabled"
 
         return self._menu.cget("state")
 
     def _update_current_visual_state(self):
-        """MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of memory."""
-        # 1. Capture base frame configuration definitions
+        """MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory."""
+        # 1. Capture base frame configuration definitions out of protected copies safely
         frame_config = {}
         for key in ("border_color", "fg_color", "border_width", "corner_radius"):
-            if self.final_kw.get(key) is not None:
-                frame_config[key] = self.final_kw[key]
+            if self._local_defaults.get(key) is not None:
+                frame_config[key] = self._local_defaults[key]
         if frame_config:
             super().configure(**frame_config)
 
@@ -164,39 +168,60 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
     def get(self) -> str:
         return self._menu.get()
 
-
 # =====================================================================
-# 🛠️ INTEGRATED REPOSITORY COMPLIANT INLINE TESTING HARNESS
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes
+import customtkinter as ctk
+import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
+from sCTkLabelSecondary import sCTkLabelSecondary
 from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
 
 if __name__ == "__main__":
-
+    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
-    root.geometry("400x200")
-
-    from sCTkFrame import sCTkFrame
+    root.geometry("450x320")
+    root.title("sCTkOptionMenuSecondary Testing Deck")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    widget = sCTkOptionMenuSecondary(base, values=["Helper Option A", "Helper Option B"])
-    widget.pack(expand=True, fill="x", padx=40, pady=10)
+    # 🛠️ TELEMETRY REPORTING LABEL: Monitors and reports the menu adjustment strings natively
+    lbl_monitor = sCTkLabelSecondary(base, text="Active Selection: Filter: Narrow")
+    lbl_monitor.pack(pady=10)
 
-    print("Populating secondary parameters track values list...")
-    widget.update_list(["Filter: Narrow", "Filter: Medium", "Filter: Wide"], default_index=0)
+    # Instantiate your custom drop-down menu helper element chassis
+    menu_field = sCTkOptionMenuSecondary(
+        base,
+        values=["Filter: Narrow", "Filter: Medium", "Filter: Wide"],
+        command=lambda choice: lbl_monitor.configure(text=f"Active Selection: {choice}")
+    )
+    menu_field.pack(expand=False, fill="x", padx=40, pady=10)
+    menu_field.set("Filter: Narrow")
 
-    # Verify our custom cascading state system locks down the composite selector!
-    widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("state (Disabled Sequence) =", widget.get_state())
+    def toggle_operational_state():
+        """Toggles the option menu between normal active and dimmed disabled profiles."""
+        current_mode = menu_field.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
 
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
-    widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("state (Normal Sequence)   =", widget.get_state())
+        # Explicitly testing the dual-routing capability via configure()
+        menu_field.configure(state=target)
+        btn_toggle.configure(text="Lock Dropdown (Set 'disabled')" if target == "normal" else "Unlock Dropdown (Set 'normal')")
+        print(f"Logged Verification Hook -> menu_field.get_state() = {menu_field.get_state()}")
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Dropdown (Set 'disabled')", command=toggle_operational_state)
+    btn_toggle.pack(side="bottom", pady=15)
+
+    # Run the interactive boot tracking logs
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
+    menu_field.state("disabled")
+    print("state (Disabled Pass) =", menu_field.get_state())  # Output: disabled
+
+    menu_field.state("normal")
+    print("state (Normal Pass)   =", menu_field.get_state())  # Output: normal
+    print("========================================\n")
 
     root.mainloop()
+

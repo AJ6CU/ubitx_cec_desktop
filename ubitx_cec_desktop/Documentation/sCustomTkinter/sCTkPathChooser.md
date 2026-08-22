@@ -1,238 +1,169 @@
-
-
-
-## sCTkSMeterBar
-
-The `sCTkSMeterBar` is a standalone, low-profile horizontal discrete LED segment bar widget displaying simultaneous, independent tracks for incoming S-Units, transmitter SWR ratio levels, and forward RF Power output percentage. Like all sCTk widgets, it is theme-adaptive.
-
----
-
-### 📋 API Constructor Reference
-
-```python
-sCTkSMeterBar(master=None, swr_max_value=5.0, swr_visible=True, pwr_visible=True, hide_lower_row=False, width=340, height=110, **kw)
-```
-
-| Parameter Name | Data Type | Default Value | Description |
-| :--- | :--- | :--- | :--- |
-| `master` | `any` | `None` | Reference pointer tracking your root window or parent `sCTkFrame` container layout layer. |
-| `swr_max_value` | `int` / `float` | `5.0` | The explicit maximum scale boundary representing the far right edge limit tracking your transmitter's SWR track. |
-| `swr_visible` | `bool` | `True` | Visibility flag for the SWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |
-| `pwr_visible` | `bool` | `True` | Visibility flag for the PWR cluster. Flipping to `False` shifts the text, ticks, and active LEDs into a faded, disabled palette look. |
-| `hide_lower_row` | `bool` | `False` | Layout override command. When `True`, the entire lower instrumentation cluster collapses and vanishes, pushing the `SIG` bar to the true vertical center of the card footprint. |
-| `width` | `int` | `340` | Manual hardware panel horizontal width boundary tracking profile measured in pixels. |
-| `height` | `int` | `110` | Manual hardware panel vertical height boundary tracking profile measured in pixels. |
-
----
-
-### ⚡ Global Object Instance Methods
-
-#### Update Instrument Telemetry Channels
-```python
-# Pass parameters to update any of the 3 telemetry rows independently on the fly
-led_bar_gauge.set(s_value=9.2, swr_value=1.4, pwr_value=45.0)
-```
-
-#### Live Layout Configuration Modifier
-```python
-# Updates layout presentation properties on the fly without reconstruction overhead
-led_bar_gauge.configure_visibility(swr_visible=False, pwr_visible=True, hide_lower_row=False)
-```
-
----
-
-### 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
-
-The component relies heavily on your centralized style dictionary system. To prevent the mixin parser tracking structures from raising runtime validation faults, verify your shared stylesheet contains this asset configuration block:
-
-```python
-THEME_DEFAULTS = {
-    "sCTkSMeterBar": {
-        # Light Mode: Clean White Face | Dark Mode: Deep Obsidian Cockpit Black
-        "fg_color": ("#FFFFFF", "#0A0A0A"),       
-        
-        # High-Contrast Brand Blue for bright rooms / Illuminated Glowing Neon Amber for dark setups
-        "text_color": ("#1A4375", "#FF9100"),     
-        
-        # Solid High-Contrast Crimson / Intense Mechanical Redline alert segment zones
-        "alarm_color": ("#DC2626", "#FF2200"),    
-        
-        # Active illuminated LED block color tracks mapped out below threshold limits
-        "led_on_color": ("#2471A3", "#FF9100"),   
-        
-        # Unlit background matrix segment pockets visible behind dark/inactive areas
-        "led_off_color": ("#E2E8F0", "#1A1D20")   
-    },
-    # ... your other widget entries
-}
-```
-
-
-[Return to Table of Contents](#contents)
-
-
-
 ## sCTkPathChooser
-___
-The `sCTkPathChooser` is a custom compound widget that integrates a fluid layout data entry text field with an interactive file system directory browse button. The outer container manages the structural framing and boundary envelope dimensions, while the inner text field stretches dynamically to occupy available layout space. Clicking the action button initializes a modal document viewer popup window that lets users visually navigate absolute file paths using an underlying `sCTkFileExplorer` panel.
-![pathchooser.png](images/pathchooser.png)
+
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Convenience Functions](#convenience-functions)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
 ---
 
-### 📋 API Constructor Reference
+An advanced composite field-and-trigger widget pairing a fluid single-line text lane entry block directly alongside an integrated modal browser toggle button [INDEX]. It translates local paths, expands system tilde keys (`~`), and dynamically opens an embedded, theme-synchronized `sCTkFileExplorer` portal centered accurately over your parent layout dimensions without locking primary background execution threads [INDEX].
+
+### API Property Reference
+
+| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
+| :--- | :--- | :--- |
+| **Instantiation** | *Not Available Natively* | `sCTkPathChooser(master)` *(Compound Path Selector)* |
+| **File Mapping** | No unified compound object natively synchronizes text cells with buttons. | Separated safely across `sCTkPathChooser.py` and `ThemeableWidget.py`. |
+| **State Lock** | `self.configure(state="disabled")` | `chooser.state("disabled")`<br>**OR**<br>`chooser.configure(state="disabled")`<br><br>**Polymorphic State Control:** Simultaneously locks the entry string text buffer lane and freezes the browser launcher button out of centralized `disabled_map` guidelines [INDEX]. |
+| `get_state()` | *Not Available Natively* | `Method -> str` explicit verification query matching system test assertions [INDEX]. |
+
+---
+
+### Constructor
+
+Initialize a custom compound directory path or file selector instance. Offset parameters like `btn_width` or `entry_height` can be passed cleanly during instantiation to stretch internal sub-elements independently [INDEX].
 
 ```python
-sCTkPathChooser(master=None, type="directory", filetypes=None, initialdir=None, initialfile=None, command=None, justify="left", entry_height=32, btn_width=110, btn_height=32, btn_text=None, browser_width=500, browser_height=450, width=350, height=32, state="normal", **kwargs)
+sCTkPathChooser(master, type="directory", title="Select Path", filetypes=None, initialdir=None, initialfile=None, command=None, width=350, height=32, justify="left", entry_height=32, btn_width=110, btn_height=32, btn_text=None, browser_width=500, browser_height=450, **kwargs)
 ```
 
 | Parameter Name | Data Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
-| `master` | `any` | `None` | Reference pointer tracking your root window, parent layout layer, or container frame capsule. |
-| `type` | `str` | `"directory"` | Path matching configuration profile mode. Options: `"directory"` (filters out specific file entries) or `"file"` (enables selective file picking). |
-| `filetypes` | `list` / `str` | `None` | Structural filter array masking permitted extensions when `type="file"`. Formatted as an explicit python list or bracketed string array (e.g., `['.py', '.txt']`). |
-| `initialdir` | `str` | *Dynamic* | Default starting directory pathway location string. Supports tilde user expansion (`~`) and normalizes paths absolutely. Fallbacks to `os.getcwd()` if omitted. |
-| `initialfile` | `str` | `None` | Default starting target highlight file path string. Automatically splits coordinates to derive the parent tracking folder location if necessary. |
-| `command` | `callable` | `None` | Event callback method executed instantly on directory path selection changes. Requires a **single-argument string signature**. |
-| `justify` | `str` | `"left"` | Content text arrangement alignment tracking mask within the entry field area. Options: `"left"`, `"center"`, `"right"`. |
-| `entry_height` | `int` | `32` | Manual vertical height footprint dimension allocated specifically to the inner entry input cell in pixels. |
-| `btn_width` | `int` | `110` | Manual horizontal width dimension allocated specifically to the internal browser action button in pixels. |
-| `btn_height` | `int` | `32` | Manual vertical height footprint dimension allocated specifically to the internal browser action button in pixels. |
-| `btn_text` | `str` | `None` | Optional label override text string applied directly into the action button button graphic. Fallbacks to dynamic context descriptions when `None`. |
-| `browser_width` | `int` | `500` | Horizontal window size constraint allocated to the initialized modal sub-window popup frame in pixels. |
-| `browser_height` | `int` | `450` | Vertical window size constraint allocated to the initialized modal sub-window popup frame in pixels. |
-| `width` | `int` | `350` | Total structural panel horizontal footprint envelope assigned to the widget container in pixels. |
-| `height` | `int` | `32` | Total structural panel vertical footprint envelope assigned to the widget container in pixels. |
-| `state` | `str` | `"normal"` | Execution state controller. Toggling to `"disabled"` dims all color profiles and locks out keyboard entry and button interaction events. |
+| `master` | `any` | *Required* | Reference pointer tracking your root window, parent layout layer, or container frame capsule. |
+| `type` | `str` | `"directory"` | Structural layout operation mode. Options: `"directory"` (renders folder browser options) or `"file"` (enforces file extension checks) [INDEX]. |
+| `title` | `str` | `"Select Path"` | Text heading string displayed inside the top title deck of the popup modal browser window. |
+| `filetypes` | `list` / `str` | `None` | Filter array masking permitted file extensions. Formatted as an explicit python list or bracketed string array (e.g., `['.py', '.json']`) [INDEX]. |
+| `justify` | `str` | `"left"` | Text alignment profile string inside the input field lane. Accepts `"left"`, `"right"`, or `"center"`. |
+| `entry_height` | `int` | *Matches height* | Manual vertical height footprint tracking restriction assigned to the text box lane measured in pixels. |
+| `btn_width` | `int` | `110` | Manual horizontal width allocated to the macro click trigger browse button measured in pixels. |
+| `btn_text` | `str` | `None` | Display string override assigned to the browse button. Automatically falls back to mode labels if left as `None`. |
+| `command` | `callable` | `None` | Single-click method event callback executed whenever a file selection path is successfully submitted or confirmed [INDEX]. |
 
 ---
 
-### ⚡ Execution Event Callback (`command`)
-
-The custom method bound to the outer application layer command parameter must support a single positional variable assignment. The component wraps execution pipelines inside a safety fallback checker block to handle basic text adjustments or blank operations smoothly:
-
+### Convenience Functions
 ```python
-def print_result(path):
-    """
-    Standard Callback Signature Footprint
-    
-    path: Resolves to the absolute expanded string directory pathway matching the selection.
-    """
-    print(f"MAIN CONSOLE PATH SELECTION -> {path}")
+# Programmatically manipulate selector entries, fetch strings, or trigger modal windows on the fly
+chooser.set("/Users/name/Documents") # Clears the current buffer and inserts an expanded absolute pathway [INDEX]
+active_path = chooser.get()          # Returns the active character path string array currently displayed [INDEX]
+
+# Evaluate current state configurations or apply absolute user interaction locks via dual-routing syntax
+current_mode = chooser.get_state()   # Returns 'normal' or 'disabled' [INDEX]
+chooser.state("disabled")            # Freezes button triggers and applies muted flat gray skins [INDEX]
 ```
 
----
-
-### ⚡ Global Object Instance Methods
-
-#### Programmatically Set Choice Elements
-```python
-# Clears active entries, normalizes tilde strings, absolute expands paths, and seeds input fields
-path_chooser.set("~/Documents/logs")
-```
-
-#### Fetch Active Selection Values
-```python
-# Pulls back the currently typed or visually selected path absolute string
-current_path = path_chooser.get()
-```
-
----
-
-### 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
-
-The path chooser delegates visual presentations to centralized theme configurations. It handles real-time look transitions natively by executing lookups via `ThemeableWidget._resolve_color()`, pulling nested state data out of its private `disabled_map` tracking blocks during interaction freezes.
-
-Ensure your central workspace theme dictionary profile sheet matches this asset entry map structure:
-
-```python
-THEME_DEFAULTS = {
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
+```json
+{
     "sCTkPathChooser": {
-        # Typography configurations assigned to management controls and label blocks
-        "entry_font": ("Arial", 13),
-        "btn_font": ("Arial", 13, "bold"),
-        
-        # Active layout color palette parameters
-        "entry_fg": ("#F9F9FA", "#343638"),
-        "entry_border_color": ("#979DA2", "#565B5E"),
-        "entry_text_color": ("#000000", "#FFFFFF"),
-        
-        "btn_fg": ("#3B8ED0", "#1F6AA5"),
-        "btn_hover": ("#2C74B3", "#144E75"),
-        "btn_text_color": ("#DCE4EE", "#F9F9FA"),
-        "btn_border_color": ("#3B8ED0", "#1F6AA5"),
-
-        # Direct cascading mapping dictionary nested cleanly for the locked disabled state machine
+        "entry_fg": ["#FFFFFF", "#1E1E1E"],
+        "entry_border_color": ["#CBD5E1", "#334155"],
+        "entry_text_color": ["#1F2937", "#FFFFFF"],
+        "entry_font": ["Arial", 12],
+        "btn_fg": ["#1A4375", "#1F6AA5"],
+        "btn_border_color": ["#94A3B8", "#4B5563"],
+        "btn_text_color": ["#FFFFFF", "#FFFFFF"],
+        "btn_hover": ["#112A4B", "#194A7A"],
+        "btn_font": ["Arial", 11, "bold"],
         "disabled_map": {
-            "entry_fg": ("#EAEAEA", "#2B2B2C"),
-            "entry_border_color": ("#D3D3D3", "#3A3A3C"),
-            "entry_text_color": ("#A0A0A0", "#7C7C7C"),
-            "btn_fg": ("#D3D3D3", "#2D2F31"),
-            "btn_border_color": ("#D3D3D3", "#2D2F31"),
-            "btn_text_color": ("#A0A0A0", "#5A5C5E")
+            "entry_fg": ["#F9FAFB", "#1A1A1A"],
+            "entry_border_color": ["#E5E7EB", "#222222"],
+            "entry_text_color": ["#94A3B8", "#4B5563"],
+            "btn_fg": ["#F3F4F6", "#111111"],
+            "btn_border_color": ["#E5E7EB", "#222222"],
+            "btn_text_color": ["#94A3B8", "#4B5563"]
         }
-    },
-    # ... your other widget entries
+    }
 }
 ```
 
----
+### Other Notes
+* **Inversion Blacklist & Mutation Shield:** To bypass CustomTkinter's private constructor sweeping arrays that destructively mutate configuration dictionary values, the constructor copies your data parameters into `self._local_defaults = dict(self.final_kw)` beforehand. This preserves your geometric variables safely [INDEX].
+* **Polymorphic Cascade Safety:** State changes automatically flow downward [INDEX]. Passing a `.state("disabled")` loop locks down both the interior text lane and the macro browse button, preventing unwanted modal triggers and hover events uniformly [INDEX].
+### Implementation Example & Test Harness
 
-### 💻 Implementation Example & Test Harness
-
-Below is a complete, self-contained test execution script demonstrating how to properly map the compound `sCTkPathChooser` widget inside an application window, using its standalone layout adjustments and tracking callback engine.
+Below is a complete, self-contained test execution script demonstrating how to embed an `sCTkPathChooser` within an isolated `sCTkFrame` chassis backplane while implementing runtime lock states and interactive selection feedback loops [INDEX].
 
 ```python
 #!/usr/bin/python3
+"""
+sCTkPathChooser - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
+import os
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                      # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame        # Testing application wrapper container frame
+from sCTkLabelSecondary import sCTkLabelSecondary
+from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkPathChooser import sCTkPathChooser
 
+if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    sCTkThemes.apply_sCTkThemes()
 
-class CompoundComponentTesterApp(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        
-        self.title("Compound Component Test Suite")
-        self.geometry("700x200")
-        
-        # Upper descriptive header label
-        self.label = ctk.CTkLabel(
-            self, 
-            text="sCTkPathChooser Custom Target File Configurator:",
-            font=("Arial", 12, "bold")
-        )
-        self.label.pack(anchor="w", padx=20, pady=(20, 0))
-        
-        # Initialize and configure the custom compound path chooser panel layout
-        self.chooser = sCTkPathChooser(
-            self,
-            type="file",               # File picker operational mode
-            title="Select Log Target", # Window header label text for modal sub-window popups
-            filetypes=[".py"],         # Extension constraint filter mapping arrays
-            command=self.print_result, # Application-layer update notification handler callback
-            justify="right",           # Align entry data coordinates cleanly to the right boundary
-            width=660,
-            height=50,
-            state="normal",
-            entry_height=40,
-            btn_width=40,
-            btn_height=40,
-            btn_text="▶",              # Override label glyph icon assigned into action button graphic
-            browser_width=550,
-            browser_height=500
-        )
-        self.chooser.pack(padx=20, pady=(5, 20), fill="x")
+    app = ctk.CTk()
+    app.title("Compound Component Test Suite")
+    app.geometry("700x260")
 
-    def print_result(self, path):
-        """Fires dynamically whenever a valid absolute path selection matches and changes."""
+    # Swapped top container backplane over to theme-compliant chassis frame [INDEX]
+    base = sCTkFrame(app)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    lbl_monitor = sCTkLabelSecondary(base, text="Active Telemetry Target: [None Selection]")
+    lbl_monitor.pack(pady=10)
+
+    def print_result(path):
+        lbl_monitor.configure(text=f"Active Telemetry Target: {os.path.basename(path)}")
         print(f"MAIN CONSOLE PATH SELECTION -> {path}")
 
+    # Instantiate your custom compound directory path chooser element [INDEX]
+    chooser = sCTkPathChooser(
+        base,
+        type="file",
+        title="Select Log Target",
+        filetypes=[".py"],
+        command=print_result,
+        justify="right",
+        width=550,
+        height=50,
+        state="normal",
+        entry_height=40,
+        btn_width=40,
+        btn_height=40,
+        btn_text="▶",
+        browser_width=550,
+        browser_height=500
+    )
+    chooser.pack(padx=20, pady=15)
 
-if __name__ == "__main__":
-    # Execute the master testing panel wrapper window loop
-    app = CompoundComponentTesterApp()
+    def toggle_chooser_lock():
+        """Toggles the component state between normal active and dimmed profiles [INDEX]."""
+        current_mode = chooser.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+        chooser.configure(state=target)
+        btn_lock.configure(text="Lock Chooser Deck" if target == "normal" else "Unlock Chooser Deck")
+        print(f"Logged Verification Hook -> chooser.get_state() = {chooser.get_state()}")
+
+    btn_lock = ctk.CTkButton(base, text="Lock Chooser Deck", command=toggle_chooser_lock)
+    btn_lock.pack(side="bottom", pady=5)
+
+    # Run the interactive boot tracking validation sequences [INDEX]
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
+    chooser.state("disabled")
+    print("state (Disabled Pass) =", chooser.get_state())  # Output: disabled
+    chooser.state("normal")
+    print("state (Normal Pass)   =", chooser.get_state())  # Output: normal
+    print("========================================\n")
+
     app.mainloop()
 ```
 
-
 [Return to Table of Contents](#contents)
-
-

@@ -5,22 +5,21 @@ sCTkPathChooser - Part 1: Initialization & Visual Layout
 A custom, compound widget pairing a fluid layout entry field with a browse button.
 The outer frame controls the envelope geometry via standard width/height,
 while the inner text field stretches fluidly and manages its own alignment.
+
+UI source file: sCTkPathChooser.ui
 """
 import os
 import sys
 import ast
 import tkinter as tk
 import customtkinter as ctk
-
-# Ensure sister scripts are visible inside the same package level space
-_local_dir = os.path.dirname(os.path.abspath(__file__))
-if _local_dir not in sys.path:
-    sys.path.insert(0, _local_dir)
-
-from sCTkThemes import THEME_DEFAULTS
+from typing import Literal, Optional, Union, Tuple
 from ThemeableWidget import ThemeableWidget
 from sCTkFileExplorer import sCTkFileExplorer
 
+# Framework-compliant component imports
+from sCTkButtonPrimary import sCTkButtonPrimary
+from sCTkEntryPrimary import sCTkEntryPrimary
 
 class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
     _MANAGED_PROPERTIES = frozenset({
@@ -29,10 +28,6 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
     })
 
     def __init__(self, master=None, **kwargs):
-        # 1. Initialize local theme defaults from sCTkThemes.py first
-        self._local_defaults = THEME_DEFAULTS.get("sCTkPathChooser", {})
-        self._custom_disabled_map = self._local_defaults.get("disabled_map", {})
-
         # Forcefully extract custom properties out so ctk.CTkFrame never throws a kwargs error
         self.type = str(kwargs.pop("type", "directory") or "directory").lower()
         self.title = str(kwargs.pop("title", "Select Path"))
@@ -98,10 +93,17 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         else:
             self.filetypes = None
 
-        ThemeableWidget.__init__(self, self._local_defaults, kwargs)
+        # Enforce name introspection by passing kwargs directly up into ThemeableWidget
+        ThemeableWidget.__init__(self, kwargs)
+
+        # 🛠️ THE MUTATION SAFEGUARD DEEP COPY SHIELD:
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
 
         # Initialize base container passing standard frame parameters safely with no extra keyword arguments leaking
         super().__init__(master, width=desired_width, height=desired_height, **kwargs)
+
+        self._state = "normal" if self._initial_state_seed not in ("normal", "disabled") else self._initial_state_seed
 
         # Enforce strict pixel dimensional footprints to withstand parent scale bounds
         self.grid_propagate(False)
@@ -109,29 +111,29 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         self.columnconfigure(1, weight=0)  # Column 1 (Button) stays fixed to btn_width
         self.rowconfigure(0, weight=1)
 
-        # Mount sub-widgets cleanly as un-styled slates
-        self.entry = ctk.CTkEntry(self, justify=self.justify, width=0, height=self.entry_height)
+        self.entry = sCTkEntryPrimary(self, justify=self.justify, width=0, height=self.entry_height)
         entry_v_padding = max(0, (desired_height - self.entry_height) // 2)
         self.entry.grid(row=0, column=0, sticky="ew", padx=(0, 8), pady=entry_v_padding)
 
         default_seed = self.initialfile if self.initialfile else self.initialdir
         self.set(default_seed)
 
-        self.btn = ctk.CTkButton(self, width=self.btn_width, height=self.btn_height, command=self._launch_browser)
+        self.btn = sCTkButtonPrimary(self, width=self.btn_width, height=self.btn_height, command=self._launch_browser)
         btn_v_padding = max(0, (desired_height - self.btn_height) // 2)
         self.btn.grid(row=0, column=1, sticky="ew", pady=btn_v_padding)
 
         # Force structural tracking state initialization loops
         self._process_live_theme_repaint()
-        if self._initial_state_seed == "disabled":
-            self.configure(state="disabled")
+        if self._state == "disabled":
+            self.state("disabled")
 
     def _process_live_theme_repaint(self):
         """Centralized theme-repaint pipeline resolving aesthetic look parameters."""
-        theme = self.final_kw
+        theme = self._local_defaults
         btn_txt = self.btn_text if self.btn_text is not None else ("Browse Folders..." if self.type == "directory" else "Browse Files...")
 
-        if hasattr(self, "_state") and self._state == "disabled":
+        current_state = getattr(self, "_state", "normal")
+        if current_state == "disabled":
             d_map = self._custom_disabled_map
             entry_bg = d_map.get("entry_fg", theme.get("entry_fg"))
             entry_border = d_map.get("entry_border_color", theme.get("entry_border_color"))
@@ -149,30 +151,31 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             btn_text = theme.get("btn_text_color")
             btn_hover = theme.get("btn_hover")
 
-        if hasattr(self, "entry"):
+        if hasattr(self, "entry") and self.entry.winfo_exists():
             self.entry.configure(
                 font=theme.get("entry_font"),
-                fg_color=ThemeableWidget._resolve_color(self, entry_bg),
-                border_color=ThemeableWidget._resolve_color(self, entry_border),
-                text_color=ThemeableWidget._resolve_color(self, entry_text)
+                fg_color=self._resolve_color(entry_bg),
+                border_color=self._resolve_color(entry_border),
+                text_color=self._resolve_color(entry_text)
             )
 
-        if hasattr(self, "btn"):
+        if hasattr(self, "btn") and self.btn.winfo_exists():
             self.btn.configure(
                 text=btn_txt,
                 font=theme.get("btn_font"),
-                fg_color=ThemeableWidget._resolve_color(self, btn_bg),
-                hover_color=ThemeableWidget._resolve_color(self, btn_hover),
-                text_color=ThemeableWidget._resolve_color(self, btn_text),
-                border_color=ThemeableWidget._resolve_color(self, btn_border)
+                fg_color=self._resolve_color(btn_bg),
+                hover_color=self._resolve_color(btn_hover),
+                text_color=self._resolve_color(btn_text),
+                border_color=self._resolve_color(btn_border)
             )
-
     def configure(self, *args, **kwargs):
         """Extended configure to handle Pygubu queries and dynamic look modifications."""
 
         # 1. POSITION INTERCEPT LOOP: Resolves live Pygubu workspace preview queries
         if args and len(args) == 1:
-            pname = args[0]
+            pname = args
+            if pname == "state":
+                return ("state", "state", "state", "normal", getattr(self, "_state", "normal"))
             if pname == "type":
                 return ("type", "type", "type", "directory", self.type)
             if pname == "justify":
@@ -188,6 +191,9 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             if pname == "btn_height":
                 return ("btn_height", "btn_height", "btn_height", "32", self.btn_height)
             return super().configure(*args, **kwargs)
+
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
 
         # 2. KEYWORD SANITIZATION: Intercepts custom configuration properties
         if "btn_text" in kwargs:
@@ -252,11 +258,8 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
                 self.btn.grid_configure(pady=v_pad_btn)
 
         if "state" in kwargs:
-            self._state = str(kwargs.pop("state")).lower()
-            if hasattr(self, "entry") and hasattr(self, "btn"):
-                st = "disabled" if self._state == "disabled" else "normal"
-                self.entry.configure(state=st)
-                self.btn.configure(state=st)
+            target_state = str(kwargs.pop("state")).lower()
+            self.state(target_state)
 
         # Scrub theme properties from final_kw to prevent parent frame from crashing
         if hasattr(self, "final_kw"):
@@ -276,21 +279,36 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
 
         # Force a visual layout look repaint
         self._process_live_theme_repaint()
-        return super().configure(**kwargs)
+        if kwargs:
+            return super().configure(**kwargs)
+        return None
 
     config = configure
+
     def _launch_browser(self):
+        """Launches the theme-compliant popup modal browser window without layout stutters."""
         popup = ctk.CTkToplevel(self.winfo_toplevel())
+
+        # 🛠️ THE ANTI-FLASH SHIELD TRACK:
+        # Turn window visibility completely OFF instantly at creation time.
+        # This forces the operating system to assemble the inner explorer frame
+        # and grid layout cells silently in the background memory!
+        popup.withdraw()
 
         final_title = self.title
         if self.type == "file" and self.filetypes:
-            formatted_exts = [f"*{ext}" for ext in self.filetypes] if isinstance(self.filetypes, list) else [f"*{self.filetypes}"]
+            formatted_exts = [f"*{ext}" for ext in self.filetypes] if isinstance(self.filetypes, list) else [
+                f"*{self.filetypes}"]
             ext_suffix = f" ({', '.join(formatted_exts)})"
             final_title = f"{self.title}{ext_suffix}"
 
         popup.title(final_title)
+
+        # Enforce your early exact geometry assignment metrics cleanly
         popup.geometry(f"{self.browser_width}x{self.browser_height}")
 
+        # Enforce initial modal configuration parameters safely
+        popup.resizable(False, False)
         popup.transient(self.winfo_toplevel())
         popup.grab_set()
 
@@ -311,7 +329,9 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
                 seed_dir = os.path.dirname(entry_val)
                 seed_file = entry_val
 
-        # Pass a flexible *args lambda to accept both 1-argument and 2-argument file explorer signatures
+        # 🛠️ FIXED SINGLE-CLICK LAMBDA TRACK:
+        # Stripped the raw default argument trap 'p=full_path' to prevent NameError exceptions!
+        # The internal explorer maps and routes the focused path string ('p') down natively.
         explorer = sCTkFileExplorer(
             popup,
             type=self.type,
@@ -319,13 +339,18 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             initialdir=seed_dir,
             initialfile=seed_file,
             width=self.browser_width - 25,
-            height=self.browser_height,
+            height=self.browser_height - 60,
             command=lambda p: self.set(p),
             double_click_command=lambda *args: (self.set(args[-1]), popup.grab_release(), popup.destroy())
         )
         explorer.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-        bottom_bar = ctk.CTkFrame(popup, fg_color="transparent")
+        # Mount your custom theme-aware chassis elements
+        from sCTkFrame import sCTkFrame
+        from sCTkButtonPrimary import sCTkButtonPrimary
+        from sCTkButtonSecondary import sCTkButtonSecondary
+
+        bottom_bar = sCTkFrame(popup, fg_color="transparent")
         bottom_bar.grid(row=1, column=0, sticky="ew", padx=10, pady=(0, 10))
 
         def submit():
@@ -339,13 +364,34 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
             popup.grab_release()
             popup.destroy()
 
-        ctk.CTkButton(bottom_bar, text="Cancel", fg_color="transparent", border_width=2, command=close).pack(side="left")
-        ctk.CTkButton(bottom_bar, text="Select", command=submit).pack(side="right")
+        sCTkButtonSecondary(bottom_bar, text="Cancel", fg_color="transparent", border_width=2, command=close).pack(
+            side="left")
+        sCTkButtonPrimary(bottom_bar, text="Select", command=submit).pack(side="right")
+
+        # Compute absolute pop-up centering coordinates relative to parent window boundaries
+        popup.update_idletasks()
+        width = self.browser_width
+        height = self.browser_height
+
+        parent = self.winfo_toplevel()
+        if parent and hasattr(parent, "winfo_x"):
+            x = parent.winfo_x() + (parent.winfo_width() // 2) - (width // 2)
+            y = parent.winfo_y() + (parent.winfo_height() // 2) - (height // 2)
+        else:
+            x = (popup.winfo_screenwidth() // 2) - (width // 2)
+            y = (popup.winfo_screenheight() // 2) - (height // 2)
+
+        # Overrides geometry securely to snap centered targets on the monitor screen natively
+        popup.geometry(f"{width}x{height}+{max(0, x)}+{max(0, y)}")
+
+        # Reveal the completed dialogue layout instantly with zero stuttering transitions!
+        popup.deiconify()
 
     def set(self, path_string: str):
+        """Forces fully absolute tilde user expansion when paths are applied via button selections."""
         self.entry.configure(state="normal")
         self.entry.delete(0, tk.END)
-        # 🔑 FIX: Force fully absolute tilde user expansion when paths are applied via button selections
+
         expanded_path = os.path.normpath(os.path.abspath(os.path.expanduser(str(path_string))))
         self.entry.insert(0, expanded_path)
 
@@ -354,7 +400,8 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
         else:
             self.entry.xview_moveto(0.0)
 
-        if hasattr(self, "_state") and self._state == "disabled":
+        current_state = getattr(self, "_state", "normal")
+        if current_state == "disabled":
             self.entry.configure(state="disabled")
 
         if self.command and callable(self.command):
@@ -364,21 +411,65 @@ class sCTkPathChooser(ctk.CTkFrame, ThemeableWidget):
                 self.command()
 
     def get(self) -> str:
+        """Returns the active absolute file or directory pathway string securely."""
         return self.entry.get()
 
+    def get_state(self) -> str:
+        """Explicit framework getter returning the operational state string safely."""
+        return self.state()
+
+    def state(self, mode: str = None) -> str:
+        """Dedicated composite state controller syncing inner entry loops and buttons [INDEX]."""
+        if mode is None:
+            return str(getattr(self, "_state", "normal")).lower()
+
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            self._state = "normal"
+            if hasattr(self, "entry"): self.entry.configure(state="normal")
+            if hasattr(self, "btn"): self.btn.configure(state="normal")
+            self._process_live_theme_repaint()
+        elif mode == "disabled":
+            self._state = "disabled"
+            if hasattr(self, "entry"): self.entry.configure(state="disabled")
+            if hasattr(self, "btn"): self.btn.configure(state="disabled")
+            self._process_live_theme_repaint()
+        return self._state
+
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+from sCTkLabelSecondary import sCTkLabelSecondary
+from sCTkButtonPrimary import sCTkButtonPrimary
+from sCTkPathChooser import sCTkPathChooser
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    sCTkThemes.apply_sCTkThemes()
+
     app = ctk.CTk()
     app.title("Compound Component Test Suite")
-    app.geometry("700x200")
+    app.geometry("700x260")
+
+    # Swapped top container backplane over to theme-compliant chassis frame [INDEX]
+    base = sCTkFrame(app)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
+
+    lbl_monitor = sCTkLabelSecondary(base, text="Active Telemetry Target: [None Selection]")
+    lbl_monitor.pack(pady=10)
 
 
     def print_result(path):
+        lbl_monitor.configure(text=f"Active Telemetry Target: {os.path.basename(path)}")
         print(f"MAIN CONSOLE PATH SELECTION -> {path}")
 
 
+    # Instantiate your custom compound directory path chooser element [INDEX]
     chooser = sCTkPathChooser(
-        app,
+        base,
         type="file",
         title="Select Log Target",
         filetypes=[".py"],
@@ -394,5 +485,27 @@ if __name__ == "__main__":
         browser_width=550,
         browser_height=500
     )
-    chooser.pack(padx=20, pady=50)
+    chooser.pack(padx=20, pady=15)
+
+
+    def toggle_chooser_lock():
+        """Toggles the component state between normal active and dimmed profiles [INDEX]."""
+        current_mode = chooser.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+        chooser.configure(state=target)
+        btn_lock.configure(text="Lock Chooser Deck" if target == "normal" else "Unlock Chooser Deck")
+        print(f"Logged Verification Hook -> chooser.get_state() = {chooser.get_state()}")
+
+
+    btn_lock = ctk.CTkButton(base, text="Lock Chooser Deck", command=toggle_chooser_lock)
+    btn_lock.pack(side="bottom", pady=5)
+
+    # Run the interactive boot tracking validation sequences [INDEX]
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
+    chooser.state("disabled")
+    print("state (Disabled Pass) =", chooser.get_state())  # Output: disabled
+    chooser.state("normal")
+    print("state (Normal Pass)   =", chooser.get_state())  # Output: normal
+    print("========================================\n")
+
     app.mainloop()

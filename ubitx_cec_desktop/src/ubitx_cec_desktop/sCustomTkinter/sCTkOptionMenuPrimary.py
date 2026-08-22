@@ -10,7 +10,6 @@ import customtkinter as ctk
 import sCTkOptionMenuPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
-
 class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
         # 1. 🛠️ PARAMETER POPPING: Capture operational list specifics early
@@ -54,8 +53,7 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
 
             if pname in ["fg_color", "button_color", "button_hover_color", "text_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
-                    pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(pname)
@@ -81,6 +79,11 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
             target_state = str(kwargs.pop("state")).lower()
             self.state(target_state)
 
+        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
         # -----------------------------------------------------------------
         # ZONE D: RUNTIME KEYWORDS MRO ROUTING PASS
         # -----------------------------------------------------------------
@@ -100,16 +103,16 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             super().configure(state="normal")
-            self._update_current_visual_state()
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
             super().configure(state="disabled")
 
-            # Route custom muted gray configurations safely out of your preserved disabled map
+            # Route custom muted gray configurations safely out of your preserved disabled map safely
             config_payload = {}
-            for key in ("fg_color", "button_color", "button_hover_color", "text_color"):
-                if key in self._custom_disabled_map:
+            for key in ("fg_color", "button_color", "button_hover_color", "text_color", "dropdown_fg_color", "dropdown_text_color"):
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
                     config_payload[key] = self._custom_disabled_map[key]
 
             if config_payload:
@@ -119,16 +122,18 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
 
     def _update_current_visual_state(self):
         """
-        MASTER VISUAL ROUTER: Restores your true active theme layout configurations out of memory,
-        safely falling back to native styles ONLY if a property is unassigned in themes.json.
+        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
+        Completely free of hardcoded property name fallback strings, ensuring total extensibility.
         """
+        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+        # We parse your preserved local defaults instead of the mutated final_kw.
+        # If an item evaluates to None, it is skipped entirely so CustomTkinter
+        # defaults step forward natively, blocking any ValueError exceptions.
         config_payload = {}
-        for key in ("fg_color", "button_color", "button_hover_color", "text_color"):
+        for key in ("fg_color", "button_color", "button_hover_color", "text_color", "dropdown_fg_color", "dropdown_text_color", "font"):
             val = self._local_defaults.get(key)
             if val is not None:
                 config_payload[key] = val
-            else:
-                config_payload[key] = ctk.ThemeManager.theme["CTkOptionMenu"].get(key)
 
         if config_payload:
             super().configure(**config_payload)
@@ -149,61 +154,58 @@ class sCTkOptionMenuPrimary(baseui.sCTkOptionMenuPrimaryUI, ThemeableWidget):
             self.set(new_values[0])
 
 
-# !/usr/bin/python3
-"""
-sCTkOptionMenuPrimary - Standalone Interactive Testing Harness
-"""
-import customtkinter as ctk
-from sCTkFrame import sCTkFrame
-# from sCTkOptionMenuPrimary import sCTkOptionMenuPrimary
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_operational_state():
-    """Toggles the option menu between normal active and dimmed disabled profiles."""
-    current_mode = option_menu.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    option_menu.configure(state=target)
-    btn_toggle.configure(
-        text="Lock Option Menu (Set 'disabled')" if target == "normal" else "Unlock Option Menu (Set 'normal')")
-    print(f"Logged Verification Hook -> option_menu.get_state() = {option_menu.get_state()}")
-
+from sCTkOptionMenuPrimary import sCTkOptionMenuPrimary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
-    root.geometry("450x260")
+    root.geometry("450x320")
     root.title("sCTkOptionMenuPrimary Testing Deck")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Monitor tag layer to track live menu choices
-    lbl_monitor = sCTkLabelSecondary(base, text="Active choice telemetry pending...")
+    # Label notice layer to monitor menu adjustments
+    lbl_monitor = sCTkLabelSecondary(base, text="Active Selection: None")
     lbl_monitor.pack(pady=10)
 
-    # Instantiate your custom option menu widget
-    option_menu = sCTkOptionMenuPrimary(
+    # Instantiate your custom drop-down menu element
+    menu_field = sCTkOptionMenuPrimary(
         base,
-        values=["Initial Mode A", "Initial Mode B"],
-        command=lambda choice: lbl_monitor.configure(text=f"Selection Captured: {choice}")
+        values=["Mode 1: USB", "Mode 2: LSB", "Mode 3: CW"],
+        command=lambda choice: lbl_monitor.configure(text=f"Active Selection: {choice}")
     )
-    option_menu.pack(expand=False, fill="x", padx=40, pady=10)
+    menu_field.pack(expand=False, fill="x", padx=40, pady=10)
+    menu_field.set("Mode 1: USB")
 
-    # Verify that your dynamic updating pipeline operates smoothly
-    print("Populating updated parameters track values list...")
-    option_menu.update_list(["Mode: USB", "Mode: LSB", "Mode: AM", "Mode: CW"], default_index=1)
+    def toggle_operational_state():
+        """Toggles the option menu between normal active and dimmed disabled profiles."""
+        current_mode = menu_field.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
 
-    btn_toggle = ctk.CTkButton(base, text="Lock Option Menu (Set 'disabled')", command=toggle_operational_state)
+        # Explicitly testing the dual-routing capability via configure()
+        menu_field.configure(state=target)
+        btn_toggle.configure(text="Lock Dropdown (Set 'disabled')" if target == "normal" else "Unlock Dropdown (Set 'normal')")
+        print(f"Logged Verification Hook -> menu_field.get_state() = {menu_field.get_state()}")
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Dropdown (Set 'disabled')", command=toggle_operational_state)
     btn_toggle.pack(side="bottom", pady=15)
 
-    # Run the interactive boot tracking validation checks
+    # Run the interactive boot tracking logs
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    option_menu.state("disabled")
-    print("state (Disabled Pass) =", option_menu.get_state())  # Output: disabled
+    menu_field.state("disabled")
+    print("state (Disabled Pass) =", menu_field.get_state())  # Output: disabled
 
-    option_menu.state("normal")
-    print("state (Normal Pass)   =", option_menu.get_state())  # Output: normal
+    menu_field.state("normal")
+    print("state (Normal Pass)   =", menu_field.get_state())  # Output: normal
     print("========================================\n")
 
     root.mainloop()

@@ -1,11 +1,18 @@
-import customtkinter as ctk
+#!/usr/bin/python3
+"""
+sCTkMessage
+
+An advanced, themeable dialog window system subclassed from ctk.CTkToplevel.
+Supports customizable single prompt text or dual choice prompts returning boolean states.
+
+Derived from Selector class by Fastattack, 2024.
+Source Repository: MoreCustomTkinterWidgets
+"""
 import os
 import textwrap
+import customtkinter as ctk
 from PIL import Image
 from typing import Literal, Union, Tuple, Optional
-
-# Import your system's shared configuration architecture and components
-from sCTkThemes import THEME_DEFAULTS
 from ThemeableWidget import ThemeableWidget
 
 # Assuming your primary components reside within your sCustomTkinter package structure
@@ -33,18 +40,20 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
                  *args, **kwargs):
         """TopLevel widget already configured for displaying messages"""
 
-        # 1. Capture initialization parameters into a localized dictionary for processing
-        local_kwargs = {}
+        # 1. 🛠️ THE MIXIN UNIFICATION FIX:
+        # Pass kwargs natively directly into the shared theme mixin instead of packing
+        # a blind empty dictionary. This ensures lookups extract your stylesheet values!
+        ThemeableWidget.__init__(self, kwargs)
 
-        # 2. Invoke the ThemeableWidget engine to scrub parameters and construct self.final_kw
-        ThemeableWidget.__init__(
-            self,
-            theme_defaults=THEME_DEFAULTS.get("sCTkMessage", {}),
-            kwargs=local_kwargs
-        )
+        # 2. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Isolate your configuration rules inside protected memory structures BEFORE
+        # initializing super, preserving your true active settings from native deletion loops.
+        self._local_defaults = dict(self.final_kw)
 
-        # 3. Extract base initialization top-level configurations
+        # 3. Extract base initialization top-level configurations safely
         super().__init__(master=master, *args, **kwargs)
+
+        self.withdraw()
 
         # Internal result storage container initialized to None
         self._result: Optional[bool] = None
@@ -55,9 +64,9 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
         self.grab_set()  # Make other windows not clickable
         self.title(title)
 
-        # 4. Pull typography configs out of your localized ThemeableWidget stylesheet layers
-        font_config = self.final_kw.get("font", ("Arial", 14))
-        text_color_config = self.final_kw.get("text_color", ("#1A1A1A", "#E5E5E5"))
+        # 4. Pull typography configs out of your localized ThemeableWidget stylesheet layers safely
+        font_config = self._local_defaults.get("font") or ("Arial", 14)
+        text_color_config = self._local_defaults.get("text_color") or ("#1A1A1A", "#E5E5E5")
 
         # 5. Custom Local Icon Asset Extraction
         images_dir = os.path.join(os.path.dirname(__file__), "images")
@@ -68,12 +77,16 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
             dark_icon_path = light_icon_path
 
         if os.path.exists(light_icon_path):
-            pil_light = Image.open(light_icon_path)
-            pil_dark = Image.open(dark_icon_path)
+            try:
+                pil_light = Image.open(light_icon_path)
+                pil_dark = Image.open(dark_icon_path)
 
-            ctk_image = ctk.CTkImage(light_image=pil_light, dark_image=pil_dark, size=(85, 85))
-            self.image_label = sCTkLabelPrimary(self, text="", image=ctk_image, width=85, height=85)
-            self.image_label.grid(row=0, column=0, padx=(15, 5), pady=20, sticky="n")
+                ctk_image = ctk.CTkImage(light_image=pil_light, dark_image=pil_dark, size=(85, 85))
+                self.image_label = sCTkLabelPrimary(self, text="", image=ctk_image, width=85, height=85)
+                self.image_label.grid(row=0, column=0, padx=(15, 5), pady=20, sticky="n")
+            except Exception:
+                self.image_label = sCTkLabelPrimary(self, text=f"[{typ.upper()}]", font=("Arial", 12, "bold"))
+                self.image_label.grid(row=0, column=0, padx=(15, 5), pady=20, sticky="n")
         else:
             self.image_label = sCTkLabelPrimary(self, text=f"[{typ.upper()}]", font=("Arial", 12, "bold"))
             self.image_label.grid(row=0, column=0, padx=(15, 5), pady=20, sticky="n")
@@ -121,6 +134,8 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
         # 8. Automated screen centering calculation pass
         self._center_window(target_width=width)
 
+        self.deiconify()
+
     def _center_window(self, target_width: int):
         """Calculates geometry parameters to position the popup exactly centered using target metrics."""
         self.update_idletasks()
@@ -135,6 +150,23 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
             y = (self.winfo_screenheight() // 2) - (height // 2)
 
         self.geometry(f"{width}x{height}+{max(0, x)}+{max(0, y)}")
+
+    def configure(self, *args, **kwargs):
+        """Handles Pygubu designer queries and manages parameters safely."""
+        if args and len(args) == 1:
+            return super().configure(args)
+
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
+
+        # Clean out empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
+        if kwargs:
+            return super().configure(**kwargs)
+        return None
 
     def _close_dialog(self):
         """Internal cleanup sequence."""
@@ -162,12 +194,9 @@ class sCTkMessage(ctk.CTkToplevel, ThemeableWidget):
         return self._result
 
 
-# ==========================================
-#   Global Functional Helper Interfaces
-# ==========================================
-
-# Functional shortcut extensions updated to safely support custom ok_text strings
-
+# =====================================================================
+# ⚡ GLOBAL SHORTCUT FUNCTION ROUTING CHANNELS
+# =====================================================================
 def showinfo(title: str, message: str, ok_text: str = "Ok", width: int = 400, master: any = None) -> Optional[bool]:
     m = sCTkMessage(title, message, "info", master=master, buttons="ok", ok_text=ok_text, width=width)
     return m.wait_end()
@@ -205,6 +234,9 @@ def askerroryesno(title: str, message: str, yes_text: str = "Yes", no_text: str 
                     width=width)
     val = m.wait_end()
     return True if val is True else False
+
+import customtkinter as ctk
+
 # ==========================================
 #   MAIN RUNNER TESTING ENVIRONMENT
 # ==========================================
