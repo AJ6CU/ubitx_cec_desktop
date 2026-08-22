@@ -1,76 +1,142 @@
 ## sCTkLabelTertiary
 
-Minimalist description, status sub-text, and inline notice label widget variant. Natively intercepts state assignments to fade notation details into desaturated styling tracks when components lock down.
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
+---
+
+The fine inline description, sub-legend, or auxiliary notice typography display label widget component. It features an independent deep-copy keyword caching shield and an advanced multi-state color-dimming interceptor to automatically shift text contrasts when subsystem components enter disabled sequences [INDEX].
+
+*For prominent main dashboard header and mid-level sections, see the companion component pages:* [sCTkLabelPrimary](sCTkLabelPrimary.md) and [sCTkLabelSecondary](sCTkLabelSecondary.md).
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkLabel(master)` | `sCTkLabelTertiary(master)` *(Inline description notation)* |
-| **Maintenance** | Local style overrides duplicated across files manually. | Clean updates across all layouts modified directly in the JSON file. |
-| **File Mapping** | Everything runs under one core native text pipeline. | Separated safely across `sCTkLabelTertiary.py`, `sCTkLabelTertiaryui.py`, and `ThemeableWidget.py`. |
-| `state(mode)` | *Not Available Natively* | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
-| `get_state()` | *Not Available Natively* | `Method -> str` explicit verification query matching system test assertions. |
+| **Instantiation** | `ctk.CTkLabel(master)` | `sCTkLabelTertiary(master)` *(Inline Legend/Description Typography)* |
+| **File Mapping** | Direct module definitions run without structured configuration. | Separated safely across `sCTkLabelTertiary.py` and `ThemeableWidget.py`. |
+| **State Lock** | *Not Supported Natively* | `tertiary_label.state("disabled")`<br>**OR**<br>`tertiary_label.configure(state="disabled")`<br><br>**Framework-Wide State Support:** Natively supported across all label components (`Primary`, `Secondary`, `Tertiary`). It intercepts state configuration calls and dynamically dims typography layouts based on centralized `disabled_map` metrics [INDEX]. |
+| `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions [INDEX]. |
 
 ---
 
 ### Constructor
 
-Initialize a custom description notice label instance. Direct initialization keywords take immediate preference over system JSON profiles.
+Initialize a custom tertiary description label instance. Configuration metrics map cleanly out of central stylesheet parameters [INDEX].
 
 ```python
-# Instantiate a clean theme-compliant informational description tag
-notice_tag = sCTkLabelTertiary(
-    master=footer_frame,
-    text="Notice: VFO VFO boundary locked to licensed band spacing limits."
+# Instantiate a tertiary description dashboard label element
+panel_legend = sCTkLabelTertiary(
+    master=control_panel,
+    text="Inline notice: tuning resolution bounded to 100Hz."
 )
 
-# Render the layout inside your parent container coordinate packer
-notice_tag.pack(side="left", padx=10, pady=5)
+# Render the widget inside your layout panel using geometry managers
+panel_legend.pack(expand=True, pady=10)
 ```
 
 ---
 
-### Convenience Functions
-```python
-# Evaluate active visual modes or clear interaction visibility tracks safely
-current_look = notice_tag.get_state()   # Returns 'normal' or 'disabled'
-notice_tag.state("disabled")            # Softens the typography line color completely
-```
-
-### Centralized Stylesheet Setup (`themes.json`)
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
     "sCTkLabelTertiary": {
-        "text_color": ["#4B5563", "#9CA3AF"],
+        "fg_color": "transparent",
+        "text_color": ["#64748B", "#94A3B8"],
         "font": ["Arial", 10, "italic"],
         "disabled_map": {
-            "text_color": ["#CBD5E1", "#374151"]
+            "text_color": ["#CBD5E1", "#334155"]
         }
     }
 }
 ```
 
 ### Other notes
-* **Zero Boot Guessing Interference:** Completely bypasses runtime `_apply_appearance_mode()` loops during initialization, unblocking CustomTkinter's native tracker from capturing the operating system background preference seamlessly.
-* **Fallback Cascade Handling:** If specific styling coordinates are omitted from `themes.json`, the class falls back onto primary metadata slots to prevent component rendering faults.
+* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native geometry constructor routines mutate and drop keys directly out of parsed configuration structures during early boot phases, the constructor clones your data configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents layout repaints from failing [INDEX].
+* **Dynamic Dark Mode Pass-Through:** When returning to an active state, the visual interceptor reads directly from your protected `_local_defaults` cache. If no hardcoded text color is explicitly discovered, it hands control back to CustomTkinter's master `ThemeManager` to natively paint high-contrast system fonts [INDEX].
+
+---
 
 ### Implementation Example & Test Harness
 
-Below is a complete script demonstrating how to deploy an `sCTkLabelTertiary` instance within a standard panel wrapper.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkLabelTertiary` inline legend element along with an interactive status switch toggle [INDEX].
 
 ```python
+#!/usr/bin/python3
+"""
+sCTkLabelTertiary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
 from sCTkLabelTertiary import sCTkLabelTertiary
 
 if __name__ == "__main__":
-    root = ctk.CTk()
-    root.geometry("300x120")
+    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    sCTkThemes.apply_sCTkThemes()
 
-    caption = sCTkLabelTertiary(root, text="Tracking step: 100Hz intervals")
-    caption.pack(pady=20)
-    
-    caption.state("disabled")
-    print(f"Caption Status Assert Loop: {caption.get_state().upper()}")
+    root = ctk.CTk()
+    root.geometry("450x280")
+    root.title("sCTkLabelTertiary Testing Deck")
+
+    # Layout a clean, padded workspace container frame panel
+    container = sCTkFrame(root, fg_color="transparent")
+    container.pack(expand=True, fill="both", padx=30, pady=30)
+
+    # Instantiate your custom tertiary description label widget
+    tertiary_label = sCTkLabelTertiary(container, text="Inline notice: tuning resolution bounded to 100Hz.")
+    tertiary_label.pack(expand=True, pady=10)
+
+    # Live state monitoring feedback label
+    lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
+    lbl_status.pack(side="bottom", pady=5)
+
+    def toggle_label_states():
+        """Cycles the description label states between normal and disabled profiles [INDEX]."""
+        current_state = tertiary_label.get_state()
+        target = "disabled" if current_state == "normal" else "normal"
+
+        # Explicitly testing the dual-routing capability via configure() [INDEX]
+        tertiary_label.configure(state=target)
+        
+        if target == "disabled":
+            btn_toggle.configure(text="Activate Description (Set 'normal')")
+            lbl_status.configure(text="Current State Assertion: DISABLED")
+        else:
+            btn_toggle.configure(text="Dim Description (Set 'disabled')")
+            lbl_status.configure(text="Current State Assertion: NORMAL")
+
+        # Log state updates to terminal for validation tracking
+        print(f"Logged Verification Hook -> tertiary_label.get_state() = {tertiary_label.get_state()}")
+
+    # Standard interaction trigger button to dispatch state transformations
+    btn_toggle = ctk.CTkButton(
+        container,
+        text="Dim Description (Set 'disabled')",
+        command=toggle_label_states,
+        fg_color=("#1A4375", "#3B8ED0"),
+        hover_color=("#112A4B", "#1F6AA5")
+    )
+    btn_toggle.pack(expand=True, pady=15)
+
+    # Run the interactive boot tracking validation checks [INDEX]
+    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
+    tertiary_label.state("disabled")
+    print(f"state (Disabled Pass) = {tertiary_label.get_state().upper()}")
+
+    tertiary_label.state("normal")
+    print(f"state (Normal Pass)   = {tertiary_label.get_state().upper()}")
+    print("========================================\n")
+
     root.mainloop()
 ```
+
+[Return to Table of Contents](#contents)

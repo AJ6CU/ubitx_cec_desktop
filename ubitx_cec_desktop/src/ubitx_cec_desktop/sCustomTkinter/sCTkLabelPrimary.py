@@ -4,6 +4,8 @@ sCTkLabelPrimary
 
 A custom, theme-compliant dominant header label widget.
 Natively intercepts state assignments to swap active vs dimmed text colors.
+
+UI source file: sCTkLabelPrimary.ui
 """
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
@@ -21,9 +23,11 @@ class sCTkLabelPrimary(ctk.CTkLabel, ThemeableWidget):
         # 2. Fire our shared theme logic first. It automatically finds "sCTkLabelPrimary" in themes.json
         ThemeableWidget.__init__(self, kwargs)
 
-        # 3. Store local style dictionary trackers onto instance memory channels
-        self._local_defaults = self.final_kw
-        self._custom_disabled_map = self._widget_disabled_map
+        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Isolate your configuration rules inside protected memory structures BEFORE
+        # initializing super, preserving your true active settings from native deletion loops.
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
 
         # 4. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
@@ -65,10 +69,15 @@ class sCTkLabelPrimary(ctk.CTkLabel, ThemeableWidget):
             else:
                 # If the widget is active, let CustomTkinter's core engine
                 # natively paint high-contrast white text for Dark Mode from the system.
-                if self.final_kw.get("text_color"):
-                    super().configure(text_color=self.final_kw.get("text_color"))
+                if self._local_defaults.get("text_color"):
+                    super().configure(text_color=self._local_defaults.get("text_color"))
                 else:
                     super().configure(text_color=ctk.ThemeManager.theme["CTkLabel"]["text_color"])
+
+        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
 
         # -----------------------------------------------------------------
         # ZONE C: RUNTIME KEYWORDS MRO ROUTING PASS
@@ -94,54 +103,52 @@ class sCTkLabelPrimary(ctk.CTkLabel, ThemeableWidget):
         return None
 
 
-# !/usr/bin/python3
-import customtkinter as ctk
-
-# !/usr/bin/python3
-import customtkinter as ctk
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelPrimary import sCTkLabelPrimary
 
-
-# =====================================================================
-# RUNTIME EVENT UTILITIES
-# =====================================================================
-def toggle_label_states():
-    """Cycles the dominant header label states between normal and disabled profiles."""
-    current_state = primary_label.get_state()
-
-    if current_state == "normal":
-        # Apply the disabled dimming mapping rules
-        primary_label.state("disabled")
-        btn_toggle.configure(text="Activate Header (Set 'normal')")
-        lbl_status.configure(text="Current State Assertion: DISABLED")
-    else:
-        # Revert back to the active high-visibility look
-        primary_label.state("normal")
-        btn_toggle.configure(text="Dim Header (Set 'disabled')")
-        lbl_status.configure(text="Current State Assertion: NORMAL")
-
-    # Log state updates to terminal for validation tracking
-    print(f"Logged Verification Hook -> primary_label.get_state() = {primary_label.get_state()}")
-
-
-# =====================================================================
-# INTERACTIVE WINDOW ASSEMBLY RUNNER MAIN
-# =====================================================================
 if __name__ == "__main__":
-    # Let the operating system handle the layout theme automatically.
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x280")
     root.title("sCTkLabelPrimary Testing Deck")
 
     # Layout a clean, padded workspace container frame panel
-    from sCTkFrame import sCTkFrame
-
     container = sCTkFrame(root, fg_color="transparent")
     container.pack(expand=True, fill="both", padx=30, pady=30)
 
     # Instantiate your custom primary header label widget
     primary_label = sCTkLabelPrimary(container, text="MAIN RADIO DECK CONSOLE")
     primary_label.pack(expand=True, pady=10)
+
+    # Live state monitoring feedback label
+    lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
+    lbl_status.pack(side="bottom", pady=5)
+
+
+    def toggle_label_states():
+        """Cycles the dominant header label states between normal and disabled profiles."""
+        current_state = primary_label.get_state()
+        target = "disabled" if current_state == "normal" else "normal"
+
+        # Explicitly testing the dual-routing capability via configure()
+        primary_label.configure(state=target)
+
+        if target == "disabled":
+            btn_toggle.configure(text="Activate Header (Set 'normal')")
+            lbl_status.configure(text="Current State Assertion: DISABLED")
+        else:
+            btn_toggle.configure(text="Dim Header (Set 'disabled')")
+            lbl_status.configure(text="Current State Assertion: NORMAL")
+
+        # Log state updates to terminal for validation tracking
+        print(f"Logged Verification Hook -> primary_label.get_state() = {primary_label.get_state()}")
+
 
     # Standard interaction trigger button to dispatch state transformations
     btn_toggle = ctk.CTkButton(
@@ -153,13 +160,13 @@ if __name__ == "__main__":
     )
     btn_toggle.pack(expand=True, pady=15)
 
-    # Live state monitoring feedback label
-    lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
-    lbl_status.pack(side="bottom", pady=5)
-
     # Run the interactive boot tracking validation checks
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    print(f"Initial State Query = {primary_label.get_state().upper()}")
+    primary_label.state("disabled")
+    print(f"state (Disabled Pass) = {primary_label.get_state().upper()}")
+
+    primary_label.state("normal")
+    print(f"state (Normal Pass)   = {primary_label.get_state().upper()}")
     print("========================================\n")
 
     root.mainloop()

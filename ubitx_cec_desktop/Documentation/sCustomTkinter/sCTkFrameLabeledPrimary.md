@@ -1,64 +1,56 @@
 ## sCTkFrameLabeledPrimary
 
-A specialized, theme-compliant scrollable container frame variant engineered to cleanly hide its vertical scrollbars by matching their canvas color rendering attributes to the frame background while collapsing their structural footprint down to zero width. 
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
 
-This layout technique preserves native mousewheel scrolling metrics while rendering a seamless, static frame panel profile across both light and dark system appearance modes.
+---
+
+A clean, theme-compliant custom header-labeled scrollable container card frame. It is engineered to act as an organized panel matrix tree that seamlessly suppresses visible scrollbar components out of view by hard-matching scrollbar pixels directly to frame asset color backgrounds.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkScrollableFrame(master)` | `sCTkFrameLabeledPrimary(master)` *(Scrollable Container)* |
-| **Maintenance** | Local style overrides duplicated across files manually. | Clean updates across all layouts modified directly in the JSON file. |
-| **File Mapping** | Everything runs under one core native layout pipeline. | Separated safely across `sCTkFrameLabeledPrimary.py`, `sCTkFrameLabeledPrimaryui.py`, and `ThemeableWidget.py`. |
-| `state(mode)` | *Not Available Natively* | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
-| `get_state()` | *Not Available Natively* | `Method -> str` explicit verification query matching system test assertions. |
-| `winfo_children()` | Returns private internal system wrapper frames. | **Overridden:** Returns only true user-placed child component widgets. |
-| `get_children()` | *Not Available Natively* | **Companion Shortcut:** Direct pipeline alias pointing to `winfo_children()`. |
+| **Instantiation** | `ctk.CTkScrollableFrame(master)` | `sCTkFrameLabeledPrimary(master)` *(Header Scroll Frame Chassis)* |
+| **File Mapping** | Component files run standalone under un-themed frameworks. | Separated safely across `sCTkFrameLabeledPrimary.py` and `ThemeableWidget.py`. |
+| **State Lock** | `self.configure(state="disabled")`<br>*(Crashes Natively)* | `scroll_panel.state("disabled")`<br>**OR**<br>`scroll_panel.configure(state="disabled")`<br><br>**Dual-Routing State Pipeline:** Safely catches state keywords, popping them out to block native verification validation crashes while running custom theme maps manually. |
+| `winfo_children()` / `get_children()` | Returns private system canvas and structural background frames. | **Chassis Child Interceptor:** Overrides layout trees to extract **ONLY** the true, user-placed widget components nested inside the container. |
 
 ---
 
 ### Constructor
 
-Initialize a custom scrollable container instance. Label headers, title typography lines, and bounding corner radii parameters can be passed natively or handled entirely out of stylesheet registries.
+Initialize a custom scrollable labeled container frame option deck card. Scrollbar tracks are hidden automatically upon completing instantiation passes.
 
 ```python
-# Instantiate a theme-compliant scrollable container frame
-channel_matrix = sCTkFrameLabeledPrimary(
-    master=main_deck_frame,
-    label_text="RIG CHANNEL MATRIX CONTROLLER",
-    corner_radius=8
+# Instantiate a primary header-labeled scrollable matrix panel deck frame
+channel_grid = sCTkFrameLabeledPrimary(
+    master=root_window,
+    label_text="RIG CHANNEL MATRIX CONTROLLER"
 )
 
-# Render the widget inside your parent container geometry packer panel
-channel_matrix.pack(fill="both", expand=True, padx=25, pady=25)
+# Render the widget container view using standard geometry packer layout trackers
+channel_grid.pack(expand=True, fill="both", padx=25, pady=25)
 ```
 
 ---
 
-### Convenience Functions
-```python
-# Evaluate active visual modes or apply absolute user interaction locks
-current_mode = channel_matrix.get_state()   # Returns 'normal' or 'disabled'
-channel_matrix.state("disabled")             # Shifts container accents and hides tracks seamlessly
-
-# Extract only your true user-placed child elements (Bypasses hidden canvas layout frames)
-for child in channel_matrix.winfo_children():
-    if hasattr(child, "configure"):
-        child.configure(state="disabled")
-```
-
-### Centralized Stylesheet Setup (`themes.json`)
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
     "sCTkFrameLabeledPrimary": {
-        "fg_color": ["#F8FAFC", "#262626"],
-        "border_color": ["#E2E8F0", "#1A1A1A"],
-        "label_text_color": ["#1A4375", "#FFFFFF"],
-        "label_font": ["Arial", 12, "bold"],
+        "fg_color": ["#FFFFFF", "#1E293B"],
+        "border_color": ["#E2E8F0", "#334155"],
+        "label_text_color": ["#1A4375", "#38BDF8"],
+        "border_width": 1,
+        "corner_radius": 8,
         "disabled_map": {
-            "fg_color": ["#F1F5F9", "#1E1E1E"],
-            "border_color": ["#CBD5E1", "#2D2D2D"],
+            "fg_color": ["#F1F5F9", "#111111"],
+            "border_color": ["#E2E8F0", "#222222"],
             "label_text_color": ["#94A3B8", "#4B5563"]
         }
     }
@@ -66,43 +58,34 @@ for child in channel_matrix.winfo_children():
 ```
 
 ### Other notes
-* **Universal Absorption Guard:** Because native CustomTkinter frames will crash if passed an unrecognized `state` parameter, the custom `configure` method absorbs the key, filters it completely out of the execution stream, and safely routes it to the custom state manager thread.
-* **Encapsulated Child Interceptor:** Overriding `winfo_children()` forces queries past CustomTkinter's deep `_parent_frame._view_frame` container hierarchy, mapping developer loop tracks straight onto your child widgets automatically.
-* **Dynamic Repaint Hooks:** The scrollbar track concealment function (`_hide_internal_scrollbars`) is linked directly to the core visual update cycle. If the container background shifts colors or switches themes, the scrollbars dynamically update instantly.
+* **Chassis Child Interceptor Shield:** Calling standard native `.winfo_children()` on a scrollable canvas widget leaks CustomTkinter's private system geometry framework bars (`_parent_frame`, `_view_frame`, etc.). This override cuts directly to the true internal workspace array, returning clean arrays of only your custom widgets.
+* **Scrollbar Suppression Engine:** Instead of executing complex system canvas unbinding loops that destroy track physics, `_hide_internal_scrollbars()` sets scroll widths down to zero and maps track colors to your frame background, matching panel pixels perfectly.
+
+---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained script demonstrating how to layout a scrollable panel card and cascade state updates down to its child content modules uniformly.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkFrameLabeledPrimary` alongside a cascading state loop tracker.
 
 ```python
+#!/usr/bin/python3
+"""
+sCTkFrameLabeledPrimary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
-from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_frame_states():
-    """Toggles the container panel and cascades the state down to all child widgets."""
-    current_mode = scroll_panel.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    # 1. Update the parent scrollable frame's visual layout variables
-    scroll_panel.configure(state=target)
-
-    # 2. Extract your children using our newly targeted intercept loop pass
-    true_children = scroll_panel.winfo_children()
-    print(f"DEBUG ASSERTER: Successfully captured {len(true_children)} label elements...")
-
-    # 3. Cascade the state change down to every single true child label uniformly
-    for child in true_children:
-        if hasattr(child, "configure"):
-            child.configure(state=target)
-
-    btn_toggle.configure(
-        text="Lock Container (Set 'disabled')" if target == "normal" else "Unlock Container (Set 'normal')")
-    print(f"Logged Verification Hook -> scroll_panel.get_state() = {scroll_panel.get_state()}\n")
-
+from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x450")
     root.title("Labeled Scrollable Frame Test Bench")
@@ -116,12 +99,40 @@ if __name__ == "__main__":
         lbl_item = sCTkLabelSecondary(scroll_panel, text=f"Channel Lane Array Entry #{i:02d} - Active Track [100Hz]")
         lbl_item.pack(pady=4, fill="x", padx=10)
 
+    def toggle_frame_states():
+        """Toggles the container panel and cascades the state down to all child widgets."""
+        current_mode = scroll_panel.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        # 1. Update the parent scrollable frame's visual layout variables via dual-routing syntax
+        scroll_panel.configure(state=target)
+
+        # 2. Extract your children using our newly targeted intercept loop pass
+        true_children = scroll_panel.winfo_children()
+        print(f"DEBUG ASSERTER: Successfully captured {len(true_children)} label elements...")
+
+        # 3. Cascade the state change down to every single true child label uniformly
+        for child in true_children:
+            if hasattr(child, "configure"):
+                child.configure(state=target)
+
+        btn_toggle.configure(
+            text="Lock Container (Set 'disabled')" if target == "normal" else "Unlock Container (Set 'normal')")
+        print(f"Logged Verification Hook -> scroll_panel.get_state() = {scroll_panel.get_state()}\n")
+
     btn_toggle = ctk.CTkButton(root, text="Lock Container (Set 'disabled')", command=toggle_frame_states)
     btn_toggle.pack(pady=15)
 
+    # Run the interactive boot tracking logs
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    print(f"Initial Container State = {scroll_panel.get_state().upper()}")
+    scroll_panel.state("disabled")
+    print(f"state (Disabled Pass) = {scroll_panel.get_state().upper()}")
+
+    scroll_panel.state("normal")
+    print(f"state (Normal Pass)   = {scroll_panel.get_state().upper()}")
     print("========================================\n")
 
     root.mainloop()
 ```
+
+[Return to Table of Contents](#contents)

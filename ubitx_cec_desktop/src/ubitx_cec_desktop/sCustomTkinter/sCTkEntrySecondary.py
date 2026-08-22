@@ -2,7 +2,9 @@
 """
 sCTkEntrySecondary
 
-subclass of CTkEntry (Secondary Form / Helper Input Field)
+subclass of CTkEntry via Pygubu UI Class Isolation (Secondary Form / Helper Input Field)
+
+UI source file: sCTkEntrySecondary.ui
 """
 import customtkinter as ctk
 import sCTkEntrySecondaryui as baseui
@@ -11,14 +13,14 @@ from ThemeableWidget import ThemeableWidget
 
 class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
-        # 1. 🛠️ PARAMETER POPPING: Capture input-lane specifics early
+        # 1. PARAMETER POPPING: Capture input-lane specifics early
         textvariable = kw.pop("textvariable", None)
         placeholder_text = kw.pop("placeholder_text", None)
 
         # 2. Fire our shared theme logic first. It automatically finds "sCTkEntrySecondary" in themes.json
         ThemeableWidget.__init__(self, kw)
 
-        # 3. 🛠️ THE MUTATION SAFEGUARD COPY:
+        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
         # Isolate your configuration rules inside protected memory structures BEFORE
         # initializing super, preserving your true active settings from native deletion loops.
         self._local_defaults = dict(self.final_kw)
@@ -70,6 +72,11 @@ class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
             target_state = kwargs.pop("state")
             self.state(target_state)
 
+        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
         # -----------------------------------------------------------------
         # ZONE C: RUNTIME KEYWORDS MRO ROUTING PASS
         # -----------------------------------------------------------------
@@ -89,61 +96,54 @@ class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             super().configure(state="normal")
-            self._update_current_visual_state()
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
             super().configure(state="disabled")
 
-            # Route custom muted gray configurations safely out of your preserved disabled map
+            # Apply custom flat muted styling arrays directly down to the entry layer safely
+            config_payload = {}
             for key in ("fg_color", "border_color", "text_color", "placeholder_text_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        super().configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
+                    config_payload[key] = self._custom_disabled_map[key]
+
+            if config_payload:
+                super().configure(**config_payload)
 
             self._custom_current_state = "disabled"
 
     def _update_current_visual_state(self):
         """
-        MASTER VISUAL ROUTER: Restores your true active theme layout configurations out of memory,
-        safely falling back to native styles ONLY if a property is unassigned in themes.json.
+        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
+        Completely free of hardcoded property name fallback strings, ensuring total extensibility.
         """
+        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+        # We parse your preserved local defaults instead of the mutated final_kw.
+        # If an item evaluates to None, it is skipped entirely so CustomTkinter
+        # defaults step forward natively, blocking any ValueError exceptions.
         config_payload = {}
-        for key in ("fg_color", "border_color", "text_color", "placeholder_text_color"):
+        for key in ("fg_color", "border_color", "text_color", "placeholder_text_color", "border_width", "font"):
             val = self._local_defaults.get(key)
             if val is not None:
                 config_payload[key] = val
-            else:
-                config_payload[key] = ctk.ThemeManager.theme["CTkEntry"].get(key)
 
         if config_payload:
             super().configure(**config_payload)
 
 
-# !/usr/bin/python3
-"""
-sCTkEntrySecondary - Standalone Interactive Testing Harness
-"""
-import customtkinter as ctk
-from sCTkFrame import sCTkFrame
-# from sCTkEntrySecondary import sCTkEntrySecondary
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_operational_state():
-    """Toggles the helper input field between normal active and dimmed disabled profiles."""
-    current_mode = input_field.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    input_field.configure(state=target)
-    btn_toggle.configure(
-        text="Lock Helper Input (Set 'disabled')" if target == "normal" else "Unlock Helper Input (Set 'normal')")
-    print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
-
+from sCTkEntrySecondary import sCTkEntrySecondary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x260")
     root.title("sCTkEntrySecondary Testing Deck")
@@ -161,6 +161,18 @@ if __name__ == "__main__":
 
     # Monitor keystrokes live
     input_field.bind("<KeyRelease>", lambda e: lbl_monitor.configure(text=f"Live Buffer: {input_field.get()}"))
+
+
+    def toggle_operational_state():
+        """Toggles the helper input field between normal active and dimmed disabled profiles."""
+        current_mode = input_field.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        input_field.configure(state=target)
+        btn_toggle.configure(
+            text="Lock Helper Input (Set 'disabled')" if target == "normal" else "Unlock Helper Input (Set 'normal')")
+        print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
+
 
     btn_toggle = ctk.CTkButton(base, text="Lock Helper Input (Set 'disabled')", command=toggle_operational_state)
     btn_toggle.pack(side="bottom", pady=15)

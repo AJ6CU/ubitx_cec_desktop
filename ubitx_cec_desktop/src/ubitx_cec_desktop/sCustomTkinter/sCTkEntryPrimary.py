@@ -2,7 +2,9 @@
 """
 sCTkEntryPrimary
 
-subclass of CTkEntry (Primary Form Input Field)
+subclass of CTkEntry via Pygubu UI Class Isolation (Primary Form Input Field)
+
+UI source file: sCTkEntryPrimary.ui
 """
 import customtkinter as ctk
 import sCTkEntryPrimaryui as baseui
@@ -15,13 +17,12 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
         textvariable = kw.pop("textvariable", None)
         placeholder_text = kw.pop("placeholder_text", None)
 
-        # 2. Fire our shared theme logic first to resolve global configurations
+        # 2. Fire our shared theme logic first to resolve global configurations natively
         ThemeableWidget.__init__(self, kw)
 
-        # 3. 🛠️ THE MUTATION SAFEGUARD FIX:
-        # CustomTkinter's super().__init__ deletes keys directly out of dictionaries.
-        # We explicitly save a true copy of final_kw into self._local_defaults BEFORE
-        # initializing super. This ensures your normal state settings remain permanently preserved!
+        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Isolate your configuration rules inside protected memory structures BEFORE
+        # initializing super, preserving your true active settings from native deletion loops.
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
 
@@ -64,6 +65,11 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
             target_state = kwargs.pop("state")
             self.state(target_state)
 
+        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
+
         if kwargs:
             return super().configure(**kwargs)
         return None
@@ -80,65 +86,54 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             super().configure(state="normal")
-            self._update_current_visual_state()
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
             super().configure(state="disabled")
 
-            # Route custom muted gray configurations safely out of your preserved disabled map
+            # Route custom muted gray configurations safely out of your preserved disabled map safely
+            config_payload = {}
             for key in ("fg_color", "border_color", "text_color", "placeholder_text_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        super().configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
+                    config_payload[key] = self._custom_disabled_map[key]
+
+            if config_payload:
+                super().configure(**config_payload)
 
             self._custom_current_state = "disabled"
 
     def _update_current_visual_state(self):
         """
-        MASTER VISUAL ROUTER: Restores your true active theme layout configurations out of memory,
-        safely falling back to native styles ONLY if a property is unassigned in themes.json.
+        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
+        Completely free of hardcoded property name fallback strings, ensuring total extensibility.
         """
-        # 🛠️ THE NORMAL STATE RESOLUTION:
-        # We read directly out of your protected self._local_defaults copy instead of final_kw.
-        # This completely guarantees that your true active configuration settings are pulled!
+        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+        # We parse your preserved local defaults instead of the mutated final_kw.
+        # If an item evaluates to None, it is skipped entirely so CustomTkinter
+        # defaults step forward natively, blocking any ValueError exceptions.
         config_payload = {}
-        for key in ("fg_color", "border_color", "text_color", "placeholder_text_color"):
+        for key in ("fg_color", "border_color", "text_color", "placeholder_text_color", "border_width", "font"):
             val = self._local_defaults.get(key)
             if val is not None:
                 config_payload[key] = val
-            else:
-                # If your themes.json skips configuring a unique active property,
-                # fall back cleanly onto CustomTkinter's built-in theme parameters to prevent None type crashes.
-                config_payload[key] = ctk.ThemeManager.theme["CTkEntry"].get(key)
 
         if config_payload:
             super().configure(**config_payload)
 
 
-# !/usr/bin/python3
-"""
-sCTkEntryPrimary - Standalone Interactive Testing Harness
-"""
-import customtkinter as ctk
-from sCTkFrame import sCTkFrame
-# from sCTkEntryPrimary import sCTkEntryPrimary
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_operational_state():
-    """Toggles the input lane between normal active and dimmed disabled profiles."""
-    current_mode = input_field.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    input_field.configure(state=target)
-    btn_toggle.configure(text="Lock Input (Set 'disabled')" if target == "normal" else "Unlock Input (Set 'normal')")
-    print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
-
+from sCTkEntryPrimary import sCTkEntryPrimary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x260")
     root.title("sCTkEntryPrimary Testing Deck")
@@ -156,6 +151,18 @@ if __name__ == "__main__":
 
     # Attach interactive keyboard binding tracker to dump text entries straight to terminal loop
     input_field.bind("<KeyRelease>", lambda e: lbl_monitor.configure(text=f"Live Buffer: {input_field.get()}"))
+
+
+    def toggle_operational_state():
+        """Toggles the input lane between normal active and dimmed disabled profiles."""
+        current_mode = input_field.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        input_field.configure(state=target)
+        btn_toggle.configure(
+            text="Lock Input (Set 'disabled')" if target == "normal" else "Unlock Input (Set 'normal')")
+        print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
+
 
     btn_toggle = ctk.CTkButton(base, text="Lock Input (Set 'disabled')", command=toggle_operational_state)
     btn_toggle.pack(side="bottom", pady=15)

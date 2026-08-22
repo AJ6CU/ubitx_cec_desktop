@@ -1,5 +1,15 @@
 ## sCTkEntryPrimary
 
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Convenience Functions](#convenience-functions)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-themesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
+---
+
 Dominant form input lane widget variant designed for primary user data entry (e.g., core configuration inputs, direct numeric entries, or text queries). It implements a deep-copy keyword caching shield to protect the text field layout engine from validation failures.
 
 *For alternative helper input fields or metadata input channels, see the companion component documentation page:* [sCTkEntrySecondary](sCTkEntrySecondary.md).
@@ -11,7 +21,7 @@ Dominant form input lane widget variant designed for primary user data entry (e.
 | **Instantiation** | `ctk.CTkEntry(master)` | `sCTkEntryPrimary(master)` *(Primary form data field)* |
 | **Maintenance** | Local style overrides duplicated across files manually. | Clean updates across all layouts modified directly in the JSON file. |
 | **File Mapping** | Everything runs under one core native text pipeline. | Separated safely across `sCTkEntryPrimary.py`, `sCTkEntryPrimaryui.py`, and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| **State Lock** | `self.configure(state="disabled")` | `input_field.state("disabled")`<br>**OR**<br>`input_field.configure(state="disabled")`<br><br>**Dual-Routing State Pipeline:** Natively handles both syntax paths. Freezes text interaction lanes, blocks keyboard event streams, and dynamically shifts colors out of `disabled_map` guidelines. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
 
 ---
@@ -21,15 +31,15 @@ Dominant form input lane widget variant designed for primary user data entry (e.
 Initialize a custom primary form data field instance. High-level configuration parameters like `textvariable` and `placeholder_text` are explicitly popped early inside `__init__` to protect the layout engine from keyword collisions.
 
 ```python
-# Instantiate a primary user entry field
-frequency_input = sCTkEntryPrimary(
+# Instantiate a primary frequency entry lane input field
+freq_input_field = sCTkEntryPrimary(
     master=control_panel,
     placeholder_text="Enter Transceiver Frequency...",
     textvariable=vfo_string_var
 )
 
 # Render the widget inside your parent container coordinate tracker panel
-frequency_input.pack(fill="x", padx=40, pady=10)
+freq_input_field.pack(fill="x", padx=40, pady=10)
 ```
 
 ---
@@ -41,7 +51,7 @@ frequency_input.insert(0, "14.032.000") # Populates text buffer indices with dat
 frequency_input.delete(0, "end")         # Wipes the entry line lane completely back to empty
 active_buffer = frequency_input.get()    # Queries the live active text character arrays
 
-# Evaluate current state configurations or apply absolute user interaction locks
+# Evaluate current state configurations or apply absolute user interaction locks via dual-routing syntax
 current_mode = frequency_input.get_state() # Returns 'normal' or 'disabled'
 frequency_input.state("disabled")          # Locks data entry tracks and applies muted gray fills
 ```
@@ -66,35 +76,34 @@ frequency_input.state("disabled")          # Locks data entry tracks and applies
 
 ### Other notes
 * **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native entry initialization code mutates, strips, and deletes keys directly out of raw dictionary data footprints during its boot phase, the constructor clones your configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents normal state restorations from crashing on missing keys.
-* **Null Pointer Prevention Filters:** The internal visual loop is fortified to look up CustomTkinter's master `ThemeManager` variables if a specific color style (like `placeholder_text_color`) is completely skipped inside `themes.json`, blocking dangerous `None` keyword objects from halting application threads.
+* **Bounded Dynamic Filter Loop:** The visual router is fortified to dynamically loop across active values inside your protected `_local_defaults` memory cache, dropping omitted parameters completely rather than passing raw `None` pointers. This allows CustomTkinter's built-in theme parameters to step forward natively, blocking dangerous type validation exceptions.
 
+---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly map an `sCTkFrame` asset container.
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkEntryPrimary` input lane field along with an interactive status switch toggle.
 
 ```python
-# !/usr/bin/python3
+#!/usr/bin/python3
 """
 sCTkEntryPrimary - Standalone Interactive Testing Harness
 """
+
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
 import customtkinter as ctk
-from sCTkFrame import sCTkFrame
-from sCTkEntryPrimary import sCTkEntryPrimary
+import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_operational_state():
-    """Toggles the input lane between normal active and dimmed disabled profiles."""
-    current_mode = input_field.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    input_field.configure(state=target)
-    btn_toggle.configure(text="Lock Input (Set 'disabled')" if target == "normal" else "Unlock Input (Set 'normal')")
-    print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
-
+from sCTkEntryPrimary import sCTkEntryPrimary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x260")
     root.title("sCTkEntryPrimary Testing Deck")
@@ -113,6 +122,16 @@ if __name__ == "__main__":
     # Attach interactive keyboard binding tracker to dump text entries straight to terminal loop
     input_field.bind("<KeyRelease>", lambda e: lbl_monitor.configure(text=f"Live Buffer: {input_field.get()}"))
 
+    def toggle_operational_state():
+        """Toggles the input lane between normal active and dimmed disabled profiles."""
+        current_mode = input_field.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        # Explicitly testing the dual-routing capability via configure()
+        input_field.configure(state=target)
+        btn_toggle.configure(text="Lock Input (Set 'disabled')" if target == "normal" else "Unlock Input (Set 'normal')")
+        print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
+
     btn_toggle = ctk.CTkButton(base, text="Lock Input (Set 'disabled')", command=toggle_operational_state)
     btn_toggle.pack(side="bottom", pady=15)
 
@@ -127,3 +146,5 @@ if __name__ == "__main__":
 
     root.mainloop()
 ```
+
+[Return to Table of Contents](#contents)

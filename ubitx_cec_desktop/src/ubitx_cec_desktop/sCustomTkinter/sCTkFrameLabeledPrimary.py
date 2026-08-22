@@ -1,13 +1,11 @@
 #!/usr/bin/python3
 """
-sCTkFrameLabeledPrimary - Standalone Interactive Testing Harness
-"""
-# !/usr/bin/python3
-"""
 sCTkFrameLabeledPrimary
 
 A clean CustomTkinter ScrollableFrame that natively hides its scrollbars
 by matching their color profile to the frame background.
+
+UI source file: sCTkFrameLabeledPrimary.ui
 """
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
@@ -20,9 +18,11 @@ class sCTkFrameLabeledPrimary(ctk.CTkScrollableFrame, ThemeableWidget):
         # 1. Fire our shared theme logic first. It automatically finds the class section inside themes.json
         ThemeableWidget.__init__(self, kwargs)
 
-        # 2. Store your custom maps safely onto instance memory channels
-        self._local_defaults = self.final_kw
-        self._custom_disabled_map = self._widget_disabled_map
+        # 2. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # Clone your configuration parameters into completely independent memory structures
+        # BEFORE initializing super, protecting active color values from native corruption traps.
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
 
         # 3. Initialize CustomTkinter ScrollableFrame natively with final kwargs safely
         super().__init__(master, **self.final_kw)
@@ -55,6 +55,11 @@ class sCTkFrameLabeledPrimary(ctk.CTkScrollableFrame, ThemeableWidget):
         if "state" in kwargs:
             target_state = kwargs.pop("state")
             self.state(target_state)
+
+        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
+        for k, v in list(kwargs.items()):
+            if v == "":
+                kwargs.pop(k)
 
         if kwargs:
             result = super().configure(**kwargs)
@@ -96,35 +101,37 @@ class sCTkFrameLabeledPrimary(ctk.CTkScrollableFrame, ThemeableWidget):
 
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            # 🛠️ THE STATE CRASH FIX:
-            # We completely remove super().configure(state="normal") out of this track!
-            # Since scrollable frames do not natively accept a state keyword argument,
-            # omitting it permanently blocks CustomTkinter's verification engine from crashing.
-            self._update_current_visual_state()
+            # 🛠️ THE STATE CRASH FIX: Completely remove super().configure(state="normal")
             self._custom_current_state = "normal"
+            self._update_current_visual_state()
 
         elif mode == "disabled":
-            # 🛠️ THE STATE CRASH FIX:
-            # We completely remove super().configure(state="disabled") out of this track!
-            # Instead, we safely step in and apply our custom disabled color styles maps manually
-            # via super, keeping CustomTkinter from seeing the illegal "state" parameter.
+            # 🛠️ THE STATE CRASH FIX: Completely remove super().configure(state="disabled")
+            super_payload = {}
             for key in ("fg_color", "border_color", "label_text_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        super().configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
+                    super_payload[key] = self._custom_disabled_map[key]
+
+            if super_payload:
+                super().configure(**super_payload)
 
             self._custom_current_state = "disabled"
             self._hide_internal_scrollbars()
 
     def _update_current_visual_state(self):
-        """MASTER VISUAL ROUTER: Restores active theme layouts out of memory."""
-        super().configure(
-            fg_color=self.final_kw.get("fg_color", self._local_defaults.get("fg_color")),
-            border_color=self.final_kw.get("border_color", self._local_defaults.get("border_color")),
-            label_text_color=self.final_kw.get("label_text_color", self._local_defaults.get("label_text_color"))
-        )
+        """
+        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
+        Completely free of hardcoded property name fallback strings, ensuring total extensibility.
+        """
+        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
+        config_payload = {}
+        for key in ("fg_color", "border_color", "label_text_color", "border_width", "label_font"):
+            val = self._local_defaults.get(key)
+            if val is not None:
+                config_payload[key] = val
+
+        if config_payload:
+            super().configure(**config_payload)
         self._hide_internal_scrollbars()
 
     def _hide_internal_scrollbars(self):
@@ -145,34 +152,18 @@ class sCTkFrameLabeledPrimary(ctk.CTkScrollableFrame, ThemeableWidget):
         return self
 
 
-import customtkinter as ctk
-# from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
+from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
-
-
-def toggle_frame_states():
-    """Toggles the container panel and cascades the state down to all child widgets."""
-    current_mode = scroll_panel.get_state()
-    target = "disabled" if current_mode == "normal" else "normal"
-
-    # 1. Update the parent scrollable frame's visual layout variables
-    scroll_panel.configure(state=target)
-
-    # 2. Extract your children using our newly targeted intercept loop pass
-    true_children = scroll_panel.winfo_children()
-    print(f"DEBUG ASSERTER: Successfully captured {len(true_children)} label elements...")
-
-    # 3. Cascade the state change down to every single true child label uniformly
-    for child in true_children:
-        if hasattr(child, "configure"):
-            child.configure(state=target)
-
-    btn_toggle.configure(
-        text="Lock Container (Set 'disabled')" if target == "normal" else "Unlock Container (Set 'normal')")
-    print(f"Logged Verification Hook -> scroll_panel.get_state() = {scroll_panel.get_state()}\n")
-
+from sCTkFrameLabeledPrimary import sCTkFrameLabeledPrimary
 
 if __name__ == "__main__":
+    # Natively resolves your package assets and populates configurations cleanly
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
     root.geometry("450x450")
     root.title("Labeled Scrollable Frame Test Bench")
@@ -186,11 +177,39 @@ if __name__ == "__main__":
         lbl_item = sCTkLabelSecondary(scroll_panel, text=f"Channel Lane Array Entry #{i:02d} - Active Track [100Hz]")
         lbl_item.pack(pady=4, fill="x", padx=10)
 
+
+    def toggle_frame_states():
+        """Toggles the container panel and cascades the state down to all child widgets."""
+        current_mode = scroll_panel.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+
+        # 1. Update the parent scrollable frame's visual layout variables via dual-routing syntax
+        scroll_panel.configure(state=target)
+
+        # 2. Extract your children using our newly targeted intercept loop pass
+        true_children = scroll_panel.winfo_children()
+        print(f"DEBUG ASSERTER: Successfully captured {len(true_children)} label elements...")
+
+        # 3. Cascade the state change down to every single true child label uniformly
+        for child in true_children:
+            if hasattr(child, "configure"):
+                child.configure(state=target)
+
+        btn_toggle.configure(
+            text="Lock Container (Set 'disabled')" if target == "normal" else "Unlock Container (Set 'normal')")
+        print(f"Logged Verification Hook -> scroll_panel.get_state() = {scroll_panel.get_state()}\n")
+
+
     btn_toggle = ctk.CTkButton(root, text="Lock Container (Set 'disabled')", command=toggle_frame_states)
     btn_toggle.pack(pady=15)
 
+    # Run the interactive boot tracking logs
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    print(f"Initial Container State = {scroll_panel.get_state().upper()}")
+    scroll_panel.state("disabled")
+    print(f"state (Disabled Pass) = {scroll_panel.get_state().upper()}")
+
+    scroll_panel.state("normal")
+    print(f"state (Normal Pass)   = {scroll_panel.get_state().upper()}")
     print("========================================\n")
 
     root.mainloop()
