@@ -2,170 +2,166 @@
 """
 sCTkLabelSecondary
 
-A custom, theme-compliant intermediate sub-section label widget.
-Natively intercepts state assignments to swap active vs dimmed text colors.
+Subclass of CTkLabel via Pygubu UI Class Isolation (Secondary Interface Text Label)
+Fortified with direct appearance mode listeners and virtual state hooks to permanently
+conquer text color freezing bugs across light/dark skin transitions.
 
 UI source file: sCTkLabelSecondary.ui
 """
 import customtkinter as ctk
+import sCTkLabelSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
 
-class sCTkLabelSecondary(ctk.CTkLabel, ThemeableWidget):
-    _MANAGED_PROPERTIES = frozenset({"state"})
-
+class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kwargs):
-        # 1. Trace and capture state parameters early out of input footprint
-        self._current_state = str(kwargs.pop("state", "normal")).lower()
-        if self._current_state not in ("normal", "disabled"):
-            self._current_state = "normal"
+        # 1. INITIAL RUNTIME PARAMETER SCRUB: Shield parent constructor from custom state configurations
+        state_init = kwargs.pop("state", "normal")
 
-        # 2. Fire our shared theme logic first. It automatically finds "sCTkLabelSecondary" in themes.json
+        # 2. Fire our shared theme logic first to resolve global configuration JSON footprints natively
         ThemeableWidget.__init__(self, kwargs)
 
-        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
-        # Isolate your configuration rules inside protected memory structures BEFORE
-        # initializing super, preserving your true active settings from native deletion loops.
+        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY SHIELD:
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
+
+        # Remove state keys to prevent native validation collisions
+        self.final_kw.pop("state", None)
 
         # 4. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
-        # 5. Execute state evaluation pass immediately at the end of instantiation tracks
-        self.state(self._current_state)
+        # 5. INITIALIZE STATE REGISTRY VARIABLES
+        self._custom_current_state = "normal"
+        self.configure(state=state_init)
+
+    def _set_appearance_mode(self, mode_string: str):
+        """
+        🛠️ AUTHENTIC LIFEHOOK INTERCEPTOR:
+        Intercepts CustomTkinter's private theme updates, forwards them up the MRO,
+        and forcefully re-triggers a state check pass. This forces virtually disabled
+        labels to re-evaluate their font colors against the new skin mode instantly!
+        """
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+
+        # 🔑 FORCE REPAINT EVENT: Re-run our state engine to push the new light/dark colors
+        self._update_current_visual_state()
 
     def configure(self, *args, **kwargs):
-        """Extended configure to handle Pygubu designer queries and state text dimming passes."""
-
-        # -----------------------------------------------------------------
-        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
-        # -----------------------------------------------------------------
+        """Processes Pygubu designer queries and manages state changes safely."""
         if args and len(args) == 1:
-            pname = args
+            pname = args if isinstance(args, (list, tuple)) else args
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
             if pname in ["fg_color", "text_color"]:
-                val = self._custom_disabled_map.get(pname) if str(
-                    self.state()).lower() == "disabled" else self._local_defaults.get(pname)
+                current_state = str(self.state()).lower()
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
+                    pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
-            return super().configure(pname)
+            return super().configure(*args, **kwargs)
 
-        # Handle Pygubu positional dictionary merging layers cleanly
         if args and isinstance(args, dict):
             kwargs = args | kwargs
 
-        # -----------------------------------------------------------------
-        # ZONE B: MULTI-STATE PAYLOAD INTERCEPTION
-        # -----------------------------------------------------------------
         if "state" in kwargs:
-            self._current_state = str(kwargs.pop("state")).lower()
+            self.state(kwargs.pop("state"))
 
-            if self._current_state == "disabled":
-                # Only apply an override color manually if the widget is explicitly disabled
-                target_color = self._custom_disabled_map.get("text_color") or "gray50"
-                super().configure(text_color=target_color)
-            else:
-                # 🛠️ THE SYSTEM MODE RESOLUTION:
-                if self._local_defaults.get("text_color"):
-                    super().configure(text_color=self._local_defaults.get("text_color"))
-                else:
-                    super().configure(text_color=ctk.ThemeManager.theme["CTkLabel"]["text_color"])
-
-        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
         for k, v in list(kwargs.items()):
             if v == "":
                 kwargs.pop(k)
 
-        # -----------------------------------------------------------------
-        # ZONE C: RUNTIME KEYWORDS MRO ROUTING PASS
-        # -----------------------------------------------------------------
         if kwargs:
             return super().configure(**kwargs)
         return None
 
-    config = configure
+    def cget(self, attribute_name: str) -> any:
+        """Safely intercept custom properties like 'state' from throwing errors."""
+        if str(attribute_name).lower() == "state":
+            return self.state()
+        return super().cget(attribute_name)
 
-    def get_state(self):
+    def get_state(self) -> str:
         """Explicit getter synchronized with your standalone test harness script assertions."""
         return self.state()
 
-    def state(self, mode: str = None):
-        """Dedicated label state controller."""
+    def state(self, mode: str = None) -> str:
+        """Dedicated text label operational availability state controller with explicit repaint routing."""
         if mode is None:
-            return getattr(self, "_current_state", "normal")
+            return str(getattr(self, "_custom_current_state", "normal")).lower()
 
-        # Route state string keywords directly through our multi-zone interceptor logic
-        self.configure(state=mode)
-        return None
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            self._custom_current_state = "normal"
+            self._update_current_visual_state()
+
+        elif mode == "disabled":
+            self._custom_current_state = "disabled"
+            self._update_current_visual_state()
+
+        return self._custom_current_state
+
+    def _update_current_visual_state(self):
+        """🔑 MASTER REPAINT CORE ENGINE: Automatically extracts and resolves properties out of protected memory."""
+        config_payload = {}
+
+        # Pull properties depending on whether the label is virtually disabled or active
+        target_map = self._custom_disabled_map if self._custom_current_state == "disabled" else self._local_defaults
+
+        for key in ("fg_color", "text_color", "font"):
+            val = target_map.get(key)
+            if val is not None:
+                config_payload[key] = self._resolve_color(val) if "color" in key else val
+
+        if config_payload:
+            # Drop straight below the abstraction layer to force a real-time pixel paint refresh
+            super().configure(**config_payload)
 
 
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
-from sCTkLabelSecondary import sCTkLabelSecondary
-
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
-    sCTkThemes.apply_sCTkThemes()
+    import sCTkThemes
+    from sCTkFrame import sCTkFrame
+    from sCTkButtonPrimary import sCTkButtonPrimary
 
     root = ctk.CTk()
-    root.geometry("450x280")
+    root.geometry("400x200")
     root.title("sCTkLabelSecondary Testing Deck")
 
-    # Layout a clean, padded workspace container
-    container = sCTkFrame(root, fg_color="transparent")
-    container.pack(expand=True, fill="both", padx=30, pady=30)
+    sCTkThemes.apply_sCTkThemes()
 
-    # Instantiate your custom secondary label targeting your name registry
-    test_label = sCTkLabelSecondary(container, text="VFO STATUS PANEL: ACTIVE")
-    test_label.pack(expand=True, pady=10)
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Live state monitoring feedback label
-    lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
-    lbl_status.pack(side="bottom", pady=5)
+    # Instantiate your custom text component cell
+    widget = sCTkLabelSecondary(base, text="Active Teleceiver Signal Frequency Lane [94.1 MHz]")
+    widget.pack(expand=True, padx=20, pady=20)
 
 
-    def toggle_label_states():
-        """Cycles the label states between normal active and dimmed disabled profiles."""
-        current_state = test_label.state()
-        target = "disabled" if current_state == "normal" else "normal"
-
-        # Explicitly testing the dual-routing capability via configure()
-        test_label.configure(state=target)
-
-        if target == "disabled":
-            btn_toggle.configure(text="Activate Label (Set 'normal')")
-            lbl_status.configure(text="Current State Assertion: DISABLED")
-        else:
-            btn_toggle.configure(text="Dim Label (Set 'disabled')")
-            lbl_status.configure(text="Current State Assertion: NORMAL")
-
-        # Log state queries to terminal to match your standalone harness requirements
-        print(f"Logged Verification Hook -> test_label.get_state() = {test_label.get_state()}")
+    def toggle_operational_state():
+        current_mode = widget.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+        widget.configure(state=target)
+        btn_toggle.configure(text="Lock Label Text" if target == "normal" else "Unlock Label Text")
 
 
-    # Standard interaction trigger button to dispatch state transformations
-    btn_toggle = ctk.CTkButton(
-        container,
-        text="Dim Label (Set 'disabled')",
-        command=toggle_label_states,
-        fg_color=("#2471A3", "#3B8ED0"),
-        hover_color=("#112A4B", "#1F6AA5")
-    )
-    btn_toggle.pack(expand=True, pady=15)
+    def toggle_appearance_skin():
+        current_mode = ctk.get_appearance_mode()
+        target = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(target)
 
-    # Run the interactive boot tracking validation checks
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    test_label.state("disabled")
-    print(f"state (Disabled Pass) = {test_label.get_state().upper()}")
 
-    test_label.state("normal")
-    print(f"state (Normal Pass)   = {test_label.get_state().upper()}")
-    print("========================================\n")
+    btn_theme = ctk.CTkButton(base, text="Toggle Skin Mode (Dark / Light)", command=toggle_appearance_skin)
+    btn_theme.pack(side="bottom", pady=(5, 5))
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Label Text", command=toggle_operational_state)
+    btn_toggle.pack(side="bottom", pady=(10, 5))
 
     root.mainloop()

@@ -66,21 +66,12 @@ panel_legend.pack(expand=True, pady=10)
 Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkLabelTertiary` inline legend element along with an interactive status switch toggle [INDEX].
 
 ```python
-#!/usr/bin/python3
-"""
-sCTkLabelTertiary - Standalone Interactive Testing Harness
-"""
 import customtkinter as ctk
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
+import sCTkThemes
+from sCTkFrame import sCTkFrame
 from sCTkLabelTertiary import sCTkLabelTertiary
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly [INDEX]
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -100,13 +91,12 @@ if __name__ == "__main__":
     lbl_status.pack(side="bottom", pady=5)
 
     def toggle_label_states():
-        """Cycles the description label states between normal and disabled profiles [INDEX]."""
+        """Cycles the description label states between normal and disabled profiles."""
         current_state = tertiary_label.get_state()
         target = "disabled" if current_state == "normal" else "normal"
 
-        # Explicitly testing the dual-routing capability via configure() [INDEX]
         tertiary_label.configure(state=target)
-        
+
         if target == "disabled":
             btn_toggle.configure(text="Activate Description (Set 'normal')")
             lbl_status.configure(text="Current State Assertion: DISABLED")
@@ -114,7 +104,6 @@ if __name__ == "__main__":
             btn_toggle.configure(text="Dim Description (Set 'disabled')")
             lbl_status.configure(text="Current State Assertion: NORMAL")
 
-        # Log state updates to terminal for validation tracking
         print(f"Logged Verification Hook -> tertiary_label.get_state() = {tertiary_label.get_state()}")
 
     # Standard interaction trigger button to dispatch state transformations
@@ -127,7 +116,6 @@ if __name__ == "__main__":
     )
     btn_toggle.pack(expand=True, pady=15)
 
-    # Run the interactive boot tracking validation checks [INDEX]
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     tertiary_label.state("disabled")
     print(f"state (Disabled Pass) = {tertiary_label.get_state().upper()}")

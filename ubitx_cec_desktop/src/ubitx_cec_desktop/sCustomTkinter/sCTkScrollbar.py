@@ -1,129 +1,185 @@
 #!/usr/bin/python3
 """
-sCTkScrollbar
+sCTkScrollbar - Piece 1 of 3
 
-scrollbar
-
-UI source file: sCTkScrollbar.ui
+An advanced, theme-compliant custom scrollbar component.
+Inherits cleanly from ctk.CTkScrollbar to preserve native macOS high-precision
+touchpad event streams and keep global light/dark theme tracking active.
 """
+import os
+import sys
+import platform
 import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
-import sCTkScrollbarui as baseui
 from ThemeableWidget import ThemeableWidget
 
-#
-# Manual user code
-#
+class sCTkScrollbar(ctk.CTkScrollbar, ThemeableWidget):
+    def __init__(self, master=None, **kwargs):
+        # 1. INITIAL RUNTIME SCRUB: Safely shield native frame from state validation checks
+        state_init = kwargs.pop("state", "normal")
+        orientation = kwargs.get("orientation", "vertical").lower()
+        self._is_horizontal = orientation == "horizontal"
 
-class sCTkScrollbar(baseui.sCTkScrollbarUI, ThemeableWidget):
-    def __init__(self, master=None, **kw):
-        # Safely parse orientation out of the incoming properties dictionary pass
-        orientation = kw.get("orientation", "vertical").lower()
-        is_horizontal = orientation == "horizontal"
+        # 2. ENFORCE SYSTEM REGISTRY INTERACTION:
+        ThemeableWidget.__init__(self, kwargs)
 
-        theme_defaults = THEME_DEFAULTS["sCTkScrollbar"]
+        # 3. THE MUTATION SAFEGUARD DEEP COPY SHIELD & SIZING MATRIX:
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = dict(self._widget_disabled_map)
 
-        # Physical Geometry Injector: Lock down dimensions safely right inside the defaults mapping
-        if is_horizontal:
-            theme_defaults["height"] = 14
+        if self._is_horizontal:
+            self.final_kw.setdefault("height", 14)
         else:
-            theme_defaults["width"] = 14
+            self.final_kw.setdefault("width", 14)
 
-        # Store dictionary references safely onto instance memory
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
+        self.final_kw.pop("state", None)
 
-        # Aligned parameters to pass exactly TWO dictionary objects up to the base theme class
-        ThemeableWidget.__init__(self, theme_defaults, kw)
-
-        # Pop out "state" to protect the initial constructor pass
-        initial_state = self.final_kw.pop("state", "normal")
-
-        # Initialize CustomTkinter cleanly with the safe final kwargs array
+        # 4. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
-        # Apply the initial state parameter via our tracker function post-creation safely
-        if initial_state == "disabled":
-            self.state("disabled")
+        # 5. ROUTE TO CONFIG: Safely pass parameters through your validation engine
+        self._state_str = "normal"
+        self.configure(state=state_init)
+    def configure(self, *args, **kwargs):
+        """Processes Pygubu designer queries and manages state changes safely."""
+        if args and len(args) == 1:
+            pname = args if isinstance(args, (list, tuple)) else args
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(self.state()))
 
-    def state(self, mode: str):
-        """
-        Dedicated standalone scrollbar state controller.
-        Bypasses native configuration blocks by unbinding/re-binding raw mouse event listeners.
-        """
-        mode = mode.lower()
+            if pname in ["fg_color", "button_color", "button_hover_color"]:
+                current_state = str(self.state()).lower()
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
-        if mode in ("normal", "enabled", "active"):
-            # FIX: Re-bind CustomTkinter's native framework listener shortcuts to maintain scope!
-            try:
-                self._canvas.bind("<Enter>", self.enter)
-                self._canvas.bind("<Leave>", self.leave)
-                self._canvas.bind("<Button-1>", self.clicked)
-                self._canvas.bind("<B1-Motion>", self.scrolled)
-            except Exception:
-                pass
+            return super().configure(*args, **kwargs)
 
-            # Restore your original dynamic color states from our theme dictionary pass
-            for key in ("fg_color", "button_color", "button_hover_color"):
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                try:
-                    self.configure(**{key: active_val})
-                except Exception:
-                    pass
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
 
-            self._custom_current_state = "normal"
+        if "state" in kwargs:
+            self.state(kwargs.pop("state"))
 
-        elif mode == "disabled":
-            # Completely isolate mouse dragging interactions by stripping canvas listeners!
-            try:
-                self._canvas.unbind("<Enter>")
-                self._canvas.unbind("<Leave>")
-                self._canvas.unbind("<Button-1>")
-                self._canvas.unbind("<B1-Motion>")
-            except Exception:
-                pass
+        if kwargs:
+            super().configure(**kwargs)
 
-            # Extract your customized muted configuration tuple safely
-            target_disabled_color = self._custom_disabled_map.get("button_color", ("#E5E7EB", "#1F2937"))
+    def cget(self, attribute_name: str) -> any:
+        """Safely intercept custom properties like 'state' from throwing errors."""
+        if str(attribute_name).lower() == "state":
+            return self.state()
+        return super().cget(attribute_name)
 
-            updates = {}
-            if "button_color" in self._custom_disabled_map:
-                updates["button_color"] = target_disabled_color
-                # Force hover parameters to match to neutralize glowing animations
-                updates["button_hover_color"] = target_disabled_color
+    def get_state(self) -> str:
+        """Explicit getter synchronized with your standalone test harness script assertions."""
+        return self.state()
 
-            try:
-                self.configure(**updates)
-            except Exception:
-                pass
+    def state(self, mode: str = None) -> str:
+        """Dedicated polymorphic state manager syncing drag mechanics."""
+        if mode is None:
+            return str(getattr(self, "_state_str", "normal")).lower()
 
-            self._custom_current_state = "disabled"
+        target_state = mode.lower()
+        self._state_str = target_state
+
+        if target_state in ["normal", "active", "enabled"]:
+            super().configure(
+                button_color=self._resolve_color(self._local_defaults.get("button_color")),
+                button_hover_color=self._resolve_color(self._local_defaults.get("button_hover_color"))
+            )
+        elif target_state == "disabled":
+            disabled_color = self._resolve_color(self._custom_disabled_map.get("button_color", ("#E5E7EB", "#1F2937")))
+            super().configure(button_color=disabled_color, button_hover_color=disabled_color)
+
+        return self._state_str
 
 
+# =====================================================================
+# 🛠️ NATIVE HIGH-LOAD MULTI-ROW TEST HARNESS (RESET BASELINE)
+# =====================================================================
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
-    root = ctk.CTk()
-    root.geometry("400x250")
-
+    import sCTkThemes
     from sCTkFrame import sCTkFrame
+    from sCTkButtonPrimary import sCTkButtonPrimary
+    from sCTkLabelSecondary import sCTkLabelSecondary
 
-    base = sCTkFrame(root)
-    base.pack(expand=True, fill="both", padx=20, pady=20)
+    root = ctk.CTk()
+    root.geometry("480x450")
+    root.title("sCTkScrollbar Full Multi-Row Deck")
 
-    # Showcase standard vertical tracking handle operations
-    widget = sCTkScrollbar(base, orientation="vertical")
-    widget.pack(side="right", fill="y", padx=5, pady=5)
+    sCTkThemes.apply_sCTkThemes()
 
-    # Verify our custom cascading state system locks down the standalone scrollbar!
-    widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("state =", widget.get_state())  # Output: disabled
+    # 1. Main visual layout shell container panel
+    main_layout = sCTkFrame(root)
+    main_layout.pack(expand=True, fill="both", padx=15, pady=15)
 
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
-    widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("state =", widget.get_state())  # Output: normal
+    # Live Operational Telemetry Status Monitoring Bar
+    status_monitor = sCTkLabelSecondary(
+        main_layout,
+        text="SYSTEM STATUS CORE TRACK LANE: [ACTIVE / NORMAL]"
+    )
+    status_monitor.pack(fill="x", padx=10, pady=(5, 5))
+
+
+    # TOP-DECK INTERACTIVE MANAGEMENT MATRIX
+    def toggle_operational_lock():
+        global _view_locked
+
+        if not _view_locked:
+            target = "disabled"
+            _view_locked = True
+            btn_lock.configure(text="Enable Telemetry View")
+            status_monitor.configure(text="SYSTEM STATUS CORE TRACK LANE: [LOCKED / DISABLED]")
+        else:
+            target = "normal"
+            _view_locked = False
+            btn_lock.configure(text="Disable Telemetry View")
+            status_monitor.configure(text="SYSTEM STATUS CORE TRACK LANE: [ACTIVE / NORMAL]")
+
+        scrollbar.configure(state=target)
+
+        # 🔑 FIX: Removed scroll_view.configure(state=target) to prevent CustomTkinter
+        # validation errors. Passive structural containers do not accept state arguments!
+
+        # Cascade configuration maps safely ONLY to content text label elements
+        for label_widget in scroll_content.winfo_children():
+            if hasattr(label_widget, "state") and "Label" in label_widget.__class__.__name__:
+                label_widget.state(target)
+
+
+    def toggle_appearance_skin():
+        current_mode = ctk.get_appearance_mode()
+        target = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(target)
+
+
+    _view_locked = False
+
+    btn_lock = sCTkButtonPrimary(main_layout, text="Disable Telemetry View", command=toggle_operational_lock)
+    btn_lock.pack(fill="x", padx=10, pady=(2, 5))
+
+    btn_theme = sCTkButtonPrimary(main_layout, text="Toggle Theme Skin (Dark / Light)", command=toggle_appearance_skin)
+    btn_theme.pack(fill="x", padx=10, pady=(0, 10))
+
+    # Initialize the custom external scrollbar on the right channel lane first
+    scrollbar = sCTkScrollbar(main_layout, orientation="vertical")
+    scrollbar.pack(side="right", fill="y", padx=(5, 10), pady=10)
+
+    # Standard layout background container frame card panel (Our clean backplane)
+    content_chassis = sCTkFrame(main_layout)
+    content_chassis.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
+
+    # We use CustomTkinter's native public CTkScrollableFrame container
+    scroll_view = ctk.CTkScrollableFrame(content_chassis, fg_color="transparent")
+    scroll_view.pack(fill="both", expand=True)
+
+    # Unpack the underlying frame window out of CustomTkinter safely
+    scroll_content = scroll_view._parent_frame
+
+    # Populate with theme-aware secondary text label rows using native compliant grid parameters
+    for i in range(25):
+        lbl_item = sCTkLabelSecondary(scroll_content,
+                                      text=f"▶ Transceiver Core Channel Lane Code: {100 + i} [STATUS: OK]")
+        lbl_item.grid(row=i, column=0, sticky="w", padx=10, pady=4)
 
     root.mainloop()
+

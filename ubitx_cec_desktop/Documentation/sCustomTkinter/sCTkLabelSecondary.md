@@ -79,62 +79,46 @@ import sCTkThemes                    # 🔍 Duplicate import kept close for scri
 from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
 from sCTkLabelSecondary import sCTkLabelSecondary
 
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
-    sCTkThemes.apply_sCTkThemes()
+    import sCTkThemes
+    from sCTkFrame import sCTkFrame
+    from sCTkButtonPrimary import sCTkButtonPrimary
 
     root = ctk.CTk()
-    root.geometry("450x280")
+    root.geometry("400x200")
     root.title("sCTkLabelSecondary Testing Deck")
 
-    # Layout a clean, padded workspace container
-    container = sCTkFrame(root, fg_color="transparent")
-    container.pack(expand=True, fill="both", padx=30, pady=30)
+    sCTkThemes.apply_sCTkThemes()
 
-    # Instantiate your custom secondary label targeting your name registry
-    test_label = sCTkLabelSecondary(container, text="VFO STATUS PANEL: ACTIVE")
-    test_label.pack(expand=True, pady=10)
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Live state monitoring feedback label
-    lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
-    lbl_status.pack(side="bottom", pady=5)
+    # Instantiate your custom text component cell
+    widget = sCTkLabelSecondary(base, text="Active Teleceiver Signal Frequency Lane [94.1 MHz]")
+    widget.pack(expand=True, padx=20, pady=20)
 
-    def toggle_label_states():
-        """Cycles the label states between normal active and dimmed disabled profiles."""
-        current_state = test_label.state()
-        target = "disabled" if current_state == "normal" else "normal"
 
-        # Explicitly testing the dual-routing capability via configure()
-        test_label.configure(state=target)
-        
-        if target == "disabled":
-            btn_toggle.configure(text="Activate Label (Set 'normal')")
-            lbl_status.configure(text="Current State Assertion: DISABLED")
-        else:
-            btn_toggle.configure(text="Dim Label (Set 'disabled')")
-            lbl_status.configure(text="Current State Assertion: NORMAL")
+    def toggle_operational_state():
+        current_mode = widget.get_state()
+        target = "disabled" if current_mode == "normal" else "normal"
+        widget.configure(state=target)
+        btn_toggle.configure(text="Lock Label Text" if target == "normal" else "Unlock Label Text")
 
-        # Log state queries to terminal to match your standalone harness requirements
-        print(f"Logged Verification Hook -> test_label.get_state() = {test_label.get_state()}")
 
-    # Standard interaction trigger button to dispatch state transformations
-    btn_toggle = ctk.CTkButton(
-        container,
-        text="Dim Label (Set 'disabled')",
-        command=toggle_label_states,
-        fg_color=("#2471A3", "#3B8ED0"),
-        hover_color=("#112A4B", "#1F6AA5")
-    )
-    btn_toggle.pack(expand=True, pady=15)
+    def toggle_appearance_skin():
+        current_mode = ctk.get_appearance_mode()
+        target = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(target)
 
-    # Run the interactive boot tracking validation checks
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    test_label.state("disabled")
-    print(f"state (Disabled Pass) = {test_label.get_state().upper()}")
 
-    test_label.state("normal")
-    print(f"state (Normal Pass)   = {test_label.get_state().upper()}")
-    print("========================================\n")
+    btn_theme = ctk.CTkButton(base, text="Toggle Skin Mode (Dark / Light)", command=toggle_appearance_skin)
+    btn_theme.pack(side="bottom", pady=(5, 5))
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Label Text", command=toggle_operational_state)
+    btn_toggle.pack(side="bottom", pady=(10, 5))
 
     root.mainloop()
 ```

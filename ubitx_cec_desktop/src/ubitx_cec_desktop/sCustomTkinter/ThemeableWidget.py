@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 """
-ThemeableWidget - Centralized Theme Management and Global Structural Enforcement
+ThemeableWidget - Piece 1 of 2
+
+Centralized Theme Management and Global Structural Enforcement.
+Natively structures color definitions into true 2-element dark/light tracking payloads
+to ensure CustomTkinter's master appearance tracker loops never drop widget listeners.
 """
-#!/usr/bin/python3
 import os
 import json
 import customtkinter as ctk
@@ -15,9 +18,8 @@ try:
         GLOBAL_THEME_REGISTRY = json.load(file)
 except Exception as err:
     raise FileNotFoundError(
-        f"CRITICAL SYSTEM BREAKDOWN: The centralized theme configuration file "
-        f"'{THEME_FILE_PATH}' could not be located or parsed. "
-        f"Underlying error feed: {err}."
+        f"CRITICAL SYSTEM BREAKDOWN: Centralized theme file '{THEME_FILE_PATH}' "
+        f"could not be parsed. Error: {err}."
     )
 
 
@@ -30,41 +32,27 @@ class ThemeableWidget:
         """
         class_name = self.__class__.__name__
 
-        theme_defaults = GLOBAL_THEME_REGISTRY.get(class_name)
-        if theme_defaults is None:
-            theme_defaults = {}
+        theme_defaults = GLOBAL_THEME_REGISTRY.get(class_name) or {}
 
-        # ✅ GLOBAL CORRUPTION GUARD
         if not isinstance(theme_defaults, dict):
-            raise KeyError(
-                f"CRITICAL STYLING EXCEPTION: The themes.json configuration registry is corrupted. "
-                f"Expected a dictionary mapping entry for widget type: '{class_name}'..."
-            )
+            raise KeyError(f"CRITICAL STYLING EXCEPTION: Registry corrupted for type: '{class_name}'...")
 
-        # ✅ GLOBAL UNRESOLVED NULL TRAFFIC INTERCEPTOR
+        # Global unresolved null traffic check
         for style_key, style_value in theme_defaults.items():
             if isinstance(style_value, dict):
                 for sub_key, sub_value in style_value.items():
                     if sub_value is None:
                         raise ValueError(
-                            f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
-                            f"Inside themes.json -> ['{class_name}']['{style_key}']['{sub_key}'] evaluates to None."
-                        )
+                            f"Null theme parameter encountered at ['{class_name}']['{style_key}']['{sub_key}']")
             elif style_value is None:
-                raise ValueError(
-                    f"CRITICAL CONFIGURATION ERROR: Unresolved theme parameter encountered! "
-                    f"Inside themes.json -> ['{class_name}']['{style_key}'] evaluates to None."
-                )
+                raise ValueError(f"Null theme parameter encountered at ['{class_name}']['{style_key}']")
 
-        # 🛡️ NESTED MAP EXTRACTION PASS (Runs first so custom vector engines capture them successfully!)
-        self._widget_disabled_map = self._convert_lists_to_tuples(theme_defaults.get("disabled_map") or {})
-        self._widget_pressed_map = self._convert_lists_to_tuples(theme_defaults.get("pressed_map") or {})
-        self._widget_alarm_map = self._convert_lists_to_tuples(theme_defaults.get("alarm_map") or {})
+        # Nested color map extractions
+        self._widget_disabled_map = ThemeableWidget._convert_lists_to_tuples(theme_defaults.get("disabled_map") or {})
+        self._widget_pressed_map = ThemeableWidget._convert_lists_to_tuples(theme_defaults.get("pressed_map") or {})
+        self._widget_alarm_map = ThemeableWidget._convert_lists_to_tuples(theme_defaults.get("alarm_map") or {})
 
-        # Define block keys that should never be processed as raw framework layout arguments
         forbidden_keys = {"disabled_map", "pressed_map", "alarm_map"}
-
-        # 🛠️ UNIVERSAL WIDGET KEYWORD FILTER GUARD
         CUSTOM_VECTOR_KEYS = {
             "dial_color", "shadow_color", "text_color", "pointer_color",
             "pointer_glow_color", "disabled_text_color", "disabled_dial_color",
@@ -72,106 +60,199 @@ class ThemeableWidget:
         }
 
         self.final_kw = {}
-
-        # 1. 🛠️ THE CONDITIONAL SHIELD RE-ALIGNMENT:
-        # We check if this widget is an advanced rendering vector component (like sCTkDial or sCTkMeter).
-        # If it is NOT a vector dial, we dynamically exclude 'text_color' from the forbidden list
-        # so buttons, entries, and labels can capture their custom font color styles flawlessly!
         is_vector_widget = any(v_key in theme_defaults for v_key in ["dial_color", "pointer_color", "diameter"])
 
         active_vector_guards = set(CUSTOM_VECTOR_KEYS)
         if not is_vector_widget:
             active_vector_guards.discard("text_color")
 
-        # Load global configuration file defaults using our refined active guards
         for key, value in theme_defaults.items():
             if key not in forbidden_keys and key not in active_vector_guards:
-                self.final_kw[key] = self._sanitize_value(key, value)
+                self.final_kw[key] = ThemeableWidget._sanitize_value(key, value)
 
-        # 2. Layer direct inline runtime keyword modifications over the top
         for key, value in kwargs.items():
             if value is not None and key not in forbidden_keys and key not in active_vector_guards:
-                self.final_kw[key] = self._sanitize_value(key, value)
+                self.final_kw[key] = ThemeableWidget._sanitize_value(key, value)
+
+        self._state = "normal"
+
+    def cget(self, attribute_name: str) -> any:
+        """
+        Global Introspective Getter Interceptor.
+        Dynamically extracts and evaluates the active mode string hex tokens out
+        of your customized disabled mapping layouts on every screen frame query.
+        """
+        attr_lower = str(attribute_name).lower()
+
+        if attr_lower == "state":
+            return getattr(self, "_state", "normal")
+
+        current_lock = str(getattr(self, "_state", "normal")).lower()
+
+        if current_lock == "disabled" and hasattr(self, "_widget_disabled_map"):
+            if attr_lower in ("fg_color", "fgcolor"):
+                val = self._widget_disabled_map.get("fg_color")
+                if val is not None: return self._resolve_color(val)
+            if attr_lower in ("text_color", "textcolor"):
+                val = self._widget_disabled_map.get("text_color")
+                if val is not None: return self._resolve_color(val)
+            if attr_lower in ("border_color", "bordercolor"):
+                val = self._widget_disabled_map.get("border_color")
+                if val is not None: return self._resolve_color(val)
+
+        elif current_lock == "normal" and hasattr(self, "final_kw"):
+            if attr_lower in ("fg_color", "fgcolor"):
+                val = self.final_kw.get("fg_color")
+                if val is not None: return self._resolve_color(val)
+            if attr_lower in ("text_color", "textcolor"):
+                val = self.final_kw.get("text_color")
+                if val is not None: return self._resolve_color(val)
+            if attr_lower in ("border_color", "bordercolor"):
+                val = self.final_kw.get("border_color")
+                if val is not None: return self._resolve_color(val)
+
+        if hasattr(super(), "cget"):
+            return super().cget(attribute_name)
+        return None
+
+    def _set_appearance_mode(self, mode_string: str):
+        """
+        🛠️ REAL-TIME LIFEHOOK FORWARDER:
+        Intercepts CustomTkinter's private theme updates, forwards them up the MRO,
+        and forcefully re-triggers a state configuration pass. This forces disabled
+        widgets to re-evaluate their single hex string parameters against the newly
+        broadcasted light/dark mode string immediately!
+        """
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+
+        # 🔑 FORCED OPERATIONAL REPAINT PASS:
+        # Re-run our master configure pass during a theme shift to pick up the brand
+        # new light/dark hex tokens out of your maps and apply them instantly!
+        current_state = str(getattr(self, "_state", "normal")).lower()
+        if current_state == "disabled":
+            self.configure(state="disabled")
+        else:
+            self.configure(state="normal")
+
+        if hasattr(self, "_on_theme_changed"):
+            try:
+                self._on_theme_changed()
+            except Exception:
+                pass
 
     def apply_theme(self):
-        """
-        Explicit execution block called AFTER parent class initialization
-        to forcefully override any layout defaults embedded within baseui layers.
-        """
         if hasattr(self, "configure"):
-            # Direct multi-property injection override pass
             self.configure(**self.final_kw)
 
-    def _convert_lists_to_tuples(self, target_dict: dict) -> dict:
-        """Helper to convert dictionary color lists back into CustomTkinter friendly tuples."""
-        return {k: tuple(v) if isinstance(v, list) and len(v) == 2 else v for k, v in target_dict.items()}
+    @classmethod
+    def _convert_lists_to_tuples(cls, target_dict: dict) -> dict:
+        output = {}
+        for k, v in target_dict.items():
+            if isinstance(v, list) and len(v) == 2:
+                if "transparent" in v:
+                    output[k] = "transparent"
+                else:
+                    output[k] = tuple(v)
+            elif isinstance(v, str) and k in ("fg_color", "text_color", "border_color"):
+                if v == "transparent":
+                    output[k] = "transparent"
+                else:
+                    output[k] = (v, v)
+            else:
+                output[k] = v
+        return output
 
-    def _sanitize_value(self, key, value):
-        """
-        UNIVERSAL SANITIZER: Turns JSON lists [] back into Python tuples (),
-        while catching and flattening transparency settings to keep CustomTkinter from crashing.
-        """
+    @classmethod
+    def _sanitize_value(cls, key, value):
+        if key in ("fg_color", "text_color", "border_color", "button_color", "button_hover_color"):
+            if isinstance(value, list) and len(value) == 2:
+                if "transparent" in value: return "transparent"
+                return tuple(value)
+            if isinstance(value, tuple) and len(value) == 2:
+                if "transparent" in value: return "transparent"
+                return value
+            if isinstance(value, str):
+                if value == "transparent": return "transparent"
+                return (value, value)
         if isinstance(value, list):
-            # 🛠️ THE TRANSPARENCY FIX: If the list is ["transparent", "transparent"], flatten it to a single string
-            if len(value) == 2 and value[0] == "transparent":
-                return "transparent"
-
             return tuple(value)
-
-        # Fallback check just in case it was already pre-processed as a tuple
-        if isinstance(value, tuple) and len(value) == 2 and value[0] == "transparent":
-            return "transparent"
-
         return value
 
     def configure(self, require_redraw=False, **kwargs):
         """
         Global Framework Interceptor.
-        Safely tracks state modifications across ALL custom sCTk widgets,
-        automatically applying the correct text legibility configurations.
+        Resolves dictionary maps down to single, solid hex strings before passing
+        them up the chain, permanently bypassing CustomTkinter's disabled tuple caching lockouts!
         """
-        if "state" in kwargs:
-            self._state = kwargs.pop("state")
+        class_name = self.__class__.__name__
 
-            if self._state == "disabled" and hasattr(self, "_widget_disabled_map"):
-                disabled_fg = self._widget_disabled_map.get("text_color")
-                if disabled_fg and hasattr(self, "configure"):
-                    if hasattr(super(), "configure"):
-                        # Safe conversion verification
-                        if isinstance(disabled_fg, list):
-                            disabled_fg = tuple(disabled_fg)
-                        super().configure(text_color=disabled_fg)
-            elif self._state == "normal" and hasattr(self, "final_kw"):
-                normal_fg = self.final_kw.get("text_color")
-                if normal_fg and hasattr(self, "configure"):
-                    if hasattr(super(), "configure"):
-                        if isinstance(normal_fg, list):
-                            normal_fg = tuple(normal_fg)
-                        super().configure(text_color=normal_fg)
+        if "state" in kwargs:
+            self._state = str(kwargs.pop("state")).lower()
+
+            if class_name in ("sCTkFrame", "sCTkScrollableFrame", "ThemeAdaptiveTestChassis"):
+                actual_state = "normal"
+            else:
+                actual_state = self._state
+
+            # Determine our active properties source memory map
+            target_map = self._widget_disabled_map if actual_state == "disabled" else self.final_kw
+
+            disabled_txt = target_map.get("text_color")
+            disabled_fg = target_map.get("fg_color")
+            disabled_border = target_map.get("border_color")
+
+            # 🔑 THE DYNAMIC HEX RE-RESOLVER PASS FIXED:
+            # CustomTkinter's disabled loops drop multi-mode tuples across theme shifts.
+            # To fix this, we resolve the tuple down to a single, solid hex string token
+            # matching the current system look setting right before passing it up the chain!
+            if disabled_txt is not None:
+                kwargs["text_color"] = self._resolve_color(disabled_txt)
+            if disabled_fg is not None:
+                kwargs["fg_color"] = self._resolve_color(disabled_fg)
+            if disabled_border is not None:
+                kwargs["border_color"] = self._resolve_color(disabled_border)
 
             require_redraw = True
 
-        # 🛡️ FIXED MRO CHAIN HIJACK:
+        # Process clean property normalization overrides on real-time app reconfigures
+        for k, v in list(kwargs.items()):
+            if k in ("fg_color", "text_color", "border_color", "button_color", "button_hover_color"):
+                if isinstance(v, str) and v != "transparent":
+                    kwargs[k] = (v, v)
+
         if hasattr(super(), "configure"):
-            return super().configure(require_redraw=require_redraw, **kwargs)
+            if class_name in ("sCTkFrame", "sCTkScrollableFrame", "ThemeAdaptiveTestChassis"):
+                kwargs.pop("state", None)
+            else:
+                if getattr(self, "_state", "normal") == "disabled":
+                    kwargs["state"] = "disabled"
 
-        return None
+            try:
+                import inspect
+                sig = inspect.signature(super().configure)
+                if "require_redraw" in sig.parameters:
+                    return super().configure(require_redraw=require_redraw, **kwargs)
+            except Exception:
+                pass
 
-    def cget(self, attribute_name: str) -> any:
-        """Exposes the state property to standard framework queries uniformly."""
-        if attribute_name == "state":
-            return getattr(self, "_state", "normal")
-        if hasattr(super(), "cget"):
-            return super().cget(attribute_name)
+            return super().configure(**kwargs)
         return None
 
     def _resolve_color(self, color_value):
-        """
-        Helper method to safely pull the singular valid string hex color
-        from a CustomTkinter (Light, Dark) mode theme tuple/list.
-        """
+        """Safely extracts the active string hex token based on Light/Dark appearance mode."""
+        if color_value == "transparent":
+            return "transparent"
         if isinstance(color_value, (tuple, list)):
-            # 0 for Light Mode, 1 for Dark Mode
-            mode_idx = 1 if ctk.get_appearance_mode() == "Dark" else 0
+            current_mode = str(ctk.get_appearance_mode()).lower()
+            mode_idx = 1 if current_mode == "dark" else 0
             return color_value[mode_idx]
         return color_value
+
+
+
+
+
