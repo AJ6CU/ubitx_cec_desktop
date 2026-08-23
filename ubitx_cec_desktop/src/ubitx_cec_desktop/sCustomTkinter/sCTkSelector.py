@@ -3,7 +3,7 @@
 sCTkSelector - Part 1: Core Initialization & Item Filtering
 
 An advanced theme-compliant, scrollable option tree selector widget.
-Pairs a high-contrast search field lane with a dynamic listing frame card
+Pairs an optional high-contrast search field lane with a dynamic listing frame card
 to manage multi-state checkbox row configurations natively.
 
 Derived from Selector class by Fastattack, 2024.
@@ -20,10 +20,11 @@ from sCTkCheckBox import sCTkCheckBox
 from sCTkEntryPrimary import sCTkEntryPrimary
 from sCTkScrollableFrame import sCTkScrollableFrame
 
+
 class sCTkSelector(sCTkFrame, ThemeableWidget):
-    def __init__(self, master, items: Optional[list[str]] = None, multiple_choices=True, **kwargs):
+    def __init__(self, master, items: Optional[list[str]] = None, multiple_choices=True, searchBox=True, **kwargs):
         """Selector widgets to select options in a list of options.
-        Includes a search bar to find different elements faster.
+        Includes an optional search bar to find different elements faster.
         """
         # 1. SANITIZE RUNTIME ARGUMENTS: Strip unmanaged properties out immediately
         state_init = kwargs.pop("state", "normal")
@@ -47,10 +48,12 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
         self.search_var = ctk.StringVar(self)
         self.search_var.trace_add("write", self._search_modified)
 
-        self.search_bar = sCTkEntryPrimary(self, textvariable=self.search_var)
-        self.checkboxes_frame = sCTkScrollableFrame(self, fg_color=fg_color)
+        # Initialize internal reference variables early to support configuration tracking
+        self.search_bar = None
+        self._search_box_visible = bool(searchBox)
 
-        self.search_bar.pack(anchor="n", fill="x")
+        # Construct the scroll backplane chassis frame first
+        self.checkboxes_frame = sCTkScrollableFrame(self, fg_color=fg_color)
         self.checkboxes_frame.pack(expand=True, fill="both", side="bottom")
 
         # LAYER 1 PROPAGATION GUARD: Target the private native frame inside the scrollable container
@@ -69,6 +72,7 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
         self.configure(
             items=items,
             multiple_choices=multiple_choices,
+            searchBox=self._search_box_visible,
             pack_propagate=pack_prop_init,
             grid_propagate=grid_prop_init,
             state=state_init
@@ -111,10 +115,11 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
     def get_all_items(self) -> list:
         """ Returns all the items in the selector """
         return [checkbox.cget("text") for checkbox in self.checkboxes]
+
     def configure(self, cnf=None, **kwargs):
         """Processes both custom widget collections and standard frame attributes safely."""
         # -----------------------------------------------------------------
-        # ZONE A: POSITION INTERCEPT (Fe feeds values to Pygubu Inspector)
+        # ZONE A: POSITION INTERCEPT (Feeds values to Pygubu Inspector)
         # -----------------------------------------------------------------
         if cnf is not None and not kwargs and isinstance(cnf, str):
             pname = cnf
@@ -122,6 +127,8 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
                 return ("state", "state", "state", "normal", str(self.state()))
             if pname == "multiple_choices":
                 return ("multiple_choices", "multiple_choices", "multiple_choices", "True", str(self.multiple_choices))
+            if pname == "searchBox":
+                return ("searchBox", "searchBox", "searchBox", "True", str(self._search_box_visible))
             if pname == "items":
                 current_items = [cb.cget("text") for cb in self.checkboxes] if hasattr(self, "checkboxes") else []
                 return ("items", "items", "items", "[]", str(current_items))
@@ -129,7 +136,8 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
                 return (pname, pname, pname, "None", str(getattr(self, f"_{pname}_val", None)))
             if pname in ["fg_color", "border_color", "text_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
+                    pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
             return super().configure(cnf)
 
@@ -165,6 +173,33 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
                     self._search_modified()
                 else:
                     raise ValueError("There is two times or more the same item in the given items list")
+
+        if "searchBox" in kwargs:
+            sb_val = kwargs.pop("searchBox")
+            if sb_val == "" or sb_val is None:
+                sb_val = True
+            elif isinstance(sb_val, str):
+                sb_val = str(sb_val).lower() in ['true', '1', 'yes']
+
+            self._search_box_visible = sb_val
+            if self._search_box_visible:
+                if not hasattr(self, "search_bar") or self.search_bar is None:
+                    self.search_bar = sCTkEntryPrimary(self, textvariable=self.search_var)
+
+                # 🛠️ THE REVERSED PACKING STACK MATRIX RESOLUTION:
+                # We strip 'before=' entirely to eliminate TclError exceptions.
+                # We mount the search bar cleanly, then cycle the scroll frame to the bottom index!
+                self.search_bar.pack(anchor="n", fill="x")
+
+                if hasattr(self, "checkboxes_frame") and self.checkboxes_frame is not None:
+                    self.checkboxes_frame.pack_forget()
+                    self.checkboxes_frame.pack(expand=True, fill="both", side="bottom")
+
+                if self._state == "disabled" and self.search_bar is not None:
+                    self.search_bar.configure(state="disabled")
+            else:
+                if hasattr(self, "search_bar") and self.search_bar is not None:
+                    self.search_bar.pack_forget()
 
         if "multiple_choices" in kwargs:
             mult_val = kwargs.pop("multiple_choices")
@@ -253,37 +288,59 @@ class sCTkSelector(sCTkFrame, ThemeableWidget):
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             self._state = "normal"
-            if hasattr(self, "search_bar"): self.search_bar.configure(state="normal")
+            if hasattr(self, "search_bar") and self.search_bar is not None:
+                self.search_bar.configure(state="normal")
+            if hasattr(self, "checkboxes_frame") and self.checkboxes_frame is not None:
+                self.checkboxes_frame.configure(state="normal")
             if hasattr(self, "checkboxes"):
                 for cb in self.checkboxes: cb.configure(state="normal")
         elif mode == "disabled":
             self._state = "disabled"
-            if hasattr(self, "search_bar"): self.search_bar.configure(state="disabled")
+            if hasattr(self, "search_bar") and self.search_bar is not None:
+                self.search_bar.configure(state="disabled")
+            if hasattr(self, "checkboxes_frame") and self.checkboxes_frame is not None:
+                self.checkboxes_frame.configure(state="disabled")
             if hasattr(self, "checkboxes"):
                 for cb in self.checkboxes: cb.configure(state="disabled")
         return self._state
 
-
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes                      # 🔍 Duplicate import kept close for script scannability
+import sCTkThemes
 from sCTkButtonPrimary import sCTkButtonPrimary
-from sCTkSelector import sCTkSelector
 
 if __name__ == "__main__":
     def on_confirm():
         print(f"Active Selection Telemetry Array: {theSelector.get_selections()}")
 
+
     root = ctk.CTk()
-    root.geometry("400x380")
+    root.geometry("200x380")
     root.title("sCTkSelector Validation Bench")
 
     sCTkThemes.apply_sCTkThemes()
 
     items = ["vw", "porsche", "roadster", "tesla", "ferrari", "mclaren"]
 
+    #
+    # Test of adding search field after creation
+    #
+    # theSelector = sCTkSelector(root, items=items, multiple_choices=True, searchBox=False)
+    # theSelector.configure(searchBox=True)
+
+    #
+    #   Test of deletion of search box after creation
+    #
+
+    # theSelector = sCTkSelector(root, items=items, multiple_choices=True, searchBox=True)
+    # theSelector.configure(searchBox=False)
+
+    #
+    #   Normal case
+    #
     theSelector = sCTkSelector(root, items=items, multiple_choices=True)
+
     theSelector.pack(expand=True, fill="both", padx=15, pady=15)
 
     confirm_btn = sCTkButtonPrimary(root, text="Confirm Selections", command=on_confirm)
@@ -291,9 +348,11 @@ if __name__ == "__main__":
 
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     theSelector.state("disabled")
-    print("state (Disabled Pass) =", theSelector.get_state())
-    # theSelector.state("normal")
-    # print("state (Normal Pass)   =", theSelector.get_state())
-    # print("========================================\n")
+    print("state (Disabled Pass) =", theSelector.get_state())  # Output: disabled
+    theSelector.state("normal")
+    print("state (Normal Pass)   =", theSelector.get_state())  # Output: normal
+    print("========================================\n")
+
+    # theSelector.configure(searchBox=True)
 
     root.mainloop()
