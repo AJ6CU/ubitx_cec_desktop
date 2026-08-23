@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 """
-sCTkEntryPrimary
+sCTkEntryPrimary - Piece 1 of 2
 
-subclass of CTkEntry via Pygubu UI Class Isolation (Primary Form Input Field)
+Subclass of CTkEntry via Pygubu UI Class Isolation (Primary Form Input Field)
+Fortified with inner native sub-widget color forcing to fix text dimming bugs [INDEX].
 
 UI source file: sCTkEntryPrimary.ui
 """
 import customtkinter as ctk
 import sCTkEntryPrimaryui as baseui
 from ThemeableWidget import ThemeableWidget
-
 
 class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
@@ -21,8 +21,6 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
         ThemeableWidget.__init__(self, kw)
 
         # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
-        # Isolate your configuration rules inside protected memory structures BEFORE
-        # initializing super, preserving your true active settings from native deletion loops.
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
 
@@ -40,17 +38,16 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
     def configure(self, *args, **kwargs):
         """Handles Pygubu designer queries and manages composite state updates safely."""
         if args and len(args) == 1:
-            pname = args
+            pname = args if isinstance(args, (list, tuple)) else args
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
             if pname in ["fg_color", "border_color", "text_color", "placeholder_text_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
-                    pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
-            return super().configure(pname)
+            return super().configure(*args, **kwargs)
 
         if args and isinstance(args, dict):
             kwargs = args | kwargs
@@ -74,64 +71,104 @@ class sCTkEntryPrimary(baseui.sCTkEntryPrimaryUI, ThemeableWidget):
             return super().configure(**kwargs)
         return None
 
+    def cget(self, attribute_name: str) -> any:
+        """Safely intercept custom properties like 'state' from throwing errors."""
+        if str(attribute_name).lower() == "state":
+            return self.state()
+        return super().cget(attribute_name)
+
     def get_state(self):
         """Explicit getter synchronized with your standalone test harness script assertions."""
         return self.state()
 
     def state(self, mode: str = None):
-        """Dedicated text entry operational availability state controller."""
+        """Dedicated text entry operational availability state controller with sub-widget color forcing."""
         if mode is None:
-            return str(super().cget("state")).lower()
+            return str(getattr(self, "_custom_current_state", "normal")).lower()
 
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            super().configure(state="normal")
             self._custom_current_state = "normal"
+
+            # 1. Restore native active interaction pass
+            if hasattr(self, "_entry") and self._entry:
+                self._entry.configure(state="normal")
+
+            super().configure(state="normal")
             self._update_current_visual_state()
 
         elif mode == "disabled":
-            super().configure(state="disabled")
-
-            # Route custom muted gray configurations safely out of your preserved disabled map safely
-            config_payload = {}
-            for key in ("fg_color", "border_color", "text_color", "placeholder_text_color"):
-                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
-                    config_payload[key] = self._custom_disabled_map[key]
-
-            if config_payload:
-                super().configure(**config_payload)
-
             self._custom_current_state = "disabled"
 
+            # 2. 🔑 THE SUB-WIDGET INTERCEPT SHIELD:
+            # We keep the outer wrapper frame un-disabled so color properties don't freeze,
+            # but drop down to lock keyboard interaction completely via "readonly"!
+            if hasattr(self, "_entry") and self._entry:
+                self._entry.configure(state="readonly")
+
+            # 3. 🔑 FORCE INNER CANVAS TEXT COLOR PROPAGATION:
+            # Extract the raw desaturated hex tokens out of your theme mapping data
+            disabled_txt = self._custom_disabled_map.get("text_color", ("#94A3B8", "#4B5563"))
+            disabled_fg = self._custom_disabled_map.get("fg_color", ("#F9FAFB", "#1A1A1A"))
+            disabled_border = self._custom_disabled_map.get("border_color", ("#E5E7EB", "#222222"))
+
+            resolved_txt = self._resolve_color(disabled_txt)
+            resolved_fg = self._resolve_color(disabled_fg)
+            resolved_border = self._resolve_color(disabled_border)
+
+            # Inject the gray colors up to the CustomTkinter frame wrapper
+            super().configure(
+                fg_color=resolved_fg,
+                border_color=resolved_border,
+                text_color=resolved_txt
+            )
+
+            # Force the underlying C-entry core instance to actively repaint its font string cells
+            # and placeholder lanes, shattering CustomTkinter's private color cache blocks!
+            if hasattr(self, "_entry") and self._entry:
+                self._entry.configure(
+                    fg=resolved_fg,
+                    bg=resolved_fg,
+                    readonlybackground=resolved_fg,
+                    selectbackground=resolved_fg,
+                    insertbackground=resolved_txt,
+                    foreground=resolved_txt
+                )
+
+        return self._custom_current_state
+
     def _update_current_visual_state(self):
-        """
-        MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory.
-        Completely free of hardcoded property name fallback strings, ensuring total extensibility.
-        """
-        # 🛠️ THE BOUNDED DYNAMIC FILTER SHIELD:
-        # We parse your preserved local defaults instead of the mutated final_kw.
-        # If an item evaluates to None, it is skipped entirely so CustomTkinter
-        # defaults step forward natively, blocking any ValueError exceptions.
+        """MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory."""
         config_payload = {}
+
+        # 🛠️ THE CLEANED REPAINT ENGINE:
+        # Fully stripped of the bulky font parsing array conditions. Iterates smoothly over your
+        # standard theme dictionary tokens to provide lean, performance-first execution.
         for key in ("fg_color", "border_color", "text_color", "placeholder_text_color", "border_width", "font"):
             val = self._local_defaults.get(key)
             if val is not None:
-                config_payload[key] = val
+                config_payload[key] = self._resolve_color(val) if "color" in key else val
 
         if config_payload:
             super().configure(**config_payload)
+
+            # Re-sync active text properties to the inner entry field core natively
+            resolved_text_clr = config_payload.get("text_color")
+            resolved_fg_clr = config_payload.get("fg_color")
+            if resolved_text_clr and hasattr(self, "_entry") and self._entry:
+                self._entry.configure(foreground=resolved_text_clr, fg=resolved_text_clr)
+            if resolved_fg_clr and hasattr(self, "_entry") and self._entry:
+                self._entry.configure(bg=resolved_fg_clr)
 
 
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+import sCTkThemes
+from sCTkFrame import sCTkFrame
 from sCTkLabelSecondary import sCTkLabelSecondary
-from sCTkEntryPrimary import sCTkEntryPrimary
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -141,15 +178,15 @@ if __name__ == "__main__":
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Label notice layer to catch floating text changes
     lbl_monitor = sCTkLabelSecondary(base, text="Console monitor active...")
     lbl_monitor.pack(pady=10)
 
-    # Instantiate your custom input widget field
     input_field = sCTkEntryPrimary(base, placeholder_text="Enter Transceiver Frequency...")
     input_field.pack(expand=False, fill="x", padx=40, pady=10)
 
-    # Attach interactive keyboard binding tracker to dump text entries straight to terminal loop
+    # Pre-populate dummy text to instantly verify character dimming mechanics
+    input_field.insert(0, "14.250 MHz")
+
     input_field.bind("<KeyRelease>", lambda e: lbl_monitor.configure(text=f"Live Buffer: {input_field.get()}"))
 
 
@@ -167,11 +204,9 @@ if __name__ == "__main__":
     btn_toggle = ctk.CTkButton(base, text="Lock Input (Set 'disabled')", command=toggle_operational_state)
     btn_toggle.pack(side="bottom", pady=15)
 
-    # Run the interactive boot tracking logs
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     input_field.state("disabled")
     print("state (Disabled Pass) =", input_field.get_state())  # Output: disabled
-
     input_field.state("normal")
     print("state (Normal Pass)   =", input_field.get_state())  # Output: normal
     print("========================================\n")

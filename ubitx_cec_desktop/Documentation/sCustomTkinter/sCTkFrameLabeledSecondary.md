@@ -3,6 +3,7 @@
 ### Table of Contents
 * [API Property Reference](#api-property-reference)
 * [Constructor](#constructor)
+* [Advanced Layout Inspection API](#advanced-layout-inspection-api)
 * [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
 * [Other Notes](#other-notes)
 * [Implementation Example & Test Harness](#implementation-example--test-harness)
@@ -17,10 +18,11 @@ An auxiliary/secondary header-labeled scrollable container frame variant designe
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkScrollableFrame(master)` | `sCTkFrameLabeledSecondary(master)` *(Header Scroll Frame Chassis)* |
-| **File Mapping** | Everything runs under one core native framework layout layer. | Separated safely across `sCTkFrameLabeledSecondary.py` and `ThemeableWidget.py`. |
-| **State Lock** | `self.configure(state="disabled")`<br>*(Crashes Natively)* | `scroll_panel.state("disabled")`<br>**OR**<br>`scroll_panel.configure(state="disabled")`<br><br>**Dual-Routing State Pipeline:** Safely catches state keywords, popping them out to block native validation crashes while running custom theme maps manually [INDEX]. |
-| `winfo_children()` / `get_children()` | Returns private system canvas and structural background frames. | **Chassis Child Interceptor:** Overrides layout trees to extract **ONLY** the true, user-placed child label elements nested inside the container workspace [INDEX]. |
+| **Instantiation** | `ctk.CTkFrame(master)` *(No label natively)* | `sCTkFrameLabelPrimary/Secondary(master)` *(Labeled Frame Enclosure)* |
+| **File Mapping** | Config metrics look up loose un-managed palette snapshot lists. | Separated safely across the class script and `ThemeableWidget.py`. |
+| `winfo_children()` | Returns raw internal widgets, including heading text blocks. | Overridden signature supporting filtered inner form component lookups. |
+| `get_children()` | *Not Supported Natively* | Convenience method returning clean application-level custom components. |
+| `get_all_children()` | *Not Supported Natively* | Convenience method returning direct, unfiltered access to the entire core frame tree. |
 
 ---
 
@@ -39,7 +41,16 @@ metadata_grid = sCTkFrameLabeledSecondary(
 metadata_grid.pack(expand=True, fill="both", padx=25, pady=25)
 ```
 
----
+### Advanced Layout Inspection API
+
+Because labeled frame capsules bundle an integrated text header directly onto their border chassis, native widget sweeps can accidentally overwrite heading text constraints. The class overrides window queries to isolate your layout data cleanly.
+
+#### `winfo_children(include_private: bool = False) -> list`
+
+* **`include_private=False` (Default):** Isolates and hides the internal `CTkLabel` heading widget and frame layout backplane blocks. Loops crawling your dashboard lanes will discover only the actual primary input rows packed inside the box, preventing title typography parameters from getting corrupted during runtime style shifts.
+* **`include_private=True`:** Immediately deactivates the filter mesh to return the raw, unmanipulated Tkinter structural window lineage hierarchy.
+
+
 
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json

@@ -133,24 +133,31 @@ class sCTkFrameLabeledSecondary(ctk.CTkScrollableFrame, ThemeableWidget):
         except Exception:
             pass
 
-    def winfo_children(self):
+    def winfo_children(self, include_private: bool = False) -> list:
         """
-        MASTER CHILD INTERCEPTOR:
-        Bypasses CustomTkinter's private system structural frames to natively
-        extract ONLY your true user-placed child component labels [INDEX].
+        🛠️ UNIFIED STRUCTURE INTERCEPTOR OVERRIDE:
+        By default, filters private internal title labels and heading elements out [INDEX].
+        Pass `include_private=True` to bypass the filter shield and return the raw,
+        unmanipulated Tkinter core layout lineage tree [INDEX]!
         """
-        if hasattr(self, "_parent_frame") and self._parent_frame is not None:
-            if hasattr(self._parent_frame, "_view_frame") and self._parent_frame._view_frame is not None:
-                return self._parent_frame._view_frame.winfo_children()
+        raw_children = super().winfo_children()
+        if include_private:
+            return raw_children
 
-        if hasattr(self, "_view_frame") and self._view_frame is not None:
-            return self._view_frame.winfo_children()
+        filtered_children = []
+        for child in raw_children:
+            # Drop the private framework structural heading text cells and frame backplanes
+            if child.__class__.__name__ not in ["CTkLabel", "Label", "CTkFrame", "Frame"]:
+                filtered_children.append(child)
+        return filtered_children
 
-        return super().winfo_children()
+    def get_children(self) -> list:
+        """Convenience function providing a clean, application-level custom widget layout array [INDEX]."""
+        return self.winfo_children(include_private=False)
 
-    def get_children(self):
-        """Explicit companion getter shortcut pointing natively to winfo_children [INDEX]."""
-        return self.winfo_children()
+    def get_all_children(self) -> list:
+        """Convenience function providing direct, unfiltered access to the entire C-level native tree."""
+        return self.winfo_children(include_private=True)
 
     def get_container(self):
         return self
