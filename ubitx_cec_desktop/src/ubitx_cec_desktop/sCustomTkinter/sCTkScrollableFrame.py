@@ -1,150 +1,89 @@
 #!/usr/bin/python3
 """
-sCTkScrollableFrame - Piece 1 of 2
+sCTkScrollableFrame - Piece 1 of 3
 
 A clean, theme-compliant scrollable viewport container frame.
-Natively intercepts hidden canvas window tags on macOS to support touch gestures [INDEX],
-and overrides winfo_children() to report application widgets cleanly [INDEX].
+Inherits cleanly and directly from ctk.CTkScrollableFrame to preserve 100% of native
+CustomTkinter feature loops, fully unblocking macOS high-precision theme switches [1.1, 1.2].
 """
 import sys
 import platform
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
-import sCTkScrollableFrameui as baseui
 
-class sCTkScrollableFrame(baseui.sCTkScrollableFrameUI, ThemeableWidget):
+class sCTkScrollableFrame(ctk.CTkScrollableFrame, ThemeableWidget):
     properties = frozenset()
 
     def __init__(self, master=None, **kwargs):
-        # 1. INITIAL RUNTIME SCRUB: Safely shield native frame from state checks
-        state_init = kwargs.pop("state", "normal")
-
-        # 2. ENFORCE SYSTEM REGISTRY INTERACTION
+        # 1. Fire our shared theme logic first. It automatically finds "sCTkScrollableFrame" in themes.json
         ThemeableWidget.__init__(self, kwargs)
 
-        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY SHIELD:
+        # 2. Store your custom maps safely onto instance memory channels
         self._local_defaults = dict(self.final_kw)
-        self._custom_disabled_map = dict(self._widget_disabled_map)
 
-        # Remove custom parameters from final_kw to prevent parent collisions
-        self.final_kw.pop("state", None)
-
-        # 4. INITIALIZE NATIVE BASE LAYER
+        # 3. Initialize CustomTkinter natively as a pure programmatic scrollable frame asset
         super().__init__(master, **self.final_kw)
 
-        self._state_str = "normal"
-        self.configure(state=state_init)
+        # Execute a baseline visual update loop right on boot
+        self._update_current_visual_state()
 
+        # 4. REGISTER LIFECYCLE HANDSHAKE HOOK:
+        # Pushes tracking notifications reachably up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
+
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring all internal layers repaint fluidly on theme shifts [1.1, 1.2]."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._update_current_visual_state()
     def configure(self, *args, **kwargs):
-        """Processes Pygubu designer queries and manages state changes safely [INDEX]."""
+        """Handles standard keyword configurations and Pygubu designer inspector queries cleanly [1.1]."""
         if args and len(args) == 1:
             pname = args if isinstance(args, (list, tuple)) else args
-            if pname == "state":
-                return ("state", "state", "state", "normal", str(self.state()))
 
-            if pname in ["fg_color", "label_fg_color", "scrollbar_button_color"]:
-                current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
-                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
+            if pname in ["fg_color", "label_fg_color", "scrollbar_button_color", "border_color"]:
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(self._local_defaults.get(pname)))
 
             return super().configure(*args, **kwargs)
 
         if args and isinstance(args, dict):
             kwargs = args | kwargs
 
-        if "state" in kwargs:
-            self.state(kwargs.pop("state"))
-
         if kwargs:
             super().configure(**kwargs)
+            self._update_current_visual_state()
 
     def cget(self, attribute_name: str) -> any:
-        """Safely intercept custom properties like 'state' from throwing errors [INDEX]."""
-        if str(attribute_name).lower() == "state":
-            return self.state()
+        """Safely intercept configuration property queries cleanly [1.1]."""
         return super().cget(attribute_name)
 
-    def get_state(self) -> str:
-        """Explicit getter synchronized with your other sCTk widgets [INDEX]."""
-        return self.state()
+    def _update_current_visual_state(self):
+        """MASTER VISUAL ROUTER: Restores theme colors directly out of local stylesheet directories [1.1, 1.2]."""
+        config_payload = {}
+        for key in ("fg_color", "border_color", "label_fg_color"):
+            val = self._local_defaults.get(key)
+            if val is not None:
+                config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
 
-    def state(self, mode: str = None) -> str:
-        """Dedicated polymorphic state manager syncing scroll mechanics and viewport surfaces [INDEX]."""
-        if mode is None:
-            return str(getattr(self, "_state_str", "normal")).lower()
+        if config_payload:
+            super().configure(**config_payload)
 
-        target_state = mode.lower()
-        self._state_str = target_state
+        # FORCE-REPAINT HIGH-CONTRAST SCROLLBAR TOKENS:
+        if hasattr(self, "_scrollbar") and self._scrollbar:
+            try:
+                normal_bar = self._resolve_color(self._local_defaults.get("scrollbar_button_color", ["#94A3B8", "#475569"]))
+                normal_hover = self._resolve_color(self._local_defaults.get("scrollbar_button_hover_color", ["#64748B", "#334155"]))
+                self._scrollbar.configure(button_color=normal_bar, button_hover_color=normal_hover)
 
-        if target_state == "disabled":
-            target_fg = self._custom_disabled_map.get("fg_color", self._local_defaults.get("fg_color"))
-            target_border = self._custom_disabled_map.get("border_color", self._local_defaults.get("border_color"))
-
-            super().configure(
-                fg_color=target_fg,
-                border_color=target_border,
-                label_fg_color=self._custom_disabled_map.get("label_fg_color", self._local_defaults.get("label_fg_color"))
-            )
-
-            if hasattr(self, "_scrollbar") and self._scrollbar:
-                self._scrollbar.configure(
-                    button_color=self._custom_disabled_map.get("scrollbar_button_color"),
-                    button_hover_color=self._custom_disabled_map.get("scrollbar_button_color")
-                )
-            self._toggle_scroll_bindings(bind=False)
-
-        elif target_state in ["normal", "active", "enabled"]:
-            super().configure(
-                fg_color=self._local_defaults.get("fg_color"),
-                border_color=self._local_defaults.get("border_color"),
-                label_fg_color=self._local_defaults.get("label_fg_color")
-            )
-
-            if hasattr(self, "_scrollbar") and self._scrollbar:
-                self._scrollbar.configure(
-                    button_color=self._local_defaults.get("scrollbar_button_color"),
-                    button_hover_color=self._local_defaults.get("scrollbar_button_hover_color")
-                )
-            self._toggle_scroll_bindings(bind=True)
-        return self._state_str
-
-    def _decode_mac_touchpad_delta(self, raw_delta):
-        """🛠️ DIAL-VERIFIED PHYSICS MASK: Decodes macOS touchpad bitmasks [INDEX]."""
-        raw = raw_delta & 0xFFFFFFFF
-        delta_x = (raw >> 16) & 0xFFFF
-        if delta_x >= 0x8000: delta_x -= 0x10000
-        delta_y = raw & 0xFFFF
-        if delta_y >= 0x8000: delta_y -= 0x10000
-        return delta_x, delta_y
-
-    def winfo_children(self, include_private: bool = False) -> list:
-        """
-        🛠️ THE STRUCTURE INTERCEPTOR OVERRIDE (WITH SAFETY HATCH):
-        By default, filters CustomTkinter's private background sub-elements out [INDEX].
-        Pass `include_private=True` to immediately return the raw, unmanipulated
-        Tkinter core window lineage tree [INDEX]!
-        """
-        raw_children = super().winfo_children()
-        if include_private:
-            return raw_children
-
-        filtered_children = []
-        for child in raw_children:
-            # Drop private internal wrapper artifacts from appearing in clean application loops
-            if child.__class__.__name__ not in ["CTkScrollbar", "CTkCanvas", "Canvas"]:
-                filtered_children.append(child)
-        return filtered_children
-
-    def get_children(self) -> list:
-        """Convenience function providing a clean, application-level layout array [INDEX]."""
-        return self.winfo_children(include_private=False)
-
-    def get_all_children(self) -> list:
-        """Convenience function providing direct, unfiltered access to the entire C-level native tree."""
-        return self.winfo_children(include_private=True)
-
+                if hasattr(self._scrollbar, "_draw"):
+                    self._scrollbar._draw()
+            except Exception:
+                pass
     def _toggle_scroll_bindings(self, bind=True):
-        """The parent canvas intercept engine routing mouse wheels and touchpad events [INDEX]."""
+        """The parent canvas intercept engine routing mouse wheels and touchpad events [1.1]."""
         SCROLL_EVENTS = ["<MouseWheel>", "<TouchpadScroll>", "<Button-4>", "<Button-5>"]
         layers_to_bind = [self]
         try:
@@ -163,12 +102,10 @@ class sCTkScrollableFrame(baseui.sCTkScrollableFrameUI, ThemeableWidget):
 
         for target_layer in layers_to_bind:
             for event_str in SCROLL_EVENTS:
-                try:
-                    target_layer.unbind(event_str)
-                except Exception:
-                    pass
+                try: target_layer.unbind(event_str)
+                except Exception: pass
 
-                if bind and self._state_str == "normal":
+                if bind:
                     if "Touchpad" in event_str:
                         if sys.platform == "darwin":
                             target_layer.bind("<TouchpadScroll>", self._process_mac_touchpad_scroll, add="+")
@@ -176,7 +113,7 @@ class sCTkScrollableFrame(baseui.sCTkScrollableFrameUI, ThemeableWidget):
                         target_layer.bind(event_str, self._process_scroll_wheel, add="+")
 
     def _process_mac_touchpad_scroll(self, event):
-        """Processes Apple high-precision touch masks on the true master canvas [INDEX]."""
+        """Processes Apple high-precision touch masks on the true master canvas [1.1]."""
         try:
             parent_widget = self.nametowidget(self.winfo_parent())
             if parent_widget and hasattr(parent_widget, "yview_scroll"):
@@ -189,7 +126,7 @@ class sCTkScrollableFrame(baseui.sCTkScrollableFrameUI, ThemeableWidget):
             pass
 
     def _process_scroll_wheel(self, event):
-        """Processes cross-platform standard mouse wheels and physical tuning knobs [INDEX]."""
+        """Processes cross-platform standard mouse wheels and physical tuning knobs [1.1]."""
         try:
             parent_widget = self.nametowidget(self.winfo_parent())
             if parent_widget and hasattr(parent_widget, "yview_scroll"):
@@ -201,29 +138,55 @@ class sCTkScrollableFrame(baseui.sCTkScrollableFrameUI, ThemeableWidget):
                         -MAC_SCROLL_SENSITIVITY if delta > 0 else MAC_SCROLL_SENSITIVITY)
                     parent_widget.yview_scroll(scaled_scroll, "units")
                 elif sys_platform == "Linux":
-                    if event.num == 4:
-                        parent_widget.yview_scroll(-1, "units")
-                    elif event.num == 5:
-                        parent_widget.yview_scroll(1, "units")
+                    if event.num == 4: parent_widget.yview_scroll(-1, "units")
+                    elif event.num == 5: parent_widget.yview_scroll(1, "units")
                 else:
                     parent_widget.yview_scroll(int(-1 * (event.delta / 120)), "units")
         except Exception:
             pass
 
+    def _decode_mac_touchpad_delta(self, raw_delta):
+        """🛠️ DIAL-VERIFIED PHYSICS MASK: Decodes macOS touchpad bitmasks [1.1]."""
+        raw = raw_delta & 0xFFFFFFFF
+        delta_x = (raw >> 16) & 0xFFFF
+        if delta_x >= 0x8000: delta_x -= 0x10000
+        delta_y = raw & 0xFFFF
+        if delta_y >= 0x8000: delta_y -= 0x10000
+        return delta_x, delta_y
+
     def _finalize_split_bindings(self):
-        """Standard layout binding connection pass [INDEX]."""
+        """Standard layout binding connection pass [1.1]."""
         self._toggle_scroll_bindings(bind=True)
 
-# =================================================================
-# STANDALONE TEST HARNESS
-# =================================================================
+    def winfo_children(self, include_private: bool = False) -> list:
+        """Filters background sub-elements out by default to preserve clean loops [1.1]."""
+        raw_children = super().winfo_children()
+        if include_private:
+            return raw_children
+
+        filtered_children = []
+        for child in raw_children:
+            if child.__class__.__name__ not in ["CTkScrollbar", "CTkCanvas", "Canvas"]:
+                filtered_children.append(child)
+        return filtered_children
+
+    def get_children(self) -> list:
+        return self.winfo_children(include_private=False)
+
+    def get_all_children(self) -> list:
+        return self.winfo_children(include_private=True)
+
+
+# =====================================================================
+# 🛠️ TESTING HARNESS MODIFIED: Demonstrates clean external cascade loop pass
+# =====================================================================
 if __name__ == "__main__":
     import sCTkThemes
     from sCTkButtonPrimary import sCTkButtonPrimary
     from sCTkEntryPrimary import sCTkEntryPrimary
 
     root = ctk.CTk()
-    root.title("ScrollableFrame Touch Verification")
+    root.title("ScrollableFrame Pure Baseline Verification")
     root.geometry("450x420")
 
     sCTkThemes.apply_sCTkThemes()
@@ -235,16 +198,16 @@ if __name__ == "__main__":
         mock_entry = sCTkEntryPrimary(test_frame, placeholder_text=f"Active Transceiver Channel {i + 1}")
         mock_entry.pack(padx=10, pady=5, fill="x")
 
+    _is_locked = False
+    def toggle_cascade_lockout():
+        global _is_locked
+        _is_locked = not _is_locked
+        target = "disabled" if _is_locked else "normal"
 
-    def toggle_container_state():
-        current_state = test_frame.get_state()
-        target = "disabled" if current_state == "normal" else "normal"
+        toggle_btn.configure(text="Enforce State: NORMAL" if _is_locked else "Enforce State: DISABLED")
 
-        # 1. Update the parent frame layout state cleanly
-        test_frame.configure(state=target)
-
-        # 2. Pure, clean cascade pass: Tell each child to update its state.
-        # It is the ENTRY'S responsibility to know how to draw its own disabled skin!
+        # 🔑 CLEAN APPLICATION-LEVEL LOOKOUT LOOP CASCADE:
+        # The external control logic explicitly dictates when and how to update nested elements!
         for entry_widget in test_frame.get_children():
             if hasattr(entry_widget, "configure"):
                 try:
@@ -252,10 +215,12 @@ if __name__ == "__main__":
                 except Exception:
                     pass
 
-
-    toggle_btn = sCTkButtonPrimary(root, text="Enforce State: DISABLED", command=toggle_container_state)
+    toggle_btn = sCTkButtonPrimary(root, text="Enforce State: DISABLED", command=toggle_cascade_lockout)
     toggle_btn.pack(side="bottom", pady=15)
+
+    btn_theme = ctk.CTkButton(root, text="Toggle Theme Skin", command=lambda: ctk.set_appearance_mode(
+        "Dark" if ctk.get_appearance_mode() == "Light" else "Light"))
+    btn_theme.pack(side="bottom", pady=5)
 
     test_frame._toggle_scroll_bindings(bind=True)
     root.mainloop()
-

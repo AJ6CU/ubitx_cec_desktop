@@ -10,27 +10,27 @@
 
 ---
 
-A concrete rotary encoder switch variant designed for stepped selector controls (e.g., band configurations, operating modes, or filter sub-selections). It uses an explicit bounding arc configuration and outputs a clean integer mapping parameter tracking list item indices natively [INDEX].
+A concrete rotary encoder switch variant designed for stepped selector controls (e.g., band configurations, operating modes, or filter sub-selections). It uses an explicit bounding arc configuration and outputs a clean integer mapping parameter tracking list item indices natively.
 
 ### API Property Reference
 
 | Property / Feature        | Type / Signature | Description |
 |:--------------------------| :--- | :--- |
 | **Instantiation**         | *Constructor* | `sCTkDialSelector(master)` *(Stepped Arc Selector Dial)* |
-| **File Mapping**          | *Inheritance Tree* | Inherits parent 3D mechanical chassis elements and base state tracking directly from `sCTKDialBase.py` [INDEX]. |
-| `labels`                  | `list [str]` | Ordered array list mapping string tags directly above calculated step lines. Supports raw comma-separated strings inside layout inspectors [INDEX]. |
-| `arc_angle`               | `float` | Angular geometric limit (default 270) restricting the pointer range sweep layout [INDEX]. |
-| `_scroll_cooldown_seconds`| `float` | Throttle limiting touchpad refresh rates to stabilize fast selector rolls [INDEX]. |
-| `get()` / `set(idx)`      | `Methods -> int` | Unified index query mechanisms to get or force selected positions [INDEX]. |
-| `left_click_callback`     | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step decrements to execute accelerated jumping intervals when clicking the left canvas edge [INDEX]. |
-| `right_click_callback`    | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step increments to execute accelerated jumping intervals when clicking the right canvas edge [INDEX]. |
-| **State**                 | `dial.state("disabled")`<br>**OR**<br>`dial.configure(state="disabled")` | **Dual-Routing State Pipeline:** Handles both syntaxes natively [INDEX]. Freezes canvas mouse-wheel scrolling, disables click jump hooks, and shifts visual themes out of `disabled_map` guidelines [INDEX, INDEX]. |
+| **File Mapping**          | *Inheritance Tree* | Streamlined and compiled programmatically inside `sCTkDial.py` and `ThemeableWidget.py`. |
+| `labels`                  | `list [str]` | Ordered array list mapping string tags directly above calculated step lines. Supports raw comma-separated strings inside layout inspectors. |
+| `arc_angle`               | `float` | Angular geometric limit (default 270) restricting the pointer range sweep layout. |
+| `_scroll_cooldown_seconds`| `float` | Throttle limiting touchpad refresh rates to stabilize fast selector rolls. |
+| `get()` / `set(idx)`      | `Methods -> int` | Unified index query mechanisms to get or force selected positions. |
+| `left_click_callback`     | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step decrements to execute accelerated jumping intervals when clicking the left canvas edge. |
+| `right_click_callback`    | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step increments to execute accelerated jumping intervals when clicking the right canvas edge. |
+| **State**                 | `dial.state("disabled")`<br>**OR**<br>`dial.configure(state="disabled")` | **Dual-Routing State Pipeline:** Handles both syntaxes natively. Freezes canvas mouse-wheel scrolling, disables click jump hooks, and shifts visual themes out of `disabled_map` guidelines via a strict sequential re-binding engine. |
 
 ---
 
 ### Constructor
 
-Initialize a custom stepped rotary selector switch instance. Properties like `labels` support raw string array text list configurations natively for absolute Pygubu inspector panel compatibility [INDEX].
+Initialize a custom stepped rotary selector switch instance. Properties like `labels` support raw string array text list configurations natively for absolute Pygubu inspector panel compatibility. Custom attributes from Pygubu builder allocations (like string `translator` tracks) are automatically intercepted and sanitized by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a 5-position operating mode rotary switch selector
@@ -48,7 +48,7 @@ mode_switch = sCTkDialSelector(
 
 ### Callback Signature & Usage
 
-Dispatches the current absolute active list item integer index directly to runtime configuration listeners [INDEX].
+Dispatches the current absolute active list item integer index directly to runtime configuration listeners.
 
 #### Command 
 
@@ -76,35 +76,29 @@ def on_operating_mode_changed(active_index: int):
 ```
 
 ### Other notes
-* **Rolling Selector Loops:** When spinning scroll wheels beyond boundary edges, the index modulo calculates the length of the string array, snapping the cursor back around to index 0 smoothly [INDEX].
-* **Pygubu Comma Separation Track:** Zone B converts designer comma-separated parameter strings into structured, valid list containers cleanly at runtime [INDEX].
-* **Unified State Infrastructure:** Implements no internal state query definitions. `get_state()` gracefully routes up to the `sCTKDialBase` layer natively via the Python method resolution order (MRO), eliminating redundant file methods [INDEX].
-* **Custom Accelerated Steps:** Attaching optional click callbacks allows click events to jump values by wider intervals rather than dropping onto the baseline single-step tracking paths [INDEX].
+* **Bypassing the BaseUI Skeletons:** This component avoids all autogenerated Pygubu intermediate templates, connecting the component straight to CustomTkinter's appearance modes via programmatic multiple inheritance tracks.
+* **Automated Lifecycle Handshake:** Fires `self._finalize_themeable_lifecycle()` at the absolute end of the constructor initialization track to cleanly pass instance registration hooks straight back up to Pygubu parent controllers.
+* **Rolling Selector Loops:** When spinning scroll wheels beyond boundary edges, the index modulo calculates the length of the string array, snapping the cursor back around to index 0 smoothly.
 
 ---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkDialSelector` alongside custom click jump hooks and an active mode switch control panel display tracker [INDEX].
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkDialSelector` alongside custom click jump hooks and an active mode switch control panel display tracker.
 
 ```python
 #!/usr/bin/python3
 """
 sCTkDialSelector - Standalone Interactive Testing Harness
 """
-
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
 import customtkinter as ctk
-import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+import sCTkThemes                
+from sCTkFrame import sCTkFrame  
 from sCTkLabelSecondary import sCTkLabelSecondary
 from sCTkDial import sCTkDialSelector
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -119,13 +113,13 @@ if __name__ == "__main__":
     lbl_mode_tag.pack(pady=15)
 
     def my_custom_left_click():
-        """Accelerated Jump: Moves 2 complete indexing steps left per click tap [INDEX]."""
+        """Accelerated Jump: Moves 2 complete indexing steps left per click tap."""
         if mode_selector.get_state() == "disabled": 
             return
         mode_selector.set(mode_selector.get() - 2)
 
     def my_custom_right_click():
-        """Accelerated Jump: Moves 2 complete indexing steps right per click tap [INDEX]."""
+        """Accelerated Jump: Moves 2 complete indexing steps right per click tap."""
         if mode_selector.get_state() == "disabled": 
             return
         mode_selector.set(mode_selector.get() + 2)

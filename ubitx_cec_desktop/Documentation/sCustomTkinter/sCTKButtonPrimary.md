@@ -1,16 +1,14 @@
-
-
 ## sCTkButtonPrimary
 
-The dominant primary command execution button widget component. It incorporates high-priority telemetry layout overrides (**Alarm Warning Blocks** and **Latching Pressed Anchors**) layered over an independent deep-copy keyword caching shield to isolate colors from native dictionary mutation failures.
+The dominant primary command execution button widget component wrapping `customtkinter.CTkButton`. It incorporates high-priority telemetry layout overrides (**Alarm Warning Blocks** and **Latching Pressed Anchors**) layered over an independent deep-copy keyword caching shield to isolate colors from native dictionary mutation failures while leveraging `ThemeableWidget` mixins to natively handle Pygubu data streams.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonPrimary(master)` *(Dominant Action Button)* |
-| **File Mapping** | Everything runs under one core native layout pipeline. | Separated safely across `sCTkButtonPrimary.py` and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking maps and toggling active canvas event binds. |
+| **File Mapping** | Everything runs under one core native layout pipeline. | Streamlined and compiled programmatically across `sCTkButtonPrimary.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking maps and toggling active canvas event binds natively. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
 | `set_pressed(bool)` | *Not Available Natively* | **Latching Hook:** Locks background contrast styles to match `pressed_map` guidelines. |
 | `set_alarm_state(bool)` | *Not Available Natively* | **Priority Warning Hook:** Overrides interaction states to show a red warning panel. |
@@ -19,7 +17,7 @@ The dominant primary command execution button widget component. It incorporates 
 
 ### Constructor
 
-Initialize a custom primary button instance. Properties map cleanly out of central stylesheet parameters.
+Initialize a custom primary button instance. High-level configuration variables passed from Pygubu (like `translator` and `on_first_object_cb`) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a primary command action execution button
@@ -56,12 +54,12 @@ tx_trigger.state("disabled")      # Unbinds mouse canvas routines and applies mu
         "corner_radius": 6,
         "disabled_map": {
             "fg_color": ["#F3F4F6", "#1F2937"],
-            "hover_color": ["#F3F4F6", "#1F2937"],
+            "border_color": ["#E5E7EB", "#374151"],
             "text_color": ["#94A3B8", "#64748B"]
         },
         "pressed_map": {
             "fg_color": ["#0F2542", "#134267"],
-            "hover_color": ["#0F2542", "#134267"],
+            "border_color": ["#0F2542", "#134267"],
             "text_color": ["#94A3B8", "#CBD5E1"]
         },
         "alarm_map": {
@@ -73,29 +71,27 @@ tx_trigger.state("disabled")      # Unbinds mouse canvas routines and applies mu
 }
 ```
 
+### Other Notes
+* **Bypassing the BaseUI Skeletons:** Completely avoids transitional helper UI files, connecting straight to `ctk.CTkButton` and `ThemeableWidget` multiple inheritance pathways to avoid signature collisions.
+* **Automated Lifecycle Handshake:** Triggers `self._finalize_themeable_lifecycle()` at the absolute bottom of the initialization sequence to pass object creation lifecycle hooks straight back up to Pygubu application factories.
+
+---
+
 ### Implementation Example & Test Harness
 
 Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkButtonPrimary` alongside an interactive theme state track and system warning switch.
 
 ```python
 #!/usr/bin/python3
+"""
+sCTkButtonPrimary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
-import sCTkThemes  # 🛠️ Top-level import for core application execution tracking
-
-class sCTkButtonPrimaryTestBench:
-    pass
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import customtkinter as ctk
-import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+import sCTkThemes  
+from sCTkFrame import sCTkFrame  
 from sCTkButtonPrimary import sCTkButtonPrimary
 
-
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -109,25 +105,17 @@ if __name__ == "__main__":
     command_btn = sCTkButtonPrimary(base, text="Primary Action Control")
     command_btn.pack(expand=False, fill="x", padx=40, pady=10)
 
-
-    # 2. 🛠️ THE ALARM STATE TOGGLE BUTTON TRACK:
-    # Alternates alternative selection sequences to force the primary button
-    # to jump in and out of high-visibility alarm warning states dynamically.
     def toggle_system_alarm():
         new_alarm_mode = not command_btn.is_alarm
         command_btn.set_alarm_state(new_alarm_mode)
-
-        # Sync toggle button text indicator rules
         btn_alarm_switch.configure(
             text="System Alarm (ACTIVE - Click to Clear)" if new_alarm_mode else "System Alarm"
         )
         print(f"Logged Verification Hook -> command_btn.is_alarm = {command_btn.is_alarm}")
 
-
     btn_alarm_switch = ctk.CTkButton(base, text="System Alarm", command=toggle_system_alarm)
     btn_alarm_switch.pack(side="bottom", pady=15)
 
-    # Standard test assertions routine verification sequences
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     command_btn.state("disabled")
     print("state (Disabled Pass) =", command_btn.get_state())
@@ -138,7 +126,5 @@ if __name__ == "__main__":
 
     root.mainloop()
 ```
-
-
 
 [Return to Table of Contents](#contents)

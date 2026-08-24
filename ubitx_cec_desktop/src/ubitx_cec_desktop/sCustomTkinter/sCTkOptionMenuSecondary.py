@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 """
-sCTkOptionMenuSecondary
+sCTkOptionMenuSecondary - Piece 1 of 2
 
-subclass of ctk.CTkFrame acting as a cleanly bordered composite OptionMenu
-(Secondary / Helper Selection Controller Variant)
-
-UI source file: sCTkOptionMenuSecondary.ui
+A custom, theme-compliant secondary option selection menu dropdown widget.
+Inherits cleanly and directly from ctk.CTkFrame acting as a cleanly bordered composite
+OptionMenu to preserve 100% of native CustomTkinter feature loops.
 """
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
@@ -13,28 +12,23 @@ from ThemeableWidget import ThemeableWidget
 class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
 
     def __init__(self, master=None, width=160, height=28, **kw):
-        # 1. PARAMETER POPPING: Capture menu-specific operational attributes early
+        # 1. PARAMETER POPPING: Capture menu-specific operational attributes early [1]
         values = kw.pop("values", [""])
         command = kw.pop("command", None)
         variable = kw.pop("variable", None)
 
-        # 2. Assign standard constructor fallback geometric limits directly
+        # 2. Assign standard constructor fallback geometric limits directly [1]
         kw.setdefault("width", width)
         kw.setdefault("height", height)
 
-        # 3. Fire our shared theme logic to resolve json asset lookups safely
+        # 3. Fire our shared theme logic first to resolve global configurations [1]
         ThemeableWidget.__init__(self, kw)
 
         # 4. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
-        # Clone your configuration parameters into completely independent memory structures
-        # BEFORE initializing super, preserving your true active settings from native deletion loops.
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
 
         # 5. 🛠️ THE INVERSION BLACKLIST FILTER:
-        # Dynamically separate dropdown-specific keywords out of final_kw.
-        # This protects the parent frame layer from seeing illegal arguments
-        # (like 'font') and throwing an immediate CustomTkinter ValueError.
         MENU_KEYS = {
             "font", "dropdown_font", "text_color", "disabled_text_color",
             "dropdown_fg_color", "dropdown_text_color", "dropdown_hover_color",
@@ -45,10 +39,10 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
             if key in self.final_kw:
                 self._menu_theme_kw[key] = self.final_kw.pop(key)
 
-        # 6. Initialize the native ctk.CTkFrame container using pure filtered frame options
+        # 6. Initialize the native ctk.CTkFrame container using pure filtered frame options [1]
         super().__init__(master, **self.final_kw)
 
-        # 7. Initialize inner CustomTkinter option menu using cleanly popped parameters
+        # 7. Initialize inner CustomTkinter option menu using cleanly popped parameters [1]
         self._menu = ctk.CTkOptionMenu(
             self,
             values=values,
@@ -57,12 +51,15 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         )
         self._menu.pack(expand=True, fill="both", padx=2, pady=2)
 
-        # 8. Execute clean layout matching tracks smoothly
-        self._update_current_visual_state()
+        # 8. Execute clean layout matching tracks smoothly [1]
         self._custom_current_state = "normal"
+        self._update_current_visual_state()
+
+        # 🔑 9. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
 
     def configure(self, *args, **kwargs):
-        """Handles Pygubu designer queries and manages composite state updates safely."""
+        """Handles Pygubu designer queries and manages composite state updates safely [1]."""
         if args and len(args) == 1:
             pname = args[0]
             if pname == "state":
@@ -78,79 +75,89 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         if args and isinstance(args, dict):
             kwargs = args | kwargs
 
-        # Dynamic Payload Routing Passes
-        if "values" in kwargs:
-            self._menu.configure(values=kwargs.pop("values"))
-        if "command" in kwargs:
-            self._menu.configure(command=kwargs.pop("command"))
-        if "variable" in kwargs:
-            self._menu.configure(variable=kwargs.pop("variable"))
+        if "values" in kwargs: self._menu.configure(values=kwargs.pop("values"))
+        if "command" in kwargs: self._menu.configure(command=kwargs.pop("command"))
+        if "variable" in kwargs: self._menu.configure(variable=kwargs.pop("variable"))
 
         if "state" in kwargs:
             self.state(kwargs.pop("state"))
 
-        # Clear empty strings passed by backspacing variables inside Pygubu Designer panel slots
         for k, v in list(kwargs.items()):
-            if v == "":
-                kwargs.pop(k)
+            if v == "": kwargs.pop(k)
 
         if kwargs:
             super().configure(**kwargs)
+        return None
+
+    config = configure
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring active or disabled dropdown blocks repaint fluidly on theme shifts [1]."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try: super()._set_appearance_mode(mode_string)
+            except Exception: pass
+        self._update_current_visual_state()
 
     def get_state(self):
-        """Explicit getter to return the current composite state string safely."""
+        """Explicit getter to return the current composite state string safely [1]."""
         return str(self.state()).lower()
 
     def state(self, mode=None):
-        """Dedicated option menu composite state controller."""
-        if mode is not None:
-            mode = mode.lower()
-            if mode in ("normal", "enabled", "active"):
-                self._menu.configure(state="normal")
-                self._update_current_visual_state()
-                self._custom_current_state = "normal"
-            elif mode == "disabled":
-                self._menu.configure(state="disabled")
+        """Dedicated option menu composite state controller [1]."""
+        if mode is None:
+            return str(getattr(self, "_custom_current_state", "normal")).lower()
 
-                # Apply custom map profiles down across composite layout elements safely out of protected memory
-                super().configure(
-                    border_color=self._custom_disabled_map.get("border_color"),
-                    fg_color=self._custom_disabled_map.get("fg_color")
-                )
-                self._menu.configure(
-                    fg_color=self._custom_disabled_map.get("fg_color"),
-                    button_color=self._custom_disabled_map.get("fg_color"),
-                    text_color=self._custom_disabled_map.get("text_color"),
-                    button_hover_color=self._custom_disabled_map.get("fg_color")
-                )
-                self._custom_current_state = "disabled"
+        mode = mode.lower()
+        if mode in ("normal", "enabled", "active"):
+            self._custom_current_state = "normal"
+        elif mode == "disabled":
+            self._custom_current_state = "disabled"
 
-        return self._menu.cget("state")
+        self._update_current_visual_state()
+        return self._custom_current_state
 
     def _update_current_visual_state(self):
-        """MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory."""
-        # 1. Capture base frame configuration definitions out of protected copies safely
+        """
+        MASTER VISUAL ROUTER FIXED:
+        🔑 REPAINT LOGIC DYNAMIC MAP: Loops fluidly across both modes uniformly,
+        ensuring disabled dropdown elements swap background tones on theme switches!
+        """
+        is_disabled = getattr(self, "_custom_current_state", "normal") == "disabled"
+        target_map = self._custom_disabled_map if is_disabled else self._local_defaults
+
+        # 1. Update parent frame container card shapes [1]
         frame_config = {}
         for key in ("border_color", "fg_color", "border_width", "corner_radius"):
-            if self._local_defaults.get(key) is not None:
-                frame_config[key] = self._local_defaults[key]
+            val = target_map.get(key)
+            if val is not None:
+                frame_config[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
         if frame_config:
             super().configure(**frame_config)
 
-        # 2. Compile and map inner menu text and color properties dynamically
-        menu_payload = dict(self._menu_theme_kw)
+        # 2. Update inner menu dropdown shapes cleanly out of the active registry directory maps [1]
+        menu_payload = {}
+        for key in ("font", "dropdown_font", "dropdown_fg_color", "dropdown_text_color", "dropdown_hover_color", "button_hover_color"):
+            val = self._menu_theme_kw.get(key)
+            if val is not None:
+                menu_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
 
-        # Merge transparent ghost layout characteristics cleanly
-        if "fg_color" in frame_config:
-            menu_payload["fg_color"] = frame_config["fg_color"]
-            menu_payload["button_color"] = frame_config["fg_color"]
-            menu_payload.setdefault("button_hover_color", frame_config["fg_color"])
+        if is_disabled:
+            d_fg = self._resolve_color(self._custom_disabled_map.get("fg_color", ["#F3F4F6", "#1F2937"]))
+            d_txt = self._resolve_color(self._custom_disabled_map.get("text_color", ["#94A3B8", "#64748B"]))
+            menu_payload.update({
+                "fg_color": d_fg, "button_color": d_fg, "button_hover_color": d_fg, "text_color": d_txt, "state": "disabled"
+            })
+        else:
+            n_fg = self._resolve_color(self._local_defaults.get("fg_color", "transparent"))
+            n_txt = self._resolve_color(self._local_defaults.get("text_color", ["#475569", "#94A3B8"]))
+            menu_payload.update({
+                "fg_color": n_fg, "button_color": n_fg, "button_hover_color": n_fg, "text_color": n_txt, "state": "normal"
+            })
 
         if menu_payload:
             self._menu.configure(**menu_payload)
 
     def update_list(self, new_values: list, default_index: int = 0):
-        """Safely updates the items list and resets the visible value."""
+        """Safely updates the items list and resets the visible value [1]."""
         if not new_values:
             self._menu.configure(values=[""])
             self._menu.set("")
@@ -162,37 +169,29 @@ class sCTkOptionMenuSecondary(ctk.CTkFrame, ThemeableWidget):
         else:
             self._menu.set(new_values[0])
 
-    def set(self, value: str):
-        self._menu.set(value)
-
-    def get(self) -> str:
-        return self._menu.get()
+    def set(self, value: str): self._menu.set(value)
+    def get(self) -> str: return self._menu.get()
 
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import customtkinter as ctk
-import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
-from sCTkLabelSecondary import sCTkLabelSecondary
-from sCTkOptionMenuSecondary import sCTkOptionMenuSecondary
-
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
+    import sCTkThemes
+    from sCTkFrame import sCTkFrame
+    from sCTkLabelSecondary import sCTkLabelSecondary
+
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
     root.geometry("450x320")
-    root.title("sCTkOptionMenuSecondary Testing Deck")
+    root.title("sCTkOptionMenuSecondary Real-Time Validation Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # 🛠️ TELEMETRY REPORTING LABEL: Monitors and reports the menu adjustment strings natively
     lbl_monitor = sCTkLabelSecondary(base, text="Active Selection: Filter: Narrow")
     lbl_monitor.pack(pady=10)
 
-    # Instantiate your custom drop-down menu helper element chassis
     menu_field = sCTkOptionMenuSecondary(
         base,
         values=["Filter: Narrow", "Filter: Medium", "Filter: Wide"],
@@ -202,26 +201,19 @@ if __name__ == "__main__":
     menu_field.set("Filter: Narrow")
 
     def toggle_operational_state():
-        """Toggles the option menu between normal active and dimmed disabled profiles."""
         current_mode = menu_field.get_state()
         target = "disabled" if current_mode == "normal" else "normal"
-
-        # Explicitly testing the dual-routing capability via configure()
         menu_field.configure(state=target)
         btn_toggle.configure(text="Lock Dropdown (Set 'disabled')" if target == "normal" else "Unlock Dropdown (Set 'normal')")
-        print(f"Logged Verification Hook -> menu_field.get_state() = {menu_field.get_state()}")
+
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
 
     btn_toggle = ctk.CTkButton(base, text="Lock Dropdown (Set 'disabled')", command=toggle_operational_state)
-    btn_toggle.pack(side="bottom", pady=15)
+    btn_toggle.pack(side="bottom", pady=5)
 
-    # Run the interactive boot tracking logs
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    menu_field.state("disabled")
-    print("state (Disabled Pass) =", menu_field.get_state())  # Output: disabled
-
-    menu_field.state("normal")
-    print("state (Normal Pass)   =", menu_field.get_state())  # Output: normal
-    print("========================================\n")
+    btn_theme = ctk.CTkButton(base, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(side="bottom", pady=5)
 
     root.mainloop()
-

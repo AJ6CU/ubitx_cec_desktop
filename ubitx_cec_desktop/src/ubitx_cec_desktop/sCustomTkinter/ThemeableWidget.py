@@ -4,10 +4,11 @@ ThemeableWidget - Piece 1 of 2
 
 Centralized Theme Management and Global Structural Enforcement.
 Natively structures color definitions into true 2-element dark/light tracking payloads
-to ensure CustomTkinter's master appearance tracker loops never drop widget listeners.
+while safely intercepting and sanitizing Pygubu Designer parameters before compilation.
 """
 import os
 import json
+import tkinter as tk
 import customtkinter as ctk
 
 # 🛠️ GLOBAL JSON LOADER (Runs only once when the application boots)
@@ -22,6 +23,22 @@ except Exception as err:
         f"could not be parsed. Error: {err}."
     )
 
+def default_i18n_translator(value):
+    return value
+
+def default_fo_callback(widget):
+    pass
+
+def default_image_loader(master, image_name: str, size=None):
+    if not image_name: return None
+    try:
+        if isinstance(image_name, ctk.CTkImage): return image_name
+        img_size = size if size else (24, 24)
+        from PIL import Image
+        pil_img = Image.open(image_name)
+        return ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=img_size)
+    except Exception:
+        return None
 
 class ThemeableWidget:
     def __init__(self, kwargs: dict):
@@ -30,8 +47,15 @@ class ThemeableWidget:
         extracts styling options, handles nested map sanitization, and filters
         custom layout properties to prevent native framework validation failures.
         """
-        class_name = self.__class__.__name__
+        # 🔑 1. PYGUBU UTILITY PARAMETER INTERCEPTION & EXTRIPATION:
+        # We pop these completely out of the incoming kwargs pass before running any
+        # dictionary loops. This guarantees CustomTkinter never encounters them!
+        self.translator = kwargs.pop("translator", default_i18n_translator)
+        self.on_first_object_cb = kwargs.pop("on_first_object_cb", default_fo_callback)
+        self.image_loader = kwargs.pop("image_loader", default_image_loader)
+        self.data_pool = kwargs.pop("data_pool", None)
 
+        class_name = self.__class__.__name__
         theme_defaults = GLOBAL_THEME_REGISTRY.get(class_name) or {}
 
         if not isinstance(theme_defaults, dict):
@@ -42,8 +66,7 @@ class ThemeableWidget:
             if isinstance(style_value, dict):
                 for sub_key, sub_value in style_value.items():
                     if sub_value is None:
-                        raise ValueError(
-                            f"Null theme parameter encountered at ['{class_name}']['{style_key}']['{sub_key}']")
+                        raise ValueError(f"Null theme parameter encountered at ['{class_name}']['{style_key}']['{sub_key}']")
             elif style_value is None:
                 raise ValueError(f"Null theme parameter encountered at ['{class_name}']['{style_key}']")
 
@@ -74,16 +97,22 @@ class ThemeableWidget:
             if value is not None and key not in forbidden_keys and key not in active_vector_guards:
                 self.final_kw[key] = ThemeableWidget._sanitize_value(key, value)
 
+        # 🔑 2. AUTOMATED STRING TRANSLATION PASSTHROUGH:
+        if "text" in self.final_kw:
+            self.final_kw["text"] = self.translator(self.final_kw["text"])
+        if "placeholder_text" in self.final_kw:
+            self.final_kw["placeholder_text"] = self.translator(self.final_kw["placeholder_text"])
+        if "label_text" in self.final_kw:
+            self.final_kw["label_text"] = self.translator(self.final_kw["label_text"])
+
+        # 🔑 3. MODERN HIGH-DPI ICON VECTOR UPGRADE PASS:
+        if "image" in self.final_kw and isinstance(self.final_kw["image"], str):
+            self.final_kw["image"] = self.image_loader(None, self.final_kw["image"])
+
         self._state = "normal"
-
     def cget(self, attribute_name: str) -> any:
-        """
-        Global Introspective Getter Interceptor.
-        Dynamically extracts and evaluates the active mode string hex tokens out
-        of your customized disabled mapping layouts on every screen frame query.
-        """
+        """Global Introspective Getter Interceptor."""
         attr_lower = str(attribute_name).lower()
-
         if attr_lower == "state":
             return getattr(self, "_state", "normal")
 
@@ -116,22 +145,13 @@ class ThemeableWidget:
         return None
 
     def _set_appearance_mode(self, mode_string: str):
-        """
-        🛠️ REAL-TIME LIFEHOOK FORWARDER:
-        Intercepts CustomTkinter's private theme updates, forwards them up the MRO,
-        and forcefully re-triggers a state configuration pass. This forces disabled
-        widgets to re-evaluate their single hex string parameters against the newly
-        broadcasted light/dark mode string immediately!
-        """
+        """REAL-TIME LIFEHOOK FORWARDER."""
         if hasattr(super(), "_set_appearance_mode"):
             try:
                 super()._set_appearance_mode(mode_string)
             except Exception:
                 pass
 
-        # 🔑 FORCED OPERATIONAL REPAINT PASS:
-        # Re-run our master configure pass during a theme shift to pick up the brand
-        # new light/dark hex tokens out of your maps and apply them instantly!
         current_state = str(getattr(self, "_state", "normal")).lower()
         if current_state == "disabled":
             self.configure(state="disabled")
@@ -148,20 +168,22 @@ class ThemeableWidget:
         if hasattr(self, "configure"):
             self.configure(**self.final_kw)
 
+    def _finalize_themeable_lifecycle(self):
+        """🔑 POST-COMPILATION LIFECYCLE HOOK PASS: Dispatches object triggers cleanly up to Pygubu."""
+        if hasattr(self, "on_first_object_cb") and self.on_first_object_cb:
+            try: self.on_first_object_cb(self)
+            except Exception: pass
+
     @classmethod
     def _convert_lists_to_tuples(cls, target_dict: dict) -> dict:
         output = {}
         for k, v in target_dict.items():
             if isinstance(v, list) and len(v) == 2:
-                if "transparent" in v:
-                    output[k] = "transparent"
-                else:
-                    output[k] = tuple(v)
+                if "transparent" in v: output[k] = "transparent"
+                else: output[k] = tuple(v)
             elif isinstance(v, str) and k in ("fg_color", "text_color", "border_color"):
-                if v == "transparent":
-                    output[k] = "transparent"
-                else:
-                    output[k] = (v, v)
+                if v == "transparent": output[k] = "transparent"
+                else: output[k] = (v, v)
             else:
                 output[k] = v
         return output
@@ -183,42 +205,32 @@ class ThemeableWidget:
         return value
 
     def configure(self, require_redraw=False, **kwargs):
-        """
-        Global Framework Interceptor.
-        Resolves dictionary maps down to single, solid hex strings before passing
-        them up the chain, permanently bypassing CustomTkinter's disabled tuple caching lockouts!
-        """
+        """Global Framework Interceptor."""
         class_name = self.__class__.__name__
+
+        # 🔑 Clean up Pygubu's incoming keywords dynamically if passed on live runtime updates
+        kwargs.pop("translator", None)
+        kwargs.pop("on_first_object_cb", None)
+        kwargs.pop("image_loader", None)
+        kwargs.pop("data_pool", None)
 
         if "state" in kwargs:
             self._state = str(kwargs.pop("state")).lower()
-
             if class_name in ("sCTkFrame", "sCTkScrollableFrame", "ThemeAdaptiveTestChassis"):
                 actual_state = "normal"
             else:
                 actual_state = self._state
 
-            # Determine our active properties source memory map
             target_map = self._widget_disabled_map if actual_state == "disabled" else self.final_kw
-
             disabled_txt = target_map.get("text_color")
             disabled_fg = target_map.get("fg_color")
             disabled_border = target_map.get("border_color")
 
-            # 🔑 THE DYNAMIC HEX RE-RESOLVER PASS FIXED:
-            # CustomTkinter's disabled loops drop multi-mode tuples across theme shifts.
-            # To fix this, we resolve the tuple down to a single, solid hex string token
-            # matching the current system look setting right before passing it up the chain!
-            if disabled_txt is not None:
-                kwargs["text_color"] = self._resolve_color(disabled_txt)
-            if disabled_fg is not None:
-                kwargs["fg_color"] = self._resolve_color(disabled_fg)
-            if disabled_border is not None:
-                kwargs["border_color"] = self._resolve_color(disabled_border)
-
+            if disabled_txt is not None: kwargs["text_color"] = self._resolve_color(disabled_txt)
+            if disabled_fg is not None: kwargs["fg_color"] = self._resolve_color(disabled_fg)
+            if disabled_border is not None: kwargs["border_color"] = self._resolve_color(disabled_border)
             require_redraw = True
 
-        # Process clean property normalization overrides on real-time app reconfigures
         for k, v in list(kwargs.items()):
             if k in ("fg_color", "text_color", "border_color", "button_color", "button_hover_color"):
                 if isinstance(v, str) and v != "transparent":
@@ -243,16 +255,9 @@ class ThemeableWidget:
         return None
 
     def _resolve_color(self, color_value):
-        """Safely extracts the active string hex token based on Light/Dark appearance mode."""
-        if color_value == "transparent":
-            return "transparent"
+        if color_value == "transparent": return "transparent"
         if isinstance(color_value, (tuple, list)):
             current_mode = str(ctk.get_appearance_mode()).lower()
             mode_idx = 1 if current_mode == "dark" else 0
             return color_value[mode_idx]
         return color_value
-
-
-
-
-

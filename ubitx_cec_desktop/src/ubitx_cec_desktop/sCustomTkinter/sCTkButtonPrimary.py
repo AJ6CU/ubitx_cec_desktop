@@ -1,25 +1,22 @@
 #!/usr/bin/python3
 """
-sCTkButtonPrimary
+sCTkButtonPrimary - Piece 1 of 2
 
-subclass of CTkButton via Pygubu UI Class Isolation (Primary Action Controller)
-
-UI source file: sCTkButtonPrimary.ui
+A custom, theme-compliant dominant action button widget.
+Inherits cleanly and directly from ctk.CTkButton to preserve 100% of native
+CustomTkinter features, theme tracking loops, and real-time state updates.
 """
 import customtkinter as ctk
-import sCTkButtonPrimaryui as baseui
-import sCTkThemes
 from ThemeableWidget import ThemeableWidget
 
-
-class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
+class sCTkButtonPrimary(ctk.CTkButton, ThemeableWidget):
     def __init__(self, master=None, **kw):
+        print("\n[Forensic Check] PURE PROGRAMMATIC PRIMARY BUTTON ACTIVE!\n")
+
         # 1. Fire our shared theme logic first. It automatically finds "sCTkButtonPrimary" in the JSON
         ThemeableWidget.__init__(self, kw)
 
         # 2. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
-        # Clone your configuration parameters into completely independent memory structures
-        # BEFORE initializing super, protecting active color values from native corruption traps.
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
         self._custom_pressed_map = dict(self._widget_pressed_map)
@@ -31,15 +28,15 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
         self.is_pressed = False
         self.is_alarm = False
         self._custom_current_state = "normal"
+        self._update_current_visual_state()
+
+        # 🔑 4. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
 
     def configure(self, *args, **kwargs):
         """Handles Pygubu designer queries and manages composite state updates safely."""
-
-        # -----------------------------------------------------------------
-        # ZONE A: POSITION INTERCEPT (Pygubu Inspector compatibility check)
-        # -----------------------------------------------------------------
         if args and len(args) == 1:
-            pname = args
+            pname = args if isinstance(args, (list, tuple)) else args
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
@@ -57,18 +54,13 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
 
             return super().configure(pname)
 
-        # Handle Pygubu positional dictionary merging layers cleanly
         if args and isinstance(args, dict):
             kwargs = args | kwargs
 
-        # -----------------------------------------------------------------
-        # ZONE B: SUB-COMPONENT PAYLOAD ROUTING / STATE INTERCEPTION
-        # -----------------------------------------------------------------
         if "state" in kwargs:
             target_state = kwargs.pop("state")
             self.state(target_state)
 
-        # Clean empty strings passed by backspacing parameters inside Pygubu Designer panel slots
         if kwargs:
             for k, v in list(kwargs.items()):
                 if v == "":
@@ -77,56 +69,54 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
                 return super().configure(**kwargs)
         return None
 
+    config = configure
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring active or disabled cells repaint fluidly on theme shifts."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._update_current_visual_state()
+
     def get_state(self):
         """Explicit getter synchronized with your standalone test harness script assertions."""
         return self.state()
 
     def state(self, mode: str = None):
-        """Dedicated button state controller."""
+        """Dedicated button state controller with input tracking isolation shields."""
         if mode is None:
-            return str(super().cget("state")).lower()
+            return str(getattr(self, "_custom_current_state", "normal")).lower()
 
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
-            try:
-                self._canvas.bind("<Enter>", self._on_enter)
-                self._canvas.bind("<Leave>", self._on_leave)
-                self._canvas.bind("<Button-1>", self._on_clicked)
-                self._canvas.bind("<ButtonRelease>", self._on_clicked)
-            except Exception:
-                pass
-
-            super().configure(state="normal", hover=True)
             self._custom_current_state = "normal"
+            super().configure(state="normal", hover=True)
+            if hasattr(self, "_create_bindings"):
+                try: self._create_bindings()
+                except Exception: pass
             self._update_current_visual_state()
 
         elif mode == "disabled":
+            self._custom_current_state = "disabled"
+            # 🔑 HARD INTERCEPT UNBIND MATRIX: Paralyzes active mouse events without locking layout update passes
             try:
-                self._canvas.unbind("<Enter>")
-                self._canvas.unbind("<Leave>")
-                self._canvas.unbind("<Button-1>")
-                self._canvas.unbind("<ButtonRelease>")
+                if hasattr(self, "_canvas") and self._canvas:
+                    self._canvas.unbind("<Enter>")
+                    self._canvas.unbind("<Leave>")
+                    self._canvas.unbind("<Button-1>")
+                    self._canvas.unbind("<ButtonRelease>")
             except Exception:
                 pass
+            super().configure(state="normal", hover=False)
+            self._update_current_visual_state()
 
-            super().configure(state="disabled", hover=False)
-
-            # Apply custom flat muted gray states safely out of protected local maps
-            config_payload = {}
-            for key in ("fg_color", "hover_color", "border_color", "text_color"):
-                if key in self._custom_disabled_map and self._custom_disabled_map[key] is not None:
-                    config_payload[key] = self._custom_disabled_map[key]
-
-            if config_payload:
-                super().configure(**config_payload)
-
-            self._custom_current_state = "disabled"
+        return self._custom_current_state
 
     def set_pressed(self, pressed: bool):
         """Toggles the visual pressed state of the button cleanly."""
         if getattr(self, "_custom_current_state", "normal") == "disabled" or self.is_alarm:
             return
-
         self.is_pressed = pressed
         self._update_current_visual_state()
 
@@ -134,98 +124,95 @@ class sCTkButtonPrimary(baseui.sCTkButtonPrimaryUI, ThemeableWidget):
         """Forces the button into a high-visibility warning red state cleanly."""
         if getattr(self, "_custom_current_state", "normal") == "disabled":
             return
-
         self.is_alarm = active
         if self.is_alarm:
             self.is_pressed = False
-
         self._update_current_visual_state()
 
     def _update_current_visual_state(self):
         """
-        MASTER VISUAL ROUTER: Dynamically maps configuration layouts out of protected memory.
+        MASTER VISUAL ROUTER FIXED:
+        🔑 REPAINT LOGIC DYNAMIC MAP: Evaluates self._custom_current_state uniformly,
+        ensuring disabled buttons swap dark/light hex vectors seamlessly on preference changes!
         """
-        # A. ALARM STATE TAKES IMMEDIATE PRIORITY
+        if getattr(self, "_custom_current_state", "normal") == "disabled":
+            config_payload = {}
+            for key in ("fg_color", "hover_color", "border_color", "text_color"):
+                val = self._custom_disabled_map.get(key)
+                if val is not None:
+                    config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
+            if config_payload:
+                super().configure(**config_payload)
+            return
+
         if self.is_alarm:
             config_payload = {}
             for key in ("fg_color", "hover_color", "border_color", "text_color"):
                 val = self._custom_alarm_map.get(key)
                 if val is not None:
-                    config_payload[key] = val
+                    config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
             config_payload["hover"] = False
             super().configure(**config_payload)
 
-        # B. PRESSED STATE TAKES SECONDARY PRIORITY
         elif self.is_pressed:
             config_payload = {}
             for key in ("fg_color", "hover_color", "border_color", "text_color"):
                 val = self._custom_pressed_map.get(key)
                 if val is not None:
-                    config_payload[key] = val
+                    config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
             config_payload["hover"] = False
             super().configure(**config_payload)
 
-        # C. FALLBACK TO NORMAL THEME
         else:
             config_payload = {}
-            for key in ("fg_color", "hover_color", "border_color", "text_color", "border_width", "corner_radius",
-                        "font"):
+            for key in ("fg_color", "hover_color", "border_color", "text_color", "border_width", "corner_radius", "font"):
                 val = self._local_defaults.get(key)
                 if val is not None:
-                    config_payload[key] = val
-
+                    config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
             config_payload["hover"] = True
             if config_payload:
                 super().configure(**config_payload)
 
-
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
-from sCTkButtonPrimary import sCTkButtonPrimary
+import sCTkThemes
+from sCTkFrame import sCTkFrame
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
-    root.geometry("450x300")
-    root.title("Primary Command Button Telemetry Bench")
+    root.geometry("450x340")
+    root.title("Primary Command Button Real-Time Validation Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # 1. Instantiate your custom primary action execution button element
     command_btn = sCTkButtonPrimary(base, text="Primary Action Control")
     command_btn.pack(expand=False, fill="x", padx=40, pady=10)
 
-
-    # 2. 🛠️ THE ALARM STATE TOGGLE BUTTON TRACK:
-    # Alternates alternative selection sequences to force the primary button
-    # to jump in and out of high-visibility alarm warning states dynamically.
     def toggle_system_alarm():
         new_alarm_mode = not command_btn.is_alarm
         command_btn.set_alarm_state(new_alarm_mode)
+        btn_alarm_switch.configure(text="System Alarm (ACTIVE - Click to Clear)" if new_alarm_mode else "System Alarm")
 
-        # Sync toggle button text indicator rules
-        btn_alarm_switch.configure(
-            text="System Alarm (ACTIVE - Click to Clear)" if new_alarm_mode else "System Alarm"
-        )
-        print(f"Logged Verification Hook -> command_btn.is_alarm = {command_btn.is_alarm}")
+    def toggle_disabled_lock():
+        target = "disabled" if command_btn.get_state() == "normal" else "normal"
+        command_btn.configure(state=target)
+        btn_lock.configure(text="Lock Button (Set 'disabled')" if target == "normal" else "Unlock Button (Set 'normal')")
 
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
 
     btn_alarm_switch = ctk.CTkButton(base, text="System Alarm", command=toggle_system_alarm)
-    btn_alarm_switch.pack(side="bottom", pady=15)
+    btn_alarm_switch.pack(pady=5)
 
-    # Standard test assertions routine verification sequences
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    command_btn.state("disabled")
-    print("state (Disabled Pass) =", command_btn.get_state())
+    btn_lock = ctk.CTkButton(base, text="Lock Button (Set 'disabled')", command=toggle_disabled_lock)
+    btn_lock.pack(pady=5)
 
-    command_btn.state("normal")
-    print("state (Normal Pass)   =", command_btn.get_state())
-    print("========================================\n")
+    btn_theme = ctk.CTkButton(base, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(side="bottom", pady=10)
 
     root.mainloop()

@@ -1,14 +1,14 @@
 ## sCTkButtonTertiary
 
-An outline-driven custom toggle variant button widget component styled specifically for sub-presets, tuning markers, and option lock keys. It utilizes an independent deep-copy keyword caching shield and a dynamic runtime accent fallback detector to align button typography with CustomTkinter system configurations automatically.
+An outline-driven custom toggle variant button widget component styled specifically for sub-presets, tuning markers, and option lock keys wrapping `customtkinter.CTkButton`. It utilizes an independent deep-copy keyword caching shield and a dynamic runtime accent fallback detector to align button typography with CustomTkinter system configurations automatically.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonTertiary(master)` *(Outline Latching Button)* |
-| **File Mapping** | Everything runs under one core native framework layout layer. | Separated safely across `sCTkButtonTertiary.py` and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| **File Mapping** | Everything runs under one core native framework layout layer. | Streamlined and compiled programmatically across `sCTkButtonTertiary.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`) and canvas unbindings. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
 | `set_pressed(bool)` | *Not Available Natively* | **Latching Hook:** Locks background contrast styles to match `pressed_map` guidelines. |
 
@@ -16,7 +16,7 @@ An outline-driven custom toggle variant button widget component styled specifica
 
 ### Constructor
 
-Initialize a custom tertiary button instance. If no explicit `text_color` parameters are discovered inside `sCTkThemes.json`, the constructor queries CustomTkinter's baseline colors (`["#3B8ED0", "#1F6AA5"]`) automatically to preserve unified system highlights.
+Initialize a custom tertiary button instance. Custom parameters passed from Pygubu (like `translator`, `on_first_object_cb`, `image_loader`, and `data_pool`) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires. If no explicit `text_color` parameters are discovered inside `sCTkThemes.json`, the constructor queries CustomTkinter's baseline colors (`["#3B8ED0", "#1F6AA5"]`) automatically to preserve unified system highlights.
 
 ```python
 # Instantiate a tertiary outline latching button
@@ -55,27 +55,27 @@ preset_select.pack(fill="x", padx=40, pady=10)
 }
 ```
 
+### Other Notes
+* **Bypassing the BaseUI Middleman:** This component inherits cleanly and directly from native CustomTkinter classes and `ThemeableWidget`, bypassing the intermediate template layout files entirely to avoid signature collisions.
+* **Automated Lifecycle Handshake:** At the absolute bottom of the initialization track, the constructor triggers `self._finalize_themeable_lifecycle()` to safely notify top-level Pygubu container managers that the widget is compiled.
+
+---
+
 ### Implementation Example & Test Harness
 
 Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkButtonTertiary` alongside latching switches.
 
 ```python
 #!/usr/bin/python3
+"""
+sCTkButtonTertiary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
-import sCTkThemes  # 🛠️ Top-level import for core application execution tracking
-
-class sCTkButtonTertiaryTestBench:
-    pass
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+import sCTkThemes                
+from sCTkFrame import sCTkFrame  
 from sCTkButtonTertiary import sCTkButtonTertiary
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -115,7 +115,5 @@ if __name__ == "__main__":
 
     root.mainloop()
 ```
-
-
 
 [Return to Table of Contents](#contents)

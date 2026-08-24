@@ -8,7 +8,8 @@ Every custom rotary knob in the ecosystem inherits its vector mechanics directly
 
 * **Centralized Theme Mapping:** Resolves raw colors and styles out of `themes.json` using the specific runtime class name, automatically generating fallback properties if individual blocks are unconfigured.
 * **Cascading Interaction Blocks:** Toggling a component into a disabled state dynamically unbinds mouse clicks, trackpad sweeps, and scrolling event loops simultaneously to protect the live interface deck from input leaks.
-* **Vector Repaint Listeners:** Overrides native appearance mode change listeners to force an explicit vector recalculation. A 20-millisecond rendering queue delay ensures CustomTkinter settles its variables before the canvas redraws its pixels.
+* **Translucency Shield Protection Engine:** Natively catches instances where a parent widget background resolves to `"transparent"`. It programmatically climbs up the window hierarchy tree to resolve the canvas background to a valid parent hex value string, completely eliminating Light Mode Tcl color crashes.
+* **Sequential Re-Binding Engine:** Forces real-time theme repaint sweeps to complete and settle background color layers *before* executing low-level pointer attachments, keeping Apple trackpad touch momentum and standard wheel clicks perfectly responsive upon coming back from a disabled state lockout.
 
 ### API Property Reference (Shared Properties)
 

@@ -1,148 +1,114 @@
-## sCTkFrameLabeledSecondary
+## sCTkLabelSecondary
 
 ### Table of Contents
 * [API Property Reference](#api-property-reference)
 * [Constructor](#constructor)
-* [Advanced Layout Inspection API](#advanced-layout-inspection-api)
 * [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
 * [Other Notes](#other-notes)
 * [Implementation Example & Test Harness](#implementation-example--test-harness)
 
 ---
 
-An auxiliary/secondary header-labeled scrollable container frame variant designed for background telemetry arrays, sub-metadata node grids, and secondary logging layouts. It natively masks internal scrollbar components out of view by hard-matching scrollbar pixels directly to frame layout canvas colors [INDEX].
-
-*For main matrix controls or primary operational card views, see the dominant component documentation page:* [sCTkFrameLabeledPrimary](sCTkFrameLabeledPrimary.md).
+The custom secondary interface typography display label widget component wrapping `customtkinter.CTkLabel`. It features an independent deep-copy keyword caching shield and an advanced multi-state color-dimming interceptor to automatically shift text contrasts when subsystem components enter disabled sequences.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkFrame(master)` *(No label natively)* | `sCTkFrameLabelPrimary/Secondary(master)` *(Labeled Frame Enclosure)* |
-| **File Mapping** | Config metrics look up loose un-managed palette snapshot lists. | Separated safely across the class script and `ThemeableWidget.py`. |
-| `winfo_children()` | Returns raw internal widgets, including heading text blocks. | Overridden signature supporting filtered inner form component lookups. |
-| `get_children()` | *Not Supported Natively* | Convenience method returning clean application-level custom components. |
-| `get_all_children()` | *Not Supported Natively* | Convenience method returning direct, unfiltered access to the entire core frame tree. |
+| **Instantiation** | `ctk.CTkLabel(master)` | `sCTkLabelSecondary(master)` *(Secondary Interface Text Label)* |
+| **File Mapping** | Direct module definitions run without structured configuration. | Streamlined and compiled programmatically across `sCTkLabelSecondary.py` and `ThemeableWidget.py`. |
+| **State Lock** | *Not Supported Natively* | `secondary_label.state("disabled")`<br>**OR**<br>`secondary_label.configure(state="disabled")`<br><br>**Framework-Wide State Support:** Natively supported across all label components (`Primary`, `Secondary`, `Tertiary`). It intercepts state configuration calls and dynamically dims typography layouts based on centralized `disabled_map` metrics. |
+| `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions. |
 
 ---
 
 ### Constructor
 
-Initialize a custom secondary scrollable labeled container card instance. Scrollbars adjust their width metrics directly upon initialization passes [INDEX].
+Initialize a custom secondary text label instance. Configuration metrics map cleanly out of central stylesheet parameters and are automatically sanitized by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
-# Instantiate a secondary header-labeled scrollable matrix panel deck frame
-metadata_grid = sCTkFrameLabeledSecondary(
-    master=root_window,
-    label_text="AUXILIARY METADATA TRACK MATRIX"
+# Instantiate a secondary user interface text display label element
+lane_label = sCTkLabelSecondary(
+    master=control_panel,
+    text="Active Teleceiver Signal Frequency Lane [94.1 MHz]"
 )
 
-# Render the widget container view using standard geometry packer layout trackers
-metadata_grid.pack(expand=True, fill="both", padx=25, pady=25)
+# Render the widget inside your layout panel using geometry managers
+lane_label.pack(expand=True, padx=20, pady=20)
 ```
-
-### Advanced Layout Inspection API
-
-Because labeled frame capsules bundle an integrated text header directly onto their border chassis, native widget sweeps can accidentally overwrite heading text constraints. The class overrides window queries to isolate your layout data cleanly.
-
-#### `winfo_children(include_private: bool = False) -> list`
-
-* **`include_private=False` (Default):** Isolates and hides the internal `CTkLabel` heading widget and frame layout backplane blocks. Loops crawling your dashboard lanes will discover only the actual primary input rows packed inside the box, preventing title typography parameters from getting corrupted during runtime style shifts.
-* **`include_private=True`:** Immediately deactivates the filter mesh to return the raw, unmanipulated Tkinter structural window lineage hierarchy.
-
-
-
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
-    "sCTkFrameLabeledSecondary": {
-        "fg_color": ["#FAFAFA", "#11141A"],
-        "border_color": ["#CBD5E1", "#222933"],
-        "label_text_color": ["#475569", "#94A3B8"],
-        "border_width": 1,
-        "corner_radius": 6,
+    "sCTkLabelSecondary": {
+        "fg_color": "transparent",
+        "text_color": ["#475569", "#94A3B8"],
+        "font": ["Arial", 11, "bold"],
         "disabled_map": {
-            "fg_color": ["#F1F5F9", "#0A0D14"],
-            "border_color": ["#E2E8F0", "#171C24"],
-            "label_text_color": ["#94A3B8", "#4B5563"]
+            "text_color": ["#CBD5E1", "#4B5563"]
         }
     }
 }
 ```
 
-### Other notes
-* **Chassis Child Interceptor Shield:** Calling standard native `.winfo_children()` on a scrollable canvas widget leaks CustomTkinter's private system geometry framework bars (`_parent_frame`, `_view_frame`, etc.) [INDEX]. This override cuts directly to the true internal workspace array, returning clean arrays of only your custom widgets [INDEX].
-* **Scrollbar Suppression Engine:** Instead of executing complex system canvas unbinding loops that destroy track physics, `_hide_internal_scrollbars()` sets scroll widths down to zero and maps track colors to your frame background, matching panel pixels perfectly [INDEX].
+---
+
+### Other Notes
+* **Bypassing the BaseUI Middleman:** This component inherits cleanly and directly from native CustomTkinter classes and `ThemeableWidget`, completely bypassing the intermediate template layout files entirely to avoid argument deadlocks and preserve image scaling properties.
+* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native geometry constructor routines mutate and drop keys directly out of parsed configuration structures during early boot phases, the constructor clones your data configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents layout repaints from failing.
+* **Dynamic Dark Mode Pass-Through:** When returning to an active state, the visual interceptor reads directly from your protected `_local_defaults` cache. If no hardcoded text color is explicitly discovered, it hands control back to CustomTkinter's master `ThemeManager` to natively paint high-contrast system fonts.
+* **Automated Lifecycle Handshake:** Triggers `self._finalize_themeable_lifecycle()` at the absolute bottom of the initialization track to cleanly pass instance registration hooks straight back up to Pygubu parent controllers.
 
 ---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkFrameLabeledSecondary` alongside a cascading state loop tracker [INDEX].
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkLabelSecondary` component element along with an interactive status switch toggle.
 
 ```python
 #!/usr/bin/python3
 """
-sCTkFrameLabeledSecondary - Standalone Interactive Testing Harness
+sCTkLabelSecondary - Standalone Interactive Testing Harness
 """
-import customtkinter as ctk
 
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes                    # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame      # Testing application wrapper container frame
-from sCTkLabelTertiary import sCTkLabelTertiary
-from sCTkFrameLabeledSecondary import sCTkFrameLabeledSecondary
+import customtkinter as ctk
+import sCTkThemes
+from sCTkFrame import sCTkFrame
+from sCTkLabelSecondary import sCTkLabelSecondary
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
-    root.geometry("450x450")
-    root.title("Labeled Scrollable Secondary Frame Test Bench")
+    root.geometry("450x240")
+    root.title("sCTkLabelSecondary Testing Deck")
 
-    # Instantiate your custom scrollable secondary frame container [INDEX]
-    scroll_panel = sCTkFrameLabeledSecondary(root, label_text="AUXILIARY METADATA TRACK MATRIX")
-    scroll_panel.pack(expand=True, fill="both", padx=25, pady=25)
+    base = sCTkFrame(root)
+    base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # Populate scroll panel container slots with helper sCTkLabelTertiary notice items [INDEX]
-    for i in range(1, 21):
-        lbl_item = sCTkLabelTertiary(scroll_panel, text=f"Helper Node Index [ID: {i:02d}] - Calibration Offset [0.00Hz]")
-        lbl_item.pack(pady=4, fill="x", padx=10)
+    # Instantiate your custom text component cell
+    widget = sCTkLabelSecondary(base, text="Active Teleceiver Signal Frequency Lane [94.1 MHz]")
+    widget.pack(expand=True, padx=20, pady=20)
 
-    def toggle_frame_states():
-        """Toggles the container panel and cascades the state down to all child widgets [INDEX]."""
-        current_mode = scroll_panel.get_state()
+    def toggle_operational_state():
+        current_mode = widget.get_state()
         target = "disabled" if current_mode == "normal" else "normal"
+        widget.configure(state=target)
+        btn_toggle.configure(text="Lock Label Text" if target == "normal" else "Unlock Label Text")
 
-        # 1. Update the parent scrollable frame's visual layout variables via dual-routing syntax [INDEX]
-        scroll_panel.configure(state=target)
+    def toggle_appearance_skin():
+        current_mode = ctk.get_appearance_mode()
+        target = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(target)
 
-        # 2. Native standard cascade loop leveraging your winfo_children() override [INDEX]
-        true_children = scroll_panel.winfo_children()
-        print(f"DEBUG ASSERTER: Successfully captured {len(true_children)} label elements...")
+    btn_theme = ctk.CTkButton(base, text="Toggle Skin Mode (Dark / Light)", command=toggle_appearance_skin)
+    btn_theme.pack(side="bottom", pady=(5, 5))
 
-        for child in true_children:
-            if hasattr(child, "configure"):
-                child.configure(state=target)
-
-        btn_toggle.configure(
-            text="Lock Container (Set 'disabled')" if target == "normal" else "Unlock Container (Set 'normal')")
-        print(f"Logged Verification Hook -> scroll_panel.get_state() = {scroll_panel.get_state()}\n")
-
-    btn_toggle = ctk.CTkButton(root, text="Lock Container (Set 'disabled')", command=toggle_frame_states)
-    btn_toggle.pack(pady=15)
-
-    # Run the interactive boot tracking logs [INDEX]
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    scroll_panel.state("disabled")
-    print(f"state (Disabled Pass) = {scroll_panel.get_state().upper()}")
-
-    scroll_panel.state("normal")
-    print(f"state (Normal Pass)   = {scroll_panel.get_state().upper()}")
-    print("========================================\n")
+    btn_toggle = ctk.CTkButton(base, text="Lock Label Text", command=toggle_operational_state)
+    btn_toggle.pack(side="bottom", pady=(10, 5))
 
     root.mainloop()
 ```

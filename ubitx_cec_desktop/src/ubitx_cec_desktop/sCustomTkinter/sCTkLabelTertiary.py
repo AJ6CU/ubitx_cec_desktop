@@ -1,16 +1,13 @@
 #!/usr/bin/python3
 """
-sCTkLabelTertiary - Piece 1 of 2
+sCTkLabelTertiary
 
 A custom, theme-compliant inline description label widget.
 Fortified with direct appearance mode listeners and virtual state hooks to permanently
 conquer text color freezing bugs across light/dark skin transitions.
-
-UI source file: sCTkLabelTertiary.ui
 """
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
-
 
 class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
     _MANAGED_PROPERTIES = frozenset({"state"})
@@ -36,12 +33,14 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
         self._current_state = "normal"
         self.configure(state=state_init)
 
+        # 🔑 6. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
+
     def _set_appearance_mode(self, mode_string: str):
         """
         🛠️ AUTHENTIC LIFEHOOK INTERCEPTOR:
         Intercepts CustomTkinter's private theme updates, forwards them up the MRO,
-        and forcefully re-triggers a state check pass. This forces virtually disabled
-        labels to re-evaluate their font colors against the new skin mode instantly!
+        and forcefully re-triggers a state check pass.
         """
         if hasattr(super(), "_set_appearance_mode"):
             try:
@@ -61,8 +60,7 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
 
             if pname in ["fg_color", "text_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
-                    pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(*args, **kwargs)
@@ -105,8 +103,6 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
     def _update_current_visual_state(self):
         """🔑 MASTER REPAINT CORE ENGINE: Automatically extracts and resolves properties out of protected memory."""
         config_payload = {}
-
-        # Pull properties depending on whether the label is virtually disabled or active
         target_map = self._custom_disabled_map if self._current_state == "disabled" else self._local_defaults
 
         for key in ("fg_color", "text_color", "font"):
@@ -114,7 +110,6 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
             if val is not None:
                 config_payload[key] = self._resolve_color(val) if "color" in key else val
 
-        # Fallback safeguard if themes.json lacks explicit active/disabled text color arrays
         if "text_color" not in config_payload:
             if self._current_state == "disabled":
                 config_payload["text_color"] = "gray50"
@@ -124,28 +119,26 @@ class sCTkLabelTertiary(ctk.CTkLabel, ThemeableWidget):
 
         if config_payload:
             super().configure(**config_payload)
+
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes
-from sCTkFrame import sCTkFrame
-
 if __name__ == "__main__":
+    import sCTkThemes
+    from sCTkFrame import sCTkFrame
+
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
     root.geometry("450x280")
     root.title("sCTkLabelTertiary Testing Deck")
 
-    # Layout a clean, padded workspace container frame panel
     container = sCTkFrame(root, fg_color="transparent")
     container.pack(expand=True, fill="both", padx=30, pady=30)
 
-    # Instantiate your custom tertiary description label widget
     tertiary_label = sCTkLabelTertiary(container, text="Inline notice: tuning resolution bounded to 100Hz.")
     tertiary_label.pack(expand=True, pady=10)
 
-    # Live state monitoring feedback label
     lbl_status = ctk.CTkLabel(container, text="Current State Assertion: NORMAL", font=("Arial", 10, "italic"))
     lbl_status.pack(side="bottom", pady=5)
 
@@ -165,7 +158,6 @@ if __name__ == "__main__":
 
         print(f"Logged Verification Hook -> tertiary_label.get_state() = {tertiary_label.get_state()}")
 
-    # Standard interaction trigger button to dispatch state transformations
     btn_toggle = ctk.CTkButton(
         container,
         text="Dim Description (Set 'disabled')",

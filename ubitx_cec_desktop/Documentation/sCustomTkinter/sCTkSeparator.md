@@ -1,16 +1,32 @@
-
-
-
 ## sCTkSeparator
 
-(Derived from Selector class by Fastattack, 2024. This widget was made available to the community via the MIT License.  Source Repository: [MoreCustomTkinterWidgets](https://github.com/fastattackv/MoreCustomTkinterWidgets) )
+(Derived from Selector class by Fastattack, 2024. This widget was made available to the community via the MIT License. Source Repository: [MoreCustomTkinterWidgets](https://github.com) )
 
+### Table of Contents
+* [System Architecture Overview](#system-architecture-overview)
+* [API Property Reference](#api-property-reference)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Layout Manager Integration](#layout-manager-integration)
+* [Pygubu Designer Properties Guide](#pygubu-designer-properties-guide)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
+---
 
 The *sCTkSeparator* is an advanced, themeable divider widget for CustomTkinter. It provides dynamic scaling via layout managers, vector-drawn customizable corner radiuses, dashed/dotted line styles, and automated line-splitting centered section text headers with bounding capsule brackets.
 
 --- 
 ### Widget Preview
 ![sCTkSeparator.png](images/sCTkSeparator.png)
+
+### System Architecture Overview
+
+The component functions as a structural vector drawing lane subclassed from `ctk.CTkBaseClass`. Rather than forcing a static line width or texture file, it wraps a native Tkinter canvas object to paint partitions programmatically.
+
+The visual update matrix implements two important enhancements:
+1. **Dynamic Layout Dimension Adapters**: To prevent text characters from clipping, the instantiation block monitors initialization properties. If text section banners are provided, the widget automatically stretches its bounding frame vertical or horizontal thickness out to `28px` to give text canvas regions clear physical space while leaving the split line itself perfectly thin.
+2. **Skin Preference Broadcaster Interceptor**: Features an explicit `_set_appearance_mode` connection loop. This forces text header strings, dashed patterns, and line fills to recalculate active palettes instantly during global theme swaps without any pixel lag.
+
+---
 
 ### API Property Reference
 
@@ -28,35 +44,39 @@ The *sCTkSeparator* is an advanced, themeable divider widget for CustomTkinter. 
 
 ---
 
-### Centralized Stylesheet Setup (`sCTkThemes.py`)
-As of the writing of this document, the current Themes for the sCTkSeparator is included below. However, the governing theme is always stored in sCTkThemes.py in your installation directory.
+### Centralized Stylesheet Setup (`sCTkThemes.json`)
 
-```python
+The component queries your centralized theme sheet profile matrix using standard `self._resolve_color()` lookup calls, ensuring that indicator dots and canvas borders translate colors smoothly across appearance updates.
+
+To satisfy the framework configuration guidelines, ensure your theme matrix includes this structured asset block:
+
+```json
+{
     "sCTkSeparator": {
-            # Format: (Light Mode Hex, Dark Mode Hex)
-            # Softer mid-tones changed to robust crisp outlines for sharp visual separation
-            "fg_color": ("#808080", "#8A9296"),
-            "bg_color": "transparent",
-            "corner_radius": 6,
-            "font": ("Arial", 11, "bold"),
-            "text_color": ("#1A1A1A", "#FFFFFF")  # Crisp high-contrast header text labels
-        },
+        "fg_color": ["#808080", "#8A9296"],
+        "bg_color": "transparent",
+        "corner_radius": 6,
+        "font": ["Arial", 11, "bold"],
+        "text_color": ["#1A1A1A", "#FFFFFF"],
+        "disabled_map": {
+            "fg_color": ["#CBD5E1", "#475569"],
+            "text_color": ["#94A3B8", "gray50"]
+        }
+    }
+}
 ```
-
----
-
 ### Layout Manager Integration
 
 Mixing layout manager tracking loops within the same immediate frame layer is completely blocked. When handling automated expansion parameters across scaling monitor resolutions, enforce the following geometry behaviors:
 
 #### Grid Configurations (`.grid()`)
 * **Horizontal Mode Line**: Must use **`sticky="ew"`** to allow the vector path to grow horizontally.
-* **Vertical Mode Line**: Must use **`sticky="ns"`** to stretch the line across rows.
+* **Vertical Mode Line**: Must use **`sticky="nswe"`** to stretch across columns and rows evenly without crushing string lines.
 * **Parent Frame Setup**: The container frame track columns/rows **must** have their weights configured to let the engine allocate expanding window real estate:
   ```python
   # Column 0 and Column 2 hold widgets and expand; Column 1 isolates the separator line track
   grid_Frame.grid_columnconfigure(0, weight=1)
-  grid_Frame.grid_columnconfigure(1, weight=0)
+  grid_Frame.grid_columnconfigure(1, weight=1)
   grid_Frame.grid_columnconfigure(2, weight=1)
   ```
 
@@ -76,47 +96,41 @@ When configuring layouts visually within the Pygubu Designer editing workspace p
    * Type `5,5` for standard clean dash blocks.
    * Type `2,6` for clean dotted layout maps.
    * Leave blank or type `None` to restore solid rounded vector shapes.
-4. **Dimensions with Headers**: When utilizing `text` headers on a `vertical` orientation alignment track line, remember to increase the designer **`width`** attribute setting from `4` to a larger size (e.g., `20` or `24`) to give the vertical top and bottom capsule framing lines physical canvas clearance to draw.
+
+---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed the `sCTkFileExplorer` inside a root window workspace panel layout using the strict two-argument callback structure.
+Below is a complete, self-contained test execution script demonstrating how to layout horizontal, vertical, and dashed separators inside an interactive telemetry deck panel while exercising lock states and skin sweeps.
 
 ```python
 #!/usr/bin/python3
+"""
+sCTkSeparator - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
-from ThemeableWidget import ThemeableWidget
-
-import customtkinter as ctk
+import sCTkThemes
 from sCTkSeparator import sCTkSeparator
-# ==========================================
-#   MAIN TESTING RUNNER CODE BLOCK
-# ==========================================
-if __name__ == "__main__":
-    if "sCTkSeparator" not in THEME_DEFAULTS:
-        THEME_DEFAULTS["sCTkSeparator"] = {
-            "fg_color": ("#BABABA", "#565B5E"),
-            "bg_color": "transparent",
-            "corner_radius": 6
-        }
 
+if __name__ == "__main__":
+    sCTkThemes.apply_sCTkThemes()
     root = ctk.CTk()
-    root.title("sCTkSeparator Feature Test Environment")
+    root.title("sCTkSeparator Production Test Environment")
     root.geometry("600x450")
 
     grid_Frame = ctk.CTkFrame(root)
     grid_Frame.pack(side="top", fill="both", expand=True, padx=20, pady=15)
-
     grid_Frame.grid_columnconfigure(0, weight=1)
-    grid_Frame.grid_columnconfigure(1, weight=0)
+    grid_Frame.grid_columnconfigure(1, weight=1)
     grid_Frame.grid_columnconfigure(2, weight=1)
     grid_Frame.grid_rowconfigure(0, weight=1)
 
     lbl_left = ctk.CTkLabel(grid_Frame, text="Left Sub-Panel Group Data")
     lbl_left.grid(row=0, column=0, sticky="nswe")
 
+    # Bounded safely inside expanding column constraints to allow text physical clearance
     sep_vertical_text = sCTkSeparator(grid_Frame, orientation="vertical", text="CORE API", width=4)
-    sep_vertical_text.grid(row=0, column=1, sticky="ns", padx=10, pady=10)
+    sep_vertical_text.grid(row=0, column=1, sticky="nswe", padx=10, pady=10)
 
     lbl_right = ctk.CTkLabel(grid_Frame, text="Right Sub-Panel Group Data")
     lbl_right.grid(row=0, column=2, sticky="nswe")
@@ -124,22 +138,23 @@ if __name__ == "__main__":
     sep_horizontal_text = sCTkSeparator(root, orientation="horizontal", text="SYSTEM DASH SEPARATOR SECTION", width=4)
     sep_horizontal_text.pack(side="top", fill="x", padx=20, pady=10)
 
-    pack_frame = ctk.CTkFrame(root)
-    pack_frame.pack(side="bottom", fill="both", expand=True, padx=20, pady=(5, 20))
+    def toggle_separator_lock():
+        """Toggles operational state tracking paths back and forth."""
+        target = "disabled" if sep_vertical_text.get_state() == "normal" else "normal"
+        sep_vertical_text.configure(state=target)
+        sep_horizontal_text.configure(state=target)
+        btn_lock.configure(text="Lock Separators" if target == "normal" else "Unlock Separators")
 
-    panel_a = ctk.CTkLabel(pack_frame, text="System Input Options")
-    panel_a.pack(side="left", fill="both", expand=True)
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
 
-    sep_dashed = sCTkSeparator(pack_frame, orientation="vertical", width=4, dash=(4, 4))
-    sep_dashed.pack(side="left", fill="y", padx=10, pady=15)
-
-    panel_b = ctk.CTkLabel(pack_frame, text="System Output Channels")
-    panel_b.pack(side="right", fill="both", expand=True)
+    btn_lock = ctk.CTkButton(root, text="Lock Separators", command=toggle_separator_lock)
+    btn_lock.pack(pady=5)
+    btn_theme = ctk.CTkButton(root, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(pady=(5, 20))
 
     root.mainloop()
 ```
 
-
 [Return to Table of Contents](#contents)
-
-

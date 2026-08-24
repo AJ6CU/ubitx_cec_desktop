@@ -60,9 +60,6 @@ askyesno(title, message, yes_text="Yes", no_text="No", width=400, master=root)
 askwarningyesno(title, message, yes_text="Yes", no_text="No", width=400, master=root)
 askerroryesno(title, message, yes_text="Yes", no_text="No", width=400, master=root)
 ```
-
----
-
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 
 The component relies heavily on your centralized style dictionary system. To prevent the mixin parser tracking structures from raising runtime validation faults, verify your shared stylesheet contains this asset entry:
@@ -89,7 +86,7 @@ Observe these implementation traits:
 
 [Return to Table of Contents](#contents)
 
-
+---
 
 ### Implementation Example & Test Harness
 
@@ -105,15 +102,11 @@ import customtkinter as ctk
 # =====================================================================
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
-import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
+import sCTkThemes                
 from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkMessage import showinfo, showwarning, showerror, askyesno, askwarningyesno, askerroryesno
 
-# =====================================================================
-#   MAIN RUNNER TESTING ENVIRONMENT
-# =====================================================================
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()

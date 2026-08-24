@@ -1,39 +1,35 @@
 #!/usr/bin/python3
 """
-sCTkEntrySecondary - Piece 1 of 2
+sCTkFrameLabeledSecondary - Piece 1 of 2
 
-Subclass of CTkEntry via Pygubu UI Class Isolation (Secondary Form Input Field)
-Fortified with inner native sub-widget color forcing to fix text dimming bugs.
-
-UI source file: sCTkEntrySecondary.ui
+A custom, theme-compliant secondary header-labeled scrollable container panel.
+Inherits cleanly and directly from ctk.CTkScrollableFrame to preserve native features
+while hiding internal scrollbars smoothly across all mode changes.
 """
 import customtkinter as ctk
-import sCTkEntrySecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
-class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
-    def __init__(self, master=None, **kw):
-        # 1. PARAMETER POPPING: Capture text field attributes early
-        textvariable = kw.pop("textvariable", None)
-        placeholder_text = kw.pop("placeholder_text", None)
+class sCTkFrameLabeledSecondary(ctk.CTkScrollableFrame, ThemeableWidget):
+    properties = frozenset()
 
-        # 2. Fire our shared theme logic first to resolve global configurations natively
-        ThemeableWidget.__init__(self, kw)
+    def __init__(self, master=None, **kwargs):
+        # 1. Fire our shared theme logic first. It automatically finds the class section inside themes.json
+        ThemeableWidget.__init__(self, kwargs)
 
-        # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
+        # 2. 🛠️ THE MUTATION SAFEGUARD DEEP COPY:
         self._local_defaults = dict(self.final_kw)
         self._custom_disabled_map = dict(self._widget_disabled_map)
 
-        # 4. Initialize CustomTkinter natively with the clean final kwargs array safely
+        # 3. Initialize CustomTkinter ScrollableFrame natively with final kwargs safely
         super().__init__(master, **self.final_kw)
 
-        # 5. Build your inner custom properties using your popped parameters safely
-        if textvariable:
-            super().configure(textvariable=textvariable)
-        if placeholder_text:
-            super().configure(placeholder_text=placeholder_text)
-
         self._custom_current_state = "normal"
+
+        # 4. Force initial scrollbar hiding execution pass
+        self._hide_internal_scrollbars()
+
+        # 🔑 5. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
 
     def configure(self, *args, **kwargs):
         """Handles Pygubu designer queries and manages composite state updates safely."""
@@ -42,166 +38,161 @@ class sCTkEntrySecondary(baseui.sCTkEntrySecondaryUI, ThemeableWidget):
             if pname == "state":
                 return ("state", "state", "state", "normal", str(self.state()))
 
-            if pname in ["fg_color", "border_color", "text_color", "placeholder_text_color"]:
+            if pname in ["fg_color", "border_color", "label_text_color"]:
                 current_state = str(self.state()).lower()
                 val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
-            return super().configure(*args, **kwargs)
+            return super().configure(pname)
 
         if args and isinstance(args, dict):
             kwargs = args | kwargs
-
-        # Payload Routing
-        if "textvariable" in kwargs:
-            super().configure(textvariable=kwargs.pop("textvariable"))
-        if "placeholder_text" in kwargs:
-            super().configure(placeholder_text=kwargs.pop("placeholder_text"))
 
         if "state" in kwargs:
             target_state = kwargs.pop("state")
             self.state(target_state)
 
-        # Clean empty strings passed by backspacing parameters in Pygubu to prevent exceptions
         for k, v in list(kwargs.items()):
             if v == "":
                 kwargs.pop(k)
 
         if kwargs:
-            return super().configure(**kwargs)
+            result = super().configure(**kwargs)
+            self._hide_internal_scrollbars()
+            return result
         return None
 
-    def cget(self, attribute_name: str) -> any:
-        """Safely intercept custom properties like 'state' from throwing errors."""
-        if str(attribute_name).lower() == "state":
-            return self.state()
-        return super().cget(attribute_name)
+    config = configure
+
+    def winfo_children(self, include_private: bool = False) -> list:
+        """🛠️ UNIFIED STRUCTURE INTERCEPTOR OVERRIDE: Filters private title bars out."""
+        raw_children = super().winfo_children()
+        if include_private:
+            return raw_children
+
+        filtered_children = []
+        for child in raw_children:
+            if child.__class__.__name__ not in ["CTkLabel", "Label", "CTkFrame", "Frame"]:
+                filtered_children.append(child)
+        return filtered_children
+    def get_children(self) -> list:
+        """Convenience function providing a clean, application-level custom widget layout array."""
+        return self.winfo_children(include_private=False)
+
+    def get_all_children(self) -> list:
+        """Convenience function providing direct, unfiltered access to the entire tree."""
+        return self.winfo_children(include_private=True)
+
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring the labeled frame and internal scrollbars follow theme changes."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._update_current_visual_state()
 
     def get_state(self):
         """Explicit getter synchronized with your standalone test harness script assertions."""
         return self.state()
 
     def state(self, mode: str = None):
-        """Dedicated text entry operational availability state controller with sub-widget color forcing."""
+        """Dedicated container frame state controller."""
         if mode is None:
-            return str(getattr(self, "_custom_current_state", "normal")).lower()
+            return getattr(self, "_custom_current_state", "normal")
 
         mode = mode.lower()
         if mode in ("normal", "enabled", "active"):
             self._custom_current_state = "normal"
-
-            # 1. Restore native active interaction pass
-            if hasattr(self, "_entry") and self._entry:
-                self._entry.configure(state="normal")
-
-            super().configure(state="normal")
-            self._update_current_visual_state()
-
         elif mode == "disabled":
             self._custom_current_state = "disabled"
 
-            # 2. 🔑 THE SUB-WIDGET INTERCEPT SHIELD:
-            # Drop straight below CustomTkinter's abstraction layer to activate the underlying C-core entry
-            # in "readonly" mode, locking typing actions completely while keeping color updates wide open!
-            if hasattr(self, "_entry") and self._entry:
-                self._entry.configure(state="readonly")
-
-            # 3. 🔑 FORCE INNER CANVAS TEXT COLOR PROPAGATION:
-            disabled_txt = self._custom_disabled_map.get("text_color", ("#94A3B8", "#4B5563"))
-            disabled_fg = self._custom_disabled_map.get("fg_color", ("#F9FAFB", "#1A1A1A"))
-            disabled_border = self._custom_disabled_map.get("border_color", ("#E5E7EB", "#222222"))
-
-            resolved_txt = self._resolve_color(disabled_txt)
-            resolved_fg = self._resolve_color(disabled_fg)
-            resolved_border = self._resolve_color(disabled_border)
-
-            super().configure(
-                fg_color=resolved_fg,
-                border_color=resolved_border,
-                text_color=resolved_txt
-            )
-
-            # Force the underlying C-entry core instance to actively repaint its font string cells
-            if hasattr(self, "_entry") and self._entry:
-                self._entry.configure(
-                    fg=resolved_fg,
-                    bg=resolved_fg,
-                    readonlybackground=resolved_fg,
-                    selectbackground=resolved_fg,
-                    insertbackground=resolved_txt,
-                    foreground=resolved_txt
-                )
-
+        self._update_current_visual_state()
         return self._custom_current_state
 
     def _update_current_visual_state(self):
-        """MASTER VISUAL ROUTER: Dynamically applies extensible theme properties out of protected memory."""
+        """
+        MASTER VISUAL ROUTER FIXED:
+        🔑 REPAINT LOGIC DYNAMIC MAP: Evaluates active vs desaturated tracks on every single swipe,
+        ensuring background tokens translate perfectly when theme shifts strike while disabled!
+        """
+        is_disabled = getattr(self, "_custom_current_state", "normal") == "disabled"
+        target_map = self._custom_disabled_map if is_disabled else self._local_defaults
+
         config_payload = {}
-        for key in ("fg_color", "border_color", "text_color", "placeholder_text_color", "border_width", "font"):
-            val = self._local_defaults.get(key)
+        for key in ("fg_color", "border_color", "label_text_color", "border_width", "label_font"):
+            val = target_map.get(key)
             if val is not None:
-                config_payload[key] = self._resolve_color(val) if "color" in key else val
+                config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
 
         if config_payload:
             super().configure(**config_payload)
+        self._hide_internal_scrollbars()
 
-            # Re-sync active text properties to the inner entry field core natively
-            resolved_text_clr = config_payload.get("text_color")
-            resolved_fg_clr = config_payload.get("fg_color")
-            if resolved_text_clr and hasattr(self, "_entry") and self._entry:
-                self._entry.configure(foreground=resolved_text_clr, fg=resolved_text_clr)
-            if resolved_fg_clr and hasattr(self, "_entry") and self._entry:
-                self._entry.configure(bg=resolved_fg_clr)
+    def _hide_internal_scrollbars(self):
+        """Forces the scrollbar track elements to match the frame background color seamlessly."""
+        try:
+            bg_color_raw = super().cget("fg_color")
+            resolved_bg = self._resolve_color(bg_color_raw)
+
+            if resolved_bg == "transparent":
+                current_mode = str(ctk.get_appearance_mode()).lower()
+                resolved_bg = "#2B2B2B" if current_mode == "dark" else "#DBDBDB"
+
+            if hasattr(self, "_scrollbar") and self._scrollbar is not None:
+                self._scrollbar.configure(
+                    fg_color=resolved_bg,
+                    button_color=resolved_bg,
+                    button_hover_color=resolved_bg,
+                    width=0
+                )
+        except Exception:
+            pass
+
+    def get_container(self):
+        return self
 
 
 # =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# 🛠️ TESTING HARNESS SETUP
 # =====================================================================
-import sCTkThemes
-from sCTkFrame import sCTkFrame
-from sCTkLabelSecondary import sCTkLabelSecondary
-
 if __name__ == "__main__":
+    import sCTkThemes
+    from sCTkLabelTertiary import sCTkLabelTertiary
+
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
-    root.geometry("450x260")
-    root.title("sCTkEntrySecondary Testing Deck")
+    root.geometry("450x450")
+    root.title("Labeled Scrollable Secondary Frame Real-Time Validation Bench")
 
-    base = sCTkFrame(root)
-    base.pack(expand=True, fill="both", padx=20, pady=20)
+    scroll_panel = sCTkFrameLabeledSecondary(root, label_text="AUXILIARY METADATA TRACK MATRIX")
+    scroll_panel.pack(expand=True, fill="both", padx=25, pady=25)
 
-    lbl_monitor = sCTkLabelSecondary(base, text="Console secondary monitor active...")
-    lbl_monitor.pack(pady=10)
+    for i in range(1, 21):
+        lbl_item = sCTkLabelTertiary(scroll_panel, text=f"Helper Node Index [ID: {i:02d}] - Calibration Offset [0.00Hz]")
+        lbl_item.pack(pady=4, fill="x", padx=10)
 
-    input_field = sCTkEntrySecondary(base, placeholder_text="Secondary Data Field Input...")
-    input_field.pack(expand=False, fill="x", padx=40, pady=10)
-
-    # Pre-populate dummy text to instantly verify character dimming mechanics
-    input_field.insert(0, "Sub-Receiver Delta Offset")
-
-    input_field.bind("<KeyRelease>", lambda e: lbl_monitor.configure(text=f"Live Buffer: {input_field.get()}"))
-
-
-    def toggle_operational_state():
-        """Toggles the input lane between normal active and dimmed disabled profiles."""
-        current_mode = input_field.get_state()
+    def toggle_frame_states():
+        current_mode = scroll_panel.get_state()
         target = "disabled" if current_mode == "normal" else "normal"
+        scroll_panel.configure(state=target)
 
-        input_field.configure(state=target)
-        btn_toggle.configure(
-            text="Lock Input (Set 'disabled')" if target == "normal" else "Unlock Input (Set 'normal')")
-        print(f"Logged Verification Hook -> input_field.get_state() = {input_field.get_state()}")
+        true_children = scroll_panel.winfo_children()
+        for child in true_children:
+            if hasattr(child, "configure"):
+                child.configure(state=target)
 
+        btn_toggle.configure(text="Lock Container" if target == "normal" else "Unlock Container")
 
-    btn_toggle = ctk.CTkButton(base, text="Lock Input (Set 'disabled')", command=toggle_operational_state)
-    btn_toggle.pack(side="bottom", pady=15)
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
 
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    input_field.state("disabled")
-    print("state (Disabled Pass) =", input_field.get_state())  # Output: disabled
-    input_field.state("normal")
-    print("state (Normal Pass)   =", input_field.get_state())  # Output: normal
-    print("========================================\n")
+    btn_toggle = ctk.CTkButton(root, text="Lock Container", command=toggle_frame_states)
+    btn_toggle.pack(pady=5)
+
+    btn_theme = ctk.CTkButton(root, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(pady=5)
 
     root.mainloop()

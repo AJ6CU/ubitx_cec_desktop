@@ -1,14 +1,14 @@
 ## sCTkButtonSecondary
 
-A specialized, theme-compliant secondary button component widget variant designed to act as a latching status toggle selector. It implements a deep-copy keyword caching shield to preserve custom visual style parameters from native mutation traps and prevent `NoneType` canvas validation exceptions.
+A specialized, theme-compliant secondary button component widget variant wrapping `customtkinter.CTkButton` designed to act as a latching status toggle selector. It implements a deep-copy keyword caching shield to preserve custom visual style parameters from native mutation traps and prevent `NoneType` canvas validation exceptions.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkButton(master)` | `sCTkButtonSecondary(master)` *(Latching Toggle Selector)* |
-| **File Mapping** | Component definitions bundle under single active tracks. | Separated safely across `sCTkButtonSecondary.py` and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` managing layout tracking maps and toggling active canvas event binds. |
+| **File Mapping** | Component definitions bundle under single active tracks. | Streamlined and compiled programmatically across `sCTkButtonSecondary.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` managing layout tracking maps and toggling active canvas event binds natively. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
 | `set_pressed(bool)` | *Not Available Natively* | **Latching Hook:** Dynamically updates visual button states to look locked down. |
 
@@ -16,7 +16,7 @@ A specialized, theme-compliant secondary button component widget variant designe
 
 ### Constructor
 
-Initialize a custom secondary latching toggle button instance. Geometry constraints and color properties map cleanly out of central stylesheet parameters.
+Initialize a custom secondary latching toggle button instance. Custom parameters passed from Pygubu builder allocations (like string `translator` tracks or `data_pool` environments) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a secondary latching toggle button element
@@ -66,25 +66,29 @@ vfo_lock_toggle.state("disabled")          # Unbinds mouse canvas routines and a
 ```
 
 ### Other notes
-* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native button initialization code mutates, strips, and deletes keys directly out of raw dictionary data footprints during its boot phase, the constructor clones your configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents normal state restorations from crashing on missing keys.
+* **Bypassing the BaseUI Skeletons:** This component inherits cleanly and directly from native CustomTkinter classes and `ThemeableWidget`, completely bypassing the intermediate template layout files entirely to preserve high-DPI image scaling.
 * **Canvas Interaction Toggles:** When shifted into a `disabled` state configuration, the widget explicitly unbinds mouse events (`<Enter>`, `<Leave>`, `<Button-1>`) at the canvas level to lock interactions and prevent memory leaks. Shifting back to `normal` restores the listeners seamlessly.
+* **Automated Lifecycle Handshake:** At the absolute bottom of the initialization track, the constructor triggers `self._finalize_themeable_lifecycle()` to safely notify top-level Pygubu container managers that the widget is compiled.
 
 ### Implementation Example & Test Harness
 
 Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkButtonSecondary` alongside an interactive latch controller.
 
 ```python
+#!/usr/bin/python3
+"""
+sCTkButtonSecondary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
-from ThemeableWidget import ThemeableWidget
-from sCTkButtonSecondary import sCTkButtonSecondary
 import sCTkThemes
+from sCTkFrame import sCTkFrame
+from sCTkButtonSecondary import sCTkButtonSecondary
+
 if __name__ == "__main__":
     sCTkThemes.apply_sCTkThemes()
-    # # ctk.set_appearance_mode("dark")
     root = ctk.CTk()
     root.geometry("400x200")
-
-    from sCTkFrame import sCTkFrame
+    root.title("Secondary Toggle Button Telemetry Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
@@ -95,38 +99,24 @@ if __name__ == "__main__":
     widget.pack(padx=40, pady=20)
     widget1.pack(padx=40, pady=20)
 
-    # -----------------------------------------------------------------
-    # A. INITIAL BOOT LOG TEST SEQUENCE (Kept Exactly As Is)
-    # -----------------------------------------------------------------
     widget.state("normal")
     widget1.set_pressed(True)
 
-    # Verify our custom cascading state system locks down the entire panel hierarchy instantly!
     widget.state("disabled")
     print("--- DISABLED PASS ---")
     print("Widget 0 state =", widget.get_state())
     print("Widget 1 state =", widget1.get_state())
 
-    # Verify the cascade pipeline unlocks everything smoothly right back to normal
     widget.state("normal")
     print("\n--- NORMAL PASS ---")
     print("Widget 0 state =", widget.get_state())
     print("Widget 1 state =", widget1.get_state())
     print("\n=== SYSTEM ONLINE: SECONDARY BUTTON INTERACTION ACTIVE ===\n")
 
-    # -----------------------------------------------------------------
-    # B. 🛠️ THE INTERACTION FIX: MAKE BUTTONS ALIVE AND RESPOND TO CLICKS
-    # -----------------------------------------------------------------
-    # 🛠️ THE CLICK REPORT FIX: Added a print statement to report the click instantly
-    widget.configure(
-        command=lambda: [print("System Action Button Clicked"), widget.set_pressed(not widget.is_pressed)])
-
-    # Clicking 'widget1' does the exact same thing, turning its pre-set pressed state off and on!
-    widget1.configure(
-        command=lambda: [print("Testpressed Button Clicked"), widget1.set_pressed(not widget1.is_pressed)])
+    widget.configure(command=lambda: [print("System Action Button Clicked"), widget.set_pressed(not widget.is_pressed)])
+    widget1.configure(command=lambda: [print("Testpressed Button Clicked"), widget1.set_pressed(not widget1.is_pressed)])
 
     root.mainloop()
 ```
-
 
 [Return to Table of Contents](#contents)

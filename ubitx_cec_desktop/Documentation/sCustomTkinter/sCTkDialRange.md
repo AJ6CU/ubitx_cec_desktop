@@ -10,28 +10,28 @@
 
 ---
 
-A concrete rotary encoder range variant designed for hard-bounded linear controls (e.g., AF/RF volume gain level sliders, squelch limits, or power thresholds). It enforces absolute mechanical dead stops at outer thresholds, preventing directional wraparound loops [INDEX].
+A concrete rotary encoder range variant designed for hard-bounded linear controls (e.g., AF/RF volume gain level sliders, squelch limits, or power thresholds). It enforces absolute mechanical dead stops at outer thresholds, preventing directional wraparound loops.
 
 ### API Property Reference
 
 | Property / Feature | Type / Signature | Description |
 | :--- | :--- | :--- |
 | **Instantiation** | *Constructor* | `sCTkDialRange(master)` *(Bounded Linear Range Dial)* |
-| **File Mapping** | *Inheritance Tree* | Inherits parent 3D mechanical chassis elements and base state tracking directly from `sCTKDialBase.py` [INDEX]. |
-| `from_` / `min_value` | `int` | Lower boundary threshold (default 0) enforcing absolute counter-clockwise dead stops [INDEX]. |
-| `to` / `max_value` | `int` | Upper boundary threshold (default 100) enforcing absolute clockwise dead stops [INDEX]. |
-| `divisions` | `int` | Quantized subdivision tick line count painted geometrically across the arc limit sweep [INDEX]. |
-| `_scroll_cooldown_seconds`| `float` | Throttle limiting touchpad refresh rates to stabilize fast range adjustments [INDEX]. |
-| `get()` / `set(val)` | `Methods -> int` | Unified index query mechanisms to get or force selected integer values [INDEX]. |
-| `left_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step decrements to execute accelerated jumping intervals when clicking the left canvas edge [INDEX]. |
-| `right_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step increments to execute accelerated jumping intervals when clicking the right canvas edge [INDEX]. |
-| **State**                 | `dial.state("disabled")`<br>**OR**<br>`dial.configure(state="disabled")` | **Dual-Routing State Pipeline:** Handles both syntaxes natively [INDEX]. Freezes canvas mouse-wheel scrolling, disables click jump hooks, and shifts visual themes out of `disabled_map` guidelines [INDEX, INDEX]. |
+| **File Mapping** | *Inheritance Tree* | Streamlined and compiled programmatically inside `sCTkDial.py` and `ThemeableWidget.py`. |
+| `from_` / `min_value` | `int` | Lower boundary threshold (default 0) enforcing absolute counter-clockwise dead stops. |
+| `to` / `max_value` | `int` | Upper boundary threshold (default 100) enforcing absolute clockwise dead stops. |
+| `divisions` | `int` | Quantized subdivision tick line count painted geometrically across the arc limit sweep. |
+| `_scroll_cooldown_seconds`| `float` | Throttle limiting touchpad refresh rates to stabilize fast range adjustments. |
+| `get()` / `set(val)` | `Methods -> int` | Unified index query mechanisms to get or force selected integer values. |
+| `left_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step decrements to execute accelerated jumping intervals when clicking the left canvas edge. |
+| `right_click_callback` | `Callable / None` | **Custom Accelerated Click Hook:** Overrides standard single-step increments to execute accelerated jumping intervals when clicking the right canvas edge. |
+| **State**                 | `dial.state("disabled")`<br>**OR**<br>`dial.configure(state="disabled")` | **Dual-Routing State Pipeline:** Handles both syntaxes natively. Freezes canvas mouse-wheel scrolling, disables click jump hooks, and shifts visual themes out of `disabled_map` guidelines via a strict sequential re-binding engine. |
 
 ---
 
 ### Constructor
 
-Initialize a custom bounded linear range potentiometer instance. Keyword parameters seamlessly scale divisions and limits out of central stylesheet registries [INDEX].
+Initialize a custom bounded linear range potentiometer instance. Custom parameters passed from Pygubu builder allocations (like string `translator` tracks or `data_pool` environments) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires. Bounding geometry sizes and limits scale out of central stylesheet registries.
 
 ```python
 # Instantiate an AF Volume gain potentiometer control dial
@@ -51,7 +51,7 @@ volume_potentiometer = sCTkDialRange(
 
 ### Callback Signature & Usage
 
-Dispatches the current absolute active integer value directly to runtime tracking listeners upon position changes [INDEX].
+Dispatches the current absolute active integer value directly to runtime tracking listeners upon position changes.
 
 #### Command 
 
@@ -79,15 +79,15 @@ def on_volume_level_changed(active_value: int):
 ```
 
 ### Other notes
-* **Absolute Threshold Dead Stops:** Unlike continuous or selector models, scrolling past upper or lower boundaries clips inputs securely using `max(self._from, min(self._to, value))`, blocking accidental overflow [INDEX].
-* **Unified State Infrastructure:** Implements no internal state query definitions. `get_state()` gracefully routes up to the `sCTKDialBase` layer natively via the Python method resolution order (MRO), eliminating redundant file methods [INDEX].
-* **Custom Accelerated Steps:** Attaching optional click callbacks allows click events to jump values by wider intervals rather than dropping onto the baseline single-step tracking paths [INDEX].
+* **Bypassing the BaseUI Middleman:** This component inherits cleanly and directly from native CustomTkinter classes and `ThemeableWidget`, completely bypassing the intermediate template layout files entirely to avoid argument deadlocks.
+* **Automated Lifecycle Handshake:** At the absolute bottom of the initialization track, the constructor triggers `self._finalize_themeable_lifecycle()` to safely notify top-level Pygubu container managers that the widget is compiled.
+* **Absolute Threshold Dead Stops:** Unlike continuous or selector models, scrolling past upper or lower boundaries clips inputs securely using `max(self._from, min(self._to, value))`, blocking accidental overflow.
 
 ---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkDialRange` alongside custom click jump hooks and an active volume gain control panel display tracker [INDEX].
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkDialRange` alongside custom click jump hooks and an active volume gain control panel display tracker.
 
 ```python
 #!/usr/bin/python3
@@ -95,17 +95,13 @@ Below is a complete, self-contained test execution script demonstrating how to p
 sCTkDialRange - Standalone Interactive Testing Harness
 """
 import customtkinter as ctk
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+import sCTkThemes                
+from sCTkFrame import sCTkFrame  
 from sCTkLabelSecondary import sCTkLabelSecondary
 from sCTkDial import sCTkDialRange
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly [INDEX]
+    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -120,12 +116,12 @@ if __name__ == "__main__":
     lbl_volume.pack(pady=15)
 
     def my_custom_left_click():
-        """Accelerated Jump: Drops 3 units per click tap [INDEX]."""
+        """Accelerated Jump: Drops 3 units per click tap."""
         if volume_pot.get_state() == "disabled": return
         volume_pot.set(volume_pot.get() - 3)
 
     def my_custom_right_click():
-        """Accelerated Jump: Jumps 3 units per click tap [INDEX]."""
+        """Accelerated Jump: Jumps 3 units per click tap."""
         if volume_pot.get_state() == "disabled": return
         volume_pot.set(volume_pot.get() + 3)
 

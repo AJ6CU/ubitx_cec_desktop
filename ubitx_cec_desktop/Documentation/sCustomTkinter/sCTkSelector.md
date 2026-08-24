@@ -10,7 +10,7 @@
 
 ---
 
-An advanced theme-compliant option list selector widget [INDEX]. It pairs an optional high-contrast string prefix search lane with a dynamic checklist scrollback chassis to safely manage multi-state checkbox row configurations natively [INDEX].
+An advanced theme-compliant option list selector widget. It pairs an optional high-contrast string prefix search lane with a dynamic checklist scrollback chassis to safely manage multi-state checkbox row configurations natively.
 
 ### API Property Reference
 
@@ -18,7 +18,7 @@ An advanced theme-compliant option list selector widget [INDEX]. It pairs an opt
 | :--- | :--- | :--- |
 | **Instantiation** | *Not Available Natively* | `sCTkSelector(master)` *(Scrollable Options Selector)* |
 | **File Mapping** | Array elements bundle manually without centralized theme hooks. | Separated safely across `sCTkSelector.py` and `ThemeableWidget.py`. |
-| **State Lock** | *Not Supported Natively* | `theSelector.state("disabled")`<br>**OR**<br>`theSelector.configure(state="disabled")`<br><br>**Polymorphic State Controller:** Simultaneously locks the top search bar entry field and freezes all child selection checkbox tracks natively. |
+| **State Lock** | *Not Supported Natively* | `theSelector.state("disabled")`<br>**OR**<br>`theSelector.configure(state="disabled")`<br><br>**Polymorphic State Controller:** Simultaneously locks the top search bar entry field and paralyzes all child selection checkbox tracks natively using a low-level event intercept matrix. |
 | `searchBox` | *Not Supported Natively* | `Property -> bool`. Controls visibility of the dynamic search bar lane. |
 
 ---
@@ -58,7 +58,6 @@ theSelector.clear_selections()
 # Adjust layout properties or component visibilities on the fly
 theSelector.configure(searchBox=True)        # Dynamically mounts and renders search bar lane
 ```
-
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
@@ -74,15 +73,18 @@ theSelector.configure(searchBox=True)        # Dynamically mounts and renders se
 }
 ```
 
+---
+
 ### Other Notes
-* **Isolated Checklist Tracking:** To optimize bulk interface operations, this component tracks its row nodes through its own localized memory list array (`self.checkboxes`) [INDEX]. Standard window inspection crawlers on dashboard trees bypass its internals cleanly, protecting checkboxes from global style conflicts.
-* **Stack Re-Ordering Execution:** Toggling `searchBox=True` dynamically at runtime triggers a pack index safety cycle [INDEX]. The canvas content chassis forgets and remounts its bottom alignment to prevent native packing sequence layout exceptions [INDEX].
+* **Crash-Shield Transparency Interceptor:** Native checkboxes throw a fatal `ValueError` if their indicator fills map to `transparent`. If the selector's master frame layout returns a transparent background, the visual router automatically overrides the checkbox container tracks with solid high-contrast corporate hex codes on boot.
+* **Light Mode Contrast Guard:** To bypass CustomTkinter's native washed-out white checkmark bug on locked elements, the repaint engine manually forces a dark gray checkmark selection overlay inside Light Mode, keeping checked rows perfectly legible.
+* **Automated Lifecycle Handshake:** At the absolute bottom of the initialization sequence, the constructor fires `self._finalize_themeable_lifecycle()` to safely pass instance registration hooks straight back up to Pygubu layout trees.
 
 ---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained testing suite containing block-commented execution routes to safely evaluate option configurations [INDEX].
+Below is a complete, self-contained testing suite containing interactive buttons to safely evaluate option configurations, state locks, and real-time global look preference shifts.
 
 ```python
 #!/usr/bin/python3
@@ -99,42 +101,35 @@ from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkSelector import sCTkSelector
 
 if __name__ == "__main__":
-    def on_confirm():
+    def on_confirm(): 
         print(f"Active Selection Telemetry Array: {theSelector.get_selections()}")
-
+        
     root = ctk.CTk()
-    root.geometry("200x380")
+    root.geometry("250x420")
     root.title("sCTkSelector Validation Bench")
-
-    # Resolve style metrics safely [INDEX]
     sCTkThemes.apply_sCTkThemes()
 
     items = ["vw", "porsche", "roadster", "tesla", "ferrari", "mclaren"]
-
-    # MULTI-ROUTE CONFIGURE TESTING LAYOUT:
-    
-    # Route A: Add search field lane dynamically after creation
-    # theSelector = sCTkSelector(root, items=items, multiple_choices=True, searchBox=False)
-    # theSelector.configure(searchBox=True)
-
-    # Route B: Delete search box layout cell after creation
-    # theSelector = sCTkSelector(root, items=items, multiple_choices=True, searchBox=True)
-    # theSelector.configure(searchBox=False)
-
-    # Route C: Normal Case Profile
     theSelector = sCTkSelector(root, items=items, multiple_choices=True)
-
     theSelector.pack(expand=True, fill="both", padx=15, pady=15)
 
-    confirm_btn = sCTkButtonPrimary(root, text="Confirm Selections", command=on_confirm)
-    confirm_btn.pack(pady=(0, 15))
+    def toggle_selector_lock():
+        target = "disabled" if theSelector.get_state() == "normal" else "normal"
+        theSelector.configure(state=target)
+        btn_lock.configure(text="Lock Selector Deck" if target == "normal" else "Unlock Selector Deck")
 
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    theSelector.state("disabled")
-    print("state (Disabled Pass) =", theSelector.get_state())  # Output: disabled
-    theSelector.state("normal")
-    print("state (Normal Pass)   =", theSelector.get_state())  # Output: normal
-    print("========================================\n")
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
+
+    confirm_btn = sCTkButtonPrimary(root, text="Confirm Selections", command=on_confirm)
+    confirm_btn.pack(pady=5)
+    
+    btn_lock = ctk.CTkButton(root, text="Lock Selector Deck", command=toggle_selector_lock)
+    btn_lock.pack(pady=5)
+    
+    btn_theme = ctk.CTkButton(root, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(pady=(5, 15))
 
     root.mainloop()
 ```

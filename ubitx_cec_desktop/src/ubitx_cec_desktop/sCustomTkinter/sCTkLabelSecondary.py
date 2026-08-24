@@ -2,18 +2,16 @@
 """
 sCTkLabelSecondary
 
-Subclass of CTkLabel via Pygubu UI Class Isolation (Secondary Interface Text Label)
-Fortified with direct appearance mode listeners and virtual state hooks to permanently
-conquer text color freezing bugs across light/dark skin transitions.
-
-UI source file: sCTkLabelSecondary.ui
+A custom, theme-compliant secondary interface text label widget.
+Inherits cleanly and directly from ctk.CTkLabel to preserve 100% of native
+CustomTkinter features, theme tracking loops, and native input locks.
 """
 import customtkinter as ctk
-import sCTkLabelSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
 
+class sCTkLabelSecondary(ctk.CTkLabel, ThemeableWidget):
+    _MANAGED_PROPERTIES = frozenset({"state"})
 
-class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
     def __init__(self, master=None, **kwargs):
         # 1. INITIAL RUNTIME PARAMETER SCRUB: Shield parent constructor from custom state configurations
         state_init = kwargs.pop("state", "normal")
@@ -34,6 +32,9 @@ class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
         # 5. INITIALIZE STATE REGISTRY VARIABLES
         self._custom_current_state = "normal"
         self.configure(state=state_init)
+
+        # 🔑 6. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
 
     def _set_appearance_mode(self, mode_string: str):
         """
@@ -60,8 +61,7 @@ class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
 
             if pname in ["fg_color", "text_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
-                    pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(*args, **kwargs)
@@ -129,10 +129,9 @@ class sCTkLabelSecondary(baseui.sCTkLabelSecondaryUI, ThemeableWidget):
 if __name__ == "__main__":
     import sCTkThemes
     from sCTkFrame import sCTkFrame
-    from sCTkButtonPrimary import sCTkButtonPrimary
 
     root = ctk.CTk()
-    root.geometry("400x200")
+    root.geometry("450x240")
     root.title("sCTkLabelSecondary Testing Deck")
 
     sCTkThemes.apply_sCTkThemes()

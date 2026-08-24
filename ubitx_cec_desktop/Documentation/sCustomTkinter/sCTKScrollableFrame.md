@@ -7,29 +7,28 @@
 * [Advanced Layout Inspection API](#advanced-layout-inspection-api)
 * [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
 * [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
 
 ---
 
-An advanced scrollable window viewport capsule inheriting from CustomTkinter's composite layouts [INDEX]. It overrides system tracking hooks to isolate background mouse-wheel parameters and freeze scrollbar slider dragging mechanics cleanly under an absolute runtime `.state("disabled")` loop while leaving internal input rows completely focusable [INDEX].
+An advanced scrollable window viewport capsule inheriting natively and directly from CustomTkinter's `ctk.CTkScrollableFrame` layouts. It streamlines geometry tracking parameters and isolates background mouse-wheel layers cleanly while leaving the application developer completely in control of child layout configuration sweeps across theme switches.
 
 ### API Property Reference
-
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkScrollableFrame(master)` | `sCTkScrollableFrame(master)` *(Themed Viewport Container)* |
-| **File Mapping** | Config metrics look up loose un-managed palette snapshot lists. | Separated safely across `sCTkScrollableFrame.py` and `ThemeableWidget.py`. |
-| **State Lock** | *Not Supported Natively* | `test_frame.state("disabled")`<br>**OR**<br>`test_frame.configure(state="disabled")`<br><br>**Polymorphic State Controller:** Unbinds dragging events interior to the scroll frame's private canvas layer without mutating nested form element input values. |
+| **File Mapping** | Config metrics look up loose un-managed palette snapshot lists. | Streamlined and compiled programmatically across `sCTkScrollableFrame.py` and `ThemeableWidget.py`. |
+| **State Lock** | *Not Supported Natively* | Passive Container Operation Parity.<br><br>**Baseline Design Workflow:** Containers remain perpetually active (`"normal"`) to allow child inputs sitting on top of their canvas face to handle their own active drawing states and color switches independently. |
 | `winfo_children()` | Returns raw internal Tkinter tree widgets, including private scrollbars. | Overridden signature supporting filtered application widget lookups. |
 | `get_children()` | *Not Supported Natively* | Convenience method returning clean application-level custom components. |
 | `get_all_children()` | *Not Supported Natively* | Convenience method returning direct, unfiltered access to the entire core tree. |
-
 
 ---
 
 ### Constructor
 
-Initialize a custom themed scrollable frame viewport layout chassis. It maps configuration boundaries natively.
+Initialize a custom themed scrollable frame viewport layout chassis. High-level custom configuration parameters passed by Pygubu (like `translator`, `on_first_object_cb`, `image_loader`, and `data_pool`) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a telemetry logging scrollable list frame card
@@ -48,9 +47,8 @@ log_viewport.pack(padx=20, pady=20, fill="both", expand=True)
 
 ### Convenience Functions
 ```python
-# Evaluate current state configurations or apply absolute user interaction locks via dual-routing syntax
-current_mode = log_viewport.get_state()      # Returns 'normal' or 'disabled' [INDEX]
-log_viewport.state("disabled")               # Freezes the scroll handles and applies desaturated look fills [INDEX]
+# Evaluate current container configuration attributes smoothly out of local registries
+current_mode = log_viewport.get_state()      # Always returns 'normal'
 ```
 
 ### Advanced Layout Inspection API
@@ -71,7 +69,6 @@ for widget in test_frame.winfo_children():
 print(test_frame.winfo_children(include_private=True))
 ```
 
-
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
@@ -80,23 +77,18 @@ print(test_frame.winfo_children(include_private=True))
         "border_color": ["#CBD5E1", "#222933"],
         "label_fg_color": ["#E2E8F0", "#1A222D"],
         "scrollbar_button_color": ["#94A3B8", "#475569"],
-        "scrollbar_button_hover_color": ["#64748B", "#334155"],
-        "disabled_map": {
-            "fg_color": ["#F1F5F9", "#0A0D14"],
-            "border_color": ["#E2E8F0", "#171C24"],
-            "label_fg_color": ["#F8FAFC", "#0D1117"],
-            "scrollbar_button_color": ["#E2E8F0", "#1E293B"]
-        }
+        "scrollbar_button_hover_color": ["#64748B", "#334155"]
     }
 }
 ```
+
 ### Other Notes
-* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native frame constructor loops mutate and delete attributes directly out of raw dictionary data footprints during its boot pass, the constructor clones your configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This preserves your color mappings safely [INDEX].
-* **Private Event Interception:** Calling `.state("disabled")` triggers an explicit layout sweep that actively safely unbinds CustomTkinter's private `<B1-Motion>` and `<Button-1>` mouse trackers from the inner child canvas [INDEX].
+* **Bypassing the BaseUI Skeletons:** This component avoids all autogenerated Pygubu `baseui` template classes, mapping directly to native CustomTkinter classes to keep the recursive theme broadplane completely unblocked.
+* **Automated Lifecycle Handshake:** Fires `self._finalize_themeable_lifecycle()` at the absolute end of the constructor initialization track to cleanly pass instance registration hooks up to Pygubu's master parent script controllers.
 
 ### ⚠️ Critical Apple Touch & Multi-Platform Scrolling Constraint
 
-When packing layout controls interior to an `sCTkScrollableFrame` view pane, **you must strictly avoid mixing native CustomTkinter widgets (e.g., `ctk.CTkEntry`, `ctk.CTkButton`) alongside your themed `sCustomTkinter` equivalents.** 
+When packing layout controls interior to an `sCTkScrollableFrame` view pane, **you must strictly avoid mixing native CustomTkinter widgets (e.g., `ctk.CTkEntry`, `ctk.CTkButton`) alongside your themed `sCustomTkinter` equivalents.**
 
 * **The Event Swallowing Trap:** Native `ctk` elements do not participate in our repository's unified recursive event-braid mesh. Because they aggressively capture touch focus inputs on macOS, any native element will act like a layout "black hole"—completely freezing trackpads and Apple Magic Mouse swipes the moment a user hovers their mouse cursor directly over that row.
 * **The Resolution Rule:** Always pack your framework's custom theme-aligned classes (e.g., **`sCTkEntryPrimary`**, **`sCTkButtonPrimary`**, **`sCTkCheckBox`**). Because they inherit from our synchronized base mixins, they naturally allow high-precision touch parameters and traditional hardware scrollwheel click ticks to bubble straight up to the master viewport coordinate canvas flawlessly across macOS, Windows, and Linux.
@@ -105,7 +97,7 @@ When packing layout controls interior to an `sCTkScrollableFrame` view pane, **y
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to embed an `sCTkScrollableFrame` along with an interactive toggle switch button [INDEX].
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkScrollableFrame` container layout along with an external cascade state toggle switch button.
 
 ```python
 #!/usr/bin/python3
@@ -123,7 +115,7 @@ if __name__ == "__main__":
     from sCTkScrollableFrame import sCTkScrollableFrame
 
     root = ctk.CTk()
-    root.title("ScrollableFrame Touch Verification")
+    root.title("ScrollableFrame Pure Baseline Verification")
     root.geometry("450x420")
 
     sCTkThemes.apply_sCTkThemes()
@@ -135,16 +127,16 @@ if __name__ == "__main__":
         mock_entry = sCTkEntryPrimary(test_frame, placeholder_text=f"Active Transceiver Channel {i + 1}")
         mock_entry.pack(padx=10, pady=5, fill="x")
 
+    _is_locked = False
+    def toggle_cascade_lockout():
+        global _is_locked
+        _is_locked = not _is_locked
+        target = "disabled" if _is_locked else "normal"
 
-    def toggle_container_state():
-        current_state = test_frame.get_state()
-        target = "disabled" if current_state == "normal" else "normal"
+        toggle_btn.configure(text="Enforce State: NORMAL" if _is_locked else "Enforce State: DISABLED")
 
-        # 1. Update the parent frame layout state cleanly
-        test_frame.configure(state=target)
-
-        # 2. Pure, clean cascade pass: Tell each child to update its state.
-        # It is the ENTRY'S responsibility to know how to draw its own disabled skin!
+        # 🔑 CLEAN APPLICATION-LEVEL LOOKOUT LOOP CASCADE:
+        # The external control logic explicitly dictates when and how to update nested elements!
         for entry_widget in test_frame.get_children():
             if hasattr(entry_widget, "configure"):
                 try:
@@ -152,9 +144,12 @@ if __name__ == "__main__":
                 except Exception:
                     pass
 
-
-    toggle_btn = sCTkButtonPrimary(root, text="Enforce State: DISABLED", command=toggle_container_state)
+    toggle_btn = sCTkButtonPrimary(root, text="Enforce State: DISABLED", command=toggle_cascade_lockout)
     toggle_btn.pack(side="bottom", pady=15)
+
+    btn_theme = ctk.CTkButton(root, text="Toggle Theme Skin", command=lambda: ctk.set_appearance_mode(
+        "Dark" if ctk.get_appearance_mode() == "Light" else "Light"))
+    btn_theme.pack(side="bottom", pady=5)
 
     test_frame._toggle_scroll_bindings(bind=True)
     root.mainloop()

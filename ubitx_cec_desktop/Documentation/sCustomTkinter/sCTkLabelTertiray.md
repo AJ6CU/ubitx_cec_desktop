@@ -9,7 +9,7 @@
 
 ---
 
-The fine inline description, sub-legend, or auxiliary notice typography display label widget component. It features an independent deep-copy keyword caching shield and an advanced multi-state color-dimming interceptor to automatically shift text contrasts when subsystem components enter disabled sequences [INDEX].
+The fine inline description, sub-legend, or auxiliary notice typography display label widget component wrapping `customtkinter.CTkLabel`. It features an independent deep-copy keyword caching shield and an advanced multi-state color-dimming interceptor to automatically shift text contrasts when subsystem components enter disabled sequences.
 
 *For prominent main dashboard header and mid-level sections, see the companion component pages:* [sCTkLabelPrimary](sCTkLabelPrimary.md) and [sCTkLabelSecondary](sCTkLabelSecondary.md).
 
@@ -18,15 +18,15 @@ The fine inline description, sub-legend, or auxiliary notice typography display 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkLabel(master)` | `sCTkLabelTertiary(master)` *(Inline Legend/Description Typography)* |
-| **File Mapping** | Direct module definitions run without structured configuration. | Separated safely across `sCTkLabelTertiary.py` and `ThemeableWidget.py`. |
-| **State Lock** | *Not Supported Natively* | `tertiary_label.state("disabled")`<br>**OR**<br>`tertiary_label.configure(state="disabled")`<br><br>**Framework-Wide State Support:** Natively supported across all label components (`Primary`, `Secondary`, `Tertiary`). It intercepts state configuration calls and dynamically dims typography layouts based on centralized `disabled_map` metrics [INDEX]. |
-| `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions [INDEX]. |
+| **File Mapping** | Direct module definitions run without structured configuration. | Streamlined and compiled programmatically across `sCTkLabelTertiary.py` and `ThemeableWidget.py`. |
+| **State Lock** | *Not Supported Natively* | `tertiary_label.state("disabled")`<br>**OR**<br>`tertiary_label.configure(state="disabled")`<br><br>**Framework-Wide State Support:** Natively supported across all label components (`Primary`, `Secondary`, `Tertiary`). It intercepts state configuration calls and dynamically dims typography layouts based on centralized `disabled_map` metrics. |
+| `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions. |
 
 ---
 
 ### Constructor
 
-Initialize a custom tertiary description label instance. Configuration metrics map cleanly out of central stylesheet parameters [INDEX].
+Initialize a custom tertiary description label instance. Configuration metrics map cleanly out of central stylesheet parameters and are automatically sanitized by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a tertiary description dashboard label element
@@ -38,9 +38,6 @@ panel_legend = sCTkLabelTertiary(
 # Render the widget inside your layout panel using geometry managers
 panel_legend.pack(expand=True, pady=10)
 ```
-
----
-
 ### Centralized Stylesheet Setup (`sCTkThemes.json`)
 ```json
 {
@@ -55,18 +52,29 @@ panel_legend.pack(expand=True, pady=10)
 }
 ```
 
-### Other notes
-* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native geometry constructor routines mutate and drop keys directly out of parsed configuration structures during early boot phases, the constructor clones your data configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents layout repaints from failing [INDEX].
-* **Dynamic Dark Mode Pass-Through:** When returning to an active state, the visual interceptor reads directly from your protected `_local_defaults` cache. If no hardcoded text color is explicitly discovered, it hands control back to CustomTkinter's master `ThemeManager` to natively paint high-contrast system fonts [INDEX].
+---
+
+### Other Notes
+* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native geometry constructor routines mutate and drop keys directly out of parsed configuration structures during early boot phases, the constructor clones your data configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents layout repaints from failing.
+* **Dynamic Dark Mode Pass-Through:** When returning to an active state, the visual interceptor reads directly from your protected `_local_defaults` cache. If no hardcoded text color is explicitly discovered, it hands control back to CustomTkinter's master `ThemeManager` to natively paint high-contrast system fonts.
+* **Automated Lifecycle Handshake:** Triggers `self._finalize_themeable_lifecycle()` at the absolute bottom of the initialization track to cleanly pass instance registration hooks straight back up to Pygubu parent controllers.
 
 ---
 
 ### Implementation Example & Test Harness
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkLabelTertiary` inline legend element along with an interactive status switch toggle [INDEX].
+Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkLabelTertiary` inline legend element along with an interactive status switch toggle.
 
 ```python
+#!/usr/bin/python3
+"""
+sCTkLabelTertiary - Standalone Interactive Testing Harness
+"""
 import customtkinter as ctk
+
+# =====================================================================
+# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
 import sCTkThemes
 from sCTkFrame import sCTkFrame
 from sCTkLabelTertiary import sCTkLabelTertiary

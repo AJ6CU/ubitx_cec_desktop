@@ -16,7 +16,7 @@ A clean, theme-compliant standard backplane container layout chassis widget. It 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkFrame(master)` | `sCTkFrame(master)` *(Backplane Container Chassis)* |
-| **File Mapping** | Everything runs under one core native framework layout tracker. | Separated safely across `sCTkFrame.py` and `ThemeableWidget.py`. |
+| **File Mapping** | Everything runs under one core native framework layout tracker. | Streamlined and compiled programmatically across `sCTkFrame.py` and `ThemeableWidget.py`. |
 | **State Lock** | *Not Supported Natively* | `base_container.state("disabled")`<br>**OR**<br>`base_container.configure(state="disabled")`<br><br>**Dual-Routing State Bypasser:** Absorbs state parameters smoothly without crashing. This prevents interface layout exceptions when cascading operational locks down across complex structural grids. |
 | `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions, always returning `"normal"`. |
 
@@ -24,7 +24,7 @@ A clean, theme-compliant standard backplane container layout chassis widget. It 
 
 ### Constructor
 
-Initialize a custom backplane container frame card instance. Geometry shapes, border offsets, and corner styles map cleanly out of central stylesheet parameters.
+Initialize a custom backplane container frame card instance. High-level custom configuration parameters passed by Pygubu (like `translator`, `on_first_object_cb`, `image_loader`, and `data_pool`) are automatically intercepted, processed, and purged early by the `ThemeableWidget` mixin layer before the native constructor fires. Geometry shapes, border offsets, and corner styles map cleanly out of central stylesheet parameters.
 
 ```python
 # Instantiate a master panel frame container card layout
@@ -52,6 +52,8 @@ dashboard_card.pack(expand=True, fill="both", padx=25, pady=25)
 ```
 
 ### Other notes
+* **Bypassing the BaseUI Middleman:** This component inherits cleanly and directly from `ctk.CTkFrame` and `ThemeableWidget`, bypassing the intermediate template layout files entirely. It connects the component straight to CustomTkinter's appearance modes while using the multiple inheritance protocol layer to sanitize keyword arrays.
+* **Automated Lifecycle Handshake:** At the absolute bottom of the initialization routine, the constructor fires `self._finalize_themeable_lifecycle()` to safely dispatch first-object registration notifications back up to Pygubu's master parent script controllers, unlocking full composition support.
 * **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native container initialization loops mutate and delete attributes directly out of raw dictionary data footprints during its boot pass, the constructor clones your configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This preserves your color mappings safely.
 * **Passive Operation Parity:** Background chassis containers do not implement a variable `disabled_map`. They remain perpetually active (`"normal"`) to allow child inputs sitting on top of their canvas face to handle their own active drawing states independently.
 

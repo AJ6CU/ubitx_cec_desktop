@@ -2,88 +2,152 @@
 """
 sCTkTextboxSecondary
 
-based on ctktextbox
-
-UI source file: sCTkTextboxSecondary.ui
+A custom, theme-compliant secondary messaging and logging area widget.
+Inherits cleanly and directly from ctk.CTkTextbox to preserve 100% of native
+CustomTkinter features and mouse scrolling tracks without custom interference.
 """
+import os
+import sys
+import platform
 import tkinter as tk
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
-import tkinter.ttk as ttk
-import sCTkTextboxSecondaryui as baseui
 from ThemeableWidget import ThemeableWidget
-from sCTkFrame import sCTkFrame
 
 
-#
-# Manual user code
-#
-
-class sCTkTextboxSecondary(baseui.sCTkTextboxSecondaryUI, ThemeableWidget):
+class sCTkTextboxSecondary(ctk.CTkTextbox, ThemeableWidget):
     def __init__(self, master=None, **kw):
+        # 1. Fire our shared theme logic first. It automatically finds "sCTkTextboxSecondary" in themes.json
+        ThemeableWidget.__init__(self, kw)
 
-        theme_defaults = THEME_DEFAULTS["sCTkTextboxSecondary"]
+        # 2. Store your custom maps safely onto instance memory channels
+        self._local_defaults = self.final_kw
+        self._custom_disabled_map = self._widget_disabled_map
 
-        # Store dictionary references safely onto instance memory
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
+        # Extract custom parameters from final_kw to prevent parent constructor collisions
+        state_init = self.final_kw.pop("state", "normal")
 
-        # Run our shared theme logic first to sanitize parameters and merge dictionaries safely
-        ThemeableWidget.__init__(self, theme_defaults, kw)
-
-        # Initialize CustomTkinter with the clean final kwargs array securely
+        # 3. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
-        # Apply your custom internal text padding override safely
-        if hasattr(self, "_text_widget") and self._text_widget is not None:
-            self._text_widget.configure(padx=5, pady=5)
-
-        # FIX: Self-correcting transparency workaround!
-        # Climbs the parent frame hierarchy automatically to pull and match solid colors
-        # if placed on top of your completely see-through structural spacer frames.
+        # Camouflage Transparency Workaround: Safely fetch parent backplane hex color strings
         try:
-            current_fg = self.cget("fg_color")
-            if current_fg == "transparent" or current_fg == "":
+            current_fg = super().cget("fg_color")
+            if current_fg in ("transparent", ""):
                 parent_bg = self.master.cget("fg_color")
-                if parent_bg != "transparent" and parent_bg != "":
-                    self.configure(fg_color=parent_bg)
+                if parent_bg not in ("transparent", ""):
+                    super().configure(fg_color=parent_bg)
         except Exception:
             pass
 
-    def state(self, mode: str):
-        """Dedicated text state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            self.configure(state="normal")
+        # 4. Route cleanly to standard native state initialization via public setter
+        self._virtual_state = "normal"
+        self.state(state_init)
 
-            # FIX: Dynamically restore all active properties out of final_kw
-            for key in ("fg_color", "text_color", "scrollbar_button_color", "scrollbar_button_hover_color"):
-                active_val = self.final_kw.get(key, self._local_defaults.get(key))
-                try:
-                    self.configure(**{key: active_val})
-                except Exception:
-                    pass
+        # 🔑 5. REGISTER LIFECYCLE HANDSHAKE HOOK:
+        # Synchronizes secondary logging instances with Pygubu layout registries.
+        self._finalize_themeable_lifecycle()
 
-            self._custom_current_state = "normal"
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring text cells repaint fluidly on theme shifts."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._update_current_visual_state()
 
-        elif mode == "disabled":
-            self.configure(state="disabled")
+    def configure(self, *args, **kwargs):
+        """Handles both standard keyword configurations and Pygubu inspector queries cleanly."""
+        if args and len(args) == 1:
+            pname = args if isinstance(args, (list, tuple)) else args
 
-            # FIX: Dynamically apply your complete high-contrast disabled muted configurations out of your map!
-            for key in ("fg_color", "text_color", "scrollbar_button_color", "scrollbar_button_hover_color"):
-                if key in self._custom_disabled_map:
-                    try:
-                        self.configure(**{key: self._custom_disabled_map[key]})
-                    except Exception:
-                        pass
+            if pname == "state":
+                return ("state", "state", "state", "normal", str(self.state()))
 
-            self._custom_current_state = "disabled"
+            if pname in ["fg_color", "text_color", "border_color", "scrollbar_button_color",
+                         "scrollbar_button_hover_color"]:
+                val = self._custom_disabled_map.get(
+                    pname) if self._virtual_state == "disabled" else self._local_defaults.get(pname)
+                return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
+            return super().configure(pname)
+
+        if args and isinstance(args, dict):
+            kwargs = args | kwargs
+
+        if "state" in kwargs:
+            self._virtual_state = str(kwargs.pop("state")).lower()
+            self._update_current_visual_state()
+
+        if kwargs:
+            return super().configure(**kwargs)
+        return None
+
+    config = configure
+
+    def get_state(self):
+        """Explicit getter synchronized with your standalone test harness script assertions."""
+        return self.state()
+
+    def state(self, state_string=None):
+        """Standard Tkinter state management mapping."""
+        if state_string is not None:
+            self.configure(state=state_string)
+        return getattr(self, "_virtual_state", "normal")
+
+    def _update_current_visual_state(self):
+        """MASTER VISUAL ROUTER: Enforces strict sequential order of operations to bypass the white-out bug."""
+        is_disabled = getattr(self, "_virtual_state", "normal") == "disabled"
+        target_map = self._custom_disabled_map if is_disabled else self._local_defaults
+
+        # 1. Map styling color variables cleanly out of configuration directories
+        config_payload = {}
+        for key in ("fg_color", "border_color", "text_color", "scrollbar_button_color", "scrollbar_button_hover_color"):
+            val = target_map.get(key)
+            if val is not None:
+                config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
+
+        if config_payload:
+            super().configure(**config_payload)
+
+        # 2. SEQUENTIAL LOCK PASS: Force true native disabled flags to lock text inputs completely
+        if is_disabled:
+            super().configure(state="disabled")
+        else:
+            super().configure(state="normal")
+
+        # 3. Force CustomTkinter's sidecar scrollbar container to redraw its vector geometry instantly
+        if hasattr(self, "_scrollbar") and self._scrollbar:
+            try:
+                if is_disabled:
+                    disabled_bar = self._resolve_color(
+                        self._custom_disabled_map.get("scrollbar_button_color", ["#D1D5DB", "#374151"]))
+                    self._scrollbar.configure(button_color=disabled_bar, button_hover_color=disabled_bar)
+                else:
+                    normal_bar = self._resolve_color(
+                        self._local_defaults.get("scrollbar_button_color", ["#94A3B8", "#475569"]))
+                    normal_hover = self._resolve_color(
+                        self._local_defaults.get("scrollbar_button_hover_color", ["#64748B", "#334155"]))
+                    self._scrollbar.configure(button_color=normal_bar, button_hover_color=normal_hover)
+
+                if hasattr(self._scrollbar, "_draw"):
+                    self._scrollbar._draw()
+            except Exception:
+                pass
+
+
+# =====================================================================
+# UTM TESTING HARNESS IMPORTS & SETUP
+# =====================================================================
+import sCTkThemes
+from sCTkFrame import sCTkFrame
 
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
+    sCTkThemes.apply_sCTkThemes()
+
     root = ctk.CTk()
-    root.geometry("500x400")
+    root.geometry("500x450")
+    root.title("sCTkTextboxSecondary Native Pure Bench")
 
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
@@ -91,17 +155,31 @@ if __name__ == "__main__":
     widget = sCTkTextboxSecondary(base)
     widget.pack(expand=True, fill="both", padx=10, pady=10)
 
-    # Pre-populate sample session streams to verify text metrics
-    widget.insert("0.0", "Secondary Metadata Stream Buffer Active...\nReading squelch tracking lines...\n")
+    for i in range(30):
+        widget.insert("end", f"[{i:02d}] SECONDARY FREQ TRANSLATION CHANNEL BUFFER -> VERIFIED\n")
 
-    # Verify our custom cascading state system locks down the canvas and text elements instantly!
-    widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("state (Disabled Sequence) =", widget.get_state())  # Output: disabled
 
-    # FIX: Verification hook successfully flushes properties back to normal
-    widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("state (Normal Sequence)   =", widget.get_state())  # Output: normal
+    def toggle_logger_states():
+        current_state = widget.get_state()
+        target = "disabled" if current_state == "normal" else "normal"
+        widget.configure(state=target)
+
+        if target == "disabled":
+            btn_toggle.configure(text="Activate Secondary Feed")
+        else:
+            btn_toggle.configure(text="Lock Secondary Feed")
+
+
+    def toggle_appearance_skin():
+        current_mode = ctk.get_appearance_mode()
+        target = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(target)
+
+
+    btn_toggle = ctk.CTkButton(base, text="Lock Secondary Feed", command=toggle_logger_states)
+    btn_toggle.pack(fill="x", padx=10, pady=5)
+
+    btn_theme = ctk.CTkButton(base, text="Toggle Theme Skin", command=toggle_appearance_skin)
+    btn_theme.pack(fill="x", padx=10, pady=5)
 
     root.mainloop()

@@ -1,14 +1,24 @@
 ## sCTkCheckBox
 
-A specialized, theme-compliant checkbox element component variant designed for binary option selections, telemetry locks, and parameter configurations. It integrates an independent deep-copy keyword caching shield to preserve checkbox accent fills from native constructor deletion loops and prevent `NoneType` canvas drawing exceptions.
+### Table of Contents
+* [API Property Reference](#api-property-reference)
+* [Constructor](#constructor)
+* [Convenience Functions](#convenience-functions)
+* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
+* [Other Notes](#other-notes)
+* [Implementation Example & Test Harness](#implementation-example--test-harness)
+
+---
+
+A specialized, theme-compliant checkbox element component variant designed for binary option selections, telemetry locks, and parameter configurations. It integrates an independent deep-copy keyword caching shield and clean programmatic inheritance to preserve checkbox configurations without intermediate file middlemen.
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkCheckBox(master)` | `sCTkCheckBox(master)` *(Binary Option Selector)* |
-| **File Mapping** | Everything runs under a single active component module. | Separated safely across `sCTkCheckBox.py` and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
+| **File Mapping** | Everything runs under a single active component module. | Streamlined and compiled programmatically across `sCTkCheckBox.py` and `ThemeableWidget.py`. |
+| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`) via sequential update passes. |
 | `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
 | `get()` | `self.get()` | Returns `1` if selected, or `0` if empty. |
 | `select()` / `deselect()` | Native methods | Forces check marks on or off programmatically. |
@@ -17,7 +27,7 @@ A specialized, theme-compliant checkbox element component variant designed for b
 
 ### Constructor
 
-Initialize a custom checkbox option instance. Bounding sizes, checkmark fills, and text typography properties map cleanly out of central stylesheet parameters.
+Initialize a custom checkbox option instance. Pygubu parameters (such as `translator` or `on_first_object_cb`) are stripped, isolated, and safely processed early by the `ThemeableWidget` mixin layer before the native constructor fires.
 
 ```python
 # Instantiate a primary option selection checkbox
@@ -62,8 +72,10 @@ logging_toggle.state("disabled")           # Disables checking interaction and a
 ```
 
 ### Other notes
-* **Deep-Copy Dictionary Isolation Shield:** Because CustomTkinter's native checkbox initialization code mutates, strips, and deletes keys directly out of raw dictionary data footprints during its boot phase, the constructor clones your configurations into `self._local_defaults = dict(self.final_kw)` beforehand. This prevents normal state restorations from crashing on missing keys.
-* **Pygubu Inspector Field Guard:** Zone D processes an explicit empty string filter. If a developer backspaces or clears a variable field inside the Pygubu parameters grid panel at design-time, your code pops the empty string `""` out of memory instantly, keeping the underlying framework from throwing an illegal type validation exception.
+* **Bypassing the BaseUI Middleman:** Completely removes transitional `baseui` template classes, mapping directly to `ctk.CTkCheckBox` and `ThemeableWidget` multiple inheritance pathways to avoid signature collisions.
+* **Automated Lifecycle Handshake:** Triggers `self._finalize_themeable_lifecycle()` at the absolute bottom of the initialization track to safely register instances with Pygubu layout trees out of the box.
+
+---
 
 ### Implementation Example & Test Harness
 
@@ -71,16 +83,15 @@ Below is a complete, self-contained test execution script demonstrating how to p
 
 ```python
 #!/usr/bin/python3
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import sCTkThemes                # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
+"""
+sCTkCheckBox - Standalone Interactive Testing Harness
+"""
+import customtkinter as ctk
+import sCTkThemes                
+from sCTkFrame import sCTkFrame  
 from sCTkCheckBox import sCTkCheckBox
 
 if __name__ == "__main__":
-    # Natively resolves your package assets and populates configurations cleanly
     sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
@@ -109,20 +120,15 @@ if __name__ == "__main__":
     btn_toggle = ctk.CTkButton(base, text="Lock Checkbox (Set 'disabled')", command=toggle_widget_state)
     btn_toggle.pack(side="bottom", pady=15)
 
-    # Run the interactive boot tracking sequences
     print("--- BOOT INITIALIZATION PASSTHROUGH ---")
     widget.state("disabled")
-    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
+    print("state (Disabled Pass) =", widget.get_state())  
 
     widget.state("normal")
-    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+    print("state (Normal Pass)   =", widget.get_state())  
     print("========================================\n")
 
     root.mainloop()
 ```
 
-
-
 [Return to Table of Contents](#contents)
-
-

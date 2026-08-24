@@ -1,27 +1,21 @@
 #!/usr/bin/python3
 """
-sCTkProgressBar
+sCTkProgressBar - Piece 1 of 2
 
-Derived from progressBar
-Natively fortified with polymorphic state controllers and direct visual trackers.
-
-UI source file: sCTkProgressBar.ui
+A custom, theme-compliant system progression indicator bar widget.
+Inherits cleanly and directly from ctk.CTkProgressBar to preserve 100% of native
+CustomTkinter features, theme tracking loops, and real-time state updates.
 """
 import os
-import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
-import sCTkProgressBarui as baseui
 from ThemeableWidget import ThemeableWidget
 
-
-class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
+class sCTkProgressBar(ctk.CTkProgressBar, ThemeableWidget):
     def __init__(self, master=None, **kwargs):
         # 1. INITIAL RUNTIME SCRUB: Safely shield native frame from state validation checks
         state_init = kwargs.pop("state", "normal")
 
         # 2. ENFORCE SYSTEM REGISTRY INTERACTION:
-        # Pass kwargs cleanly to the theme mixin to engage the name-introspection pipeline natively.
         ThemeableWidget.__init__(self, kwargs)
 
         # 3. 🛠️ THE MUTATION SAFEGUARD DEEP COPY SHIELD:
@@ -36,7 +30,10 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
 
         # 5. ROUTE TO CONFIG: Safely pass parameters through your validation engine
         self._state_str = "normal"
-        self.configure(state=state_init)
+        self.state(state_init)
+
+        # 🔑 6. REGISTER LIFECYCLE HANDSHAKE HOOK: Pushes notifications up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
 
     def configure(self, *args, **kwargs):
         """Processes Pygubu designer queries and manages state changes safely."""
@@ -47,8 +44,7 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
 
             if pname in ["fg_color", "progress_color", "border_color"]:
                 current_state = str(self.state()).lower()
-                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(
-                    pname)
+                val = self._custom_disabled_map.get(pname) if current_state == "disabled" else self._local_defaults.get(pname)
                 return (pname, pname, pname, str(self._local_defaults.get(pname)), str(val))
 
             return super().configure(*args, **kwargs)
@@ -61,12 +57,21 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
 
         if kwargs:
             super().configure(**kwargs)
-
+            self._update_current_visual_state()
     def cget(self, attribute_name: str) -> any:
         """Safely intercept custom properties like 'state' from throwing errors."""
         if str(attribute_name).lower() == "state":
             return self.state()
         return super().cget(attribute_name)
+
+    def _set_appearance_mode(self, mode_string: str):
+        """Native look catcher ensuring active or disabled lanes repaint fluidly on theme shifts."""
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._update_current_visual_state()
 
     def get_state(self) -> str:
         """Explicit getter synchronized with your standalone test harness script assertions."""
@@ -79,29 +84,22 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
 
         target_state = mode.lower()
         self._state_str = target_state
-
-        if target_state == "disabled":
-            # Extract the raw desaturated hex tokens out of your theme mapping data
-            disabled_fg = self._custom_disabled_map.get("fg_color", ("#E2E8F0", "#1E293B"))
-            disabled_progress = self._custom_disabled_map.get("progress_color", ("#94A3B8", "#475569"))
-
-            # Inject the gray colors up to the CustomTkinter base class layers natively
-            super().configure(
-                fg_color=self._resolve_color(disabled_fg),
-                progress_color=self._resolve_color(disabled_progress)
-            )
-
-        elif target_state in ["normal", "active", "enabled"]:
-            # Revert straight back to the clean active operational theme configurations
-            active_fg = self._local_defaults.get("fg_color", ("#E2E8F0", "#2D2D2D"))
-            active_progress = self._local_defaults.get("progress_color", ("#3B82F6", "#1F6AA5"))
-
-            super().configure(
-                fg_color=self._resolve_color(active_fg),
-                progress_color=self._resolve_color(active_progress)
-            )
-
+        self._update_current_visual_state()
         return self._state_str
+
+    def _update_current_visual_state(self):
+        """MASTER VISUAL ROUTER: Automatically extracts and resolves properties out of protected memory."""
+        is_disabled = getattr(self, "_state_str", "normal") == "disabled"
+        target_map = self._custom_disabled_map if is_disabled else self._local_defaults
+
+        config_payload = {}
+        for key in ("fg_color", "progress_color", "border_color", "border_width", "corner_radius"):
+            val = target_map.get(key)
+            if val is not None:
+                config_payload[key] = self._resolve_color(val) if "color" in key or "fg" in key else val
+
+        if config_payload:
+            super().configure(**config_payload)
 
     def bind(self, sequence=None, command=None, add=None):
         if "PYGUBU_DESIGNER_RUNNING" in os.environ:
@@ -110,12 +108,13 @@ class sCTkProgressBar(baseui.sCTkProgressBarUI, ThemeableWidget):
 
 
 # =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
+# 🛠️ TESTING HARNESS SETUP
 # =====================================================================
 if __name__ == "__main__":
     import sCTkThemes
     from sCTkFrame import sCTkFrame
     from sCTkButtonPrimary import sCTkButtonPrimary
+    from sCTkButtonSecondary import sCTkButtonSecondary
     from sCTkLabelSecondary import sCTkLabelSecondary
 
     root = ctk.CTk()
@@ -127,7 +126,6 @@ if __name__ == "__main__":
     base = sCTkFrame(root)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    # 1. Percentage Progress Monitoring Display Label Notice
     initial_val = 0.45
     lbl_status = sCTkLabelSecondary(
         base,
@@ -135,51 +133,41 @@ if __name__ == "__main__":
     )
     lbl_status.pack(pady=(10, 5))
 
-    # 2. Instantiate your custom themed progression indicator bar layout
     widget = sCTkProgressBar(base)
     widget.pack(expand=False, fill="x", padx=40, pady=10)
     widget.set(initial_val)
 
-
-    # 3. Dynamic Progress Modifier Event Handler Callback
     def step_progress():
         if widget.get_state() == "disabled":
             print("⚠️ Cannot modify progress channel: Widget is currently locked!")
             return
 
         current_val = widget.get()
-        # Increment by an operational 5% step delta slice
         next_val = current_val + 0.05
-
-        # Safe threshold ceiling clamp condition
         if next_val > 1.0:
-            next_val = 0.0  # Cycle back to zero when reaching full scale
+            next_val = 0.0
 
         widget.set(next_val)
         lbl_status.configure(text=f"Telemetry Progress Output: {int(next_val * 100)}% / 100%")
 
-
-    # 4. Interactive Simulation Control Button Triggers
     btn_step = sCTkButtonPrimary(base, text="Step Telemetry Track (+5%)", command=step_progress)
     btn_step.pack(pady=(5, 5))
-
 
     def toggle_operational_lock():
         current_mode = widget.get_state()
         target = "disabled" if current_mode == "normal" else "normal"
         widget.configure(state=target)
         btn_lock.configure(text="Lock Indicator Track" if target == "normal" else "Unlock Indicator Track")
-        btn_step.configure(state=target)  # Keep action triggers tightly bound to structural locks
+        btn_step.configure(state=target)
 
-
-    btn_lock = ctk.CTkButton(base, text="Lock Indicator Track", command=toggle_operational_lock)
+    btn_lock = sCTkButtonPrimary(base, text="Lock Indicator Track", command=toggle_operational_lock)
     btn_lock.pack(side="bottom", pady=(5, 10))
 
-    print("--- BOOT INITIALIZATION PASSTHROUGH ---")
-    widget.state("disabled")
-    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
-    widget.state("normal")
-    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
-    print("========================================\n")
+    def toggle_skin_mode():
+        current_skin = ctk.get_appearance_mode()
+        ctk.set_appearance_mode("Light" if current_skin == "Dark" else "Dark")
+
+    btn_theme = sCTkButtonSecondary(base, text="Simulate Global Theme Shift", command=toggle_skin_mode)
+    btn_theme.pack(side="bottom", pady=5)
 
     root.mainloop()

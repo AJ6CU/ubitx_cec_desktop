@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-sCTkFrame
+sCTkFrame - Piece 1 of 2
 
 A clean, theme-compliant standard CustomTkinter container frame widget.
+Inherits cleanly and directly from ctk.CTkFrame to preserve 100% of native
+CustomTkinter features, theme tracking loops, and Pygubu container actions.
 """
 import customtkinter as ctk
 from ThemeableWidget import ThemeableWidget
-
 
 class sCTkFrame(ctk.CTkFrame, ThemeableWidget):
     properties = frozenset()
@@ -23,13 +24,17 @@ class sCTkFrame(ctk.CTkFrame, ThemeableWidget):
         # 3. Initialize CustomTkinter natively with the clean final kwargs array safely
         super().__init__(master, **self.final_kw)
 
+        # 🔑 4. REGISTER LIFECYCLE HANDSHAKE HOOK:
+        # Pushes tracking notifications reachably up to Pygubu systems cleanly.
+        self._finalize_themeable_lifecycle()
+
     def configure(self, *args, **kwargs):
         """Handles Pygubu designer queries and manages container configurations safely."""
         # ZONE A: Pygubu Inspector Position Intercept
         if args and len(args) == 1:
             pname = args[0]
             if pname == "state":
-                return ('state', 'state', 'State', 'normal', 'normal')
+                return ('state', 'state', 'State', 'normal', str(self.state()))
             if pname in ["fg_color", "border_color"]:
                 val = self._local_defaults.get(pname)
                 return (pname, pname, pname, str(val), str(val))
@@ -53,6 +58,7 @@ class sCTkFrame(ctk.CTkFrame, ThemeableWidget):
             return super().configure(**kwargs)
         return None
 
+    config = configure
     def get_state(self):
         """Explicit getter synchronized with your standalone test harness script assertions."""
         return self.state()
@@ -66,7 +72,6 @@ class sCTkFrame(ctk.CTkFrame, ThemeableWidget):
 # 🛠️ TESTING HARNESS IMPORTS & SETUP
 # =====================================================================
 import sCTkThemes  # 🔍 Duplicate import kept close for script scannability
-from sCTkFrame import sCTkFrame  # Testing application wrapper container frame
 
 if __name__ == "__main__":
     # Natively resolves your package assets and populates configurations cleanly
