@@ -1,220 +1,127 @@
-
-```
-
 ## sCTkScrollbar
 
-The sCTkScrollbar is an advanced, theme-compliant custom scrollbar element designed for the uBitx desktop transceiver interface. It inherits directly from ctk.CTkScrollbar to preserve Method Resolution Order (MRO) theme tracking while embedding direct event-interception buffers.
+The `sCTkScrollbar` is a high-performance, theme-adaptive custom scrollbar element designed for the `sCustomTkinter` radio desktop interface, working in tandem with the unblocked `sCTkScrollArea` viewport container frame. It inherits from `ctk.CTkScrollbar` to preserve native light/dark appearance switches while introducing specialized hardware aggregators to handle inertial gestures smoothly.
 
-
-### Table of Contents
-* [API Property Reference](#api-property-reference)
-* [Constructor](#constructor)
-* [Centralized Stylesheet Setup](#centralized-stylesheet-setup-sctkthemesjson)
-* [Other Notes](#other-notes)
-* [Implementation Example & Test Harness](#implementation-example--test-harness)
+### 📌 Localized Table of Contents
+* [API Constructor Reference](#-api-constructor-reference)
+* [Native Viewport Alignment Handshake](#%EF%B8%8F-native-viewport-alignment-handshake)
+* [Centralized Stylesheet Integration](#-centralized-stylesheet-integration-sctkthemesjson)
+* [Implementation Reference Template](#-implementation-reference-template)
 
 ---
 
-An advanced, theme-compliant custom scrollbar element designed for the uBitx desktop transceiver interface. It inherits directly from `ctk.CTkScrollbar` to preserve Method Resolution Order (MRO) theme tracking while embedding direct event-interception buffers.
+### 📋 API Constructor Reference
+
+#### `sCTkScrollbar` Constructor
+```python
+scrollbar = sCTkScrollbar(master=None, orientation="vertical", **kwargs)
+```
+
+#### `sCTkScrollArea` Constructor
+```python
+scroll_area = sCTkScrollArea(master=None, **kwargs)
+```
 
 ### API Property Reference
 
 | Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
 | :--- | :--- | :--- |
 | **Instantiation** | `ctk.CTkScrollbar(master)` | `sCTkScrollbar(master)` *(Isolated External Scroll Handle)* |
-| **File Mapping** | Everything runs under one core native framework layout tracker. | Separated safely across `sCTkScrollbar.py` and `ThemeableWidget.py`. |
-| **State Lock** | Natively handles basic disabled flags, but drops theme sync if locked. | `scrollbar.state("disabled")`<br>**OR**<br>`scrollbar.configure(state="disabled")`<br><br>**Theme-Preserving State Bypasser:** Absorbs state changes smoothly. The button desaturation updates while the scrollbar handle remains completely reactive to dark/light look switches natively. |
-| `get_state()` | *Not Supported Natively* | `Method -> str` explicit verification query matching system test assertions, returning `"normal"` or `"disabled"`. |
-| `bind_to_view()` | Uses implicit/direct hooks. | `Method -> None` explicitly binds mouse wheel and high-precision trackpads exclusively to the scrolling target widget. |
+| **Viewport Companion**| `ctk.CTkScrollableFrame` | `sCTkScrollArea(master)` *(Unblocked Direct Canvas Frame)* |
+| **High-Precision Logic**| Coarse notched delta wheels only | **Inertial Micro-Delta Aggregator:** Smoothly captures, normalizes, and dampens Apple Magic Mouse and Trackpad sweeps natively. |
+| **Event Routing** | Hardcoded internal grab hooks | **Direct Binding Pattern:** Attaches platform-synchronized event listeners across viewport and item rows automatically. |
 
 ---
 
-### Constructor
+### 🎛️ Native Viewport Alignment Handshake
+Connecting the themeable scrollbar to the unblocked container frame involves a single architectural lifecycle call. 
 
-Initialize a custom theme-compliant scrollbar handle instance.Sizing matrices, hover behaviors, and button background colors map cleanly out of central stylesheet parameters.
+When you pack the label items or tracking data lines inside the container frame, the underlying engine automatically routes vertical scroll gestures straight up into our fractional coordinate processor. This ensures that traditional mouse wheels and high-precision Apple touchpad momentum sweeps execute with perfect visual continuity.
 
 ```python
-#### Initialize your custom scrollbar on the layout right channel lane
-scrollbar = sCTkScrollbar(
-    master=main_layout,
-    orientation="vertical"
-)
-scrollbar.pack(side="right", fill="y", padx=(5, 10), pady=10)
+# 1. Native alignment layout handshake
+scroll_view.hook_scrollbar(scrollbar)
 
-#### Connect scroll listeners exclusively to the view to avoid frame corruption
-scrollbar.bind_to_view(scroll_view)
+# 2. Populate data items directly into the scrolling content frame panel
+for i in range(25):
+    lbl_item = sCTkLabelSecondary(scroll_view.scroll_content, text="Telemetry Row")
+    lbl_item.pack()
 ```
 
-### Core Component Integration Rules
+[Go to Piece 2 of 2](#%F0%9F%8E%A8-centralized-stylesheet-integration-sctkthemesjson) | [Return to Table of Contents](#%F0%9F%93%8C-localized-table-of-contents)
+### 🎨 Centralized Stylesheet Integration (`sCTkThemes.json`)
 
-To maintain high-load performance and prevent layout caching locks across active or disabled operational states, the scrollbar must follow strict design rules:
-* Zero Lineage Crawling: Never use recursive loops to unbind or sweep parent layout frame paths. Forcing event manipulation on composite container frames deletes CustomTkinter's private theme tracking listeners.
-* Isolated View Binding: Explicitly pass the specific scrolling viewport destination target directly down to the scrollbar handle instance at initialization.
-
-#### Proper Viewport Target Attachment
-
-Because a native ctk.CTkScrollableFrame isolates its interior viewport frame container inside a nested hierarchy to prevent external tampering, attempting to pass scroll_view.yview directly will throw an AttributeError. 
-
-To connect the scrollbar natively without hitting any private input validation filters, the application must extract the hidden core canvas component from the container layout matrix.
-
-#### Extraction and Alignment Hook Pattern
-
-```python
-# 1. Initialize your custom scrollbar on the layout right channel lane
-scrollbar = sCTkScrollbar(main_layout, orientation="vertical")
-scrollbar.pack(side="right", fill="y", padx=(5, 10), pady=10)
-
-# 2. Extract the native underlying canvas element sitting interior to the scrollable frame shell
-actual_canvas = None
-for child in scroll_view.winfo_children():
-    if child.__class__.__name__ in ("CTkCanvas", "Canvas"):
-        actual_canvas = child
-        break
-
-if actual_canvas:
-    # 3. Link the canvas coordinate tracking streams natively down beneath the validator filters
-    actual_canvas.configure(yscrollcommand=scrollbar.set)
-    scrollbar.configure(command=actual_canvas.yview)
-
-# 4. Safely connect scroll listeners exclusively to the view to avoid frame corruption
-scrollbar.bind_to_view(scroll_view)
-
-
-
-### Centralized Stylesheet Setup (`sCTkThemes.json`)
-
+`sCTkScrollbar` drives its color changes straight out of your central theme file. Redundant state mappings and broken disabled maps are completely omitted, maintaining a clean, production-grade JSON dictionary footprint.
 
 ```json
 {
     "sCTkScrollbar": {
+        "corner_radius": 4,
         "fg_color": "transparent",
-        "button_color": ["#94A3B8", "#475569"],
-        "button_hover_color": ["#64748B", "#334155"],
-        "border_width": 0,
-        "disabled_map": {
-            "button_color": ["#E2E8F0", "#1E293B"]
-        }
+        "button_color": ["#64748B", "#4B5563"],
+        "button_hover_color": ["#1A4375", "#2471A3"]
     }
 }
 ```
 
-### Other notes
-* **Zero Lineage Crawling:** Never use recursive loops to unbind or sweep parent layout frame paths. Forcing event manipulation on composite container frames deletes CustomTkinter's private theme tracking listeners.
-* **Structural Canvas Extraction:** Because a native `ctk.CTkScrollableFrame` isolates its interior viewport frame container inside a nested hierarchy, attempting to pass `scroll_view.yview` directly will throw an `AttributeError`. The harness code must extract the hidden core canvas component to properly link tracking streams below the validator filters.
-
 ---
 
-### Implementation Example & Test Harness
-
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkScrollbar` asset container alongside a clean native canvas interconnect hook pass.
+### 💻 Implementation Reference Template
 
 ```python
-#!/usr/bin/python3
-"""
-sCTkScrollbar - Standalone Interactive Testing Harness
-"""
 import customtkinter as ctk
-
-# =====================================================================
-# 🛠️ TESTING HARNESS IMPORTS & SETUP
-# =====================================================================
-import sCTkThemes                    
+import sCTkThemes
 from sCTkFrame import sCTkFrame
 from sCTkButtonPrimary import sCTkButtonPrimary
 from sCTkLabelSecondary import sCTkLabelSecondary
-from sCTkScrollbar import sCTkScrollbar
+from sCTkScrollbar import sCTkScrollbar, sCTkScrollArea
 
 if __name__ == "__main__":
+    root = ctk.CTk()
+    root.geometry("480x480")
+    root.title("sCTkScrollbar Unified Validation Deck")
+    root.configure(fg_color=("#F1F5F9", "#1C1C1C"))
+
+    # Initialize look parameters out of themes.json safely
     sCTkThemes.apply_sCTkThemes()
 
-    root = ctk.CTk()
-    root.geometry("480x450")
-    root.title("sCTkScrollbar Validation Bench")
+    lower_tray = ctk.CTkFrame(root, fg_color="transparent")
+    lower_tray.pack(side="bottom", fill="x", padx=15, pady=(0, 15))
 
-    # 1. Main visual layout shell container panel
-    main_layout = sCTkFrame(root)
+    main_layout = sCTkFrame(root, border_width=2)
     main_layout.pack(expand=True, fill="both", padx=15, pady=15)
 
-    # Live Operational Telemetry Status Monitoring Bar
-    status_monitor = sCTkLabelSecondary(
-        main_layout, 
-        text="SYSTEM STATUS CORE TRACK LANE: [ACTIVE / NORMAL]"
-    )
-    status_monitor.pack(fill="x", padx=10, pady=(5, 5))
-
-    # TOP-DECK INTERACTIVE MANAGEMENT MATRIX
-    def toggle_operational_lock():
-        """Cycles the layout rows state based on a pristine tracking pointer."""
-        global _view_locked
-        
-        if not _view_locked:
-            target = "disabled"
-            _view_locked = True
-            btn_lock.configure(text="Enable Telemetry View")
-            status_monitor.configure(text="SYSTEM STATUS CORE TRACK LANE: [LOCKED / DISABLED]")
-        else:
-            target = "normal"
-            _view_locked = False
-            btn_lock.configure(text="Disable Telemetry View")
-            status_monitor.configure(text="SYSTEM STATUS CORE TRACK LANE: [ACTIVE / NORMAL]")
-            
-        scrollbar.configure(state=target)
-        
-        # Cascade configuration maps ONLY to content text label elements
-        for label_widget in scroll_content.winfo_children():
-            if hasattr(label_widget, "state") and "Label" in label_widget.__class__.__name__:
-                label_widget.state(target)
+    status_monitor = sCTkLabelSecondary(main_layout, text="SYSTEM STATUS: [TELEMETRY FEED ACTIVE]")
+    status_monitor.pack(fill="x", padx=10, pady=(5, 10))
 
     def toggle_appearance_skin():
-        current_mode = ctk.get_appearance_mode()
-        target = "Light" if current_mode == "Dark" else "Dark"
-        ctk.set_appearance_mode(target)
+        ctk.set_appearance_mode("Light" if ctk.get_appearance_mode() == "Dark" else "Dark")
 
-    _view_locked = False
+    btn_theme = sCTkButtonPrimary(lower_tray, text="Toggle UI Light/Dark Appearance", command=toggle_appearance_skin)
+    btn_theme.pack(fill="x", expand=True, padx=5)
 
-    btn_lock = sCTkButtonPrimary(main_layout, text="Disable Telemetry View", command=toggle_operational_lock)
-    btn_lock.pack(fill="x", padx=10, pady=(2, 5))
-
-    btn_theme = sCTkButtonPrimary(main_layout, text="Toggle Theme Skin (Dark / Light)", command=toggle_appearance_skin)
-    btn_theme.pack(fill="x", padx=10, pady=(0, 10))
-
-    # Standard layout background container frame card panel
-    content_chassis = sCTkFrame(main_layout)
-    content_chassis.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
-
-    # The pristine native scroll view region manages internal canvas themes automatically
-    scroll_view = ctk.CTkScrollableFrame(content_chassis, fg_color="transparent")
-    scroll_view.pack(fill="both", expand=True)
-
-    # Unpack the underlying frame window out of CustomTkinter safely
-    scroll_content = scroll_view._parent_frame
-
-    # Populate with theme-aware secondary text label rows using grid alignment parameters
-    for i in range(25):
-        lbl_item = sCTkLabelSecondary(scroll_content, text=f"▶ Transceiver Core Channel Lane Code: {100 + i} [STATUS: OK]")
-        lbl_item.grid(row=i, column=0, sticky="w", padx=10, pady=4)
-
-    # Initialize the custom scrollbar on the layout right channel lane
+    # Instantiate custom themeable scrollbar
     scrollbar = sCTkScrollbar(main_layout, orientation="vertical")
     scrollbar.pack(side="right", fill="y", padx=(5, 10), pady=10)
-    
-    # Unpack the native underlying canvas element sitting interior to the ScrollableFrame block
-    actual_canvas = None
-    for child in scroll_view.winfo_children():
-        if child.__class__.__name__ in ("CTkCanvas", "Canvas"):
-            actual_canvas = child
-            break
 
-    if actual_canvas:
-        # Link the canvas yview coordinate tracking streams natively down beneath the validator filters
-        actual_canvas.configure(yscrollcommand=scrollbar.set)
-        scrollbar.configure(command=actual_canvas.yview)
+    content_chassis = sCTkFrame(main_layout, border_width=0, fg_color="transparent")
+    content_chassis.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
 
-    # Safely connect scroll listeners exclusively to the view to avoid frame corruption
-    scrollbar.bind_to_view(scroll_view)
+    # Instantiate unblocked companion viewport container frame
+    scroll_view = sCTkScrollArea(content_chassis)
+    scroll_view.pack(fill="both", expand=True)
 
+    # Populate view region and call the convenience function to cascade high-precision sweeps
+    for i in range(25):
+        lbl_item = sCTkLabelSecondary(scroll_view.scroll_content, text=f"▶ Transceiver Core Channel Lane Code: {100 + i} [STATUS: OK]")
+        lbl_item.pack(anchor="w", padx=10, pady=4)
+        
+        # 🔑 CALLING THE CONVENIENCE PROPAGATOR: Cascade standard and Apple touchpad streams fluidly!
+        scroll_view.propagate_scroll_events(lbl_item)
+
+    # Wire native tracking pipelines together smoothly
+    scroll_view.hook_scrollbar(scrollbar)
     root.mainloop()
 ```
 
-[Return to Table of Contents](#contents)
-
+[Return to Table of Contents](#%F0%9F%93%8C-localized-table-of-contents)

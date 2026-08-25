@@ -1,149 +1,201 @@
 #!/usr/bin/python3
 """
-sCTkTabview
+sCTkTabview - Piece 1 of 2
 
-subclass of CTkTabview (Multi-Page Dashboard Deck Layout Container)
-
-UI source file: sCTkTabview.ui
+A theme-compliant custom multi-page tab container layout.
+Inherits from sCTkTabviewUI and ThemeableWidget to manage dense cockpit dashboard
+panels safely with full live theme repaint loops out of themes.json.
 """
 import tkinter as tk
-import tkinter.ttk as ttk
 import customtkinter as ctk
-from sCTkThemes import THEME_DEFAULTS
 import sCTkTabviewui as baseui
 from ThemeableWidget import ThemeableWidget
-
-#
-# Manual user code
-#
 
 class sCTkTabview(baseui.sCTkTabviewUI, ThemeableWidget):
     def __init__(self, master=None, **kw):
 
-        theme_defaults = THEME_DEFAULTS["sCTkTabview"]
+        # 1. Run shared mixin logic first to parse master themes.json safely
+        ThemeableWidget.__init__(self, kw)
 
-        # Store dictionary references safely onto instance memory
-        self._local_defaults = theme_defaults
-        self._custom_disabled_map = theme_defaults.get("disabled_map", {})
+        # 2. Store your custom memory deep-copy maps cleanly onto instance structures
+        self._local_defaults = dict(self.final_kw)
+        self._custom_disabled_map = self._local_defaults.get("disabled_map", {})
+        self._custom_current_state = "normal"
 
-        # Run standard shared dict parsing code
-        ThemeableWidget.__init__(self, theme_defaults, kw)
+        # 3. Intercept the non-standard font key locally before initialization pass
+        target_font = self.final_kw.pop("font", self._local_defaults.get("font", ("Arial", 13, "normal")))
 
-        # Intercept the non-standard key locally just for this specific constructor signature pass
-        target_font = self.final_kw.pop("font", theme_defaults.get("font"))
-
-        # Initialize CustomTkinter with the clean final kwargs array securely
+        # 4. Initialize parent class natively with clean frame-compliant attributes safely
         super().__init__(master, **self.final_kw)
 
-        # Forward the extracted font parameter down to the navigation bar layer safely
-        if hasattr(self, "_segmented_button"):
-            self._segmented_button.configure(font=target_font)
+        # 5. Forward the extracted font parameter down to the native layout bar safely
+        if hasattr(self, "_segmented_button") and self._segmented_button:
+            try:
+                self._segmented_button.configure(font=target_font)
+            except Exception:
+                pass
 
-    def get_state(self):
-        """Explicit getter to return the current composite state string safely."""
-        return str(self.state("state")).lower()
+        # 6. Apply styles and complete lifecycle
+        self._apply_custom_theme_colors()
+        self._finalize_themeable_lifecycle()
 
-    def state(self, mode: str):
-        """Dedicated Tabview composite state controller."""
-        mode = mode.lower()
-        if mode in ("normal", "enabled", "active"):
-            if hasattr(self, "_segmented_button"):
-                self._segmented_button.configure(state="normal")
+    def _apply_custom_theme_colors(self):
+        """Cascades structural look profiles directly out of your centralized stylesheet json."""
+        if not hasattr(self, "_segmented_button") or not self._segmented_button:
+            return
 
-                # Restore original dynamic color states from our theme dictionary pass
-                for key in ("fg_color", "selected_color", "unselected_color", "selected_hover_color",
-                            "unselected_hover_color"):
-                    mapped_key = f"segmented_button_{key}"
-                    active_val = self.final_kw.get(mapped_key, self._local_defaults.get(mapped_key))
-                    try:
-                        self._segmented_button.configure(**{key: active_val})
-                    except Exception:
-                        pass
+        is_disabled = (self._custom_current_state == "disabled")
+        m = self._custom_disabled_map if is_disabled else self._local_defaults
 
-                # Re-apply sharp text color settings to the internal navigation label buttons
-                if hasattr(self._segmented_button, "_buttons_dict"):
-                    active_txt = self.final_kw.get("text_color", self._local_defaults.get("text_color"))
-                    for button in self._segmented_button._buttons_dict.values():
-                        button.configure(text_color=active_txt)
+        # Resolve light/dark text colors cleanly from the parsed theme dictionaries
+        resolved_txt = self._resolve_color(m.get("text_color", ("#1F2937", "#F9FAFB")))
 
-            self._custom_current_state = "normal"
+        if is_disabled:
+            # Re-compile clean keyword payloads to flatten background tracks safely when locked
+            updates = {
+                "fg_color": self._resolve_color(m.get("segmented_button_fg_color", ("#E5E7EB", "#334155"))),
+                "selected_color": self._resolve_color(m.get("segmented_button_selected_color", ("#CBD5E1", "#475569"))),
+                "selected_hover_color": self._resolve_color(m.get("segmented_button_selected_color", ("#CBD5E1", "#475569"))),
+                "unselected_color": self._resolve_color(m.get("segmented_button_unselected_color", ("#F1F5F9", "#1F2937"))),
+                "unselected_hover_color": self._resolve_color(m.get("segmented_button_unselected_color", ("#F1F5F9", "#1F2937")))
+            }
+        else:
+            updates = {
+                "fg_color": self._resolve_color(m.get("segmented_button_fg_color", ("#E2E8F0", "#1E293B"))),
+                "selected_color": self._resolve_color(m.get("segmented_button_selected_color", ("#1A4375", "#1F6AA5"))),
+                "selected_hover_color": self._resolve_color(m.get("segmented_button_selected_hover_color", ("#15375B", "#1A5885"))),
+                "unselected_color": self._resolve_color(m.get("segmented_button_unselected_color", ("#F8FAFC", "#334155"))),
+                "unselected_hover_color": self._resolve_color(m.get("segmented_button_unselected_hover_color", ("#E2E8F0", "#475569")))
+            }
 
-        elif mode == "disabled":
-            if hasattr(self, "_segmented_button"):
-                self._segmented_button.configure(state="disabled")
+        try:
+            self._segmented_button.configure(**updates)
+        except Exception:
+            pass
 
-                # Flatten the background track tabs and the master backing row block frame cleanly
-                updates = {}
-                if "segmented_button_fg_color" in self._custom_disabled_map:
-                    updates["fg_color"] = self._custom_disabled_map["segmented_button_fg_color"]
-                if "segmented_button_selected_color" in self._custom_disabled_map:
-                    updates["selected_color"] = self._custom_disabled_map["segmented_button_selected_color"]
-                    updates["selected_hover_color"] = self._custom_disabled_map["segmented_button_selected_color"]
-                if "segmented_button_unselected_color" in self._custom_disabled_map:
-                    updates["unselected_color"] = self._custom_disabled_map["segmented_button_unselected_color"]
-                    updates["unselected_hover_color"] = self._custom_disabled_map["segmented_button_unselected_color"]
-
+        # Intercept child buttons array dictionary to forcefully assign text color mappings cleanly
+        if hasattr(self._segmented_button, "_buttons_dict") and self._segmented_button._buttons_dict:
+            for button in self._segmented_button._buttons_dict.values():
                 try:
-                    self._segmented_button.configure(**updates)
+                    button.configure(text_color=resolved_txt)
                 except Exception:
                     pass
+    def state(self, mode: str = None) -> str:
+        """🔑 THE CORE DESIGN PATTERN GATEWAY: Aligns fully with all other repository widgets!"""
+        if mode is None:
+            return str(getattr(self, "_custom_current_state", "normal")).lower()
 
-                # Override and drop internal button label text contrast
-                if hasattr(self._segmented_button, "_buttons_dict"):
-                    disabled_txt = self._custom_disabled_map.get("text_color", ("#94A3B8", "#64748B"))
-                    for button in self._segmented_button._buttons_dict.values():
-                        button.configure(text_color=disabled_txt)
-
+        target_mode = str(mode).lower()
+        if target_mode in ("normal", "enabled", "active"):
+            self._custom_current_state = "normal"
+            if hasattr(self, "_segmented_button") and self._segmented_button:
+                try: self._segmented_button.configure(state="normal")
+                except Exception: pass
+        elif target_mode == "disabled":
             self._custom_current_state = "disabled"
+            if hasattr(self, "_segmented_button") and self._segmented_button:
+                try: self._segmented_button.configure(state="disabled")
+                except Exception: pass
+
+        self._apply_custom_theme_colors()
+        return self._custom_current_state
+
+    # 🔑 API CONTINUITY PASS-THROUGHS
+    def get_state(self) -> str:
+        return self.state()
+
     def bind(self, sequence=None, func=None, add=None):
-        """
-        Intercepts Pygubu-Designer click bindings on the Tabview to prevent
-        CustomTkinter's native NotImplementedError from crashing the workspace.
-        """
-        import tkinter as tk
+        """Intercepts designer click loops to prevent unexpected NotImplementedError crashes."""
         try:
-            # Try falling back directly to standard Tkinter's frame window binding mechanics
             return tk.Frame.bind(self, sequence, func, add)
         except Exception:
-            # Safe ultimate bypass if any other background layout manager intercepts fire
             return ""
 
-    # def winfo_children(self):
-    #     """
-    #     Hides the internal tab frames and segmented buttons from Pygubu's recursive
-    #     previewer scan. Prevents the designer from crawling into child structures
-    #     that raise NotImplementedError.
-    #     """
-    #     # Presenting an empty list stops Pygubu from crawling any deeper into the layout tree
-    #     return []
+    def _set_appearance_mode(self, mode_string: str):
+        if hasattr(super(), "_set_appearance_mode"):
+            try: super()._set_appearance_mode(mode_string)
+            except Exception: pass
+        self._apply_custom_theme_colors()
 
+
+# !/usr/bin/python3
+"""
+sCTkTabview - Interactive Functional Verification Bench
+
+A standalone real-time execution harness designed to validate page additions,
+live look changes, tab layout nesting, and composite state locking loops.
+"""
+import customtkinter as ctk
+import sCTkThemes
+from sCTkFrame import sCTkFrame
+from sCTkLabelPrimary import sCTkLabelPrimary
+from sCTkTabview import sCTkTabview
 
 if __name__ == "__main__":
-    # # ctk.set_appearance_mode("dark")
+    # 1. Initialize centralized framework look records natively out of themes.json
+    sCTkThemes.apply_sCTkThemes()
 
     root = ctk.CTk()
-    root.geometry("500x350")
+    root.geometry("560x420")
+    root.title("sCTkTabview Container Validation Bench")
+    root.configure(fg_color=("#F1F5F9", "#1C1C1C"))
 
-    from sCTkFrame import sCTkFrame
-
-    base = sCTkFrame(root)
+    # 2. Mount custom master backplane frame capsule container
+    base = sCTkFrame(root, border_width=2)
     base.pack(expand=True, fill="both", padx=20, pady=20)
 
+    # 3. Instantiate our custom multi-page tab container widget cleanly
     widget = sCTkTabview(base)
     widget.pack(expand=True, fill="both", padx=10, pady=10)
 
-    widget.add("Transceiver Settings")
-    widget.add("Audio Filters")
-    widget.add("System Logs")
+    # Define our targeted operational dashboard page labels string array
+    tab_pages = ["Transceiver Settings", "Audio Filters", "System Logs"]
 
-    # Verify our custom cascading state system locks down the multi-page deck layout container!
-    widget.state("disabled")
-    print("--- DISABLED PASS ---")
-    print("state (Disabled Pass) =", widget.get_state())  # Output: disabled
+    # 4. 🔑 NESTED TAB FRAME GENERATION PASS:
+    # Loops through the strings, adds the tabs, and nests an sCTkFrame containing
+    # an sCTkLabelPrimary placeholder inside every viewport page cleanly!
+    for page_name in tab_pages:
+        # Add the structural landing track tab layer to the widget chassis
+        widget.add(page_name)
 
-    # FIX: Re-activated to verify fluid return-to-normal parameters tracking flows flawlessly
-    widget.state("normal")
-    print("\n--- NORMAL PASS ---")
-    print("state (Normal Pass)   =", widget.get_state())  # Output: normal
+        # Grab the native container reference object assigned to this specific tab page
+        page_viewport = widget.tab(page_name)
+
+        # Mount an inner sCTkFrame container capsule to pad out the sub-tab view workspace
+        inner_frame = sCTkFrame(page_viewport, border_width=1, corner_radius=8)
+        inner_frame.pack(expand=True, fill="both", padx=10, pady=10)
+
+        # Drop a high-visibility sCTkLabelPrimary component right in the center slot of the sub-frame
+        test_label = sCTkLabelPrimary(inner_frame, text=f"Test Contents — {page_name}")
+        test_label.pack(expand=True, fill="none", padx=20, pady=20)
+
+
+    # =====================================================================
+    # 🛠️ INTERACTIVE BENCH OPERATION CONTROLLERS
+    # =====================================================================
+    def toggle_tab_lock():
+        """Toggles active data page switches and flattens tab button fills."""
+        current = widget.state()
+        target = "disabled" if current == "normal" else "normal"
+        widget.state(target)
+        btn_lock.configure(
+            text="Unlock Tabview Navigation" if target == "disabled" else "Lock Tabview (Set 'disabled')")
+        print(f"Logged State Verification Hook -> widget.state() = {widget.state()}")
+
+
+    def toggle_skin_preference():
+        """Toggles between Light and Dark interface appearance preferences."""
+        ctk.set_appearance_mode("Light" if ctk.get_appearance_mode() == "Dark" else "Dark")
+
+
+    # Arrange test interaction buttons horizontally across the lower tray tray area
+    control_tray = ctk.CTkFrame(root, fg_color="transparent")
+    control_tray.pack(side="bottom", fill="x", padx=20, pady=(0, 15))
+
+    btn_lock = ctk.CTkButton(control_tray, text="Lock Tabview (Set 'disabled')", command=toggle_tab_lock)
+    btn_lock.pack(side="left", expand=True, padx=5)
+
+    btn_skin = ctk.CTkButton(control_tray, text="Toggle UI Light/Dark Appearance", command=toggle_skin_preference)
+    btn_skin.pack(side="right", expand=True, padx=5)
 
     root.mainloop()

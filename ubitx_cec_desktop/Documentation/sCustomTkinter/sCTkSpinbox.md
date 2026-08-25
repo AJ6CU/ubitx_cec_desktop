@@ -1,11 +1,18 @@
-
-
 ## sCTkSpinbox
 
-The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapper widget. It extends `ctk.CTkFrame` and aggregates an internal `sCTkEntryPrimary` alongside two stacked or flanking directional button controls. The component dynamically supports two operational tracking tracks: standard numerical incrementation step ranges, and discrete string text array index navigation. Like all sCTk widgets, it is theme-adaptive.
+The `sCTkSpinbox` is a highly configurable, theme-compliant custom spinbox wrapper widget. It extends `ctk.CTkFrame` and aggregates an internal `sCTkEntryPrimary` alongside two flanking or stacked directional button controls. The component dynamically supports two operational tracking modes: standard numerical incrementation step ranges, and discrete string text array index navigation. Like all sCTk widgets, it is fully theme-adaptive.
+
+<a name="contents"></a>
+### 📍 Table of Contents
+* [API Constructor Reference](#constructor)
+* [Custom Keyword Extensions (**kw)](#extensions)
+* [Global Object Instance Methods](#methods)
+* [Centralized Stylesheet Integration](#stylesheet)
+* [Implementation Reference Template](#template)
 
 ---
 
+<a name="constructor"></a>
 ### 📋 API Constructor Reference
 
 ```python
@@ -28,6 +35,9 @@ sCTkSpinbox(master=None, from_=0.0, to=100.0, step_size=1.0, command=None, state
 | `width` | `int` | `140` | Manual hardware panel horizontal width layout footprint dimension measured in pixels. |
 | `height` | `int` | `32` | Manual hardware panel vertical height layout footprint dimension measured in pixels. |
 
+---
+
+<a name="extensions"></a>
 ### 🛠️ Custom Keyword Extensions (`**kw`)
 These exclusive configuration parameters override default geometry behaviors, resolve theme definitions, and style proportions dynamically:
 
@@ -37,13 +47,13 @@ These exclusive configuration parameters override default geometry behaviors, re
 | `button_height` | `int` | `None` | The vertical button height. If `None`, scales automatically based on active grid parameters. |
 | `button_side` | `str` | `"right"` | Hardware control grid positioning side anchor layout. Options: `"right"`, `"left"`, `"split"`. |
 | `orientation` | `str` | `"vertical"` | Structural grid layout arrangement axis profile track. Options: `"vertical"`, `"horizontal"`. |
-| `arrow_font` | `tuple` / `str` | `None` | Typography tuple passed directly to the arrows/glyphs. Ensures runtime theme compatibility. |
-| `arrow_font_size` | `int` | `8` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings inside Pygubu. |
+| `arrow_font_size` | `int` | `11` | Typography scaling rule explicitly defining point sizes for the raw directional glyph markings inside Pygubu. |
 | `format` | `str` | `""` | Numerical formatting mask specifier string rule (supports C percent styles `%.3f` or bracket masks `{:.3f}`). |
 | `values` | `str` / `list` | `None` | Literal input values array string loader. Setting choices converts your widget into Discrete Text List Mode. |
 
 ---
 
+<a name="methods"></a>
 ### ⚡ Global Object Instance Methods
 
 #### Programmatically Set Value Elements
@@ -61,7 +71,7 @@ current_selection = spinbox.get()
 #### Discrete Values Array Loader Shortcut
 ```python
 # Programmatically inject custom space-separated lines or list records on the fly
-spinbox.set_values('Low Medium High "Extreme Alert" Max')
+spinbox.set_values('Slow Normal Fast "Turbo Speed" Max')
 ```
 
 #### Layout Parameter Configuration Modifier
@@ -73,64 +83,91 @@ spinbox.configure(orientation="horizontal", button_side="split", arrow_font_size
 #### Advanced Sub-Component Style Targeting
 If an explicit overrides requirement arises at runtime that bypasses the compiled stylesheet definitions, you can directly interact with the isolated increment/decrement components safely without initialization crashes:
 ```python
-# Manually altering internal button typography fonts at runtime
-spinbox._sub_button_1.configure(font=("Arial", 8, "normal")) # Increment button
-spinbox._sub_button_2.configure(font=("Arial", 8, "normal")) # Decrement button
+# Manually altering internal button typography fonts or text strings at runtime safely
+spinbox.up_button.configure(font=("Arial", 10, "normal"))   # Increment button control instance
+spinbox.down_button.configure(font=("Arial", 10, "normal")) # Decrement button control instance
 ```
 
 ---
 
-### 🎨 Centralized Stylesheet Integration (`sCTkThemes.py`)
+<a name="stylesheet"></a>
+### 🎨 Centralized Stylesheet Integration (`sCTkThemes.json`)
 
-The widget relies heavily on direct index key lookups within your central styling map profile matrix. The theme mapping profile utilizes explicit arrow definitions, glyph direction markers, formatting masks, and soft contrast palettes to eliminate runtime fallback drops.
+The widget relies heavily on direct index key lookups within your central styling map profile matrix. The component automatically feeds state updates down to your nested `sCTkEntryPrimary` instance, cascading text dimming transitions natively.
 
-```python
-THEME_DEFAULTS = {
+```json
+{
     "sCTkSpinbox": {
-        # Font family and dimensions applied natively into the tracking sCTkEntryPrimary field area
-        "font": ("Arial", 15, "normal"),
-        
-        # Font configuration specifically assigned to resolve button arrows/glyphs
-        "arrow_font": ("Arial", 8, "normal"),
-        
-        # Explicit directional string characters assigned to step button graphics 
+        "font": ["Arial", 15, "normal"],
+        "arrow_font_size": 11,
         "arrow_up_char": "▲",
         "arrow_down_char": "▼",
         "arrow_right_char": "▶",
         "arrow_left_char": "◀",
-
-        # String rendering format controller (C percent-style or python bracket mapping rules)
         "format": "%.2f",
-
-        # Geometry footprints matching baseline sCTkEntryPrimary boundaries
         "border_width": 1.5,
         "corner_radius": 6,
         
-        # Active Layout Palette Look Parameters
-        "entry_color": ("#FFFFFF", "#111827"),
-        "border_color": ("#1A4375", "#64748B"),
-        "text_color": ("#1F2937", "#F9FAFB"),
-        
-        # 🎨 UPDATED SOFT CONTRAST:
-        # Light Mode: Comfortable Slate Blue-Grey (#5A6E7F)
-        # Dark Mode: Muted Technical Steel Blue-Grey (#526071) - Soft, readable, non-distracting
-        "placeholder_text_color": ("#5A6E7F", "#526071"),
-        
-        "button_color": ("#9E9E9E", "#2A2F3D"),
-        "button_hover_color": ("#7D7D7D", "#374151"),
+        "entry_color": ["#FFFFFF", "#111827"],
+        "border_color": ["#1A4375", "#64748B"],
+        "text_color": ["#1F2937", "#F9FAFB"],
+        "placeholder_text_color": ["#5A6E7F", "#526071"],
+        "button_color": ["#9E9E9E", "#2A2F3D"],
+        "button_hover_color": ["#7D7D7D", "#374151"],
 
-        # Direct cascading mapping dictionary nested cleanly for the locked disabled state machine
         "disabled_map": {
-            "entry_color": ("#F3F4F6", "#1F2937"),
-            "border_color": ("#CBD5E1", "#475569"),
-            "text_color": ("#94A3B8", "#64748B"),
-            "button_color": ("#CBD5E1", "#334155")
+            "entry_color": ["#F3F4F6", "#1F2937"],
+            "border_color": ["#CBD5E1", "#475569"],
+            "text_color": ["#94A3B8", "#64748B"],
+            "button_color": ["#CBD5E1", "#334155"]
         }
     }
-
+}
 ```
 
+---
+
+<a name="template"></a>
+### 💻 Implementation Reference Template
+
+```python
+import customtkinter as ctk
+import sCTkThemes
+from sCTkFrame import sCTkFrame
+from sCTkSpinbox import sCTkSpinbox
+from sCTkLabelSecondary import sCTkLabelSecondary
+
+# 1. Initialize centralized framework look records natively out of themes.json
+sCTkThemes.apply_sCTkThemes()
+
+root = ctk.CTk()
+root.geometry("450x250")
+root.title("Transceiver VFO Calibration Deck")
+
+# 2. Mount custom master dashboard backplane frame
+dashboard = sCTkFrame(root)
+dashboard.pack(expand=True, fill="both", padx=20, pady=20)
+
+# 3. Initialize dynamic monitoring readout label
+status_lbl = sCTkLabelSecondary(dashboard, text="VFO Offset: 5.00 kHz", font=("Courier New", 14, "bold"))
+status_lbl.pack(pady=10)
+
+# 4. Instantiate custom pattern-perfect spinbox controller
+vfo_step_ctrl = sCTkSpinbox(
+    dashboard, 
+    from_=0.0, 
+    to=50.0, 
+    step_size=0.5, 
+    justify="center",
+    format="%.2f kHz",
+    command=lambda val: status_lbl.configure(text=f"VFO Offset: {val}")
+)
+vfo_step_ctrl.pack(pady=15)
+
+# Seed boot parameter baseline coordinate safely
+vfo_step_ctrl.set(5.0)
+
+root.mainloop()
+```
 
 [Return to Table of Contents](#contents)
-
-

@@ -1,112 +1,74 @@
 #!/usr/bin/python3
 """
-sCTkScrollbar - Piece 1 of 3
+sCTkScrollbar - Piece 1 of 2
 
 An advanced, theme-compliant custom scrollbar component and native container.
 Inherits cleanly from ctk.CTkScrollbar to preserve native macOS high-precision
 touchpad event streams and keep global light/dark theme tracking active.
 """
-import os
 import sys
+import os
 import platform
 import tkinter as tk
 import customtkinter as ctk
-from ThemeableWidget import ThemeableWidget, GLOBAL_THEME_REGISTRY
+from ThemeableWidget import ThemeableWidget
 
 
-class sCTkScrollbar(ctk.CTkScrollbar):
+class sCTkScrollbar(ctk.CTkScrollbar, ThemeableWidget):
     def __init__(self, master=None, **kwargs):
-        # 1. INITIAL RUNTIME PARAMETER SCRUB: Shield parent constructor from custom validation checks
-        state_init = kwargs.pop("state", "normal")
+        # 1. Run shared mixin logic first to parse master themes.json safely
+        ThemeableWidget.__init__(self, kwargs)
+        self._local_defaults = dict(self.final_kw)
+
+        # 2. Track orientation layout constraints cleanly
         orientation = kwargs.get("orientation", "vertical").lower()
         self._is_horizontal = orientation == "horizontal"
 
-        # 2. EXTRACT CENTRALIZED LOOKS: Pull settings directly out of the global json dictionary
-        class_name = self.__class__.__name__
-        self._theme_defaults = GLOBAL_THEME_REGISTRY.get(class_name) or {}
-        self._custom_disabled_map = self._theme_defaults.get("disabled_map") or {}
-
-        # 3. Build a clean config array payload to pass up to CustomTkinter safely
-        final_kw = {}
-        for key, val in self._theme_defaults.items():
-            if key not in ("disabled_map", "pressed_map", "alarm_map", "state"):
-                if isinstance(val, list) and len(val) == 2:
-                    final_kw[key] = tuple(val)
-                else:
-                    final_kw[key] = val
-
-        for key, val in kwargs.items():
-            if val is not None:
-                if isinstance(val, list) and len(val) == 2:
-                    final_kw[key] = tuple(val)
-                else:
-                    final_kw[key] = val
-
+        # 3. Securely set default sizes based on orientation layout rules
         if self._is_horizontal:
-            final_kw.setdefault("height", 14)
+            self.final_kw.setdefault("height", 14)
         else:
-            final_kw.setdefault("width", 14)
+            self.final_kw.setdefault("width", 14)
 
         # 4. Initialize CustomTkinter natively so Apple Magic Mouse / trackpad streams stay intact
-        super().__init__(master, **final_kw)
+        super().__init__(master, **self.final_kw)
+        self._apply_custom_theme_colors()
+        self._finalize_themeable_lifecycle()
 
-        # 5. ROUTE TO DIRECT BOOT CONTROLLER:
-        self._state_str = "normal"
-        self._set_custom_scrollbar_state(state_init)
+    def _apply_custom_theme_colors(self):
+        """Cascades color profiles directly out of your centralized stylesheet json maps."""
+        normal_color = self._local_defaults.get("button_color", ["#64748B", "#4B5563"])
+        normal_hover = self._local_defaults.get("button_hover_color", ["#1A4375", "#2471A3"])
 
-    def _set_custom_scrollbar_state(self, target_state: str):
-        """Internal isolated state manager to protect initialization routes from keyword validation errors."""
-        target_state = str(target_state).lower()
-        self._state_str = target_state
+        super().configure(
+            button_color=tuple(normal_color) if isinstance(normal_color, list) else normal_color,
+            button_hover_color=tuple(normal_hover) if isinstance(normal_hover, list) else normal_hover
+        )
 
-        if target_state == "disabled":
-            disabled_color = self._custom_disabled_map.get("button_color", ["#E5E7EB", "#1F2937"])
-            super().configure(
-                button_color=tuple(disabled_color) if isinstance(disabled_color, list) else disabled_color,
-                button_hover_color=tuple(disabled_color) if isinstance(disabled_color, list) else disabled_color
-            )
-        else:
-            normal_color = self._theme_defaults.get("button_color", ["#94A3B8", "#475569"])
-            normal_hover = self._theme_defaults.get("button_hover_color", ["#64748B", "#334155"])
-            super().configure(
-                button_color=tuple(normal_color) if isinstance(normal_color, list) else normal_color,
-                button_hover_color=tuple(normal_hover) if isinstance(normal_hover, list) else normal_hover
-            )
     def configure(self, *args, **kwargs):
-        """Processes Pygubu designer queries and manages state changes safely."""
-        if args and len(args) == 1:
-            pname = args if isinstance(args, (list, tuple)) else args
-            if pname == "state":
-                return ("state", "state", "state", "normal", str(self._state_str))
-            return super().configure(*args, **kwargs)
-
+        """Processes standard configuration queries and manages visual refreshes safely."""
         if args and isinstance(args, dict):
             kwargs = args | kwargs
 
-        # Intercept and process the state token, but forcefully pop it out of the dictionary
-        if "state" in kwargs:
-            self._set_custom_scrollbar_state(kwargs.pop("state"))
-
         if kwargs:
             super().configure(**kwargs)
+        self._apply_custom_theme_colors()
 
-    def cget(self, attribute_name: str) -> any:
-        """Safely intercept custom properties like 'state' from throwing errors."""
-        if str(attribute_name).lower() == "state":
-            return self._state_str
-        return super().cget(attribute_name)
+    config = configure
 
-    def get_state(self) -> str:
-        """Explicit getter synchronized with your standalone test harness script assertions."""
-        return self._state_str
+    def _set_appearance_mode(self, mode_string: str):
+        if hasattr(super(), "_set_appearance_mode"):
+            try:
+                super()._set_appearance_mode(mode_string)
+            except Exception:
+                pass
+        self._apply_custom_theme_colors()
 
 
 class sCTkScrollArea(ctk.CTkFrame):
     """
-    🛠️ THE UNBLOCKED SHIELD-PLATE SCROLL CONTAINER:
-    Packs a transparent overlay shield layer on top of the layout window tree context.
-    This safely intercepts 100% of Apple trackpad momentum events and real mouse wheels
-    before the inner label components can swallow them, enforcing perfect line tracking!
+    An unblocked scrollable container frame supporting high-precision Apple momentum streams.
+    Bypasses rigid layout masks to give developers full opt-in control over child event bundling.
     """
 
     def __init__(self, master=None, **kwargs):
@@ -115,30 +77,38 @@ class sCTkScrollArea(ctk.CTkFrame):
         current_mode = str(ctk.get_appearance_mode()).lower()
         initial_bg = "#FAFAFA" if current_mode == "light" else "#1A1A1A"
 
-        # 1. Base graphic server viewport canvas layer
         self.canvas = tk.Canvas(self, highlightthickness=0, bd=0, bg=initial_bg)
         self.canvas.pack(side="left", fill="both", expand=True)
 
-        # 2. Main layout content frame
         self.scroll_content = tk.Frame(self.canvas, bd=0, bg=initial_bg)
         self.canvas_window = self.canvas.create_window((0, 0), window=self.scroll_content, anchor="nw")
 
-        # 3. Transparent top-level input capture shield plate
-        self.shield_plate = tk.Frame(self, bd=0, bg="")
-        self.shield_plate.place(relx=0, rely=0, relwidth=1, relheight=1)
-        # Lower the shield just below the window manager layer so it remains invisible but receptive
-        self.shield_plate.lift(self.canvas)
+        # INERTIAL ACCUMULATOR BUFFER: Traps and stabilizes fine-grained Apple micro-ticks
+        self._accumulated_delta = 0.0
+        self._last_direction = 0
 
-        # 4. Bind universal event decoders directly to the unblocked shield surface
-        SCROLL_EVENTS = ["<MouseWheel>", "<Button-4>", "<Button-5>"]
-        for ev in SCROLL_EVENTS:
-            self.shield_plate.bind(ev, self.process_incoming_scroll, add="+")
-            self.canvas.bind(ev, self.process_incoming_scroll, add="+")
+        # Integrated standard wheel and modern <TouchpadScroll> straight across the core layer
+        for ev in ["<MouseWheel>", "<Button-4>", "<Button-5>", "<TouchpadScroll>"]:
+            self.canvas.bind(ev, self.process_incoming_scroll)
+            self.scroll_content.bind(ev, self.process_incoming_scroll)
 
-        # Geometry anchors to recalculate content spacing bounds
         self.scroll_content.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.canvas.bind("<Configure>",
                          lambda e: self.canvas.itemconfig(self.canvas_window, width=self.canvas.winfo_width()))
+
+    def hook_scrollbar(self, scrollbar_widget):
+        """Pure native alignment pass: Maps tracking parameters without forcing event shifts."""
+        self.canvas.configure(yscrollcommand=scrollbar_widget.set)
+        scrollbar_widget.configure(command=self.canvas.yview)
+
+    def propagate_scroll_events(self, target_widget: tk.Widget):
+        """Recursively binds viewport scroll vectors down onto a targeted widget and its children."""
+        for ev in ["<MouseWheel>", "<Button-4>", "<Button-5>", "<TouchpadScroll>"]:
+            target_widget.bind(ev, self.process_incoming_scroll)
+
+        if hasattr(target_widget, "winfo_children"):
+            for child in target_widget.winfo_children():
+                self.propagate_scroll_events(child)
 
     def _set_appearance_mode(self, mode_string: str):
         if hasattr(super(), "_set_appearance_mode"):
@@ -147,107 +117,108 @@ class sCTkScrollArea(ctk.CTkFrame):
         if hasattr(self, "canvas") and self.canvas: self.canvas.configure(bg=target_bg)
         if hasattr(self, "scroll_content") and self.scroll_content: self.scroll_content.configure(bg=target_bg)
 
-    def hook_scrollbar(self, scrollbar_widget):
-        self.canvas.configure(yscrollcommand=scrollbar_widget.set)
-        scrollbar_widget.configure(command=self.canvas.yview)
-
     def process_incoming_scroll(self, event):
-        """
-        🔑 RE-CALIBRATED EXACT FRACTIONAL STEP DECODER:
-        Uses explicit fraction offsets rather than text lines steps. This forces
-        your physical mouse wheels to slide forward by exactly 1 label row per click!
-        """
-        sys_platform = platform.system()
-
-        # Calculate true fractional bounds of the current scrolling area
+        """THE OVERFLOW-INSULATED VECTOR ENGINE: Decodes 16-bit unsigned hardware loops natively."""
         bbox = self.canvas.bbox("all")
         if not bbox: return
-        total_height = max(1, bbox[3] - bbox[1])
 
-        # Calibrate line-jump metrics down to matching label text row slices (approx 28 pixels)
+        total_height = max(1, bbox[3] - bbox[1])
         fractional_row_step = 28.0 / total_height
 
-        if sys_platform == "Darwin":
-            # Check if this is an external mouse wheel or a high-precision Apple touch frame
-            if hasattr(event, "delta") and abs(event.delta) >= 120:
-                direction = -1 if event.delta > 0 else 1
-                self.canvas.yview_moveto(self.canvas.yview()[0] + (direction * fractional_row_step))
-            else:
-                # 🚀 UNBLOCKED APPLE INERTIAL GESTURE VECTOR:
-                # Catch the smooth fractional notches passing through the shield plate natively
-                direction = -1 if event.num == 4 or event.delta > 0 else 1
-                self.canvas.yview_moveto(self.canvas.yview()[0] + (direction * fractional_row_step * 0.2))
-        else:
+        if os.name == "nt" or sys.platform.startswith("win"):
             direction = int(-1 * (event.delta / 120))
-            self.canvas.yview_moveto(self.canvas.yview()[0] + (direction * fractional_row_step))
+            self.canvas.yview_scroll(direction * 2, "units")
+            return
+
+        # MAC OS TOUCHPAD HARDWARE NORMALIZATION PASS:
+        raw_delta = getattr(event, "delta", 0.0)
+        delta_y = event.delta_y if hasattr(event, "delta_y") else raw_delta
+
+        if event.num == 4:
+            delta_y = 1.0
+        elif event.num == 5:
+            delta_y = -1.0
+
+        # Two's complement signed intercept: Convert unsigned 16-bit overflows back to clean negatives
+        if delta_y > 32768:
+            delta_y = delta_y - 65536
+
+        if delta_y == 0:
+            return
+
+        current_tick_direction = 1 if delta_y > 0 else -1
+        if current_tick_direction != self._last_direction and self._last_direction != 0:
+            self._accumulated_delta = 0.0
+        self._last_direction = current_tick_direction
+
+        self._accumulated_delta += delta_y
+
+        # DAMPED ACCUMULATION GATE: 12.0 threshold for perfectly weighted Apple trackpad precision
+        if abs(self._accumulated_delta) >= 12.0:
+            direction = -1 if self._accumulated_delta > 0 else 1
+            try:
+                self.canvas.yview_scroll(direction * 1, "units")
+            except Exception:
+                pass
+            self._accumulated_delta = 0.0
 
 
-# =====================================================================
-# 🛠️ VERIFIED MULTI-ROW RUNNER ENVIRONMENT
-# =====================================================================
+#!/usr/bin/python3
+"""
+sCTkScrollbar Unified Validation Deck
+"""
+import customtkinter as ctk
+import sCTkThemes
+from sCTkFrame import sCTkFrame
+from sCTkButtonPrimary import sCTkButtonPrimary
+from sCTkLabelSecondary import sCTkLabelSecondary
+from sCTkScrollbar import sCTkScrollbar, sCTkScrollArea
+
 if __name__ == "__main__":
-    import sCTkThemes
-    from sCTkFrame import sCTkFrame
-    from sCTkButtonPrimary import sCTkButtonPrimary
-    from sCTkLabelSecondary import sCTkLabelSecondary
-
     root = ctk.CTk()
-    root.geometry("480x450")
+    root.geometry("480x480")
     root.title("sCTkScrollbar Unified Validation Deck")
+    root.configure(fg_color=("#F1F5F9", "#1C1C1C"))
 
+    # 1. Boot centralized look parameters out of themes.json safely
     sCTkThemes.apply_sCTkThemes()
 
-    main_layout = sCTkFrame(root)
+    # 2. Arrange our isolated lower button layout panel tray
+    lower_tray = ctk.CTkFrame(root, fg_color="transparent")
+    lower_tray.pack(side="bottom", fill="x", padx=15, pady=(0, 15))
+
+    # 3. Mount master backplane panel frame capsule container
+    main_layout = sCTkFrame(root, border_width=2)
     main_layout.pack(expand=True, fill="both", padx=15, pady=15)
 
-    status_monitor = sCTkLabelSecondary(main_layout, text="SYSTEM STATUS: [ACTIVE / NORMAL]")
-    status_monitor.pack(fill="x", padx=10, pady=(5, 5))
-
-
-    def toggle_operational_lock():
-        global _view_locked
-        target = "disabled" if not _view_locked else "normal"
-        _view_locked = not _view_locked
-
-        btn_lock.configure(text="Enable Telemetry View" if _view_locked else "Disable Telemetry View")
-        status_monitor.configure(
-            text="SYSTEM STATUS: [LOCKED / DISABLED]" if _view_locked else "SYSTEM STATUS: [ACTIVE / NORMAL]")
-
-        scrollbar.configure(state=target)
-        for label_widget in scroll_view.scroll_content.winfo_children():
-            if hasattr(label_widget, "state") and "Label" in label_widget.__class__.__name__:
-                label_widget.state(target)
-
+    status_monitor = sCTkLabelSecondary(main_layout, text="SYSTEM STATUS: [TELEMETRY FEED ACTIVE]")
+    status_monitor.pack(fill="x", padx=10, pady=(5, 10))
 
     def toggle_appearance_skin():
-        current_mode = ctk.get_appearance_mode()
-        target = "Light" if current_mode == "Dark" else "Dark"
-        ctk.set_appearance_mode(target)
+        ctk.set_appearance_mode("Light" if ctk.get_appearance_mode() == "Dark" else "Dark")
 
+    # Pack our skin preference toggler safely inside the isolated lower tray panel
+    btn_theme = sCTkButtonPrimary(lower_tray, text="Toggle UI Light/Dark Appearance", command=toggle_appearance_skin)
+    btn_theme.pack(fill="x", expand=True, padx=5)
 
-    _view_locked = False
-
-    btn_lock = sCTkButtonPrimary(main_layout, text="Disable Telemetry View", command=toggle_operational_lock)
-    btn_lock.pack(fill="x", padx=10, pady=(2, 5))
-
-    btn_theme = sCTkButtonPrimary(main_layout, text="Toggle Theme Skin (Dark / Light)", command=toggle_appearance_skin)
-    btn_theme.pack(fill="x", padx=10, pady=(0, 10))
-
+    # 4. Mount themeable custom scrollbar primitive
     scrollbar = sCTkScrollbar(main_layout, orientation="vertical")
     scrollbar.pack(side="right", fill="y", padx=(5, 10), pady=10)
 
-    content_chassis = sCTkFrame(main_layout)
+    # 5. Build nested viewport container layout tracks
+    content_chassis = sCTkFrame(main_layout, border_width=0, fg_color="transparent")
     content_chassis.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
 
     scroll_view = sCTkScrollArea(content_chassis)
     scroll_view.pack(fill="both", expand=True)
 
-    # Populate with theme-aware secondary text label rows
+    # 6. Populate viewport with telemetry data and invoke the opt-in convenience propagator
     for i in range(25):
-        lbl_item = sCTkLabelSecondary(scroll_view.scroll_content,
-                                      text=f"▶ Transceiver Core Channel Lane Code: {100 + i} [STATUS: OK]")
+        lbl_item = sCTkLabelSecondary(scroll_view.scroll_content, text=f"▶ Transceiver Core Channel Lane Code: {100 + i} [STATUS: OK]")
         lbl_item.pack(anchor="w", padx=10, pady=4)
+        scroll_view.propagate_scroll_events(lbl_item)
 
+    # 7. Wire hardware event pipelines natively together
     scroll_view.hook_scrollbar(scrollbar)
 
     root.mainloop()
