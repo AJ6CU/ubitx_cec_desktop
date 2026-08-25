@@ -1,67 +1,22 @@
-## sCTkSlider
+# sCTkSlider
 
 Standardized live track calibration adjustment slider providing real-time data value interception, disabled layout mapping overrides, and multi-zone Pygubu designer compatibility.
 
-### API Property Reference
+---
 
-| Property / Feature | Standard CustomTkinter | Your `sCustomTkinter` Setup |
-| :--- | :--- | :--- |
-| **Instantiation** | `ctk.CTkSlider(master)` | `sCTkSlider(master)` *(Live metric adjuster handle)* |
-| **Maintenance** | Local style overrides duplicated across files manually. | Clean updates across all layouts modified directly in the JSON file. |
-| **File Mapping** | Everything runs under one core native pipeline tracker. | Separated safely across `sCTkSlider.py`, `sCTkSliderui.py`, and `ThemeableWidget.py`. |
-| `state(mode)` | `self.configure(state=...)` | `Method (str)` handling layout tracking map transformations (`'normal'`, `'disabled'`). |
-| `get_state()` | `self.cget("state")` | `Method -> str` explicit verification query matching system test assertions. |
+## 🛠️ Architectural Design Features
+
+*   **Direct Native Inheritance:** Inherits directly and cleanly from `customtkinter.CTkSlider` to completely preserve native high-performance mouse dragging handle calculations, scaling boundaries, and coordinate snap thresholds without unneeded structural layers.
+*   **Decoupled Style Cascade Engine:** Color tracks and telemetry handle visuals are driven 100% via your centralized `themes.json` configuration file, avoiding duplicate style overrides scattered across your backend modules.
+*   **Asynchronous Repaint Protection:** Utilizes a tight internal thread buffer on look resets to completely guard against layout collisions and prevent recursive infinite execution loop freezes.
+*   **Pygubu Live Workspace Compatibility:** Safely handles Pygubu inspector property positional queries and feeds theme parameters directly into your designer workspace canvas to support accurate real-time visual mock sweeps.
 
 ---
 
-### Constructor
+## 🎨 Centralized Stylesheet Setup (`themes.json`)
 
-Initialize a tracking controller slider adjustment instance. Complex track variables layer safely over your stylesheet metrics at runtime.
+To drive linear progress track filling and custom knob coordinate handle styles accurately across both look preference sweeps, ensure your centralized theme profile file includes this exact element block:
 
-```python
-# Instantiate the customized live telemetry slider track element
-size_calibrator = sCTkSlider(
-    master=calibration_panel,
-    from_=50,
-    to=250,
-    command=lambda val: print(f"Current Value Adjusted: {val:.3f}")
-)
-
-# Render the slider widget inside your parent container coordinate packer
-size_calibrator.pack(fill="x", padx=30, pady=10)
-```
-
----
-
-### Callback Signature & Usage
-
-Routes current floating-point slider knob coordinate metrics down to application listening hooks seamlessly in real time during click-dragging movements.
-
-#### Command
-
-```python
-# Fires instantly upon receiving mouse handle interaction dragging motion changes
-def on_calibration_scale_changed(current_value: float):
-    print(f"Live Track Value Readout: {current_value:.4f}")
-```
-
-### Dynamic Property Modifiers Live
-```python
-# Alter slider scaling thresholds or snap targets on the fly
-size_calibrator.configure(from_=0, to=1)
-```
-
-### Convenience Functions
-```python
-# Manually position the tracking handle directly onto a specific decimal location coordinate
-size_calibrator.set(0.45)
-
-# Query current operational status or lock the widget out of interaction loops cleanly
-current_state = size_calibrator.get_state()  # Returns 'normal' or 'disabled'
-size_calibrator.state("disabled")            # Fades the track fill and completely freezes the handle
-```
-
-### Centralized Stylesheet Setup (`themes.json`)
 ```json
 {
     "sCTkSlider": {
@@ -78,33 +33,48 @@ size_calibrator.state("disabled")            # Fades the track fill and complete
 }
 ```
 
-### Other notes
-* **Infinite Recursion Lock Cleared:** Internal state modifications route strictly through `super().configure()` pathways, ensuring secondary cascading locks never trip execution loop crashes.
-* **Pygubu Live Preview:** Feeds disabled theme tracking parameters directly back into Pygubu's designer canvas to support real-time visual inspection cycles accurately.
+---
 
-### Implementation Example & Test Harness
+## ⚙️ Public API Methods Reference
 
-Below is a complete, self-contained test execution script demonstrating how to properly embed an `sCTkSlider` alongside a live telemetry monitor.
+| Method Name | Arguments | Return Type | Description |
+| :--- | :--- | :--- | :--- |
+| `state(mode)` | `mode: str (Optional)` | `str` | Dedicated operational state manager. If empty, returns the current active state (`'normal'` or `'disabled'`). If passed, shifts tracking map parameters and cleanly freezes/unfreezes input handle loops. |
+| `get_state()` | `None` | `str` | Explicit state tracking query synchronized with framework validation benchmarks. |
+| `set(value)` | `value: float` | `None` | Manually positions the tracking slider handle directly onto a specific floating-point decimal location coordinate. |
+| `cget(attribute)` | `attribute: str` | `Any` | Intercept shield layer that safely queries current active arguments from native CustomTkinter property arrays. |
+
+---
+
+## 💻 Implementation Code Template
 
 ```python
 import customtkinter as ctk
+import sCTkThemes
+from sCTkFrame import sCTkFrame
 from sCTkSlider import sCTkSlider
 from sCTkLabelSecondary import sCTkLabelSecondary
 
-if __name__ == "__main__":
-    root = ctk.CTk()
-    root.geometry("400x180")
-    root.title("Live Slider Telemetry Bench")
+# 1. Initialize global theme definitions
+sCTkThemes.apply_sCTkThemes()
 
-    lbl_data = sCTkLabelSecondary(root, text="Coordinate Track: 0.50")
-    lbl_data.pack(pady=10)
+root = ctk.CTk()
+root.geometry("450x220")
+root.title("Slider Real-Time Telemetry Monitor")
 
-    slider = sCTkSlider(
-        root,
-        command=lambda val: lbl_data.configure(text=f"Coordinate Track: {val:.2f}")
-    )
-    slider.pack(fill="x", padx=40, pady=15)
-    slider.set(0.50)
+# 2. Build parent layout track frame
+base = sCTkFrame(root)
+base.pack(expand=True, fill="both", padx=20, pady=20)
 
-    root.mainloop()
+# 3. Live feedback layer to catch floating point data changes instantly
+lbl_telemetry = sCTkLabelSecondary(base, text="Slider Coordinate: 0.450", font=("Courier New", 12, "bold"))
+
+# 4. Instantiate the clean native-inheriting tracking slider widget
+widget = sCTkSlider(base)
+widget.configure(command=lambda val: lbl_telemetry.configure(text=f"Slider Coordinate: {val:.3f}"))
+widget.pack(expand=False, fill="x", padx=40, pady=15)
+widget.set(0.450)
+lbl_telemetry.pack(pady=10)
+
+root.mainloop()
 ```
