@@ -537,7 +537,7 @@ class theVFO(baseui.theVFOUI):
                 if switch == "ON":
                     # Need to adjust the secondary info TX to reflect new offset
 
-                    sself.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset)
+                    self.RX_Freq_VFO_Label['text'] = gv.formatFrequency(self.PrimaryVFO+self.TXfreqOffset)
 
 
                     self.update_VFO_Display(self.PrimaryVFO, self.TXfreqOffset)

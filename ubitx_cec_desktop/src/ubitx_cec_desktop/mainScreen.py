@@ -1322,8 +1322,8 @@ class mainScreen(baseui.mainScreenUI):
         self.split_Button.configure(state="disabled")
         self.rit_Button.configure(state="disabled")
         self.channels_Button.configure(state="disabled")
-        self.ATT_Jogwheel.setStateDisabled()
-        self.IFS_Jogwheel.setStateDisabled()
+        # self.ATT_Jogwheel.setStateDisabled()
+        # self.IFS_Jogwheel.setStateDisabled()
         self.downButton_Canvas.configure(state="disabled")
         self.downButton_Canvas.itemconfig(self.downButton,image=self.arrow_down_disabled)
 
@@ -1352,10 +1352,10 @@ class mainScreen(baseui.mainScreenUI):
         self.split_Button.configure(state="normal")
         self.rit_Button.configure(state="normal")
         self.channels_Button.configure(state="normal")
-        if (self.ATT_Button_On == True):
-            self.ATT_Jogwheel.setStateNormal()
-        if (self.IFS_Button_On == True):
-            self.IFS_Jogwheel.setStateNormal()
+        # if (self.ATT_Button_On == True):
+        #     self.ATT_Jogwheel.setStateNormal()
+        # if (self.IFS_Button_On == True):
+        #     self.IFS_Jogwheel.setStateNormal()
 
         self.downButton_Canvas.configure(state="normal")
         self.downButton_Canvas.itemconfig(self.downButton, image=self.arrow_down_normal)
