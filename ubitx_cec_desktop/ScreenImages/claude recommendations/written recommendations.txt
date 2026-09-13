@@ -1,0 +1,17 @@
+Seven recommendations, roughly in order of how much they matter.
+
+Design for wide and short. Target something like 1100×420 so it sits above SDR++ on a laptop. That's what drove every layout choice — the current window is tall and narrow, which is the shape the Nextion forced.
+
+Nothing changes position with state. Split on or off, RIT on or off, transmitting or not — controls stay put and only their appearance changes. Your current screen moves the TX frequency between three different slots depending on mode, and that's harder to read than any font size.
+
+One emphasis per row. The frequencies dominate row two, Log QSO is the only filled button in row four. Everything else is quiet. Your current screen gives SETTINGS the same weight as BAND UP.
+
+Toggles look different from actions. Split, RIT, Lock and Mute are states — lit or unlit. Log QSO does something. Right now they're identical buttons in identical rows.
+
+Disabled rather than absent for anything the backend can't do yet. The layout doesn't shift when a capability arrives, and the control tells you it exists.
+
+Dark, matching SDR++. Mostly a theme decision, and probably the single biggest improvement to the "looks weird beside it" problem.
+
+Reconnect lives in the status strip. Visible when needed, invisible otherwise, and never a modal dialog interrupting a QSO.
+
+Sizes for building: tab strip 28–34px, VFO frequency around 26px, meters about 30px tall including labels, buttons 11px text with 5×11 padding.
