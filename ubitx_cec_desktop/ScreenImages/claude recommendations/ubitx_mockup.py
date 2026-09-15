@@ -64,6 +64,15 @@ CW_TONE_HZ = 500
 # you are working. Both are settable under Setup.
 FILTER_DEFAULTS = {"LSB": 2600, "USB": 2600, "CWL": 500, "CWU": 500}
 
+# Split offsets, in kHz, as a DX station calls them.
+#
+# "Up 5" means transmit five kilohertz above where he is transmitting -- so
+# each of these is computed from the RX frequency every time, NOT applied to
+# wherever TX happens to be. Pressing up 5 twice has to leave you five up,
+# not ten: the operator is naming a place, not a movement.
+SPLIT_OFFSETS = (("up 1", 1), ("up 2", 2), ("up 5", 5),
+                 ("up 10", 10), ("dn 1", -1), ("dn 2", -2))
+
 # Sizing. The frequency is the thing you read, so it takes what the window
 # can spare; the dials are what you reach for, so they follow.
 #
@@ -430,6 +439,8 @@ class UbitxMockup(sCTk):
         # calls back into a interface that does not exist yet. The flag keeps
         # that harmless rather than relying on construction order.
         self._ready = False
+        # state() repaints, so it is called only when the value changes.
+        self._offset_state = None
 
         self.notebook = sCTkNotebook(self, side="left", tab_width=30,
                                      tab_style="rounded",
@@ -504,7 +515,7 @@ class UbitxMockup(sCTk):
         # Row 5 is empty and takes every spare pixel, which holds the real
         # content at the TOP. Without it the rows share the extra height and
         # the whole panel drifts to the middle as the window grows.
-        page.grid_rowconfigure(4, weight=1)
+        page.grid_rowconfigure(5, weight=1)
 
         # The two VFOs -----------------------------------------------------
         vfos = sCTkFrame(page, fg_color="transparent", border_width=0)
@@ -534,7 +545,7 @@ class UbitxMockup(sCTk):
 
         # Actions ----------------------------------------------------------
         actions = sCTkFrame(page, fg_color="transparent", border_width=0)
-        actions.grid(row=2, column=0, sticky="ew", padx=6, pady=2)
+        actions.grid(row=3, column=0, sticky="ew", padx=6, pady=(8, 2))
 
         sCTkButtonPrimary(actions, text="Log QSO", width=96,
                           command=self._log_qso).pack(side="left", padx=(0, 4))
@@ -563,22 +574,88 @@ class UbitxMockup(sCTk):
             command=lambda: self._toggle("tx_inhibit"))
         self._toggles["tx_inhibit"].pack(side="left", padx=2)
 
-        # Mode is DIRECT selection, not a rotary: you jump between modes
-        # rather than sweeping through them.
-        self.mode_picker = sCTkSegmentedButton(
-            actions, values=MODES, command=self._on_mode)
-        self.mode_picker.pack(side="right")
+        # Role controls ----------------------------------------------------
+        #
+        # Three columns. The outer two sit under the frequency they belong to
+        # -- the filter is a RECEIVE property, the offsets are TRANSMIT ones
+        # -- and band and mode go between them, because they act on both and
+        # would be claiming otherwise under either panel.
+        #
+        # The middle column takes no spare width, so the two role groups stay
+        # pinned under their own panels as the window grows.
+        role_row = sCTkFrame(page, fg_color="transparent", border_width=0)
+        role_row.grid(row=2, column=0, sticky="ew", padx=6, pady=(4, 0))
+        role_row.grid_columnconfigure(0, weight=1)
+        role_row.grid_columnconfigure(1, weight=0)
+        role_row.grid_columnconfigure(2, weight=1)
+
+        # Split offsets ----------------------------------------------------
+        #
+        # DIMMED out of split, not hidden.
+        #
+        # They mean nothing out of split -- TX and RX are the same frequency,
+        # so an offset from RX is just retuning -- but hiding them moves
+        # everything around them each time split toggles, and a row that
+        # appears and disappears is harder to learn than one that greys. Same
+        # treatment AGC and NR get on the other side.
+        #
+        # They exist because a pileup is the one time the dial is too slow.
+        # The DX says "up 5" and fifty clicks later someone else has him.
+        # A column, not a row: the buttons on the first line and the note
+        # UNDER them.
+        #
+        # Beside them, the note changed width whenever the offset changed --
+        # "transmitting 10 kHz above rx" is wider than "5 kHz" -- and pushed
+        # the whole set of buttons sideways. A control that moves because its
+        # own label grew is worse than no label.
+        offset_column = sCTkFrame(role_row, fg_color="transparent",
+                                  border_width=0)
+        offset_column.grid(row=0, column=2, sticky="e")
+
+        self.offset_row = sCTkFrame(offset_column, fg_color="transparent",
+                                    border_width=0)
+        self.offset_row.pack(anchor="e")
+        self._offset_buttons = []
+
+        sCTkLabelTertiary(self.offset_row, text="tx offset",
+                          font=("Arial", 11)).pack(side="left", padx=(0, 6))
+
+        simplex = sCTkButtonSecondary(self.offset_row, text="simplex", width=74,
+                                      command=lambda: self._split_offset(0))
+        simplex.pack(side="left", padx=2)
+        self._offset_buttons.append(simplex)
+
+        for label, khz in SPLIT_OFFSETS:
+            btn = sCTkButtonSecondary(
+                self.offset_row, text=label, width=58,
+                command=lambda k=khz: self._split_offset(k))
+            btn.pack(side="left", padx=2)
+            self._offset_buttons.append(btn)
+
+        self.offset_note = sCTkLabelTertiary(offset_column, text="",
+                                             font=("Arial", 10))
+        self.offset_note.pack(anchor="e", pady=(2, 0))
+
+        # Band and mode, between the two -----------------------------------
+        centre = sCTkFrame(role_row, fg_color="transparent", border_width=0)
+        centre.grid(row=0, column=1, padx=16)
 
         # Band is a short ordered list you step through, which is what a
         # spinbox is. It also shows where you are without being read.
         self.band_picker = sCTkSpinbox(
-            actions, values=[b[0] for b in BANDS], wrap=False, width=110,
+            centre, values=[b[0] for b in BANDS], wrap=False, width=110,
             command=self._on_band)
-        self.band_picker.pack(side="right", padx=8)
+        self.band_picker.pack(side="left", padx=(0, 8))
 
-        # Receive controls -------------------------------------------------
-        rx_row = sCTkFrame(page, fg_color="transparent", border_width=0)
-        rx_row.grid(row=3, column=0, sticky="ew", padx=6, pady=(6, 4))
+        # Mode is DIRECT selection, not a rotary: you jump between modes
+        # rather than sweeping through them.
+        self.mode_picker = sCTkSegmentedButton(
+            centre, values=MODES, command=self._on_mode)
+        self.mode_picker.pack(side="left")
+
+        # Receive controls, under the receive frequency --------------------
+        rx_row = sCTkFrame(role_row, fg_color="transparent", border_width=0)
+        rx_row.grid(row=0, column=0, sticky="w")
 
         sCTkLabelTertiary(rx_row, text="filter",
                           font=("Arial", 11)).pack(side="left", padx=(0, 6))
@@ -586,23 +663,16 @@ class UbitxMockup(sCTk):
                             command=lambda: self._filter(+300)).pack(side="left", padx=2)
         sCTkButtonSecondary(rx_row, text="narrow", width=60,
                             command=lambda: self._filter(-300)).pack(side="left", padx=2)
-        # Reset matters as much as the two beside it: widening and narrowing
-        # without a way back means every adjustment drifts further from
-        # something usable, and the way back is mode-dependent.
         sCTkButtonSecondary(rx_row, text="reset", width=56,
                             command=self._filter_reset).pack(side="left", padx=2)
         self.filter_label = sCTkLabelPrimary(rx_row, text="2400 Hz",
                                              font=("Arial", 11))
         self.filter_label.pack(side="left", padx=8)
 
-        # Disabled rather than absent: the layout will not shift when a
-        # backend gains these, and the control says it exists.
         for label in ("AGC", "NR", "Notch"):
-            btn = sCTkButtonSecondary(rx_row, text=label, width=60)
+            btn = sCTkButtonSecondary(rx_row, text=label, width=56)
             btn.pack(side="left", padx=2)
             btn.state("disabled")
-        sCTkLabelTertiary(rx_row, text="awaiting backend",
-                          font=("Arial", 10)).pack(side="left", padx=6)
 
         self._build_status_strip(page)
 
@@ -619,7 +689,7 @@ class UbitxMockup(sCTk):
         as live state.
         """
         strip = sCTkFrame(page, fg_color="transparent", border_width=0)
-        strip.grid(row=5, column=0, sticky="ew", padx=6, pady=(0, 6))
+        strip.grid(row=6, column=0, sticky="ew", padx=6, pady=(0, 6))
 
         self.tx_chip = sCTkLabelPrimary(strip, text=" RX ", font=("Arial", 11),
                                         fg_color=("#0F6E56", "#0F6E56"),
@@ -1005,6 +1075,23 @@ class UbitxMockup(sCTk):
             self.radio.rit_offset = 700
         self.refresh()
 
+    def _split_offset(self, khz):
+        """
+        Puts TX a given distance from RX.
+
+        Measured from the RECEIVE frequency each time, not from wherever TX
+        currently sits -- see SPLIT_OFFSETS. Zero is simplex: TX back onto
+        the frequency you are listening to.
+        """
+        radio = self.radio
+        if radio.locked:
+            return
+        if not radio.split:
+            radio.split = True
+        radio.set_frequency(radio.tx_vfo,
+                            radio.frequency(radio.rx_vfo) + (khz * 1000))
+        self.refresh()
+
     def _toggle_tx(self):
         if self.radio.tx_inhibit and not self.radio.transmitting:
             return
@@ -1236,6 +1323,22 @@ class UbitxMockup(sCTk):
             # distinguishes it from a button that does something.
             btn.configure(fg_color=("#0F6E56", "#0F6E56") if on else
                           ("#E2E8F0", "#1F2937"))
+
+        if self._offset_state != s.split:
+            self._offset_state = s.split
+            for btn in self._offset_buttons:
+                btn.state("normal" if s.split else "disabled")
+
+        if s.split:
+            delta = s.frequency(s.tx_vfo) - s.frequency(s.rx_vfo)
+            if delta == 0:
+                self.offset_note.configure(text="transmitting on the rx frequency")
+            else:
+                self.offset_note.configure(
+                    text=f"transmitting {abs(delta) / 1000:g} kHz "
+                         f"{'above' if delta > 0 else 'below'} rx")
+        else:
+            self.offset_note.configure(text="")
 
         self.filter_label.configure(text=f"{s.filter_hz} Hz")
         self.mode_label.configure(text=s.mode)
