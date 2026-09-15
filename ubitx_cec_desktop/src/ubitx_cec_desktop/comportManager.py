@@ -222,7 +222,7 @@ class comportManager(baseui.comportManagerUI):
 
             self.comportMessage_Frame.pack_forget()  # Close the top half of the select comport frame
 
-            if port != gv.config.getRadioPort:       # This handles the case where the config file existed with the wrong comport
+            if port != gv.config.getRadioPort():       # This handles the case where the config file existed with the wrong comport
                 gv.config.setRadioPort(port)
             return True
 
